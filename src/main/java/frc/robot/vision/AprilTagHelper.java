@@ -74,4 +74,16 @@ public class AprilTagHelper {
             return new Pair<Pose2d, Double>(null, 0.0);
         }
     }
+
+    //unfiltered view of camera 
+    public void toggleDriverMode(){
+        if(cam.getDriverMode()){
+        cam.setDriverMode(false);
+        }
+
+        else{
+            cam.setDriverMode(true);
+        }
+        
+    }
 }
