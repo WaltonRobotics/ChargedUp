@@ -1,15 +1,12 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.vision.AprilTagHelper;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-
-import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
