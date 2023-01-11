@@ -9,4 +9,8 @@ public class AprilTagHelper {
     public static PhotonPipelineResult getLatestResult(){
         return cam.getLatestResult();
     }
+
+    public static PhotonPipelineResult getBestResult(){
+        return cam.getBestResult();
+    }
 }
