@@ -57,6 +57,11 @@ public class AprilTagHelper {
         PhotonPipelineResult result = getLatestResult();
         return result.getBestTarget();
     }
+
+    public static double getYaw() {
+        PhotonTrackedTarget target = getBestTarget();
+        return target.getYaw();
+    }
     
     public Pair<Pose2d, Double> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         robotPoseEstimator.setReferencePose(prevEstimatedRobotPose);
