@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.vision.AprilTagHelper;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -9,6 +10,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -134,18 +137,17 @@ public class Swerve extends SubsystemBase {
         );
         return resetCommand.andThen(autoSwerveCommand);
     }
+ /*
+    public void autoAlign() {
+        double rotationSpeed;
+        PhotonPipelineResult camResult = AprilTagHelper.getLatestResult();
 
-    // public void autoAlign() {
-    //     double rotationSpeed;
-    //     PIDController ;
-    //     // latest results from camera
-    //     PhotonPipelineResult camResults = AprilTagHelper.getLatestResult();
-
-    //     if(camResults.hasTargets()) {
-    //         rotationSpeed = -turnController.calculate(camResults.getBestTarget().getYaw(), 0);
-    //     }
-    // }
-
+        if(camResult.hasTargets())
+            rotationSpeed = thetaController.calculate(camResult.getBestTarget().getYaw(), 0);
+        else
+            rotationSpeed = 0; // staying still
+    }
+*/
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions());  
