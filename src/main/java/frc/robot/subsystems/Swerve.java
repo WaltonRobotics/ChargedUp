@@ -137,7 +137,7 @@ public class Swerve extends SubsystemBase {
         );
         return resetCommand.andThen(autoSwerveCommand);
     }
- /*
+
     public void autoAlign() {
         double rotationSpeed;
         PhotonPipelineResult camResult = AprilTagHelper.getLatestResult();
@@ -146,8 +146,10 @@ public class Swerve extends SubsystemBase {
             rotationSpeed = thetaController.calculate(camResult.getBestTarget().getYaw(), 0);
         else
             rotationSpeed = 0; // staying still
+        // the robot will only rotate based on the rotation speed calculated earlier
+        drive(new Translation2d(0, 0), rotationSpeed, false, true);
     }
-*/
+
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions());  
