@@ -159,6 +159,7 @@ public final class Constants {
 
     public static final class SmartDashboardKeys{
         public final String kPhotonDistanceKey = "Photon Distance Meters";
+        public final String kLeftFrontDriveTemp = "Left Front Drive Temp";
     }
 
 }
