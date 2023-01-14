@@ -42,7 +42,7 @@ public class AprilTagHelper {
             aprilTagFieldLayout =  AprilTagFieldLayout.loadFromResource(AprilTagFields.k2022RapidReact.m_resourceFile);
         } catch (IOException e) {
             e.printStackTrace();
-            //TODO: write warning statemnt
+            //TODO: write warning statement
         } 
 
         camList.add(new Pair<PhotonCamera, Transform3d>(cam, robotToCam));
