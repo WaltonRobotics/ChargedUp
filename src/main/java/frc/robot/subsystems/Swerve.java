@@ -164,5 +164,7 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
         
+
+        SmartDashboard.putNumber("Camera Error X", AprilTagHelper.getYaw())
     }
 }
