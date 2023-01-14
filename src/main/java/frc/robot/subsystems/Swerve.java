@@ -161,7 +161,29 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond); 
+            
+            if(mod.moduleNumber == 0)
+            {
+                SmartDashboard.putNumber("Left Front Angle Motor temp", mod.getAngleTemp());
+                SmartDashboard.putNumber("Left Front Drive Motor temp", mod.getDriveTemp());
+            }
+            else if(mod.moduleNumber == 1)
+            {
+                SmartDashboard.putNumber("Right Front Angle Motor temp", mod.getAngleTemp());
+                SmartDashboard.putNumber("Right Front Drive Motor temp", mod.getDriveTemp());
+            }
+            else if(mod.moduleNumber == 2)
+            {
+                SmartDashboard.putNumber("Left Rear Angle Motor temp", mod.getAngleTemp());
+                SmartDashboard.putNumber("Left Rear Drive Motor temp", mod.getDriveTemp());
+            }
+            else
+            {
+                SmartDashboard.putNumber("Right Rear Angle Motor temp", mod.getAngleTemp());
+                SmartDashboard.putNumber("Right Rear Drive Motor temp", mod.getDriveTemp());
+            }
+
         }
         
 
