@@ -165,6 +165,6 @@ public class Swerve extends SubsystemBase {
         }
         
 
-        SmartDashboard.putNumber("Camera Error X", AprilTagHelper.getYaw())
+        SmartDashboard.putNumber("Camera Error X", AprilTagHelper.getYaw());
     }
 }
