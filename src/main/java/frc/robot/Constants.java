@@ -25,7 +25,7 @@ public final class Constants {
         public static final COTSFalconSwerveConstants chosenModule =  //TODO: Which one do we have?
             COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
-        /* Drivetrain Constants */
+        /* Drivetrain Constants in meters */
         public static final double trackWidth = 0.622;
         public static final double wheelBase = 0.5207;
         public static final double wheelCircumference = chosenModule.wheelCircumference;
@@ -148,6 +148,13 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
                 new TrapezoidProfile.Constraints(
                         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    //in meters
+    public static final class VisionConstants{
+        public static final double kCameraHeight = 0.88265;
+        public static final double kCameraX = 0;
+        public static final double kCameraY = 0.1524;
     }
 
 }
