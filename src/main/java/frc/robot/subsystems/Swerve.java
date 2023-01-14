@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.Constants.SmartDashboardKeys;
 import frc.robot.vision.AprilTagHelper;
 import frc.robot.Constants;
 
@@ -158,30 +159,32 @@ public class Swerve extends SubsystemBase {
     }
 
     public void updateSmartDashboard(){
+        SmartDashboardKeys keys = new SmartDashboardKeys();
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond); 
             
+
             if(mod.moduleNumber == 0)
             {
-                SmartDashboard.putNumber("Left Front Angle Motor temp", mod.getAngleTemp());
-                SmartDashboard.putNumber("Left Front Drive Motor temp", mod.getDriveTemp());
+                SmartDashboard.putNumber(keys.kLeftFrontAngleTemp, mod.getAngleTemp());
+                SmartDashboard.putNumber(keys.kLeftFrontDriveTemp, mod.getDriveTemp());
             }
             else if(mod.moduleNumber == 1)
             {
-                SmartDashboard.putNumber("Right Front Angle Motor temp", mod.getAngleTemp());
-                SmartDashboard.putNumber("Right Front Drive Motor temp", mod.getDriveTemp());
+                SmartDashboard.putNumber(keys.kRightFrontAngleTemp, mod.getAngleTemp());
+                SmartDashboard.putNumber(keys.kRightFrontDriveTemp, mod.getDriveTemp());
             }
             else if(mod.moduleNumber == 2)
             {
-                SmartDashboard.putNumber("Left Rear Angle Motor temp", mod.getAngleTemp());
-                SmartDashboard.putNumber("Left Rear Drive Motor temp", mod.getDriveTemp());
+                SmartDashboard.putNumber(keys.kLeftRearAngleTemp, mod.getAngleTemp());
+                SmartDashboard.putNumber(keys.kLeftRearDriveTemp, mod.getDriveTemp());
             }
             else
             {
-                SmartDashboard.putNumber("Right Rear Angle Motor temp", mod.getAngleTemp());
-                SmartDashboard.putNumber("Right Rear Drive Motor temp", mod.getDriveTemp());
+                SmartDashboard.putNumber(keys.kRightRearAngleTemp, mod.getAngleTemp());
+                SmartDashboard.putNumber(keys.kRightRearDriveTemp, mod.getDriveTemp());
             }
 
         }
