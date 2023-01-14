@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.SwerveModule;
 import frc.robot.Constants.SmartDashboardKeys;
 import frc.robot.vision.AprilTagHelper;
+import frc.lib.DashboardManager;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -28,22 +30,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class Swerve extends SubsystemBase {
-    public SwerveDriveOdometry swerveOdometry;
-    public SwerveModule[] mSwerveMods;
-    public Pigeon2 gyro;
-    public ProfiledPIDController thetaController;
+    private SwerveDriveOdometry swerveOdometry;
+    private SwerveModule[] mSwerveMods;
+    private Pigeon2 gyro;
+    private ProfiledPIDController thetaController;
 
 
     public Swerve() {
+        DashboardManager.addTab(this);
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "Canivore");
         gyro.configFactoryDefault();
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)
+            new SwerveModule("Front Left", 0, Constants.Swerve.Mod0.constants),
+            new SwerveModule("Front Right", 1, Constants.Swerve.Mod1.constants),
+            new SwerveModule("Rear Left", 2, Constants.Swerve.Mod2.constants),
+            new SwerveModule("Rear Right", 3, Constants.Swerve.Mod3.constants)
         };
 
         thetaController =
@@ -154,42 +157,14 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
+        for (var module : mSwerveMods) {
+            module.periodic();
+        }
         swerveOdometry.update(getYaw(), getModulePositions());  
         updateSmartDashboard();
     }
 
     public void updateSmartDashboard(){
-        SmartDashboardKeys keys = new SmartDashboardKeys();
-        for(SwerveModule mod : mSwerveMods){
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond); 
-            
-
-            if(mod.moduleNumber == 0)
-            {
-                SmartDashboard.putNumber(keys.kLeftFrontAngleTemp, mod.getAngleTemp());
-                SmartDashboard.putNumber(keys.kLeftFrontDriveTemp, mod.getDriveTemp());
-            }
-            else if(mod.moduleNumber == 1)
-            {
-                SmartDashboard.putNumber(keys.kRightFrontAngleTemp, mod.getAngleTemp());
-                SmartDashboard.putNumber(keys.kRightFrontDriveTemp, mod.getDriveTemp());
-            }
-            else if(mod.moduleNumber == 2)
-            {
-                SmartDashboard.putNumber(keys.kLeftRearAngleTemp, mod.getAngleTemp());
-                SmartDashboard.putNumber(keys.kLeftRearDriveTemp, mod.getDriveTemp());
-            }
-            else
-            {
-                SmartDashboard.putNumber(keys.kRightRearAngleTemp, mod.getAngleTemp());
-                SmartDashboard.putNumber(keys.kRightRearDriveTemp, mod.getDriveTemp());
-            }
-
-        }
-        
-
         SmartDashboard.putNumber("Camera Error X", AprilTagHelper.getYaw());
     }
 }

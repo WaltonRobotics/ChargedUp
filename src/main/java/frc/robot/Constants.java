@@ -158,10 +158,10 @@ public final class Constants {
     }
 
     public static final class SmartDashboardKeys{
-        public final String kPhotonDistanceKey = "Photon Distance Meters";
-        public final String kLeftFrontDriveTemp = "Left Front Drive Temp";
-        public final String kLeftFrontAngleTemp = "Left Front Angle Temp";
-        public final String kRightFrontDriveTemp = "Right Front Drive Temp";
+        public static final String kPhotonDistanceKey = "Photon Distance Meters";
+        public static final String kLeftFrontDriveTemp = "Left Front Drive Temp";
+        public static final String kLeftFrontAngleTemp = "Left Front Angle Temp";
+        public static final String kRightFrontDriveTemp = "Right Front Drive Temp";
         public final String kRightFrontAngleTemp = "Right Front Angle Temp";
         public final String kLeftRearDriveTemp = "Left Rear Drive Temp";
         public final String kLeftRearAngleTemp = "Left Rear Angle Temp";
