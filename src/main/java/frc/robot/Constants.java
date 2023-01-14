@@ -22,8 +22,8 @@ public final class Constants {
         public static final int pigeonID = 1;
         public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
-        public static final COTSFalconSwerveConstants chosenModule =  //TODO: Which one do we have?
-            COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
+        public static final COTSFalconSwerveConstants chosenModule = 
+            COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L1);
 
         /* Drivetrain Constants in meters */
         public static final double trackWidth = 0.622;
@@ -71,7 +71,7 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05; //TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.05;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
