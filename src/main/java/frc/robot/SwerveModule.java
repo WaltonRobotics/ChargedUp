@@ -25,6 +25,17 @@ public class SwerveModule {
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
+    public TalonFX getmAngleMotor()
+    {
+        return mAngleMotor;
+    }
+
+    public TalonFX mDriveMotor()
+    {
+        return mDriveMotor;
+    }
+
+
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;
