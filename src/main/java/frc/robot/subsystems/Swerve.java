@@ -139,7 +139,7 @@ public class Swerve extends SubsystemBase {
         return resetCommand.andThen(autoSwerveCommand);
     }
 
-    public void autoAlign() {
+    public void handleAutoAlign() {
         double rotationSpeed;
         PhotonPipelineResult camResult = AprilTagHelper.getLatestResult();
 
