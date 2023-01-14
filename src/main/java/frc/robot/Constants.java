@@ -157,4 +157,8 @@ public final class Constants {
         public static final double kCameraY = 0.1524;
     }
 
+    public static final class SmartDashboardKeys{
+        public final String kPhotonDistanceKey = "Photon Distance Meters";
+    }
+
 }
