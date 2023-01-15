@@ -36,22 +36,22 @@ public class SwerveModule {
         this.angleOffset = moduleConstants.angleOffset;
         
         /* Angle Encoder Config */
-        angleEncoder = new CANCoder(moduleConstants.cancoderID);
+        angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
         configAngleEncoder();
 
         /* Angle Motor Config */
-        m_angleMotor = new TalonFX(moduleConstants.angleMotorID);
+        m_angleMotor = new TalonFX(moduleConstants.angleMotorID, "Canivore");
         configAngleMotor();
 
         /* Drive Motor Config */
-        m_driveMotor = new TalonFX(moduleConstants.driveMotorID);
+        m_driveMotor = new TalonFX(moduleConstants.driveMotorID, "Canivore");
         configDriveMotor();
 
         nte_driveTemp = DashboardManager.addTabDial("Swerve", moduleName + "/DriveTemp", 0, 100);
         nte_steerTemp = DashboardManager.addTabDial("Swerve", moduleName + "/SteerTemp", 0, 100);
-        nte_cancoderAngle = DashboardManager.addTabItem("Swerve", moduleName + "/CancoderAngle", moduleConstants);
-        nte_modVelocity = DashboardManager.addTabItem("Swerve", moduleName + "/ModuleVelocity", moduleConstants);
-        nte_cancoderIntegratedAngle = DashboardManager.addTabItem("Swerve", moduleName + "/CancoderIntegratedAngle", moduleConstants);
+        nte_cancoderAngle = DashboardManager.addTabItem("Swerve", moduleName + "/CancoderAngle", 0);
+        nte_modVelocity = DashboardManager.addTabItem("Swerve", moduleName + "/ModuleVelocity", 0);
+        nte_cancoderIntegratedAngle = DashboardManager.addTabItem("Swerve", moduleName + "/CancoderIntegratedAngle", 0);
 
         lastAngle = getState().angle;
     }

@@ -42,27 +42,12 @@ public class AprilTagHelper {
             aprilTagFieldLayout =  AprilTagFieldLayout.loadFromResource(AprilTagFields.k2022RapidReact.m_resourceFile);
         } catch (IOException e) {
             e.printStackTrace();
-            //TODO: write warning statement
         } 
 
         camList.add(new Pair<PhotonCamera, Transform3d>(cam, robotToCam));
         robotPoseEstimator = new RobotPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camList);
     }
 
-    public static PhotonPipelineResult getLatestResult(){
-        return cam.getLatestResult();
-    }
-
-    public static PhotonTrackedTarget  getBestTarget() {
-        PhotonPipelineResult result = getLatestResult();
-        return result.getBestTarget();
-    }
-
-    public static double getYaw() {
-        PhotonTrackedTarget target = getBestTarget();
-        return target.getYaw();
-    }
-    
     public Pair<Pose2d, Double> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         robotPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     

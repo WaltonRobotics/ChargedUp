@@ -68,13 +68,14 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation, 
-                                    getYaw()
-                                )
-                                : new ChassisSpeeds(
+                // fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                //                     translation.getX(), 
+                //                     translation.getY(), 
+                //                     rotation, 
+                //                     getYaw()
+                //                 )
+                //                 : 
+                                new ChassisSpeeds(
                                     translation.getX(), 
                                     translation.getY(), 
                                     rotation)
@@ -143,18 +144,6 @@ public class Swerve extends SubsystemBase {
         return resetCommand.andThen(autoSwerveCommand);
     }
 
-    public void handleAutoAlign() {
-        double rotationSpeed;
-        PhotonPipelineResult camResult = AprilTagHelper.getLatestResult();
-
-        if(camResult.hasTargets())
-            rotationSpeed = thetaController.calculate(camResult.getBestTarget().getYaw(), 0);
-        else
-            rotationSpeed = 0; // staying still
-        // the robot will only rotate based on the rotation speed calculated earlier
-        drive(new Translation2d(0, 0), rotationSpeed, false, true);
-    }
-
     @Override
     public void periodic(){
         for (var module : mSwerveMods) {
@@ -165,6 +154,5 @@ public class Swerve extends SubsystemBase {
     }
 
     public void updateSmartDashboard(){
-        SmartDashboard.putNumber("Camera Error X", AprilTagHelper.getYaw());
     }
 }
