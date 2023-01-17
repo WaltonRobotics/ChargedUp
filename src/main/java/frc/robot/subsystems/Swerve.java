@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.Constants.SmartDashboardKeys;
-import frc.robot.vision.AprilTagHelper;
 import frc.lib.DashboardManager;
 import frc.robot.Constants;
 
@@ -13,8 +11,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
-import org.photonvision.targeting.PhotonPipelineResult;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,8 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -68,13 +63,13 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                // fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                //                     translation.getX(), 
-                //                     translation.getY(), 
-                //                     rotation, 
-                //                     getYaw()
-                //                 )
-                //                 : 
+                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                                    translation.getX(), 
+                                    translation.getY(), 
+                                    rotation, 
+                                    getYaw()
+                                )
+                                : 
                                 new ChassisSpeeds(
                                     translation.getX(), 
                                     translation.getY(), 
@@ -148,11 +143,10 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         for (var module : mSwerveMods) {
             module.periodic();
+            if(DriverStation.isDisabled()){
+                module.resetToAbsolute();
+            }
         }
         swerveOdometry.update(getYaw(), getModulePositions());  
-        updateSmartDashboard();
-    }
-
-    public void updateSmartDashboard(){
     }
 }
