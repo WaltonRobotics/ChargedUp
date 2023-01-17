@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Timer;
 import frc.lib.DashboardManager;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
@@ -38,11 +39,11 @@ public class SwerveModule {
         /* Angle Encoder Config */
         angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
         configAngleEncoder();
-
+        
         /* Angle Motor Config */
         m_angleMotor = new TalonFX(moduleConstants.angleMotorID, "Canivore");
         configAngleMotor();
-
+        
         /* Drive Motor Config */
         m_driveMotor = new TalonFX(moduleConstants.driveMotorID, "Canivore");
         configDriveMotor();

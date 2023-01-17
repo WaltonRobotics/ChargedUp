@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,6 +44,12 @@ public class Swerve extends SubsystemBase {
             new SwerveModule("Rear Left", 2, Constants.Swerve.Mod2.constants),
             new SwerveModule("Rear Right", 3, Constants.Swerve.Mod3.constants)
         };
+
+        Timer.delay(.250);
+        for (var mod : mSwerveMods) {
+            mod.resetToAbsolute();
+        }
+        
 
         thetaController =
               new ProfiledPIDController(
@@ -143,9 +150,6 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         for (var module : mSwerveMods) {
             module.periodic();
-            if(DriverStation.isDisabled()){
-                module.resetToAbsolute();
-            }
         }
         swerveOdometry.update(getYaw(), getModulePositions());  
     }
