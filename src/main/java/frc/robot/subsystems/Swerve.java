@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.lib.DashboardManager;
+import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -131,20 +131,36 @@ public class Swerve extends SubsystemBase {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
     }
 
-    public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
-        var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
-        var autoSwerveCommand = new SwerveControllerCommand(
-                trajectory,
-                this::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                this::setModuleStates,
-                this
-        );
-        return resetCommand.andThen(autoSwerveCommand);
+    /**
+     * Use Apriltag vision to balance robot
+     * on the charging station
+     */
+    public void handleAutoBalance(){
+        
     }
+
+    public void followAprilTag(){
+
+    }
+
+    public ProfiledPIDController getThetaController(){
+        return thetaController;
+    }
+
+    // public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
+    //     var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
+    //     var autoSwerveCommand = new SwerveControllerCommand(
+    //             trajectory,
+    //             this::getPose,
+    //             Constants.Swerve.swerveKinematics,
+    //             new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+    //             new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+    //             thetaController,
+    //             this::setModuleStates,
+    //             this
+    //     );
+    //     return resetCommand.andThen(autoSwerveCommand);
+    // }
 
     @Override
     public void periodic(){

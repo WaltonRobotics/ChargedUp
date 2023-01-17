@@ -1,4 +1,4 @@
-package frc.lib;
+package frc.lib.util;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.GenericEntry;

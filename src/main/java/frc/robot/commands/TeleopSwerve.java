@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import frc.lib.DashboardManager;
+import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
@@ -10,7 +10,6 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 

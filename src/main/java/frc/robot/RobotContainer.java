@@ -1,13 +1,17 @@
 package frc.robot;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.lib.DashboardManager;
-import frc.robot.autos.*;
+import frc.lib.util.DashboardManager;
+import frc.robot.auton.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -18,6 +22,8 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    public static final SendableChooser<Autons> autonChooser = new SendableChooser<>();
+    
     /* Controllers */
     private final Joystick driver = new Joystick(0);
 
@@ -29,6 +35,7 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -43,10 +50,11 @@ public class RobotContainer {
                 () -> driver.getRawAxis(translationAxis), 
                 () -> driver.getRawAxis(strafeAxis), 
                 () -> driver.getRawAxis(rotationAxis), 
-                () -> driver.getRawButton(5)
+                () -> robotCentric.getAsBoolean()
             )
         );
 
+        initShuffleBoard();
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -62,13 +70,20 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
 
+    public void initShuffleBoard(){
+    // Auton chooser
+        Arrays.stream(Autons.values()).forEach(n -> autonChooser.addOption(n.name(), n));
+        autonChooser.setDefaultOption("DO_NOTHING", Autons.DO_NOTHING);
+        SmartDashboard.putData("Auton Selector", autonChooser);
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve);
+        Autons routine = autonChooser.getSelected();
+        return routine.getCommandGroup();
     }
 }
