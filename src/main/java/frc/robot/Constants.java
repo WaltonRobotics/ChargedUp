@@ -164,6 +164,9 @@ public final class Constants {
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
 
+        public static final double kOffBalanceAngleThresholdDegrees = 10;
+        public static final double kOnBalanceAngleThresholdDegrees  = 5;
+
         // Constraint for the motion profiled robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
                 new TrapezoidProfile.Constraints(
@@ -175,19 +178,6 @@ public final class Constants {
         public static final double kCameraHeight = 0.88265;
         public static final double kCameraX = 0;
         public static final double kCameraY = 0.1524;
+        public static final double kTargetHeight = 1;   //TODO: update value
     }
-
-    public static final class SmartDashboardKeys{
-        public static final String kPhotonDistanceKey = "Photon Distance Meters";
-        public static final String kLeftFrontDriveTemp = "Left Front Drive Temp";
-        public static final String kLeftFrontAngleTemp = "Left Front Angle Temp";
-        public static final String kRightFrontDriveTemp = "Right Front Drive Temp";
-        public final String kRightFrontAngleTemp = "Right Front Angle Temp";
-        public final String kLeftRearDriveTemp = "Left Rear Drive Temp";
-        public final String kLeftRearAngleTemp = "Left Rear Angle Temp";
-        public final String kRightRearDriveTemp = "Right Rear Drive Temp";
-        public final String kRightRearAngleTemp = "Right Rear Angle Temp";
-
-    }
-
 }

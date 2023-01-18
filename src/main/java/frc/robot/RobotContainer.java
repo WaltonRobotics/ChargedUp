@@ -35,6 +35,7 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton followTag = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
 
     /* Subsystems */
@@ -68,6 +69,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        followTag.whileTrue(new InstantCommand(() -> s_Swerve.followAprilTag(SmartDashboard.getNumber(
+            "Goal Distance",
+             0),
+             true))
+        );
     }
 
     public void initShuffleBoard(){
@@ -75,6 +81,7 @@ public class RobotContainer {
         Arrays.stream(Autons.values()).forEach(n -> autonChooser.addOption(n.name(), n));
         autonChooser.setDefaultOption("DO_NOTHING", Autons.DO_NOTHING);
         SmartDashboard.putData("Auton Selector", autonChooser);
+        SmartDashboard.putNumber("Goal Distance", 0.0);
     }
 
     /**

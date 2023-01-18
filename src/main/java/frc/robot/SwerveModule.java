@@ -136,13 +136,4 @@ public class SwerveModule {
             getAngle()
         );
     }
-
-    //return the temp in celcius
-    public double getDriveTemp(){
-        return m_driveMotor.getTemperature();
-    }
-
-    public double getAngleTemp(){
-        return m_angleMotor.getTemperature();
-    }
 }

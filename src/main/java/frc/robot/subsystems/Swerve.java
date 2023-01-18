@@ -1,13 +1,19 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.vision.AprilTagHelper;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
+
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
@@ -18,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -87,7 +94,29 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }    
+    } 
+
+    public void drive(double x, double y, double rotation, boolean fieldRelative, boolean isOpenLoop){
+        SwerveModuleState[] swerveModuleStates = 
+        Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+            fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                                x, 
+                                y, 
+                                rotation, 
+                                getYaw()
+                            )
+                            : 
+                            new ChassisSpeeds(
+                                x, 
+                                y, 
+                                rotation)
+                            );
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+
+        for(SwerveModule mod : mSwerveMods){
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+        }
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -136,11 +165,39 @@ public class Swerve extends SubsystemBase {
      * on the charging station
      */
     public void handleAutoBalance(){
+        double xRate = 0;
+        double yRate = 0;
+        double pitchAngleDegrees = gyro.getPitch();
+        double rollAngleDegrees = gyro.getRoll();
+
+        double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
+        xRate = Math.sin(pitchAngleRadians) * -1;
+        double rollAngleRadians = rollAngleDegrees * (Math.PI / 180.0);
+        yRate = Math.sin(rollAngleRadians) * -1;
         
+        drive(xRate, yRate, 0, true, true);
     }
 
-    public void followAprilTag(){
+    public void followAprilTag(double goalDistance, boolean isFieldRelative){
+        if(AprilTagHelper.hasTargets()){
+            PhotonTrackedTarget target = AprilTagHelper.getBestTarget();
+            double headingError = target.getYaw();
 
+            double distance =
+                        PhotonUtils.calculateDistanceToTargetMeters(
+                                VisionConstants.kCameraHeight,
+                                VisionConstants.kTargetHeight,
+                                0,
+                                Units.degreesToRadians(target.getPitch())
+            );
+            Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(distance, Rotation2d.fromDegrees(headingError));
+
+            double xRate = thetaController.calculate(translation.getX(), 0);
+            double yRate = thetaController.calculate(translation.getY(),goalDistance);
+            double turnRate = thetaController.calculate(headingError,0);
+            
+            drive(xRate, yRate, turnRate, isFieldRelative, true);
+        }
     }
 
     public ProfiledPIDController getThetaController(){

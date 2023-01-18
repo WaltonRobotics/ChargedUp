@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class AprilTagHelper {
     public static final PhotonCamera cam = new PhotonCamera("camera");
+
     //distance from robot to camera
     Transform3d robotToCam = new Transform3d(
         new Translation3d(0.5, 0.0, 0.5), 
@@ -30,11 +31,10 @@ public class AprilTagHelper {
 
         AprilTagFieldLayout aprilTagFieldLayout;
         ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
-        RobotPoseEstimator robotPoseEstimator; 
+        static RobotPoseEstimator robotPoseEstimator; 
 
     public AprilTagHelper(){
         init();
-        
     }
     
     private void init(){
@@ -48,7 +48,7 @@ public class AprilTagHelper {
         robotPoseEstimator = new RobotPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camList);
     }
 
-    public Pair<Pose2d, Double> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+    public static Pair<Pose2d, Double> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         robotPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     
         double currentTime = Timer.getFPGATimestamp();
@@ -61,7 +61,7 @@ public class AprilTagHelper {
     }
 
     //unfiltered view of camera 
-    public void toggleDriverMode(){
+    public static void toggleDriverMode(){
         if(cam.getDriverMode()){
         cam.setDriverMode(false);
         }
@@ -69,6 +69,17 @@ public class AprilTagHelper {
         else{
             cam.setDriverMode(true);
         }
-        
+    }
+
+    public static boolean hasTargets(){
+        return cam.getLatestResult().hasTargets();
+    }
+
+    public static PhotonPipelineResult getLatestResult(){
+        return cam.getLatestResult();
+    }
+
+    public static PhotonTrackedTarget getBestTarget(){
+        return getLatestResult().getBestTarget();
     }
 }
