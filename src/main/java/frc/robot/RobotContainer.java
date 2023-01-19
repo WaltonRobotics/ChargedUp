@@ -36,6 +36,7 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton followTag = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton autoBalance = new JoystickButton(driver, XboxController.Button.kA.value);
 
 
     /* Subsystems */
@@ -74,6 +75,7 @@ public class RobotContainer {
              0),
              true))
         );
+        autoBalance.onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
     }
 
     public void initShuffleBoard(){
