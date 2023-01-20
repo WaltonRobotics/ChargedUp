@@ -1,6 +1,7 @@
 package frc.robot.vision;
 
 import java.io.IOException;
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AprilTagHelper {
-    public static final PhotonCamera cam = new PhotonCamera("camera");
+    public static final PhotonCamera cam = new PhotonCamera("ov9281");
 
     //distance from robot to camera
     Transform3d robotToCam = new Transform3d(
@@ -70,16 +71,22 @@ public class AprilTagHelper {
             cam.setDriverMode(true);
         }
     }
-
-    public static boolean hasTargets(){
-        return cam.getLatestResult().hasTargets();
+    
+    public static Optional<PhotonPipelineResult> getLatestResult(){
+        var result = cam.getLatestResult();
+        return result != null ? 
+            Optional.of(result) : 
+            Optional.empty();
     }
 
-    public static PhotonPipelineResult getLatestResult(){
-        return cam.getLatestResult();
-    }
-
-    public static PhotonTrackedTarget getBestTarget(){
-        return getLatestResult().getBestTarget();
+    public static Optional<PhotonTrackedTarget> getBestTarget(){
+        var latestOpt = getLatestResult();
+        if (latestOpt.isPresent()) {
+            if (latestOpt.get().hasTargets()) {
+                return Optional.of(latestOpt.get().getBestTarget());
+            }
+        }
+    
+        return Optional.empty();
     }
 }

@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
@@ -22,22 +24,10 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    public static final SendableChooser<Autons> autonChooser = new SendableChooser<>();
+    //public static final SendableChooser<Autons> autonChooser = new SendableChooser<>();
     
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-
-    /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-    /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton followTag = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton autoBalance = new JoystickButton(driver, XboxController.Button.kA.value);
-
+    private final CommandXboxController driver = new CommandXboxController(0);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -49,10 +39,10 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> driver.getRawAxis(translationAxis), 
-                () -> driver.getRawAxis(strafeAxis), 
-                () -> driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
+                driver::getLeftY, 
+                driver::getLeftX, 
+                driver::getRightX, 
+                driver.leftBumper()::getAsBoolean
             )
         );
 
@@ -69,21 +59,17 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        followTag.whileTrue(new InstantCommand(() -> s_Swerve.followAprilTag(SmartDashboard.getNumber(
-            "Goal Distance",
-             0),
-             true))
-        );
-        autoBalance.onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
+        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(1, true)));
+        driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
     }
 
     public void initShuffleBoard(){
     // Auton chooser
-        Arrays.stream(Autons.values()).forEach(n -> autonChooser.addOption(n.name(), n));
-        autonChooser.setDefaultOption("DO_NOTHING", Autons.DO_NOTHING);
-        SmartDashboard.putData("Auton Selector", autonChooser);
-        SmartDashboard.putNumber("Goal Distance", 0.0);
+        // Arrays.stream(Autons.values()).forEach(n -> autonChooser.addOption(n.name(), n));
+        // autonChooser.setDefaultOption("DO_NOTHING", Autons.DO_NOTHING);
+        // SmartDashboard.putData("Auton Selector", autonChooser);
+        // SmartDashboard.putNumber("Goal Distance", 0.0);
     }
 
     /**
@@ -91,8 +77,8 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
-        Autons routine = autonChooser.getSelected();
-        return routine.getCommandGroup();
-    }
+    // public Command getAutonomousCommand() {
+    //     Autons routine = autonChooser.getSelected();
+    //     return routine.getCommandGroup();
+    // }
 }
