@@ -38,4 +38,11 @@ public class Paths {
                         kMaxSpeedMetersPerSecond,
                         kMaxAccelerationMetersPerSecondSquared);
     }
+
+    public static final class StraightPath {
+        public static final PathPlannerTrajectory straightPath =
+                PathPlanner.loadPath("straightPath",
+                        kMaxSpeedMetersPerSecond,
+                        kMaxAccelerationMetersPerSecondSquared);
+    }
 }

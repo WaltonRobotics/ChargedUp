@@ -25,12 +25,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class Swerve extends SubsystemBase {
     private SwerveDriveOdometry swerveOdometry;
@@ -204,42 +207,19 @@ public class Swerve extends SubsystemBase {
         return thetaController;
     }
 
-    // public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
-    //     var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
-    //     var autoSwerveCommand = new SwerveControllerCommand(
-    //             trajectory,
-    //             this::getPose,
-    //             Constants.Swerve.swerveKinematics,
-    //             new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-    //             new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-    //             thetaController,
-    //             this::setModuleStates,
-    //             this
-    //     );
-    //     return resetCommand.andThen(autoSwerveCommand);
-    // }
-
-    // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
-    public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> {
-            // Reset odometry for the first path you run during auto
-            if(isFirstPath){
-                this.resetOdometry(traj.getInitialHolonomicPose());
-            }
-            }),
-            new PPSwerveControllerCommand(
-                traj, 
-                this::getPose, // Pose supplier
-                Constants.Swerve.swerveKinematics, // SwerveDriveKinematics
-                new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-                new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                this::setModuleStates, // Module states consumer
-                true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-                this // Requires this drive subsystem
-            )
+    public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
+        var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
+        var autoSwerveCommand = new SwerveControllerCommand(
+                trajectory,
+                this::getPose,
+                Constants.Swerve.swerveKinematics,
+                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                thetaController,
+                this::setModuleStates,
+                this
         );
+        return resetCommand.andThen(autoSwerveCommand);
     }
 
     @Override
