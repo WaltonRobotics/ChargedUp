@@ -14,14 +14,16 @@ public class Elevator extends SubsystemBase {
 	private boolean zeroing;
 	private boolean zeroed;
 	private double zeroStartTime;
+    private boolean isReversed;
 
     private final TalonFX extensionController = new TalonFX(0); // change later
-
+    private final TalonFX pivotController = new TalonFX(1); // change later
+    
     public Elevator() {
-		zeroing = true;
+		// zeroing = true;
     }
 
-    public void setPower(double percent) {
+    public void setElevatorPower(double percent) {
         // percent = Math.min(0.75, Math.max(-0.75, percent)); // throttle power in
         power = percent;
         SmartDashboard.putNumber("Elevator Power", power);
@@ -30,15 +32,48 @@ public class Elevator extends SubsystemBase {
         extensionController.set(ControlMode.PercentOutput, percent);
     }
 
+    public void setReversed(boolean isReversed)
+    {
+        this.isReversed = isReversed;
+    }
+
+    public void setPivotPower(double percent) {
+        // percent = Math.min(0.75, Math.max(-0.75, percent)); // throttle power in
+        power = percent;
+        SmartDashboard.putNumber("Pivot Power", power);
+        
+        // System.out.println("Setting Power "  + percent);
+        pivotController.set(ControlMode.PercentOutput, percent);
+    }
+
+    public boolean isZeroed()
+    {
+        return zeroed;
+    }
+
+    public void setZeroed(boolean zeroed) 
+    {
+        this.zeroed = zeroed;
+    }
+
+    public double getPivotTemp()
+    {
+        return pivotController.getTemperature();
+    }
+
+    public double getExtensionTemp()
+    {
+        return extensionController.getTemperature();
+    }
+
+    public void alignVertical()
+    {
+        pivotController.set(ControlMode.Position, 0);   // check to see if this value is aligned vertically
+    }
+
     public void periodic() {
-        if (zeroing) {
-            setPower(-0.2);
-            // if (!elevatorLimitLower.get() || (Timer.getFPGATimestamp() - zeroStartTime > 1.0)) {
-			// 	zeroing = false;
-			// 	timer.stop();
-			// 	enableControl();
-			// 	zeroEncoder();
-			// }
-        }
+        // if (zeroing) {
+        //     setElevatorPower(-0.2);
+        // }
     }
 }
