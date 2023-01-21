@@ -85,9 +85,10 @@ true);
 		nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
 		nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
 			ElevatorTiltK.kMinAngleDegrees, ElevatorTiltK.kMaxAngleDegrees);
-		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiftActualHeight", 0, 45);
+		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
 
-		DashboardManager.addTabSendable(this, "Tilt", m_mech2d);
+		// TODO: instead of adding a Mechanism2d, tilt the lift Mechanism2d based on the tilt angle.
+		// DashboardManager.addTabSendable(this, "Tilt", m_mech2d); 
 	}
 
 	private double falconToMeters() {
