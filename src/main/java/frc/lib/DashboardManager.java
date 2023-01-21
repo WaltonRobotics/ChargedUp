@@ -1,7 +1,6 @@
 package frc.lib;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -105,6 +104,10 @@ public class DashboardManager {
 		InstantCommand command = new InstantCommand(onPress);
 		command.setName(buttonName);
 		shuffleboardTabs.get(tabName).add(command);
+	}
+
+	public static void addTabSendable(SubsystemBase subsystemBase, String itemName, Sendable sendable) {
+		addTabSendable(subsystemBase.getName(), itemName, sendable);
 	}
 
 	public static void addTabSendable(String tabName, String itemName, Sendable sendable) {

@@ -2,10 +2,13 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -152,6 +155,36 @@ public final class Constants {
         //             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         // }
 
+    }
+
+    // Elevator tilting motor
+    public static final class ElevatorTiltK {
+        public static final int kCANID = 11;
+    }
+
+    // Elevator lifting motor(s)
+    public static final class ElevatorLiftK {
+        // Motor Constants
+        public static final int kCANID = 10;
+
+        public static final double kGearRatio = 25.0 / 1.0;
+        public static final DCMotor kMotor = DCMotor.getFalcon500(1);
+        public static final double kP = 0.25;
+        public static final double kD = 0.01;
+        public static final double kS = 1.2;
+        public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
+        public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
+        public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
+        public static final double kCarriageMassKg = Units.lbsToKilograms(50);
+        public static final double kMinHeightMeters = Units.inchesToMeters(0);
+        public static final double kMaxHeightMeters = Units.inchesToMeters(50);
+
+        public static final double kMaxVelocity = 1.0; // Meters Per Second
+        public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
+
+        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kCarriageMassKg, kV);
+        public static final TrapezoidProfile.Constraints kConstraints =
+            new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     }
 
     public static final class AutoConstants {
