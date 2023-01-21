@@ -3,7 +3,6 @@ package frc.robot;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,11 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
+import frc.robot.auton.AutonManager.AutonOption;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,8 +24,6 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    //public static final SendableChooser<Autons> autonChooser = new SendableChooser<>();
-    
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
 
@@ -35,6 +33,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        // Set up autons
+        mapAutonCommands();
         DashboardManager.addTab("TeleSwerve");
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -65,11 +65,12 @@ public class RobotContainer {
     }
 
     public void initShuffleBoard(){
-    // Auton chooser
-        // Arrays.stream(Autons.values()).forEach(n -> autonChooser.addOption(n.name(), n));
-        // autonChooser.setDefaultOption("DO_NOTHING", Autons.DO_NOTHING);
-        // SmartDashboard.putData("Auton Selector", autonChooser);
-        // SmartDashboard.putNumber("Goal Distance", 0.0);
+    }
+
+    public void mapAutonCommands(){
+        AutonManager.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
+        AutonManager.SetAutonCommand(AutonOption.TEST_PATH, AutonFactory.Move1MeterXAuto(s_Swerve));
+        AutonManager.SetDefaultAuton(AutonOption.DO_NOTHING);
     }
 
     /**
@@ -77,8 +78,7 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    // public Command getAutonomousCommand() {
-    //     Autons routine = autonChooser.getSelected();
-    //     return routine.getCommandGroup();
-    // }
+    public Command getAutonomousCommand() {
+        return AutonManager.GetChosenAuton();
+    }
 }

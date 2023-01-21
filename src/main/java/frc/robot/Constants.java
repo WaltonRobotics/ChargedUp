@@ -12,7 +12,7 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
-    public static final class Swerve {
+    public static final class SwerveK {
 
         /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
          * Set to false to always use external CANcoder for angle control.

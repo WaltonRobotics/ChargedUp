@@ -20,7 +20,7 @@ public class Paths {
             new TrajectoryConfig(
                     kMaxSpeedMetersPerSecond,
                     kMaxAccelerationMetersPerSecondSquared)
-                    .setKinematics(Constants.Swerve.swerveKinematics);
+                    .setKinematics(Constants.SwerveK.swerveKinematics);
 
     public static final Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
@@ -32,9 +32,9 @@ public class Paths {
                     new Pose2d(4, 40, new Rotation2d(0)),
                     config);
 
-    public static final class UTest{
-        public static final PathPlannerTrajectory uPath =
-                PathPlanner.loadPath("uPath",
+    public static final class OneMeter{
+        public static final PathPlannerTrajectory oneMeter =
+                PathPlanner.loadPath("oneMeter",
                         kMaxSpeedMetersPerSecond,
                         kMaxAccelerationMetersPerSecondSquared);
     }

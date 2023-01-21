@@ -28,12 +28,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import static frc.robot.Constants.AutoConstants.*;
-import static frc.robot.Constants.Swerve.*;
+import static frc.robot.Constants.SwerveK.*;
 
 public class Swerve extends SubsystemBase {
 	private final SwerveDriveOdometry swerveOdometry;
 	private final SwerveModule[] mSwerveMods;
-	private final Pigeon2 gyro = new Pigeon2(Constants.Swerve.pigeonID, "Canivore");
+	private final Pigeon2 gyro = new Pigeon2(Constants.SwerveK.pigeonID, "Canivore");
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
@@ -62,7 +62,7 @@ public class Swerve extends SubsystemBase {
 
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		swerveOdometry = new SwerveDriveOdometry(
-			Constants.Swerve.swerveKinematics,
+			Constants.SwerveK.swerveKinematics,
 			getYaw(),
 			getModulePositions());
 
@@ -72,7 +72,7 @@ public class Swerve extends SubsystemBase {
 	}
 
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
-		SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+		SwerveModuleState[] swerveModuleStates = Constants.SwerveK.swerveKinematics.toSwerveModuleStates(
 			fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
 				translation.getX(),
 				translation.getY(),
@@ -82,7 +82,7 @@ public class Swerve extends SubsystemBase {
 					translation.getX(),
 					translation.getY(),
 					rotation));
-		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveK.maxSpeed);
 
 		for (SwerveModule mod : mSwerveMods) {
 			mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -141,7 +141,7 @@ public class Swerve extends SubsystemBase {
 
 	// side to side
 	public Rotation2d getYaw() {
-		return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
+		return (Constants.SwerveK.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
 				: Rotation2d.fromDegrees(gyro.getYaw());
 	}
 
@@ -207,17 +207,17 @@ public class Swerve extends SubsystemBase {
 	}
 
 	public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
-	var resetCommand = new InstantCommand(() ->
-	this.resetOdometry(trajectory.getInitialPose()));
-	var autoSwerveCommand = new SwerveControllerCommand(
-	trajectory,
-	this::getPose,
-	Constants.Swerve.swerveKinematics,
-	driveController,
-	this::setModuleStates,
-	this
-	);
-	return resetCommand.andThen(autoSwerveCommand);
+		var resetCommand = new InstantCommand(() ->
+			this.resetOdometry(trajectory.getInitialPose()));
+			var autoSwerveCommand = new SwerveControllerCommand(
+				trajectory,
+				this::getPose,
+				Constants.SwerveK.swerveKinematics,
+				driveController,
+				this::setModuleStates,
+				this
+		);
+		return resetCommand.andThen(autoSwerveCommand);
 	}
 
 	@Override

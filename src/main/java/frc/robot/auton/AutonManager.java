@@ -1,0 +1,58 @@
+package frc.robot.auton;
+
+import java.util.EnumMap;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
+
+public class AutonManager {
+    public enum AutonOption{
+
+        DO_NOTHING("Do Nothing"),
+        TEST_PATH("Move forward 1 meter");
+    
+        private final String description;
+    
+        AutonOption(String description) {
+            this.description = description;
+        }
+    
+        public String getDescription() {
+            return description;
+        }
+    
+        @Override
+        public String toString() {
+            return name() + ": " + description;
+        }
+    }
+
+    private AutonManager() {
+        // utility class, do not create instances!
+    }
+
+    private static EnumMap<AutonOption, CommandBase> autonChooserMap;
+    private static final SendableChooser<AutonOption> autonNTChooser = new SendableChooser<AutonOption>();
+
+    static {
+        for (var option : AutonOption.values()) {
+            autonNTChooser.addOption(option.getDescription(), option);
+        }
+    }
+
+    public static void SetAutonCommand(AutonOption auton, CommandBase command) {
+        autonChooserMap.put(auton, command);
+    }
+
+    public static void SetDefaultAuton(AutonOption auton) {
+        autonNTChooser.setDefaultOption(auton.getDescription(), auton);
+    }
+
+    public static CommandBase GetAuton(AutonOption auton) {
+        return autonChooserMap.computeIfAbsent(auton, a -> Commands.none().withName("InvalidAuton"));
+    }
+
+    public static CommandBase GetChosenAuton() {
+        return GetAuton(autonNTChooser.getSelected());
+    }
+}
