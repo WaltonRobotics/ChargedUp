@@ -11,4 +11,10 @@ public final class AutonFactory {
     public static CommandBase Move1MeterXAuto(Swerve swerve) {
         return swerve.getSwerveControllerCommand(oneMeter);
     }
+
+    // public static CommandBase MoveDiagonal(Swerve swerve){
+    //     return swerve.getSwerveControllerCommand(moveDiagonal);
+    // }
+    
+
 }

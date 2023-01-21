@@ -31,6 +31,15 @@ public class Paths {
                     // End 3 meters straight ahead of where we started, facing forward
                     new Pose2d(4, 40, new Rotation2d(0)),
                     config);
+        // public static final Trajectory moveDiagonal = 
+        //         TrajectoryGenerator.generateTrajectory(null, null, null, config)
+        //         // Start at the origin facing the +X direction
+        //         new Pose2d(0, 0, new Rotation2d(0)),
+        //         // Pass through these two interior waypoints, making an 's' curve path
+        //         List.of(new Translation2d(1, 0),
+        //         // End 3 meters straight ahead of where we started, facing forward
+        //         new Pose2d(2, 20, new Rotation2d(90)),
+        //         config);
 
     public static final class OneMeter{
         public static final PathPlannerTrajectory oneMeter =
