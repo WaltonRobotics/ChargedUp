@@ -71,7 +71,7 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05;
+        public static final double driveKP = 0.10;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
@@ -160,8 +160,8 @@ public final class Constants {
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-        public static final double kPXController = 2;
-        public static final double kPYController = 2;
+        public static final double kPXController = 2.3;
+        public static final double kPYController = 2.3;
         public static final double kPThetaController = .005;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);

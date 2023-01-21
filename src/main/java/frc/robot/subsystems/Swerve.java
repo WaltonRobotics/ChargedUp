@@ -47,6 +47,7 @@ public class Swerve extends SubsystemBase {
 
 	private final Field2d m_field = new Field2d();
 
+	//TODO: set to neutral, measure encoder tics, find wheel diameter empircally
 	public Swerve() {
 		DashboardManager.addTab(this);
 		gyro.configFactoryDefault();
@@ -72,7 +73,7 @@ public class Swerve extends SubsystemBase {
 
 
 		m_field.setRobotPose(getPose());
-		SmartDashboard.putData(m_field);
+		DashboardManager.addTabSendable(this, "OdoField", m_field);
 	}
 
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -239,6 +240,5 @@ public class Swerve extends SubsystemBase {
 		}
 		swerveOdometry.update(getYaw(), getModulePositions());
 		m_field.setRobotPose(getPose());
-		followAprilTag(1, false);
 	}
 }
