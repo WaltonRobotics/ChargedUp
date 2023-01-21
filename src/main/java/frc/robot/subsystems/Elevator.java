@@ -1,11 +1,18 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -25,6 +32,9 @@ public class Elevator extends SubsystemBase {
 	// Motors
 	private final WPI_TalonFX m_liftMotor = new WPI_TalonFX(ElevatorLiftK.kCANID); // change IDs later
 	private final WPI_TalonFX m_tiltMotor = new WPI_TalonFX(ElevatorTiltK.kCANID); // change IDs later
+
+	// Sensors
+	private final AnalogInput m_tiltPot = new AnalogInput(ElevatorTiltK.PotPort);
 	
 	// Control
 	private final ProfiledPIDController m_liftController = new ProfiledPIDController(
@@ -75,9 +85,18 @@ true);
 		return meters;
 	}
 
+
 	public CommandBase setLiftTarget(double meters) {
-		return runOnce(()-> i_setLiftTarget(meters));
+		return runOnce(() -> {
+			i_setLiftTarget(meters);
+		});
 	}
+
+	// public CommandBase setLiftTargetAdjustable(DoubleSupplier meters) {
+	// 	return run(() -> {
+	// 		i_setLiftTarget(meters.getAsDouble());
+	// 	});
+	// }
 
 	private void i_setLiftTarget(double meters) {
 		// don't allow impossible heights
@@ -118,6 +137,15 @@ true);
 		nte_liftMotorPDEffort.setDouble(liftPDEffort);
 		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
 		nte_liftActualHeight.setDouble(getLiftActualHeight());
+
+		// tilt
+		// m_tiltController.setGoal(m_tiltTargetAngle);
+		double tiltPDEffort = m_tiltController.calculate(potToDegrees(), m_tiltTargetAngle);
+		// double tiltFFEffort = 0;
+		// tiltFFEffort = ElevatorTiltK.kFeedforward.calculate();
+		// }
+		double tiltTotalEffort = tiltPDEffort;// + tiltFFEffort;
+		m_tiltMotor.setVoltage(tiltTotalEffort);
 	}
 
 	@Override
@@ -138,12 +166,42 @@ true);
 					ElevatorLiftK.kGearRatio)
 		);
 
-
 		// TODO: move out so all sim objects can add their load together
 		// RoboRioSim.setVInVoltage(
-		// 	BatterySim.calculateDefaultBatteryLoadedVoltage(m_liftSim.getCurrentDrawAmps())
-		// );
+		// BatterySim.calculateDefaultBatteryLoadedVoltage(m_liftSim.getCurrentDrawAmps()));
+		
 
 		m_elevatorMech2d.setLength(Units.metersToInches(m_liftSim.getPositionMeters()));
+	}
+
+	// tilt
+	
+	// control
+	private final PIDController m_tiltController = new PIDController(
+		ElevatorTiltK.kP, 0, ElevatorTiltK.kD);
+
+	// target angle
+	private double m_tiltTargetAngle = 0;
+
+	public CommandBase setTiltTarget(double degrees) {
+		return runOnce(() -> i_setTiltTarget(degrees));
+	}
+
+	private void i_setTiltTarget(double degrees) {
+		// don't allow impossible angles :D
+
+		m_tiltTargetAngle = MathUtil.clamp(degrees, 0, 45);
+		
+		// nte_liftTargetHeight.setDouble(m_liftTargetHeight);
+	}
+
+	private double potToDegrees()
+	{
+		return m_tiltPot.getVoltage(); // go back later
+	}
+
+	private double getTiltActualDegrees()
+	{
+		return potToDegrees();
 	}
 }

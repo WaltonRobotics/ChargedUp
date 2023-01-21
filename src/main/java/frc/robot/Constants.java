@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -160,6 +161,20 @@ public final class Constants {
     // Elevator tilting motor
     public static final class ElevatorTiltK {
         public static final int kCANID = 11;
+
+        public static final double kMaxAngleDegrees = 45;
+        public static final double kMinAngleDegrees = 0;
+        public static final double kMaxVelocity = 1.0; //meters per sec
+        public static final double kMaxAcceleration = 1.0; //meters per sec squared
+        public static final double kP = 0.25;
+        public static final double kD = 0.01;
+        public static final double kS = 1.2;
+        public static final double kGearRatio = 25.0 / 1.0;
+        public static final DCMotor kMotor = DCMotor.getFalcon500(1);
+        public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
+        public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
+
+        public static final int PotPort = 0;
     }
 
     // Elevator lifting motor(s)
