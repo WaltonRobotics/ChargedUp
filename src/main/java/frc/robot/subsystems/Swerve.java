@@ -10,6 +10,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -190,11 +194,19 @@ public class Swerve extends SubsystemBase {
 			SmartDashboard.putNumber("xEffort", xRate);
 			double yRate = yController.calculate(yMeters, 0.5);
 			SmartDashboard.putNumber("yEffort", yRate);
-			//double turnRate = driveController.calculate(zRadians, 0);
+			// double turnRate = driveController.calculate(zRadians, 0);
 			// SmartDashboard.putNumber("thetaEffort", turnRate);
-			// if(zRadians < kAlignAngleThresholdRadians){
+			// if(zRadians < kAlignAngleThresholdRadians) {
 			// 	turnRate = 0;
 			// }
+
+			// PathPlannerTrajectory traj = PathPlanner.generatePath(
+			// 	new PathConstraints(
+			// 		Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
+			// 		Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared), 
+			// 	new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0)), 
+			// 	new PathPoint(new Translation2d(xMeters, yMeters), Rotation2d.fromRadians(zRadians))
+			// );
 
 			if (shouldMove) {
 				drive(xRate, yRate, 0, false, true);
