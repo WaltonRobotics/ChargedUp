@@ -2,6 +2,7 @@ package frc.robot.auton;
 
 import java.util.EnumMap;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -31,17 +32,19 @@ public class AutonManager {
         // utility class, do not create instances!
     }
 
-    private static EnumMap<AutonOption, CommandBase> autonChooserMap;
+    private static EnumMap<AutonOption, CommandBase> autonChooserMap = new EnumMap<AutonOption, CommandBase>(AutonOption.class);
     private static final SendableChooser<AutonOption> autonNTChooser = new SendableChooser<AutonOption>();
 
     static {
         for (var option : AutonOption.values()) {
             autonNTChooser.addOption(option.getDescription(), option);
         }
+        SmartDashboard.putData("Auton Chooser", autonNTChooser);
     }
 
     public static void SetAutonCommand(AutonOption auton, CommandBase command) {
         autonChooserMap.put(auton, command);
+
     }
 
     public static void SetDefaultAuton(AutonOption auton) {
@@ -53,6 +56,7 @@ public class AutonManager {
     }
 
     public static CommandBase GetChosenAuton() {
+
         return GetAuton(autonNTChooser.getSelected());
     }
 }

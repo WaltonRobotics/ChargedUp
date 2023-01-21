@@ -39,8 +39,8 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                driver::getLeftY, 
-                driver::getLeftX, 
+                ()-> -driver.getLeftY(), 
+                ()-> -driver.getLeftX(), 
                 driver::getRightX, 
                 driver.leftBumper()::getAsBoolean
             )
@@ -68,9 +68,10 @@ public class RobotContainer {
     }
 
     public void mapAutonCommands(){
+        AutonManager.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonManager.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonManager.SetAutonCommand(AutonOption.TEST_PATH, AutonFactory.Move1MeterXAuto(s_Swerve));
-        AutonManager.SetDefaultAuton(AutonOption.DO_NOTHING);
+        
     }
 
     /**
