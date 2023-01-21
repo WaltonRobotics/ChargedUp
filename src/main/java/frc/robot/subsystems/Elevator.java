@@ -76,6 +76,18 @@ true);
 			ElevatorLiftK.kMinHeightMeters, ElevatorLiftK.kMaxHeightMeters);
 
 		DashboardManager.addTabSendable(this, "Lift Sim", m_mech2d);
+
+		DashboardManager.addTab(this);
+
+		m_tiltMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+
+		nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
+		nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
+		nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
+			ElevatorTiltK.kMinAngleDegrees, ElevatorTiltK.kMaxAngleDegrees);
+		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiftActualHeight", 0, 45);
+
+		DashboardManager.addTabSendable(this, "Tilt", m_mech2d);
 	}
 
 	private double falconToMeters() {
@@ -113,6 +125,16 @@ true);
 
 	@Override
 	public void periodic() {
+		// tilt
+		// m_tiltController.setGoal(m_tiltTargetAngle);
+		double tiltPDEffort = m_tiltController.calculate(potToDegrees(), m_tiltTargetAngle);
+		// double tiltFFEffort = 0;
+		// tiltFFEffort = ElevatorTiltK.kFeedforward.calculate();
+		// }
+		double tiltTotalEffort = tiltPDEffort;// + tiltFFEffort;
+		m_tiltMotor.setVoltage(tiltTotalEffort);
+		
+		
 		// Lift control
 
 		// Set controller goal position
@@ -138,14 +160,10 @@ true);
 		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
 		nte_liftActualHeight.setDouble(getLiftActualHeight());
 
-		// tilt
-		// m_tiltController.setGoal(m_tiltTargetAngle);
-		double tiltPDEffort = m_tiltController.calculate(potToDegrees(), m_tiltTargetAngle);
-		// double tiltFFEffort = 0;
-		// tiltFFEffort = ElevatorTiltK.kFeedforward.calculate();
-		// }
-		double tiltTotalEffort = tiltPDEffort;// + tiltFFEffort;
-		m_tiltMotor.setVoltage(tiltTotalEffort);
+		nte_tiltActualAngle.setDouble(getTiltActualDegrees());
+		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
+		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
+		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
 	}
 
 	@Override
@@ -175,7 +193,10 @@ true);
 	}
 
 	// tilt
-	
+	// telemetry	
+	private final GenericEntry /* nte_tiltMotorFFEffort, */ nte_tiltMotorPDEffort, 
+                             nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
+							nte_tiltActualAngle;
 	// control
 	private final PIDController m_tiltController = new PIDController(
 		ElevatorTiltK.kP, 0, ElevatorTiltK.kD);
