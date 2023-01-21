@@ -9,10 +9,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.SwerveSubsystem;
 
 public class SwerveTrajectoryCommand extends CommandBase {
-  private final Swerve drivetrain = new Swerve();
+  private final SwerveSubsystem drivetrain = new SwerveSubsystem();
   private Trajectory trajectory = new Trajectory();
 
   public SwerveTrajectoryCommand(Trajectory trajectory) {
@@ -27,7 +27,7 @@ public class SwerveTrajectoryCommand extends CommandBase {
     new SwerveControllerCommand(
             trajectory,
             drivetrain::getPose,
-            Constants.Swerve.swerveKinematics,
+            Constants.SwerveK.kKinematics,
             new PIDController(Constants.AutoConstants.kPXController, 0, 0),
             new PIDController(Constants.AutoConstants.kPYController, 0, 0),
             drivetrain.getThetaController(),

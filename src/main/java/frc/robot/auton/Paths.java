@@ -20,7 +20,7 @@ public class Paths {
             new TrajectoryConfig(
                     kMaxSpeedMetersPerSecond,
                     kMaxAccelerationMetersPerSecondSquared)
-                    .setKinematics(Constants.Swerve.swerveKinematics);
+                    .setKinematics(Constants.SwerveK.kKinematics);
 
     public static final Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(

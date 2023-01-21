@@ -2,7 +2,7 @@ package frc.robot.commands;
 
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.SwerveSubsystem;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 public class TeleopSwerve extends CommandBase {
-    private Swerve s_Swerve;
+    private SwerveSubsystem s_Swerve;
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
@@ -22,7 +22,7 @@ public class TeleopSwerve extends CommandBase {
 
     private final GenericEntry nte_translation, nte_strafe, nte_rotation, nte_robotCentric;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
+    public TeleopSwerve(SwerveSubsystem s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -51,8 +51,8 @@ public class TeleopSwerve extends CommandBase {
 
         /* Drive */
         s_Swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed),
-                rotationVal * Constants.Swerve.maxAngularVelocity,
+                new Translation2d(translationVal, strafeVal).times(Constants.SwerveK.maxSpeed),
+                rotationVal * Constants.SwerveK.maxAngularVelocity,
                 !robotCentricSup.getAsBoolean(),
                 true
         );
