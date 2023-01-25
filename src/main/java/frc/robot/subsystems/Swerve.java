@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -179,9 +180,10 @@ public class Swerve extends SubsystemBase {
 		drive(xRate, yRate, 0, true, true);
 	}
 
-	public void followAprilTag(double goalDistance, boolean shouldMove) {
+	public CommandBase followAprilTag(double goalDistance, boolean shouldMove) {
 		var targetOpt = AprilTagHelper.getBestTarget();
 		if (targetOpt.isPresent()) {
+			System.out.println("target present");
 			var target = targetOpt.get();
 			// Pose3d robotPose3d = new Pose3d(
 			// 	getPose().getX(), getPose().getY(), 0, 
@@ -202,12 +204,12 @@ public class Swerve extends SubsystemBase {
 
 			// m_field.getObject("bestTag").setPose(tagPose.toPose2d());
 
-			double xRate = xController.calculate(xMeters, 2);
-			SmartDashboard.putNumber("xEffort", xRate);
-			double yRate = yController.calculate(yMeters, 0.5);
-			SmartDashboard.putNumber("yEffort", yRate);
-			// double turnRate = driveController.calculate(zRadians, 0);
-			// SmartDashboard.putNumber("thetaEffort", turnRate);
+			// double xRate = xController.calculate(xMeters, 2);
+			// SmartDashboard.putNumber("xEffort", xRate);
+			// double yRate = yController.calculate(yMeters, 0.5);
+			// SmartDashboard.putNumber("yEffort", yRate);
+			//double turnRate = driveController.calculate(zRadians, 0);
+			//SmartDashboard.putNumber("thetaEffort", turnRate);
 			// if(zRadians < kAlignAngleThresholdRadians) {
 			// 	turnRate = 0;
 			// }
@@ -234,15 +236,12 @@ public class Swerve extends SubsystemBase {
 
 			Trajectory traj =	
 				TrajectoryGenerator.generateTrajectory(
-					getPose(),
-					List.of(new Translation2d()),
-					new Pose2d(new Translation2d(xMeters, yMeters), new Rotation2d(zRadians)),
+					List.of(getPose(), new Pose2d(new Translation2d(xMeters - 2, yMeters), new Rotation2d(zRadians))),
 					config);
-
-			if (shouldMove) {
-				getSwerveControllerCommand(traj);
-			}
+			
+			return getSwerveControllerCommand(traj);
 		}
+		return Commands.none();
 	}
 
 	public ProfiledPIDController getThetaController() {
