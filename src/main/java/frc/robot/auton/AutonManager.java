@@ -10,7 +10,7 @@ public class AutonManager {
     public enum AutonOption{
 
         DO_NOTHING("Do Nothing"),
-        TEST_PATH("Move forward 1 meter"),
+        MOVE_FORWARD("Move forward 1 meter"),
         MOVE_DIAGONAL("Move diagonal");
     
         private final String description;

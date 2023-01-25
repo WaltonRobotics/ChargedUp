@@ -41,7 +41,7 @@ public class RobotContainer {
                 s_Swerve, 
                 ()-> -driver.getLeftY(), 
                 ()-> -driver.getLeftX(), 
-                driver::getRightX, 
+                ()-> -driver.getRightX(), 
                 driver.leftBumper()::getAsBoolean
             )
         );
@@ -70,7 +70,8 @@ public class RobotContainer {
     public void mapAutonCommands(){
         AutonManager.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonManager.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-        AutonManager.SetAutonCommand(AutonOption.TEST_PATH, AutonFactory.Move1MeterXAuto(s_Swerve));
+        AutonManager.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
+        AutonManager.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.MoveDiagonal(s_Swerve));
         
     }
 

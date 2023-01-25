@@ -54,4 +54,11 @@ public class Paths {
                         kMaxSpeedMetersPerSecond,
                         kMaxAccelerationMetersPerSecondSquared);
     }
+
+    public static final class Diagonal{
+        public static final PathPlannerTrajectory diagonal =
+                PathPlanner.loadPath("diagonal", 
+                kMaxSpeedMetersPerSecond,
+                kMaxAccelerationMetersPerSecondSquared);
+    }
 }

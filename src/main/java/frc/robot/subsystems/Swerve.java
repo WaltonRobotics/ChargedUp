@@ -10,10 +10,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -41,6 +39,7 @@ public class Swerve extends SubsystemBase {
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
+	private final PIDController autoThetaController = new PIDController(kPThetaController, 0, 0);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
 	private final HolonomicDriveController driveController = new HolonomicDriveController(xController, yController, thetaController);
@@ -215,22 +214,48 @@ public class Swerve extends SubsystemBase {
 		}
 	}
 
-	public ProfiledPIDController getThetaController() {
+	public HolonomicDriveController getDriveController() {
+		return driveController;
+	}
+
+	public ProfiledPIDController getThetaController(){
 		return thetaController;
+	}
+
+	public PIDController getXController(){
+		return xController;
+	}
+
+	public PIDController getYController(){
+		return yController;
 	}
 
 	public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
 		var resetCommand = new InstantCommand(() ->
 			this.resetOdometry(trajectory.getInitialPose()));
-			var autoSwerveCommand = new SwerveControllerCommand(
-				trajectory,
-				this::getPose,
-				Constants.SwerveK.swerveKinematics,
-				driveController,
-				this::setModuleStates,
-				this
+		var autoSwerveCommand = new SwerveControllerCommand(
+			trajectory,
+			this::getPose,
+			Constants.SwerveK.swerveKinematics,
+			driveController,
+			this::setModuleStates,
+			this
 		);
 		return resetCommand.andThen(autoSwerveCommand);
+	}
+
+	public CommandBase getAutonSwerveControllerCommand(PathPlannerTrajectory trajectory) {
+		var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialHolonomicPose()));
+		var driveCommand = new PPSwerveControllerCommand(
+			trajectory, 
+			this::getPose,
+			Constants.SwerveK.swerveKinematics, 
+			xController, yController, autoThetaController,
+			this::setModuleStates,
+			true,
+			this
+			);
+		 return resetCommand.andThen(driveCommand);
 	}
 
 	@Override
