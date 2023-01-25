@@ -14,25 +14,36 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
+
+import java.util.List;
 
 public class Swerve extends SubsystemBase {
 	private final SwerveDriveOdometry swerveOdometry;
@@ -205,12 +216,31 @@ public class Swerve extends SubsystemBase {
 			// 	new PathConstraints(
 			// 		Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
 			// 		Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared), 
-			// 	new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0)), 
-			// 	new PathPoint(new Translation2d(xMeters, yMeters), Rotation2d.fromRadians(zRadians))
+			// 	new PathPoint(new Translation2d(), Rotation2d.fromDegrees(0)), 
+			// 	new PathPoint(new Translation2d(xMeters - 0.5, yMeters), Rotation2d.fromRadians(zRadians))
 			// );
 
+			var kinematicsConstraint =
+				new SwerveDriveKinematicsConstraint(
+					Constants.SwerveK.swerveKinematics,
+					Constants.SwerveK.maxSpeed);
+
+			TrajectoryConfig config =
+				new TrajectoryConfig(
+						Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+						Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+						.setKinematics(Constants.SwerveK.swerveKinematics)
+						.addConstraint(kinematicsConstraint);
+
+			Trajectory traj =	
+				TrajectoryGenerator.generateTrajectory(
+					getPose(),
+					List.of(new Translation2d()),
+					new Pose2d(new Translation2d(xMeters, yMeters), new Rotation2d(zRadians)),
+					config);
+
 			if (shouldMove) {
-				drive(xRate, yRate, 0, false, true);
+				getSwerveControllerCommand(traj);
 			}
 		}
 	}
@@ -232,6 +262,20 @@ public class Swerve extends SubsystemBase {
 		);
 		return resetCommand.andThen(autoSwerveCommand);
 	}
+
+	// public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
+	// 	return new PPSwerveControllerCommand(
+	// 			 traj, 
+	// 			 this::getPose, // Pose supplier
+	// 			 Constants.SwerveK.swerveKinematics, // SwerveDriveKinematics
+	// 			 new PIDController(Constants.AutoConstants.kPXController, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+	// 			 new PIDController(Constants.AutoConstants.kPYController, 0, 0), // Y controller (usually the same values as X controller)
+	// 			 new PIDController(Constants.AutoConstants.kPThetaController, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+	// 			 this::setModuleStates, // Module states consumer
+	// 			 false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+	// 			 this // Requires this drive subsystem
+	// 			);
+	// }
 
 	@Override
 	public void periodic() {
