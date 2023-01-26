@@ -16,49 +16,36 @@ import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondS
 import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
 
 public class Paths {
-    public static final TrajectoryConfig config =
-            new TrajectoryConfig(
-                    kMaxSpeedMetersPerSecond,
-                    kMaxAccelerationMetersPerSecondSquared)
-                    .setKinematics(Constants.SwerveK.swerveKinematics);
-
-    public static final Trajectory exampleTrajectory =
-            TrajectoryGenerator.generateTrajectory(
-                    // Start at the origin facing the +X direction
-                    new Pose2d(0, 0, new Rotation2d(0)),
-                    // Pass through these two interior waypoints, making an 's' curve path
-                    List.of(new Translation2d(1, 0), new Translation2d(4, 0)),
-                    // End 3 meters straight ahead of where we started, facing forward
-                    new Pose2d(4, 40, new Rotation2d(0)),
-                    config);
-        // public static final Trajectory moveDiagonal = 
-        //         TrajectoryGenerator.generateTrajectory(null, null, null, config)
-        //         // Start at the origin facing the +X direction
-        //         new Pose2d(0, 0, new Rotation2d(0)),
-        //         // Pass through these two interior waypoints, making an 's' curve path
-        //         List.of(new Translation2d(1, 0),
-        //         // End 3 meters straight ahead of where we started, facing forward
-        //         new Pose2d(2, 20, new Rotation2d(90)),
-        //         config);
-
-    public static final class OneMeter{
-        public static final PathPlannerTrajectory oneMeter =
-                PathPlanner.loadPath("oneMeter",
+        public static final TrajectoryConfig config = new TrajectoryConfig(
                         kMaxSpeedMetersPerSecond,
-                        kMaxAccelerationMetersPerSecondSquared);
-    }
+                        kMaxAccelerationMetersPerSecondSquared)
+                        .setKinematics(Constants.SwerveK.swerveKinematics);
 
-    public static final class StraightPath {
-        public static final PathPlannerTrajectory straightPath =
-                PathPlanner.loadPath("straightPath",
-                        kMaxSpeedMetersPerSecond,
-                        kMaxAccelerationMetersPerSecondSquared);
-    }
+        public static final Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+                        // Start at the origin facing the +X direction
+                        new Pose2d(0, 0, new Rotation2d(0)),
+                        // Pass through these two interior waypoints, making an 's' curve path
+                        List.of(new Translation2d(1, 0), new Translation2d(4, 0)),
+                        // End 3 meters straight ahead of where we started, facing forward
+                        new Pose2d(4, 40, new Rotation2d(0)),
+                        config);        
 
-    public static final class Diagonal{
-        public static final PathPlannerTrajectory diagonal =
-                PathPlanner.loadPath("diagonal", 
-                kMaxSpeedMetersPerSecond,
-                kMaxAccelerationMetersPerSecondSquared);
-    }
+        //TODO: Revert speed constants back
+        public static final class TestPaths {
+                public static final PathPlannerTrajectory oneMeter = PathPlanner.loadPath("oneMeter",
+                                kMaxSpeedMetersPerSecond,
+                                kMaxAccelerationMetersPerSecondSquared);
+                public static final PathPlannerTrajectory straightPath = PathPlanner.loadPath("straightPath",
+                                kMaxSpeedMetersPerSecond,
+                                kMaxAccelerationMetersPerSecondSquared);
+                public static final PathPlannerTrajectory diagonal = PathPlanner.loadPath("diagonal",
+                                kMaxSpeedMetersPerSecond,
+                                kMaxAccelerationMetersPerSecondSquared);
+                public static final PathPlannerTrajectory rotate = PathPlanner.loadPath("rotate",
+                                kMaxSpeedMetersPerSecond,
+                                kMaxAccelerationMetersPerSecondSquared);
+                public static final PathPlannerTrajectory rotateMove = PathPlanner.loadPath("rotateMove",
+                                kMaxSpeedMetersPerSecond,
+                                kMaxAccelerationMetersPerSecondSquared);
+        }
 }

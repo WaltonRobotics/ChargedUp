@@ -72,6 +72,8 @@ public class RobotContainer {
         AutonManager.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonManager.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
         AutonManager.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.MoveDiagonal(s_Swerve));
+        AutonManager.SetAutonCommand(AutonOption.ROTATE, AutonFactory.Rotate(s_Swerve));
+        AutonManager.SetAutonCommand(AutonOption.ROTATE_MOVE, AutonFactory.RotateMove(s_Swerve));
         
     }
 

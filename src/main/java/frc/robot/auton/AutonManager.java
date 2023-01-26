@@ -11,7 +11,9 @@ public class AutonManager {
 
         DO_NOTHING("Do Nothing"),
         MOVE_FORWARD("Move forward 1 meter"),
-        MOVE_DIAGONAL("Move diagonal");
+        MOVE_DIAGONAL("Move diagonal"),
+        ROTATE_MOVE("Rotate 90 degrees and strafe right 1.5 meters"),
+        ROTATE("Rotate 90 degrees");
     
         private final String description;
     
