@@ -155,14 +155,14 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 1;    //3
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1;  //3
+        public static final double kMaxSpeedMetersPerSecond = 2;    //3
+        public static final double kMaxAccelerationMetersPerSecondSquared = 5;  //3
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
         public static final double kPXController = 2.3;
         public static final double kPYController = 2.3;
-        public static final double kPThetaController = .005;
+        public static final double kPThetaController = .05;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
         public static final double kOnBalanceAngleThresholdDegrees  = Math.toRadians(5);

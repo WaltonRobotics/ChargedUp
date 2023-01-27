@@ -70,11 +70,13 @@ public class RobotContainer {
     public void mapAutonCommands(){
         AutonManager.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonManager.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-        AutonManager.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
-        AutonManager.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.MoveDiagonal(s_Swerve));
+        // AutonManager.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
+        // AutonManager.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.MoveDiagonal(s_Swerve));
         AutonManager.SetAutonCommand(AutonOption.ROTATE, AutonFactory.Rotate(s_Swerve));
         AutonManager.SetAutonCommand(AutonOption.ROTATE_MOVE, AutonFactory.RotateMove(s_Swerve));
-        
+        AutonManager.SetAutonCommand(AutonOption.MOVE_FORWARD_1_METER, AutonFactory.Move1Meter(s_Swerve));
+        AutonManager.SetAutonCommand(AutonOption.ROTATE_90, AutonFactory.Rotate90(s_Swerve));       
+        AutonManager.SetAutonCommand(AutonOption.MOVE_DIAGONALLY, AutonFactory.DiagonalMoving(s_Swerve)); 
     }
 
     /**

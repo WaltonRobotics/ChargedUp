@@ -16,15 +16,30 @@ public final class AutonFactory {
 
     public static CommandBase MoveDiagonal(Swerve swerve){
         System.out.println("***********MOVING DIAGONAL***********");
-        return swerve.getSwerveControllerCommand(TestPaths.diagonal);
+        return swerve.getAutonSwerveControllerCommand(TestPaths.diagonal);
     }
     public static CommandBase Rotate(Swerve swerve){
         System.out.println("***********ROTATING 90 DEGREES***********");
-        return swerve.getSwerveControllerCommand(TestPaths.rotate);
+        return swerve.getAutonSwerveControllerCommand(TestPaths.rotate);
     }
     public static CommandBase RotateMove(Swerve swerve){
         System.out.println("***********ROTATING 90 DEGREES AND MOVING***********");
-        return swerve.getSwerveControllerCommand(TestPaths.rotateMove);
+        return swerve.getAutonSwerveControllerCommand(TestPaths.rotateMove);
+    }
+
+    public static CommandBase Move1Meter(Swerve swerve){
+        System.out.println("***********MOVING 1 METER***********");
+        return swerve.getSwerveControllerCommand(Paths.oneMeterForward);
+    }
+
+    public static CommandBase Rotate90(Swerve swerve){
+        System.out.println("***********ROTATING 90 DEGREES***********");
+        return swerve.getSwerveControllerCommand(Paths.rotate90);
+    }
+
+    public static CommandBase DiagonalMoving(Swerve swerve){
+        System.out.println("***********MOVING DIAGONAL***********");
+        return swerve.getSwerveControllerCommand(Paths.moveDiagonal);
     }
 
 }

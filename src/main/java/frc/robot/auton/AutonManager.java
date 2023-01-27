@@ -13,7 +13,10 @@ public class AutonManager {
         MOVE_FORWARD("Move forward 1 meter"),
         MOVE_DIAGONAL("Move diagonal"),
         ROTATE_MOVE("Rotate 90 degrees and strafe right 1.5 meters"),
-        ROTATE("Rotate 90 degrees");
+        ROTATE("Rotate 90 degrees"),
+        MOVE_FORWARD_1_METER("Move forward 1 meter (wpilib)"),
+        ROTATE_90("Rotate 90 degrees (wpilib)"),
+        MOVE_DIAGONALLY("Move diagonal (wpilib)");
     
         private final String description;
     

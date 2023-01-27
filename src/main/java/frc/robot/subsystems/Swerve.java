@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -256,6 +257,11 @@ public class Swerve extends SubsystemBase {
 			this
 			);
 		 return resetCommand.andThen(driveCommand);
+	}
+
+	public CommandBase rotateAboutPoint(double degrees) {
+		double thetaEffort = thetaController.calculate(degrees);
+		return Commands.none();
 	}
 
 	@Override
