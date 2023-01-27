@@ -62,9 +62,11 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(1, true)));
         driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
+        driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
     }
 
     public void initShuffleBoard(){
+        
     }
 
     public void mapAutonCommands(){

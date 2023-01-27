@@ -10,7 +10,6 @@ public final class AutonFactory {
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
 
     public static CommandBase Move1MeterXAuto(Swerve swerve) {
-        System.out.println("*********MOVING 1 METER**********");
         return swerve.getAutonSwerveControllerCommand(TestPaths.oneMeter);
     }
 

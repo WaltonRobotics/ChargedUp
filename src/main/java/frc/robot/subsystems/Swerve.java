@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
@@ -40,24 +41,25 @@ public class Swerve extends SubsystemBase {
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
-	private final PIDController autoThetaController = new PIDController(kPThetaController, 0, 0);
+	private final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
-	private final HolonomicDriveController driveController = new HolonomicDriveController(xController, yController, thetaController);
+	private final HolonomicDriveController driveController = new HolonomicDriveController(xController, yController,
+			thetaController);
 
 	private final Field2d m_field = new Field2d();
 
-	//TODO: set to neutral, measure encoder tics, find wheel diameter empircally
+	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
 	public Swerve() {
 		DashboardManager.addTab(this);
 		gyro.configFactoryDefault();
 		zeroGyro();
 
 		mSwerveMods = new SwerveModule[] {
-			new SwerveModule("Front Left", 0, Mod0.constants),
-			new SwerveModule("Front Right", 1, Mod1.constants),
-			new SwerveModule("Rear Left", 2, Mod2.constants),
-			new SwerveModule("Rear Right", 3, Mod3.constants)
+				new SwerveModule("Front Left", 0, Mod0.constants),
+				new SwerveModule("Front Right", 1, Mod1.constants),
+				new SwerveModule("Rear Left", 2, Mod2.constants),
+				new SwerveModule("Rear Right", 3, Mod3.constants)
 		};
 
 		Timer.delay(.250);
@@ -65,12 +67,14 @@ public class Swerve extends SubsystemBase {
 			mod.resetToAbsolute();
 		}
 
+		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
+		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
+		autoThetaController.setTolerance(Rotation2d.fromDegrees(2.5).getRadians());
 		swerveOdometry = new SwerveDriveOdometry(
-			Constants.SwerveK.swerveKinematics,
-			getYaw(),
-			getModulePositions());
-
+				Constants.SwerveK.swerveKinematics,
+				getYaw(),
+				getModulePositions());
 
 		m_field.setRobotPose(getPose());
 		DashboardManager.addTabSendable(this, "OdoField", m_field);
@@ -78,15 +82,15 @@ public class Swerve extends SubsystemBase {
 
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
 		SwerveModuleState[] swerveModuleStates = Constants.SwerveK.swerveKinematics.toSwerveModuleStates(
-			fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-				translation.getX(),
-				translation.getY(),
-				rotation,
-				getYaw())
-				: new ChassisSpeeds(
-					translation.getX(),
-					translation.getY(),
-					rotation));
+				fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+						translation.getX(),
+						translation.getY(),
+						rotation,
+						getYaw())
+						: new ChassisSpeeds(
+								translation.getX(),
+								translation.getY(),
+								rotation));
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveK.maxSpeed);
 
 		for (SwerveModule mod : mSwerveMods) {
@@ -96,10 +100,8 @@ public class Swerve extends SubsystemBase {
 
 	public void drive(double x, double y, double rotation, boolean fieldRelative, boolean isOpenLoop) {
 		SwerveModuleState[] swerveModuleStates = swerveKinematics.toSwerveModuleStates(
-			fieldRelative ? 
-				ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, getYaw()) : 
-				new ChassisSpeeds(x, y, rotation)
-		);
+				fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, getYaw())
+						: new ChassisSpeeds(x, y, rotation));
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
 
 		for (SwerveModule mod : mSwerveMods) {
@@ -173,17 +175,18 @@ public class Swerve extends SubsystemBase {
 		if (targetOpt.isPresent()) {
 			var target = targetOpt.get();
 			// Pose3d robotPose3d = new Pose3d(
-			// 	getPose().getX(), getPose().getY(), 0, 
-			// 	new Rotation3d(0, 0, getPose().getRotation().getDegrees())
+			// getPose().getX(), getPose().getY(), 0,
+			// new Rotation3d(0, 0, getPose().getRotation().getDegrees())
 			// );
 
-            //tag transform 3d
+			// tag transform 3d
 			var tagTr3d = target.getBestCameraToTarget();
 			double xMeters = tagTr3d.getX();
 			double yMeters = tagTr3d.getY();
 			SmartDashboard.putNumber("TagX", xMeters);
 			SmartDashboard.putNumber("TagY", yMeters);
-			// double zDegrees = Rotation2d.fromRadians(tagTr3d.getRotation().getZ()).getDegrees();
+			// double zDegrees =
+			// Rotation2d.fromRadians(tagTr3d.getRotation().getZ()).getDegrees();
 			double zRadians = target.getYaw();
 			SmartDashboard.putNumber("TagYaw", zRadians);
 
@@ -198,15 +201,16 @@ public class Swerve extends SubsystemBase {
 			// double turnRate = driveController.calculate(zRadians, 0);
 			// SmartDashboard.putNumber("thetaEffort", turnRate);
 			// if(zRadians < kAlignAngleThresholdRadians) {
-			// 	turnRate = 0;
+			// turnRate = 0;
 			// }
 
 			// PathPlannerTrajectory traj = PathPlanner.generatePath(
-			// 	new PathConstraints(
-			// 		Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
-			// 		Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared), 
-			// 	new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0)), 
-			// 	new PathPoint(new Translation2d(xMeters, yMeters), Rotation2d.fromRadians(zRadians))
+			// new PathConstraints(
+			// Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+			// Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+			// new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0)),
+			// new PathPoint(new Translation2d(xMeters, yMeters),
+			// Rotation2d.fromRadians(zRadians))
 			// );
 
 			if (shouldMove) {
@@ -219,49 +223,54 @@ public class Swerve extends SubsystemBase {
 		return driveController;
 	}
 
-	public ProfiledPIDController getThetaController(){
+	public ProfiledPIDController getThetaController() {
 		return thetaController;
 	}
 
-	public PIDController getXController(){
+	public PIDController getXController() {
 		return xController;
 	}
 
-	public PIDController getYController(){
+	public PIDController getYController() {
 		return yController;
 	}
 
 	public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
-		var resetCommand = new InstantCommand(() ->
-			this.resetOdometry(trajectory.getInitialPose()));
+		var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
 		var autoSwerveCommand = new SwerveControllerCommand(
-			trajectory,
-			this::getPose,
-			Constants.SwerveK.swerveKinematics,
-			driveController,
-			this::setModuleStates,
-			this
-		);
+				trajectory,
+				this::getPose,
+				Constants.SwerveK.swerveKinematics,
+				driveController,
+				this::setModuleStates,
+				this);
 		return resetCommand.andThen(autoSwerveCommand);
 	}
 
 	public CommandBase getAutonSwerveControllerCommand(PathPlannerTrajectory trajectory) {
 		var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialHolonomicPose()));
 		var driveCommand = new PPSwerveControllerCommand(
-			trajectory, 
-			this::getPose,
-			Constants.SwerveK.swerveKinematics, 
-			xController, yController, autoThetaController,
-			this::setModuleStates,
-			true,
-			this
-			);
-		 return resetCommand.andThen(driveCommand);
+				trajectory,
+				this::getPose,
+				Constants.SwerveK.swerveKinematics,
+				xController, yController, autoThetaController,
+				this::setModuleStates,
+				true,
+				this);
+		return resetCommand.andThen(driveCommand);
 	}
 
 	public CommandBase rotateAboutPoint(double degrees) {
-		double thetaEffort = thetaController.calculate(degrees);
-		return Commands.none();
+		return run(() -> {
+			autoThetaController.setSetpoint(Math.toRadians(degrees));
+			double thetaEffort = autoThetaController.calculate(getYaw().getRadians());
+			if (autoThetaController.getPositionError() > 0.001) {
+				thetaEffort += kFThetaController;
+			}
+			drive(0, 0, thetaEffort, true, true);
+		})
+		.finallyDo((intr) -> drive(0,0,0,false,false))
+		.until(() -> autoThetaController.atSetpoint());
 	}
 
 	@Override
