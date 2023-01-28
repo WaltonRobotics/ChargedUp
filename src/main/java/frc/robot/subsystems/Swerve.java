@@ -308,36 +308,6 @@ public class Swerve extends SubsystemBase {
 	public PIDController getYController() {
 		return yController;
 	}
-
-	public CommandBase getWPIPathCmd(Trajectory trajectory) {
-		var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
-		var autoSwerveCommand = new SwerveControllerCommand(
-				trajectory,
-				this::getPose,
-				Constants.SwerveK.swerveKinematics,
-				driveController,
-				this::setModuleStates,
-				this);
-		return resetCommand.andThen(autoSwerveCommand);
-	}
-
-	public CommandBase getPPPathCmd(PathPlannerTrajectory trajectory, boolean isFirstPath) {
-		var resetCommand = new InstantCommand(() -> {
-			if (isFirstPath) {
-				this.resetOdometry(trajectory.getInitialHolonomicPose());
-			}
-		});
-		var driveCommand = new PPSwerveControllerCommand(
-				trajectory,
-				this::getPose,
-				Constants.SwerveK.swerveKinematics,
-				xController, yController, autoThetaController,
-				this::setModuleStates,
-				true,
-				this);
-		return resetCommand.andThen(driveCommand);
-	}
-
 	/*Create a complete autonomous command group. This will reset the robot pose at the begininng of
    * the first path, follow paths, trigger events during path following, and run commands between
    * paths with stop events */
