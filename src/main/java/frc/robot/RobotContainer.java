@@ -72,14 +72,6 @@ public class RobotContainer {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonChooser.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
-        // AutonChooser.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.MoveDiagonal(s_Swerve));
-        AutonChooser.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.fullAuto(s_Swerve, PPPaths.diagonal));
-        AutonChooser.SetAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, PPPaths.threePiece));
-        AutonChooser.SetAutonCommand(AutonOption.ROTATE, AutonFactory.Rotate(s_Swerve));
-        AutonChooser.SetAutonCommand(AutonOption.ROTATE_MOVE, AutonFactory.RotateMove(s_Swerve));
-        AutonChooser.SetAutonCommand(AutonOption.MOVE_FORWARD_1_METER, AutonFactory.Move1Meter(s_Swerve));
-        AutonChooser.SetAutonCommand(AutonOption.ROTATE_90, AutonFactory.Rotate90(s_Swerve));       
-        AutonChooser.SetAutonCommand(AutonOption.MOVE_DIAGONALLY, AutonFactory.DiagonalMoving(s_Swerve));   
     }
 
     public void mapAutonEvents(){
