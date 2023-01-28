@@ -1,10 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -14,9 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -30,7 +23,8 @@ import frc.robot.Constants.ElevatorTiltK;
 public class Elevator extends SubsystemBase {
 	
 	// Motors
-	private final WPI_TalonFX m_liftMotor = new WPI_TalonFX(ElevatorLiftK.kCANID); // change IDs later
+	private final WPI_TalonFX m_liftLeader = new WPI_TalonFX(ElevatorLiftK.kCANID); // change IDs later
+	private final WPI_TalonFX m_liftFollower = new WPI_TalonFX(ElevatorLiftK.kCANID); // change IDs later
 	private final WPI_TalonFX m_tiltMotor = new WPI_TalonFX(ElevatorTiltK.kCANID); // change IDs later
 
 	// Sensors
@@ -65,7 +59,7 @@ true);
 	public Elevator() {
 		DashboardManager.addTab(this);
 
-		m_liftMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		m_liftLeader.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
 		nte_liftMotorFFEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
 		nte_liftMotorPDEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
@@ -92,7 +86,7 @@ true);
 	}
 
 	private double falconToMeters() {
-		var falconPos = m_liftMotor.getSelectedSensorPosition();
+		var falconPos = m_liftLeader.getSelectedSensorPosition();
 		var meters = Conversions.falconToMeters(
 			falconPos, ElevatorLiftK.kDrumCircumferenceMeters , ElevatorLiftK.kGearRatio);
 		return meters;
@@ -135,7 +129,6 @@ true);
 		double tiltTotalEffort = tiltPDEffort;// + tiltFFEffort;
 		m_tiltMotor.setVoltage(tiltTotalEffort);
 		
-		
 		// Lift control
 
 		// Set controller goal position
@@ -153,7 +146,8 @@ true);
 		double liftTotalEffort = liftFFEffort + liftPDEffort;
 
 		// Command motor
-		m_liftMotor.setVoltage(liftTotalEffort);
+		m_liftLeader.setVoltage(liftTotalEffort);
+		m_liftFollower.follow(m_liftLeader);
 
 		// Push telemetry
 		nte_liftMotorFFEffort.setDouble(liftFFEffort);
@@ -173,11 +167,11 @@ true);
 			return; // break out if not enabled. Robots can't move when disabled!
 		}
 
-		double motorVoltage = m_liftMotor.get() * m_liftMotor.getBusVoltage();
+		double motorVoltage = m_liftLeader.get() * m_liftLeader.getBusVoltage();
 		m_liftSim.setInput(motorVoltage);
 		m_liftSim.update(0.020);
 
-		m_liftMotor.getSimCollection()
+		m_liftLeader.getSimCollection()
 			.setIntegratedSensorRawPosition(
 				(int)Conversions.MetersToFalcon(
 					m_liftSim.getPositionMeters(),
