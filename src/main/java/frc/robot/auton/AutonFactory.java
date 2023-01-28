@@ -5,39 +5,34 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Swerve;
 import frc.robot.auton.Paths.TestPaths;
 
-
 public final class AutonFactory {
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
 
     public static CommandBase Move1MeterXAuto(Swerve swerve) {
-        return swerve.getAutonSwerveControllerCommand(TestPaths.oneMeter);
+        return swerve.getAutonSwerveControllerCommand(TestPaths.oneMeter,true);
     }
 
-    public static CommandBase MoveDiagonal(Swerve swerve){
-        System.out.println("***********MOVING DIAGONAL***********");
-        return swerve.getAutonSwerveControllerCommand(TestPaths.diagonal);
-    }
-    public static CommandBase Rotate(Swerve swerve){
-        System.out.println("***********ROTATING 90 DEGREES***********");
-        return swerve.getAutonSwerveControllerCommand(TestPaths.rotate);
-    }
-    public static CommandBase RotateMove(Swerve swerve){
-        System.out.println("***********ROTATING 90 DEGREES AND MOVING***********");
-        return swerve.getAutonSwerveControllerCommand(TestPaths.rotateMove);
+    public static CommandBase MoveDiagonal(Swerve swerve) {
+        return swerve.getAutonSwerveControllerCommand(TestPaths.diagonal,true);
     }
 
-    public static CommandBase Move1Meter(Swerve swerve){
-        System.out.println("***********MOVING 1 METER***********");
+    public static CommandBase Rotate(Swerve swerve) {
+        return swerve.getAutonSwerveControllerCommand(TestPaths.rotate,true);
+    }
+
+    public static CommandBase RotateMove(Swerve swerve) {
+        return swerve.getAutonSwerveControllerCommand(TestPaths.rotateMove,true);
+    }
+
+    public static CommandBase Move1Meter(Swerve swerve) {
         return swerve.getSwerveControllerCommand(Paths.oneMeterForward);
     }
 
-    public static CommandBase Rotate90(Swerve swerve){
-        System.out.println("***********ROTATING 90 DEGREES***********");
+    public static CommandBase Rotate90(Swerve swerve) {
         return swerve.getSwerveControllerCommand(Paths.rotate90);
     }
 
-    public static CommandBase DiagonalMoving(Swerve swerve){
-        System.out.println("***********MOVING DIAGONAL***********");
+    public static CommandBase DiagonalMoving(Swerve swerve) {
         return swerve.getSwerveControllerCommand(Paths.moveDiagonal);
     }
 

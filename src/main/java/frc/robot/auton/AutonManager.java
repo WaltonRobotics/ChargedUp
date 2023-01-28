@@ -62,7 +62,6 @@ public class AutonManager {
     }
 
     public static CommandBase GetChosenAuton() {
-
         return GetAuton(autonNTChooser.getSelected());
     }
 }
