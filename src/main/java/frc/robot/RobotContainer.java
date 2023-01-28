@@ -10,7 +10,6 @@ import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-
 import frc.robot.auton.AutonManager.AutonOption;
 
 /**
@@ -26,7 +25,7 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
-
+    /*Auton */
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Set up autons
