@@ -50,7 +50,6 @@ public class AutonManager {
 
     public static void SetAutonCommand(AutonOption auton, CommandBase command) {
         autonChooserMap.put(auton, command);
-
     }
 
     public static void SetDefaultAuton(AutonOption auton) {

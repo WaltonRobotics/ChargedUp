@@ -174,9 +174,9 @@ public class Swerve extends SubsystemBase {
 		drive(xRate, yRate, 0, true, true);
 	}
 
-	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove){
+	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove) {
 		var targetOpt = AprilTagHelper.getBestTarget();
-		if(targetOpt.isPresent()){
+		if (targetOpt.isPresent()) {
 			System.out.println("TARGET DETECTED");
 			var target = targetOpt.get();
 			var tagTr3d = target.getBestCameraToTarget();
@@ -187,7 +187,7 @@ public class Swerve extends SubsystemBase {
 			double zRadians = target.getYaw();
 			System.out.println("ANGLE DIFFERENCE: " + zRadians);
 			double turnRate = thetaController.calculate(zRadians, 0);
-			if(zRadians <= kAlignAngleThresholdRadians){
+			if (zRadians <= kAlignAngleThresholdRadians) {
 				turnRate = 0;
 				System.out.println("WITHIN ANGLE TOLERANCE");
 			}
@@ -195,10 +195,12 @@ public class Swerve extends SubsystemBase {
 		}
 		System.out.println("NO TARGET DETECTED");
 	}
+
 	/**
 	 * Moves the robot into target distance of aan AprilTag
+	 * 
 	 * @param goalDistance distance away from the april tag
-	 * @param shouldMove if the robot should move into position
+	 * @param shouldMove   if the robot should move into position
 	 * @return swerve move command
 	 */
 	public CommandBase followAprilTag(double goalDistance, boolean shouldMove) {
@@ -230,8 +232,8 @@ public class Swerve extends SubsystemBase {
 			// SmartDashboard.putNumber("xEffort", xRate);
 			// double yRate = yController.calculate(yMeters, 0.5);
 			// SmartDashboard.putNumber("yEffort", yRate);
-			//double turnRate = driveController.calculate(zRadians, 0);
-			//SmartDashboard.putNumber("thetaEffort", turnRate);
+			// double turnRate = driveController.calculate(zRadians, 0);
+			// SmartDashboard.putNumber("thetaEffort", turnRate);
 			// if(zRadians < kAlignAngleThresholdRadians) {
 			// turnRate = 0;
 			// }
@@ -243,30 +245,28 @@ public class Swerve extends SubsystemBase {
 			// new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0)),
 			// new PathPoint(new Translation2d(xMeters, yMeters),
 			// Rotation2d.fromRadians(zRadians))
-			// 	new PathConstraints(
-			// 		Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
-			// 		Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared), 
-			// 	new PathPoint(new Translation2d(), Rotation2d.fromDegrees(0)), 
-			// 	new PathPoint(new Translation2d(xMeters - 0.5, yMeters), Rotation2d.fromRadians(zRadians))
+			// new PathConstraints(
+			// Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+			// Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+			// new PathPoint(new Translation2d(), Rotation2d.fromDegrees(0)),
+			// new PathPoint(new Translation2d(xMeters - 0.5, yMeters),
+			// Rotation2d.fromRadians(zRadians))
 			// );
 
-			var kinematicsConstraint =
-				new SwerveDriveKinematicsConstraint(
+			var kinematicsConstraint = new SwerveDriveKinematicsConstraint(
 					Constants.SwerveK.swerveKinematics,
 					Constants.SwerveK.maxSpeed);
 
-			TrajectoryConfig config =
-				new TrajectoryConfig(
-						Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-						Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-						.setKinematics(Constants.SwerveK.swerveKinematics)
-						.addConstraint(kinematicsConstraint);
+			TrajectoryConfig config = new TrajectoryConfig(
+					Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+					Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+					.setKinematics(Constants.SwerveK.swerveKinematics)
+					.addConstraint(kinematicsConstraint);
 
-			Trajectory traj =	
-				TrajectoryGenerator.generateTrajectory(
+			Trajectory traj = TrajectoryGenerator.generateTrajectory(
 					List.of(getPose(), new Pose2d(new Translation2d(xMeters - 2, yMeters), new Rotation2d(zRadians))),
 					config);
-			
+
 			return getSwerveControllerCommand(traj);
 		}
 		System.out.println("Target Not Detected");
@@ -301,8 +301,12 @@ public class Swerve extends SubsystemBase {
 		return resetCommand.andThen(autoSwerveCommand);
 	}
 
-	public CommandBase getAutonSwerveControllerCommand(PathPlannerTrajectory trajectory) {
-		var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialHolonomicPose()));
+	public CommandBase getAutonSwerveControllerCommand(PathPlannerTrajectory trajectory, boolean isFirstPath) {
+		var resetCommand = new InstantCommand(() -> {
+			if (isFirstPath) {
+				this.resetOdometry(trajectory.getInitialHolonomicPose());
+			}
+		});
 		var driveCommand = new PPSwerveControllerCommand(
 				trajectory,
 				this::getPose,
@@ -323,8 +327,8 @@ public class Swerve extends SubsystemBase {
 			}
 			drive(0, 0, thetaEffort, true, true);
 		})
-		.finallyDo((intr) -> drive(0,0,0,false,false))
-		.until(() -> autoThetaController.atSetpoint());
+				.finallyDo((intr) -> drive(0, 0, 0, false, false))
+				.until(() -> autoThetaController.atSetpoint());
 	}
 
 	@Override
