@@ -11,28 +11,38 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
+
+import java.util.List;
 
 public class Swerve extends SubsystemBase {
 	private final SwerveDriveOdometry swerveOdometry;
@@ -170,9 +180,10 @@ public class Swerve extends SubsystemBase {
 		drive(xRate, yRate, 0, true, true);
 	}
 
-	public void followAprilTag(double goalDistance, boolean shouldMove) {
+	public CommandBase followAprilTag(double goalDistance, boolean shouldMove) {
 		var targetOpt = AprilTagHelper.getBestTarget();
 		if (targetOpt.isPresent()) {
+			System.out.println("target present");
 			var target = targetOpt.get();
 			// Pose3d robotPose3d = new Pose3d(
 			// getPose().getX(), getPose().getY(), 0,
@@ -194,12 +205,12 @@ public class Swerve extends SubsystemBase {
 
 			// m_field.getObject("bestTag").setPose(tagPose.toPose2d());
 
-			double xRate = xController.calculate(xMeters, 2);
-			SmartDashboard.putNumber("xEffort", xRate);
-			double yRate = yController.calculate(yMeters, 0.5);
-			SmartDashboard.putNumber("yEffort", yRate);
-			// double turnRate = driveController.calculate(zRadians, 0);
-			// SmartDashboard.putNumber("thetaEffort", turnRate);
+			// double xRate = xController.calculate(xMeters, 2);
+			// SmartDashboard.putNumber("xEffort", xRate);
+			// double yRate = yController.calculate(yMeters, 0.5);
+			// SmartDashboard.putNumber("yEffort", yRate);
+			//double turnRate = driveController.calculate(zRadians, 0);
+			//SmartDashboard.putNumber("thetaEffort", turnRate);
 			// if(zRadians < kAlignAngleThresholdRadians) {
 			// turnRate = 0;
 			// }
@@ -211,12 +222,33 @@ public class Swerve extends SubsystemBase {
 			// new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0)),
 			// new PathPoint(new Translation2d(xMeters, yMeters),
 			// Rotation2d.fromRadians(zRadians))
+			// 	new PathConstraints(
+			// 		Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
+			// 		Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared), 
+			// 	new PathPoint(new Translation2d(), Rotation2d.fromDegrees(0)), 
+			// 	new PathPoint(new Translation2d(xMeters - 0.5, yMeters), Rotation2d.fromRadians(zRadians))
 			// );
 
-			if (shouldMove) {
-				drive(xRate, yRate, 0, false, true);
-			}
+			var kinematicsConstraint =
+				new SwerveDriveKinematicsConstraint(
+					Constants.SwerveK.swerveKinematics,
+					Constants.SwerveK.maxSpeed);
+
+			TrajectoryConfig config =
+				new TrajectoryConfig(
+						Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+						Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+						.setKinematics(Constants.SwerveK.swerveKinematics)
+						.addConstraint(kinematicsConstraint);
+
+			Trajectory traj =	
+				TrajectoryGenerator.generateTrajectory(
+					List.of(getPose(), new Pose2d(new Translation2d(xMeters - 2, yMeters), new Rotation2d(zRadians))),
+					config);
+			
+			return getSwerveControllerCommand(traj);
 		}
+		return Commands.none();
 	}
 
 	public HolonomicDriveController getDriveController() {
