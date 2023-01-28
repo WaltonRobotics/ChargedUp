@@ -10,24 +10,23 @@ import java.util.HashMap;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 
-
 public final class AutonFactory {
     public static HashMap<String, Command> autonEventMap = new HashMap<>();
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
-    
-    /*PATHING COMMANDS */
-    public static CommandBase Move1MeterXAuto(Swerve swerve) {
-        return swerve.getPPPathCmd(oneMeter,true);
-    }
-    
-    /* EVENT COMMANDS */
-    public static CommandBase TestEvent(Swerve swerve){
-        return Commands.print("*****************TEST EVENT**************")
-        .andThen(swerve.rotateAboutPoint(360));
+
+    /* PATHING COMMANDS */
+    public static CommandBase MoveOneMeter(Swerve swerve) {
+        return swerve.getFullAuto(oneMeter);
     }
 
-    /*FULL AUTON COMMAND*/
-    public static CommandBase fullAuto(Swerve swerve, PathPlannerTrajectory traj){
-        return(swerve.getFullAuto(traj));
+    /* EVENT COMMANDS */
+    public static CommandBase TestEvent(Swerve swerve) {
+        return Commands.print("*****************TEST EVENT**************")
+                .andThen(swerve.rotateAboutPoint(360));
+    }
+
+    /* FULL AUTON COMMAND */
+    public static CommandBase fullAuto(Swerve swerve, PathPlannerTrajectory traj) {
+        return (swerve.getFullAuto(traj));
     }
 }

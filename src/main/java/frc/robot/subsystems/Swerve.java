@@ -12,34 +12,21 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Swerve extends SubsystemBase {
 	private final SwerveDriveOdometry swerveOdometry;
@@ -51,13 +38,11 @@ public class Swerve extends SubsystemBase {
 	private final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
-	private final HolonomicDriveController driveController = new HolonomicDriveController(xController, yController,
-			thetaController);
 	private final Field2d m_field = new Field2d();
 	private final SwerveAutoBuilder autoBuilder;
 
 	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
-	public Swerve(HashMap<String,Command> autoEventMap) {
+	public Swerve(HashMap<String, Command> autoEventMap) {
 		DashboardManager.addTab(this);
 		gyro.configFactoryDefault();
 		zeroGyro();
@@ -86,16 +71,15 @@ public class Swerve extends SubsystemBase {
 		m_field.setRobotPose(getPose());
 		DashboardManager.addTabSendable(this, "OdoField", m_field);
 		autoBuilder = new SwerveAutoBuilder(
-			this::getPose, // Pose2d supplier
-			this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-			swerveKinematics, // SwerveDriveKinematics
-			kTranslationPID,
-			kRotationPID,
-			this::setModuleStates, // Module states consumer used to output to the drive subsystem
-			autoEventMap,
-			true, 
-			this 
-	);
+				this::getPose, // Pose2d supplier
+				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+				swerveKinematics, // SwerveDriveKinematics
+				kTranslationPID,
+				kRotationPID,
+				this::setModuleStates, // Module states consumer used to output to the drive subsystem
+				autoEventMap,
+				true,
+				this);
 	}
 
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -171,8 +155,8 @@ public class Swerve extends SubsystemBase {
 				: Rotation2d.fromDegrees(gyro.getYaw());
 	}
 
-	//TODO:may need to reset pose estimator
-	public void resetPose(Pose2d pose){
+	// TODO:may need to reset pose estimator when april tags work
+	public void resetPose(Pose2d pose) {
 		resetOdometry(pose);
 	}
 
@@ -206,7 +190,7 @@ public class Swerve extends SubsystemBase {
 			double yRate = yController.calculate(yMeters, yGoal);
 			double zRadians = target.getYaw();
 			System.out.println("ANGLE DIFFERENCE: " + zRadians);
-			double turnRate = thetaController.calculate(zRadians, 0);
+			double turnRate = autoThetaController.calculate(zRadians, 0);
 			if (zRadians <= kAlignAngleThresholdRadians) {
 				turnRate = 0;
 				System.out.println("WITHIN ANGLE TOLERANCE");
@@ -216,102 +200,14 @@ public class Swerve extends SubsystemBase {
 		System.out.println("NO TARGET DETECTED");
 	}
 
-	/**
-	 * Moves the robot into target distance of aan AprilTag
-	 * 
-	 * @param goalDistance distance away from the april tag
-	 * @param shouldMove   if the robot should move into position
-	 * @return swerve move command
+	/*
+	 * Create a complete autonomous command group. This will reset the robot pose at
+	 * the begininng of
+	 * the first path, follow paths, trigger events during path following, and run
+	 * commands between
+	 * paths with stop events
 	 */
-	public CommandBase followAprilTag(double goalDistance, boolean shouldMove) {
-		var targetOpt = AprilTagHelper.getBestTarget();
-		if (targetOpt.isPresent()) {
-			System.out.println("target present");
-			var target = targetOpt.get();
-			// Pose3d robotPose3d = new Pose3d(
-			// getPose().getX(), getPose().getY(), 0,
-			// new Rotation3d(0, 0, getPose().getRotation().getDegrees())
-			// );
-
-			// tag transform 3d
-			var tagTr3d = target.getBestCameraToTarget();
-			double xMeters = tagTr3d.getX();
-			double yMeters = tagTr3d.getY();
-			SmartDashboard.putNumber("TagX", xMeters);
-			SmartDashboard.putNumber("TagY", yMeters);
-			// double zDegrees =
-			// Rotation2d.fromRadians(tagTr3d.getRotation().getZ()).getDegrees();
-			double zRadians = target.getYaw();
-			SmartDashboard.putNumber("TagYaw", zRadians);
-
-			// Pose3d tagOffset = robotPose3d.transformBy(target.getBestCameraToTarget());
-
-			// m_field.getObject("bestTag").setPose(tagPose.toPose2d());
-
-			// double xRate = xController.calculate(xMeters, 2);
-			// SmartDashboard.putNumber("xEffort", xRate);
-			// double yRate = yController.calculate(yMeters, 0.5);
-			// SmartDashboard.putNumber("yEffort", yRate);
-			// double turnRate = driveController.calculate(zRadians, 0);
-			// SmartDashboard.putNumber("thetaEffort", turnRate);
-			// if(zRadians < kAlignAngleThresholdRadians) {
-			// turnRate = 0;
-			// }
-
-			// PathPlannerTrajectory traj = PathPlanner.generatePath(
-			// new PathConstraints(
-			// Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-			// Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared),
-			// new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0)),
-			// new PathPoint(new Translation2d(xMeters, yMeters),
-			// Rotation2d.fromRadians(zRadians))
-			// new PathConstraints(
-			// Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-			// Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared),
-			// new PathPoint(new Translation2d(), Rotation2d.fromDegrees(0)),
-			// new PathPoint(new Translation2d(xMeters - 0.5, yMeters),
-			// Rotation2d.fromRadians(zRadians))
-			// );
-
-			var kinematicsConstraint = new SwerveDriveKinematicsConstraint(
-					Constants.SwerveK.swerveKinematics,
-					Constants.SwerveK.maxSpeed);
-
-			TrajectoryConfig config = new TrajectoryConfig(
-					Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-					Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-					.setKinematics(Constants.SwerveK.swerveKinematics)
-					.addConstraint(kinematicsConstraint);
-
-			Trajectory traj = TrajectoryGenerator.generateTrajectory(
-					List.of(getPose(), new Pose2d(new Translation2d(xMeters - 2, yMeters), new Rotation2d(zRadians))),
-					config);
-
-			return getWPIPathCmd(traj);
-		}
-		System.out.println("Target Not Detected");
-		return Commands.none();
-	}
-
-	public HolonomicDriveController getDriveController() {
-		return driveController;
-	}
-
-	public ProfiledPIDController getThetaController() {
-		return thetaController;
-	}
-
-	public PIDController getXController() {
-		return xController;
-	}
-
-	public PIDController getYController() {
-		return yController;
-	}
-	/*Create a complete autonomous command group. This will reset the robot pose at the begininng of
-   * the first path, follow paths, trigger events during path following, and run commands between
-   * paths with stop events */
-	public CommandBase getFullAuto(PathPlannerTrajectory trajectory){
+	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
 		return autoBuilder.fullAuto(trajectory);
 	}
 
@@ -327,6 +223,7 @@ public class Swerve extends SubsystemBase {
 				.finallyDo((intr) -> drive(0, 0, 0, false, false))
 				.until(() -> autoThetaController.atSetpoint());
 	}
+
 	@Override
 	public void periodic() {
 		for (var module : mSwerveMods) {

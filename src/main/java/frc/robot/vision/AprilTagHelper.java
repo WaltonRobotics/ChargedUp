@@ -23,34 +23,34 @@ import edu.wpi.first.wpilibj.Timer;
 public class AprilTagHelper {
     public static final PhotonCamera cam = new PhotonCamera("ov9281");
 
-    //distance from robot to camera
+    // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
-        new Translation3d(0.5, 0.0, 0.5), 
-        new Rotation3d(0,0,0)
-        );
+            new Translation3d(0.5, 0.0, 0.5),
+            new Rotation3d(0, 0, 0));
 
-        AprilTagFieldLayout aprilTagFieldLayout;
-        ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
-        static RobotPoseEstimator robotPoseEstimator; 
+    AprilTagFieldLayout aprilTagFieldLayout;
+    ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
+    static RobotPoseEstimator robotPoseEstimator;
 
-    public AprilTagHelper(){
+    public AprilTagHelper() {
         init();
     }
-    
-    private void init(){
+
+    private void init() {
         try {
-            aprilTagFieldLayout =  AprilTagFieldLayout.loadFromResource(AprilTagFields.k2022RapidReact.m_resourceFile);
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2022RapidReact.m_resourceFile);
         } catch (IOException e) {
             e.printStackTrace();
-        } 
+        }
 
         camList.add(new Pair<PhotonCamera, Transform3d>(cam, robotToCam));
-        robotPoseEstimator = new RobotPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camList);
+        robotPoseEstimator = new RobotPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
+                camList);
     }
 
     public static Pair<Pose2d, Double> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         robotPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-    
+
         double currentTime = Timer.getFPGATimestamp();
         Optional<Pair<Pose3d, Double>> result = robotPoseEstimator.update();
         if (result.isPresent()) {
@@ -60,32 +60,30 @@ public class AprilTagHelper {
         }
     }
 
-    //unfiltered view of camera 
-    public static void toggleDriverMode(){
-        if(cam.getDriverMode()){
-        cam.setDriverMode(false);
+    // unfiltered view of camera
+    public static void toggleDriverMode() {
+        if (cam.getDriverMode()) {
+            cam.setDriverMode(false);
         }
 
-        else{
+        else {
             cam.setDriverMode(true);
         }
     }
-    
-    public static Optional<PhotonPipelineResult> getLatestResult(){
+
+    public static Optional<PhotonPipelineResult> getLatestResult() {
         var result = cam.getLatestResult();
-        return result != null ? 
-            Optional.of(result) : 
-            Optional.empty();
+        return result != null ? Optional.of(result) : Optional.empty();
     }
 
-    public static Optional<PhotonTrackedTarget> getBestTarget(){
+    public static Optional<PhotonTrackedTarget> getBestTarget() {
         var latestOpt = getLatestResult();
         if (latestOpt.isPresent()) {
             if (latestOpt.get().hasTargets()) {
                 return Optional.of(latestOpt.get().getBestTarget());
             }
         }
-    
+
         return Optional.empty();
     }
 }

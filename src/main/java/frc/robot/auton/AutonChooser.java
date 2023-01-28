@@ -7,28 +7,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AutonChooser {
-    public enum AutonOption{
+    public enum AutonOption {
 
         DO_NOTHING("Do Nothing"),
         MOVE_FORWARD("Move forward 1 meter"),
-        MOVE_DIAGONAL("Move diagonal"),
-        ROTATE_MOVE("Rotate 90 degrees and strafe right 1.5 meters"),
-        ROTATE("Rotate 90 degrees"),
-        MOVE_FORWARD_1_METER("Move forward 1 meter (wpilib)"),
-        ROTATE_90("Rotate 90 degrees (wpilib)"),
-        MOVE_DIAGONALLY("Move diagonal (wpilib)"),
-        THREE_PIECE2("THREE PIECE AUTON");
-    
+        THREE_PIECE2("THREE PIECE AUTON 2");
+
         private final String description;
-    
+
         AutonOption(String description) {
             this.description = description;
         }
-    
+
         public String getDescription() {
             return description;
         }
-    
+
         @Override
         public String toString() {
             return name() + ": " + description;
@@ -39,7 +33,8 @@ public class AutonChooser {
         // utility class, do not create instances!
     }
 
-    private static EnumMap<AutonOption, CommandBase> autonChooserMap = new EnumMap<AutonOption, CommandBase>(AutonOption.class);
+    private static EnumMap<AutonOption, CommandBase> autonChooserMap = new EnumMap<AutonOption, CommandBase>(
+            AutonOption.class);
     private static final SendableChooser<AutonOption> autonNTChooser = new SendableChooser<AutonOption>();
 
     static {
