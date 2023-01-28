@@ -60,7 +60,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(1, true)));
+        driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(2, 0, true)));
         driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
         driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
     }

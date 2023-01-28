@@ -1,7 +1,6 @@
 package frc.robot.vision;
 
 import java.io.IOException;
-import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.Optional;
 

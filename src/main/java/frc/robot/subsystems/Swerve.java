@@ -11,13 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,17 +23,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
@@ -180,6 +174,33 @@ public class Swerve extends SubsystemBase {
 		drive(xRate, yRate, 0, true, true);
 	}
 
+	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove){
+		var targetOpt = AprilTagHelper.getBestTarget();
+		if(targetOpt.isPresent()){
+			System.out.println("TARGET DETECTED");
+			var target = targetOpt.get();
+			var tagTr3d = target.getBestCameraToTarget();
+			double xMeters = tagTr3d.getX();
+			double yMeters = tagTr3d.getY();
+			double xRate = xController.calculate(xMeters, xOffset);
+			double yRate = yController.calculate(yMeters, yGoal);
+			double zRadians = target.getYaw();
+			System.out.println("ANGLE DIFFERENCE: " + zRadians);
+			double turnRate = thetaController.calculate(zRadians, 0);
+			if(zRadians <= kAlignAngleThresholdRadians){
+				turnRate = 0;
+				System.out.println("WITHIN ANGLE TOLERANCE");
+			}
+			drive(xRate, yRate, turnRate, true, true);
+		}
+		System.out.println("NO TARGET DETECTED");
+	}
+	/**
+	 * Moves the robot into target distance of aan AprilTag
+	 * @param goalDistance distance away from the april tag
+	 * @param shouldMove if the robot should move into position
+	 * @return swerve move command
+	 */
 	public CommandBase followAprilTag(double goalDistance, boolean shouldMove) {
 		var targetOpt = AprilTagHelper.getBestTarget();
 		if (targetOpt.isPresent()) {
@@ -248,6 +269,7 @@ public class Swerve extends SubsystemBase {
 			
 			return getSwerveControllerCommand(traj);
 		}
+		System.out.println("Target Not Detected");
 		return Commands.none();
 	}
 
