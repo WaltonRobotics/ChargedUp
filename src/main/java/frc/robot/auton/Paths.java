@@ -20,7 +20,7 @@ public class Paths {
                         kMaxSpeedMetersPerSecond,
                         kMaxAccelerationMetersPerSecondSquared)
                         .setKinematics(Constants.SwerveK.swerveKinematics);
-
+        
         public static final Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
                         // Start at the origin facing the +X direction
                         new Pose2d(0, 0, new Rotation2d(0)),
@@ -51,7 +51,7 @@ public class Paths {
                         config); 
 
         //TODO: Revert speed constants back
-        public static final class TestPaths {
+        public static final class PPPaths {
                 public static final PathPlannerTrajectory oneMeter = PathPlanner.loadPath("oneMeter",
                                 kMaxSpeedMetersPerSecond,
                                 kMaxAccelerationMetersPerSecondSquared);
@@ -65,6 +65,9 @@ public class Paths {
                                 kMaxSpeedMetersPerSecond,
                                 kMaxAccelerationMetersPerSecondSquared);
                 public static final PathPlannerTrajectory rotateMove = PathPlanner.loadPath("rotateMove",
+                                kMaxSpeedMetersPerSecond,
+                                kMaxAccelerationMetersPerSecondSquared);
+                public static final PathPlannerTrajectory threePiece = PathPlanner.loadPath("threePiece2",
                                 kMaxSpeedMetersPerSecond,
                                 kMaxAccelerationMetersPerSecondSquared);
         }

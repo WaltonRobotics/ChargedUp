@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-public class AutonManager {
+public class AutonChooser {
     public enum AutonOption{
 
         DO_NOTHING("Do Nothing"),
@@ -16,7 +16,8 @@ public class AutonManager {
         ROTATE("Rotate 90 degrees"),
         MOVE_FORWARD_1_METER("Move forward 1 meter (wpilib)"),
         ROTATE_90("Rotate 90 degrees (wpilib)"),
-        MOVE_DIAGONALLY("Move diagonal (wpilib)");
+        MOVE_DIAGONALLY("Move diagonal (wpilib)"),
+        THREE_PIECE2("THREE PIECE AUTON");
     
         private final String description;
     
@@ -34,7 +35,7 @@ public class AutonManager {
         }
     }
 
-    private AutonManager() {
+    private AutonChooser() {
         // utility class, do not create instances!
     }
 

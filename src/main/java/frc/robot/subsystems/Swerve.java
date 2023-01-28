@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -27,6 +28,7 @@ import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Swerve extends SubsystemBase {
@@ -50,11 +53,11 @@ public class Swerve extends SubsystemBase {
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
 	private final HolonomicDriveController driveController = new HolonomicDriveController(xController, yController,
 			thetaController);
-
 	private final Field2d m_field = new Field2d();
+	private final SwerveAutoBuilder autoBuilder;
 
 	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
-	public Swerve() {
+	public Swerve(HashMap<String,Command> autoEventMap) {
 		DashboardManager.addTab(this);
 		gyro.configFactoryDefault();
 		zeroGyro();
@@ -82,6 +85,17 @@ public class Swerve extends SubsystemBase {
 
 		m_field.setRobotPose(getPose());
 		DashboardManager.addTabSendable(this, "OdoField", m_field);
+		autoBuilder = new SwerveAutoBuilder(
+			this::getPose, // Pose2d supplier
+			this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+			swerveKinematics, // SwerveDriveKinematics
+			kTranslationPID,
+			kRotationPID,
+			this::setModuleStates, // Module states consumer used to output to the drive subsystem
+			autoEventMap,
+			true, 
+			this 
+	);
 	}
 
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -127,6 +141,7 @@ public class Swerve extends SubsystemBase {
 	}
 
 	public void resetOdometry(Pose2d pose) {
+		zeroGyro();
 		swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
 	}
 
@@ -154,6 +169,11 @@ public class Swerve extends SubsystemBase {
 	public Rotation2d getYaw() {
 		return (Constants.SwerveK.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
 				: Rotation2d.fromDegrees(gyro.getYaw());
+	}
+
+	//TODO:may need to reset pose estimator
+	public void resetPose(Pose2d pose){
+		resetOdometry(pose);
 	}
 
 	/**
@@ -267,7 +287,7 @@ public class Swerve extends SubsystemBase {
 					List.of(getPose(), new Pose2d(new Translation2d(xMeters - 2, yMeters), new Rotation2d(zRadians))),
 					config);
 
-			return getSwerveControllerCommand(traj);
+			return getWPIPathCmd(traj);
 		}
 		System.out.println("Target Not Detected");
 		return Commands.none();
@@ -289,7 +309,7 @@ public class Swerve extends SubsystemBase {
 		return yController;
 	}
 
-	public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
+	public CommandBase getWPIPathCmd(Trajectory trajectory) {
 		var resetCommand = new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
 		var autoSwerveCommand = new SwerveControllerCommand(
 				trajectory,
@@ -301,7 +321,7 @@ public class Swerve extends SubsystemBase {
 		return resetCommand.andThen(autoSwerveCommand);
 	}
 
-	public CommandBase getAutonSwerveControllerCommand(PathPlannerTrajectory trajectory, boolean isFirstPath) {
+	public CommandBase getPPPathCmd(PathPlannerTrajectory trajectory, boolean isFirstPath) {
 		var resetCommand = new InstantCommand(() -> {
 			if (isFirstPath) {
 				this.resetOdometry(trajectory.getInitialHolonomicPose());
@@ -318,6 +338,13 @@ public class Swerve extends SubsystemBase {
 		return resetCommand.andThen(driveCommand);
 	}
 
+	/*Create a complete autonomous command group. This will reset the robot pose at the begininng of
+   * the first path, follow paths, trigger events during path following, and run commands between
+   * paths with stop events */
+	public CommandBase getFullAuto(PathPlannerTrajectory trajectory){
+		return autoBuilder.fullAuto(trajectory);
+	}
+
 	public CommandBase rotateAboutPoint(double degrees) {
 		return run(() -> {
 			autoThetaController.setSetpoint(Math.toRadians(degrees));
@@ -330,7 +357,6 @@ public class Swerve extends SubsystemBase {
 				.finallyDo((intr) -> drive(0, 0, 0, false, false))
 				.until(() -> autoThetaController.atSetpoint());
 	}
-
 	@Override
 	public void periodic() {
 		for (var module : mSwerveMods) {

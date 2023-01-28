@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -130,33 +131,11 @@ public final class Constants {
             public static final SwerveModuleConstants constants =
                     new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
-
-
-        // /* Back left Module - Module 3 */
-        // public static final class Mod3 {
-        //     public static final int driveMotorID = 6;
-        //     public static final int angleMotorID = 5;
-        //     public static final int canCoderID = 5;
-        //     public static final Rotation2d angleOffset = Rotation2d.fromDegrees(254) ;
-        //     public static final SwerveModuleConstants constants =
-        //             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
-        // }
-
-        // /* Back right Module - Module 4 */
-        // public static final class Mod2 {
-        //     public static final int driveMotorID = 8;
-        //     public static final int angleMotorID = 7;
-        //     public static final int canCoderID = 7;
-        //     public static final Rotation2d angleOffset = Rotation2d.fromDegrees(88);
-        //     public static final SwerveModuleConstants constants =
-        //             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
-        // }
-
-    }
+   }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 2;    //3
-        public static final double kMaxAccelerationMetersPerSecondSquared = 5;  //3
+        public static final double kMaxSpeedMetersPerSecond = 4;    //3
+        public static final double kMaxAccelerationMetersPerSecondSquared = 8;  //3
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
@@ -175,6 +154,10 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
                 new TrapezoidProfile.Constraints(
                         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+        
+        //used for PPSwerve Auto Builder
+        public static final PIDConstants kTranslationPID = new PIDConstants(kPXController, 0 , 0);   //x & y
+        public static final PIDConstants kRotationPID = new PIDConstants(kPThetaController, 0, kDThetaController);
     }
 
     //in meters

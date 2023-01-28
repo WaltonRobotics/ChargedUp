@@ -10,7 +10,10 @@ import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.auton.AutonManager.AutonOption;
+import frc.robot.auton.AutonChooser.AutonOption;
+import frc.robot.auton.Paths.PPPaths;
+
+import static frc.robot.auton.AutonFactory.autonEventMap;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,9 +26,10 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = new Swerve(autonEventMap);
 
     /*Auton */
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Set up autons
@@ -65,16 +69,23 @@ public class RobotContainer {
     }
 
     public void mapAutonCommands(){
-        AutonManager.SetDefaultAuton(AutonOption.DO_NOTHING);
-        AutonManager.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-        // AutonManager.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
-        // AutonManager.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.MoveDiagonal(s_Swerve));
-        AutonManager.SetAutonCommand(AutonOption.ROTATE, AutonFactory.Rotate(s_Swerve));
-        AutonManager.SetAutonCommand(AutonOption.ROTATE_MOVE, AutonFactory.RotateMove(s_Swerve));
-        AutonManager.SetAutonCommand(AutonOption.MOVE_FORWARD_1_METER, AutonFactory.Move1Meter(s_Swerve));
-        AutonManager.SetAutonCommand(AutonOption.ROTATE_90, AutonFactory.Rotate90(s_Swerve));       
-        AutonManager.SetAutonCommand(AutonOption.MOVE_DIAGONALLY, AutonFactory.DiagonalMoving(s_Swerve)); 
+        AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
+        AutonChooser.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
+        AutonChooser.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
+        // AutonChooser.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.MoveDiagonal(s_Swerve));
+        AutonChooser.SetAutonCommand(AutonOption.MOVE_DIAGONAL, AutonFactory.fullAuto(s_Swerve, PPPaths.diagonal));
+        AutonChooser.SetAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, PPPaths.threePiece));
+        AutonChooser.SetAutonCommand(AutonOption.ROTATE, AutonFactory.Rotate(s_Swerve));
+        AutonChooser.SetAutonCommand(AutonOption.ROTATE_MOVE, AutonFactory.RotateMove(s_Swerve));
+        AutonChooser.SetAutonCommand(AutonOption.MOVE_FORWARD_1_METER, AutonFactory.Move1Meter(s_Swerve));
+        AutonChooser.SetAutonCommand(AutonOption.ROTATE_90, AutonFactory.Rotate90(s_Swerve));       
+        AutonChooser.SetAutonCommand(AutonOption.MOVE_DIAGONALLY, AutonFactory.DiagonalMoving(s_Swerve));   
     }
+
+    public void mapAutonEvents(){
+        autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
+    }
+
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -82,6 +93,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return AutonManager.GetChosenAuton();
+        return AutonChooser.GetChosenAuton();
     }
 }
