@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -181,5 +182,20 @@ public final class Constants {
         public static final double kCameraX = 0;
         public static final double kCameraY = 0.1524;
         public static final double kTargetHeight = 1;   //TODO: update value
+    }
+
+    public static final class IntakeK {
+        public static final double kP = 0.25;
+        public static final double kD = 0.01;
+        public static final double kS = 1.2;    // change values later
+        public static final double kMaxVelocity = 1.0;
+        public static final double kMaxAcceleration = 1.0; // change later
+        public static final TrapezoidProfile.Constraints kConstraints =
+            new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
+        public static final double kMinAngleDegrees = 0;
+        public static final double kMaxAngleDegrees = 45; // change later
+        public static final double kGearRatio = 1; // change later
+        public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
+        public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
     }
 }
