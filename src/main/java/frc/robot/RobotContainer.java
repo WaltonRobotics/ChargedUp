@@ -11,14 +11,16 @@ import frc.robot.auton.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.auton.AutonChooser.AutonOption;
-import frc.robot.auton.Paths.PPPaths;
-
 import static frc.robot.auton.AutonFactory.autonEventMap;
+import static frc.robot.auton.Paths.PPPaths.threePiece2;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -28,22 +30,22 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve(autonEventMap);
 
-    /*Auton */
+    /* Auton */
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
         // Set up autons
         mapAutonCommands();
         DashboardManager.addTab("TeleSwerve");
         s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_Swerve, 
-                ()-> -driver.getLeftY(), 
-                ()-> -driver.getLeftX(), 
-                ()-> -driver.getRightX(), 
-                driver.leftBumper()::getAsBoolean
-            )
-        );
+                new TeleopSwerve(
+                        s_Swerve,
+                        () -> -driver.getLeftY(),
+                        () -> -driver.getLeftX(),
+                        () -> -driver.getRightX(),
+                        driver.leftBumper()::getAsBoolean));
 
         initShuffleBoard();
         // Configure the button bindings
@@ -51,9 +53,11 @@ public class RobotContainer {
     }
 
     /**
-     * Use this method to define your button->command mappings. Buttons can be created by
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
      * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+     * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
@@ -64,20 +68,20 @@ public class RobotContainer {
         driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
     }
 
-    public void initShuffleBoard(){
-        
+    public void initShuffleBoard() {
+
     }
 
-    public void mapAutonCommands(){
+    public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
-        AutonChooser.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-        AutonChooser.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.Move1MeterXAuto(s_Swerve));
+        AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
+        AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
     }
 
-    public void mapAutonEvents(){
+    public void mapAutonEvents() {
         autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
     }
-
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
