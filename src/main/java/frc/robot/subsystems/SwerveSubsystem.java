@@ -6,55 +6,65 @@ import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SwerveK;
+import java.util.HashMap;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.AutoConstants.*;
-import frc.robot.Constants.SwerveK;
+import static frc.robot.Constants.SwerveK.*;
+
+
 
 public class SwerveSubsystem extends SubsystemBase {
-	private final SwerveDriveOdometry odometry;
+	// private final SwerveDriveOdometry odometry; // PoseEstimator used instead
 	private final SwerveDrivePoseEstimator poseEstimator;
 	private final SwerveModule[] mSwerveMods;
-	private final Pigeon2 gyro = new Pigeon2(Constants.SwerveK.pigeonID, "Canivore");
+	private final Pigeon2 gyro = new Pigeon2(Constants.SwerveK.kPigeonCANID, "Canivore");
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
+	private final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
 
 	private final HolonomicDriveController pathController = new HolonomicDriveController(xController, yController, thetaController);
 
 	private final Field2d m_field = new Field2d();
+	private final SwerveAutoBuilder autoBuilder;
 
-	private ChassisSpeeds m_targetChassisSpeeds;
-
-	public SwerveSubsystem() {
+	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
+	public SwerveSubsystem(HashMap<String, Command> autoEventMap) {
 		DashboardManager.addTab(this);
 		gyro.configFactoryDefault();
 		zeroGyro();
 
 		mSwerveMods = new SwerveModule[] {
-			new SwerveModule("Front Left", 0, SwerveK.Mod0.constants),
-			new SwerveModule("Front Right", 1, SwerveK.Mod1.constants),
-			new SwerveModule("Rear Left", 2, SwerveK.Mod2.constants),
-			new SwerveModule("Rear Right", 3, SwerveK.Mod3.constants)
+				new SwerveModule("Front Left", 0, Mod0.constants),
+				new SwerveModule("Front Right", 1, Mod1.constants),
+				new SwerveModule("Rear Left", 2, Mod2.constants),
+				new SwerveModule("Rear Right", 3, Mod3.constants)
 		};
 
 		// 2023 CTRE bugfix
@@ -64,28 +74,60 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
-		// thetaController.setTolerance(5, 5);
-		odometry = new SwerveDriveOdometry(
-			SwerveK.kKinematics,
-			getHeading(),
-			getModulePositions()
-		);
+		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
+		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
+		autoThetaController.setTolerance(Rotation2d.fromDegrees(2.5).getRadians());
+
+		// odometry = new SwerveDriveOdometry(
+		// 	kKinematics,
+		// 	getHeading(),
+		// 	getModulePositions()
+		// );
 
 		poseEstimator = new SwerveDrivePoseEstimator(
-			SwerveK.kKinematics,
-			getHeading(), 
+			kKinematics,
+			getHeading(),
 			getModulePositions(),
 			getPose()
 		);
 
-
 		m_field.setRobotPose(getPose());
-		SmartDashboard.putData(m_field);
+		DashboardManager.addTabSendable(this, "OdoField", m_field);
+		autoBuilder = new SwerveAutoBuilder(
+				this::getPose, // Pose2d supplier
+				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+				kKinematics, // SwerveDriveKinematics
+				kTranslationPID,
+				kRotationPID,
+				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the drive subsystem
+				autoEventMap,
+				true,
+				this);
 	}
 
 	public void setChassisSpeeds(ChassisSpeeds targetChassisSpeeds, boolean openLoop, boolean steerInPlace) {
 		setModuleStates(SwerveK.kKinematics.toSwerveModuleStates(targetChassisSpeeds), openLoop, steerInPlace);
 		
+	}
+
+	public CommandBase teleopDriveCmd(
+		DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation,
+		BooleanSupplier robotCentric, BooleanSupplier openLoop
+	) {
+		return run(() -> {
+			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
+			double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), Constants.stickDeadband);
+			double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), Constants.stickDeadband);
+
+			boolean openLoopVal = openLoop.getAsBoolean();
+			if (!openLoopVal) {
+				translationVal *= kMaxVelocityMps;
+				strafeVal *= kMaxVelocityMps;
+				rotationVal *= kMaxAngularVelocityRadps;
+			}
+
+			drive(translationVal, strafeVal, rotationVal, !robotCentric.getAsBoolean(), openLoopVal);
+		});
 	}
 
 	/**
@@ -152,19 +194,19 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	/* Used by SwerveControllerCommand in Auto */
 	public void setModuleStates(SwerveModuleState[] desiredStates, boolean openLoop, boolean steerInPlace) {
-		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveK.maxSpeed);
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveK.kMaxVelocityMps);
 
 		for (SwerveModule mod : mSwerveMods) {
-			mod.setDesiredState(desiredStates[mod.moduleNumber], openLoop);
+			mod.setDesiredState(desiredStates[mod.moduleNumber], openLoop, steerInPlace);
 		}
 	}
 
 	public Pose2d getPose() {
-		return odometry.getPoseMeters();
+		return poseEstimator.getEstimatedPosition();
 	}
 
 	public void resetOdometry(Pose2d pose) {
-		odometry.resetPosition(getHeading(), getModulePositions(), pose);
+		poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
 	}
 
 	public SwerveModuleState[] getModuleStates() {
@@ -189,8 +231,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	// side to side
 	public Rotation2d getHeading() {
-		return (Constants.SwerveK.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
+		return (Constants.SwerveK.kInvertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
 				: Rotation2d.fromDegrees(gyro.getYaw());
+	}
+
+	// TODO:may need to reset pose estimator when april tags work
+	public void resetPose(Pose2d pose) {
+		gyro.setYaw(pose.getRotation().getDegrees());
+		resetOdometry(pose);
 	}
 
 	/**
@@ -211,70 +259,59 @@ public class SwerveSubsystem extends SubsystemBase {
 		drive(xRate, yRate, 0, true, true);
 	}
 
-	public void followAprilTag(double goalDistance, boolean shouldMove) {
-		// System.out.println("BUTTON PRESSED");
+	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove) {
 		var targetOpt = AprilTagHelper.getBestTarget();
 		if (targetOpt.isPresent()) {
-			// System.out.println("TARGET DETECTED");
+			System.out.println("TARGET DETECTED");
 			var target = targetOpt.get();
-			// Pose3d robotPose3d = new Pose3d(
-			// 	getPose().getX(), getPose().getY(), 0, 
-			// 	new Rotation3d(0, 0, getPose().getRotation().getDegrees())
-			// );
-
 			var tagTr3d = target.getBestCameraToTarget();
 			double xMeters = tagTr3d.getX();
 			double yMeters = tagTr3d.getY();
-			SmartDashboard.putNumber("TagX", xMeters);
-			SmartDashboard.putNumber("TagY", yMeters);
-			// double zDegrees = Rotation2d.fromRadians(tagTr3d.getRotation().getZ()).getDegrees();
-			double zDegrees = target.getYaw();
-			SmartDashboard.putNumber("TagYaw", zDegrees);
-
-			// Pose3d tagOffset = robotPose3d.transformBy(target.getBestCameraToTarget());
-
-			// m_field.getObject("bestTag").setPose(tagPose.toPose2d());
-
-			// double xRate = xController.calculate(xMeters, 2);
-			// SmartDashboard.putNumber("xEffort", xRate);
-			// double yRate = yController.calculate(yMeters, 0.5);
-			// SmartDashboard.putNumber("yEffort", yRate);
-			double turnRate = thetaController.calculate(zDegrees, 0);
-			SmartDashboard.putNumber("thetaEffort", turnRate);
-
-			if (shouldMove) {
-				drive(0, 0, turnRate, false, true);
+			double xRate = xController.calculate(xMeters, xOffset);
+			double yRate = yController.calculate(yMeters, yGoal);
+			double zRadians = target.getYaw();
+			System.out.println("ANGLE DIFFERENCE: " + zRadians);
+			double turnRate = autoThetaController.calculate(zRadians, 0);
+			if (zRadians <= kAlignAngleThresholdRadians) {
+				turnRate = 0;
+				System.out.println("WITHIN ANGLE TOLERANCE");
 			}
+			drive(xRate, yRate, turnRate, true, true);
 		}
+		System.out.println("NO TARGET DETECTED");
 	}
 
-	public ProfiledPIDController getThetaController() {
-		return thetaController;
+	/*
+	 * Create a complete autonomous command group. This will reset the robot pose at
+	 * the begininng of
+	 * the first path, follow paths, trigger events during path following, and run
+	 * commands between
+	 * paths with stop events
+	 */
+	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
+		return autoBuilder.fullAuto(trajectory);
 	}
 
-	// public CommandBase getSwerveControllerCommand(Trajectory trajectory) {
-	// var resetCommand = new InstantCommand(() ->
-	// this.resetOdometry(trajectory.getInitialPose()));
-	// var autoSwerveCommand = new SwerveControllerCommand(
-	// trajectory,
-	// this::getPose,
-	// Constants.Swerve.swerveKinematics,
-	// new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-	// new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-	// thetaController,
-	// this::setModuleStates,
-	// this
-	// );
-	// return resetCommand.andThen(autoSwerveCommand);
-	// }
+	public CommandBase rotateAboutPoint(double degrees) {
+		return run(() -> {
+			autoThetaController.setSetpoint(Math.toRadians(degrees));
+			double thetaEffort = autoThetaController.calculate(getHeading().getRadians());
+			if (autoThetaController.getPositionError() > 0.001) {
+				thetaEffort += kFThetaController;
+			}
+			drive(0, 0, thetaEffort, true, true);
+		})
+				.finallyDo((intr) -> drive(0, 0, 0, false, false))
+				.until(() -> autoThetaController.atSetpoint());
+	}
 
 	@Override
 	public void periodic() {
 		for (var module : mSwerveMods) {
 			module.periodic();
 		}
-		odometry.update(getHeading(), getModulePositions());
+		// odometry.update(getHeading(), getModulePositions());
+		poseEstimator.update(getHeading(), getModulePositions());
 		m_field.setRobotPose(getPose());
-		followAprilTag(1, false);
 	}
 }

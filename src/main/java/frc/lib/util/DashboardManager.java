@@ -106,6 +106,10 @@ public class DashboardManager {
 		shuffleboardTabs.get(tabName).add(command);
 	}
 
+	public static void addTabSendable(SubsystemBase subsystem, String itemName, Sendable sendable) {
+		addTabSendable(subsystem.getName(), itemName, sendable);
+	}
+
 	public static void addTabSendable(String tabName, String itemName, Sendable sendable) {
 		if (!shuffleboardTabs.containsKey(tabName)) return;
 		shuffleboardTabs.get(tabName).add(itemName, sendable);
