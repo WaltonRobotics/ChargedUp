@@ -13,14 +13,10 @@ public class AutonChooser {
         MOVE_FORWARD("Move forward 1 meter"),
         THREE_PIECE2("THREE PIECE AUTON 2");
 
-        private final String description;
+        public final String description;
 
         AutonOption(String description) {
             this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
         }
 
         @Override
@@ -33,27 +29,28 @@ public class AutonChooser {
         // utility class, do not create instances!
     }
 
-    private static EnumMap<AutonOption, CommandBase> autonChooserMap = new EnumMap<AutonOption, CommandBase>(
-            AutonOption.class);
+    private static EnumMap<AutonOption, CommandBase> autonChooserMap =
+        new EnumMap<AutonOption, CommandBase>(AutonOption.class);
     private static final SendableChooser<AutonOption> autonNTChooser = new SendableChooser<AutonOption>();
 
     static {
-        for (var option : AutonOption.values()) {
-            autonNTChooser.addOption(option.getDescription(), option);
-        }
         SmartDashboard.putData("Auton Chooser", autonNTChooser);
     }
 
-    public static void SetAutonCommand(AutonOption auton, CommandBase command) {
+    public static void AssignAutonCommand(AutonOption auton, CommandBase command) {
         autonChooserMap.put(auton, command);
+        autonNTChooser.addOption(auton.description, auton);
     }
 
     public static void SetDefaultAuton(AutonOption auton) {
-        autonNTChooser.setDefaultOption(auton.getDescription(), auton);
+        autonNTChooser.setDefaultOption(auton.description, auton);
     }
 
     public static CommandBase GetAuton(AutonOption auton) {
-        return autonChooserMap.computeIfAbsent(auton, a -> Commands.none().withName("InvalidAuton"));
+        return autonChooserMap.computeIfAbsent(auton, a -> 
+            Commands.print("========WARNING: Empty Auton!!!========")
+            .withName("InvalidAuton")
+        );
     }
 
     public static CommandBase GetChosenAuton() {

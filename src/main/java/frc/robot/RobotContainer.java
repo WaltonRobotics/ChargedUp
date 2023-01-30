@@ -74,9 +74,9 @@ public class RobotContainer {
 
     public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
-        AutonChooser.SetAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-        AutonChooser.SetAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
-        AutonChooser.SetAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
+        AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
+        AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
     }
 
     public void mapAutonEvents() {
