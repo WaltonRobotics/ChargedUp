@@ -22,5 +22,8 @@ public class Paths {
                 public static final PathPlannerTrajectory threePiece2 = PathPlanner.loadPath("threePiece2",
                                 kMaxSpeedMetersPerSecond,
                                 kMaxAccelerationMetersPerSecondSquared);
+                public static final PathPlannerTrajectory threePiece3 = PathPlanner.loadPath("threePiece3",
+                                kMaxSpeedMetersPerSecond,
+                                kMaxAccelerationMetersPerSecondSquared);
         }
 }

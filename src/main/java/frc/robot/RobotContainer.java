@@ -13,6 +13,7 @@ import frc.robot.subsystems.*;
 import frc.robot.auton.AutonChooser.AutonOption;
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.threePiece2;
+import static frc.robot.auton.Paths.PPPaths.threePiece3;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -77,6 +78,7 @@ public class RobotContainer {
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.fullAuto(s_Swerve, threePiece3));
     }
 
     public void mapAutonEvents() {
