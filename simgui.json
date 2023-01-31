@@ -1,0 +1,78 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[2]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/SwerveSubsystem/Field2d": "Field2d",
+      "/Shuffleboard/SwerveSubsystem/SwerveSubsystem": "Subsystem",
+      "/SmartDashboard/Auton Chooser": "String Chooser"
+    },
+    "windows": {
+      "/Shuffleboard/SwerveSubsystem/Field2d": {
+        "Swerve Modules": {
+          "arrowColor": [
+            0.0,
+            0.20588231086730957,
+            1.0,
+            255.0
+          ],
+          "arrowSize": 28,
+          "style": "Hidden"
+        },
+        "window": {
+          "name": "Field2d",
+          "visible": true
+        }
+      },
+      "/Shuffleboard/SwerveSubsystem/SwerveSubsystem": {
+        "window": {
+          "name": "SwerveSubsystem",
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Shuffleboard": {
+      "SwerveSubsystem": {
+        "Field2d": {
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "open": true
+    },
+    "combined": true,
+    "timestamp": true,
+    "transitory": {
+      "Shuffleboard": {
+        "open": true
+      },
+      "SmartDashboard": {
+        "Auton Chooser": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
+  }
+}

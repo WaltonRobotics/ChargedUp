@@ -72,6 +72,10 @@ public class Conversions {
         return wheelMPS;
     }
 
+    public static double falconToMPS(double velocityCounts, double wheelCircumferenceMeters) {
+        return falconToMPS(velocityCounts, wheelCircumferenceMeters, 1);
+    }
+
     /**
      * @param velocity Velocity MPS
      * @param circumference Circumference of Wheel

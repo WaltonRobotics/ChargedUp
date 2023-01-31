@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
 import frc.robot.vision.AprilTagHelper;
+import frc.lib.swerve.SwerveDriveState;
+import frc.lib.swerve.SwerveModuleMap;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -21,6 +23,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,9 +42,22 @@ import static frc.robot.Constants.SwerveK.*;
 
 public class SwerveSubsystem extends SubsystemBase {
 	// private final SwerveDriveOdometry odometry; // PoseEstimator used instead
-	private final SwerveDrivePoseEstimator poseEstimator;
-	private final SwerveModule[] mSwerveMods;
-	private final Pigeon2 gyro = new Pigeon2(Constants.SwerveK.kPigeonCANID, "Canivore");
+	private final Pigeon2 m_pigeon = new Pigeon2(Constants.SwerveK.kPigeonCANID, "Canivore");
+
+	private final SwerveModule[] m_modules = new SwerveModule[] {
+		new SwerveModule("Front Left", 0, Mod0.constants),
+		new SwerveModule("Front Right", 1, Mod1.constants),
+		new SwerveModule("Rear Left", 2, Mod2.constants),
+		new SwerveModule("Rear Right", 3, Mod3.constants)
+	};
+
+	private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
+		kKinematics,
+		getHeading(),
+		getModulePositions(),
+		new Pose2d()
+	);
+
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
@@ -52,24 +68,20 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final HolonomicDriveController pathController = new HolonomicDriveController(xController, yController, thetaController);
 
 	private final Field2d m_field = new Field2d();
+	private final SwerveDriveState m_swerveState = new SwerveDriveState(kModuleTranslations);
 	private final SwerveAutoBuilder autoBuilder;
+
+	private double m_simYaw;
 
 	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap) {
 		DashboardManager.addTab(this);
-		gyro.configFactoryDefault();
+		m_pigeon.configFactoryDefault();
 		zeroGyro();
-
-		mSwerveMods = new SwerveModule[] {
-				new SwerveModule("Front Left", 0, Mod0.constants),
-				new SwerveModule("Front Right", 1, Mod1.constants),
-				new SwerveModule("Rear Left", 2, Mod2.constants),
-				new SwerveModule("Rear Right", 3, Mod3.constants)
-		};
 
 		// 2023 CTRE bugfix
 		Timer.delay(.250);
-		for (var mod : mSwerveMods) {
+		for (var mod : m_modules) {
 			mod.resetToAbsolute();
 		}
 
@@ -84,15 +96,8 @@ public class SwerveSubsystem extends SubsystemBase {
 		// 	getModulePositions()
 		// );
 
-		poseEstimator = new SwerveDrivePoseEstimator(
-			kKinematics,
-			getHeading(),
-			getModulePositions(),
-			getPose()
-		);
-
-		m_field.setRobotPose(getPose());
-		DashboardManager.addTabSendable(this, "OdoField", m_field);
+		m_swerveState.update(getPose(), getModuleStates(), m_field);
+		DashboardManager.addTabSendable(this, "Field2d", m_field);
 		autoBuilder = new SwerveAutoBuilder(
 				this::getPose, // Pose2d supplier
 				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
@@ -120,14 +125,14 @@ public class SwerveSubsystem extends SubsystemBase {
 			double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), Constants.stickDeadband);
 
 			boolean openLoopVal = openLoop.getAsBoolean();
-			if (!openLoopVal) {
+			// if (!openLoopVal) {
 				translationVal *= kMaxVelocityMps;
 				strafeVal *= kMaxVelocityMps;
 				rotationVal *= kMaxAngularVelocityRadps;
-			}
+			// }
 
 			drive(translationVal, strafeVal, rotationVal, !robotCentric.getAsBoolean(), openLoopVal);
-		});
+		}).withName("TeleopDrive");
 	}
 
 	/**
@@ -196,7 +201,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void setModuleStates(SwerveModuleState[] desiredStates, boolean openLoop, boolean steerInPlace) {
 		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveK.kMaxVelocityMps);
 
-		for (SwerveModule mod : mSwerveMods) {
+		for (SwerveModule mod : m_modules) {
 			mod.setDesiredState(desiredStates[mod.moduleNumber], openLoop, steerInPlace);
 		}
 	}
@@ -211,7 +216,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public SwerveModuleState[] getModuleStates() {
 		SwerveModuleState[] states = new SwerveModuleState[4];
-		for (SwerveModule mod : mSwerveMods) {
+		for (SwerveModule mod : m_modules) {
 			states[mod.moduleNumber] = mod.getState();
 		}
 		return states;
@@ -219,25 +224,25 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] positions = new SwerveModulePosition[4];
-		for (SwerveModule mod : mSwerveMods) {
+		for (SwerveModule mod : m_modules) {
 			positions[mod.moduleNumber] = mod.getPosition();
 		}
 		return positions;
 	}
 
 	public void zeroGyro() {
-		gyro.setYaw(0);
+		m_pigeon.setYaw(0);
 	}
 
 	// side to side
 	public Rotation2d getHeading() {
-		return (Constants.SwerveK.kInvertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
-				: Rotation2d.fromDegrees(gyro.getYaw());
+		return (Constants.SwerveK.kInvertGyro) ? Rotation2d.fromDegrees(360 - m_pigeon.getYaw())
+				: Rotation2d.fromDegrees(m_pigeon.getYaw());
 	}
 
 	// TODO:may need to reset pose estimator when april tags work
 	public void resetPose(Pose2d pose) {
-		gyro.setYaw(pose.getRotation().getDegrees());
+		m_pigeon.setYaw(pose.getRotation().getDegrees());
 		resetOdometry(pose);
 	}
 
@@ -248,8 +253,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void handleAutoBalance() {
 		double xRate = 0;
 		double yRate = 0;
-		double pitchAngleDegrees = gyro.getPitch();
-		double rollAngleDegrees = gyro.getRoll();
+		double pitchAngleDegrees = m_pigeon.getPitch();
+		double rollAngleDegrees = m_pigeon.getRoll();
 
 		double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
 		xRate = Math.sin(pitchAngleRadians) * -1;
@@ -307,11 +312,23 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		for (var module : mSwerveMods) {
+		for (var module : m_modules) {
 			module.periodic();
 		}
 		// odometry.update(getHeading(), getModulePositions());
 		poseEstimator.update(getHeading(), getModulePositions());
-		m_field.setRobotPose(getPose());
+
+		m_swerveState.update(getPose(), getModuleStates(), m_field);
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		ChassisSpeeds chassisSpeed = kKinematics.toChassisSpeeds(getModuleStates());
+		m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
+		m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
+
+		for (var module : m_modules) {
+			module.simulationPeriodic();
+		}
 	}
 }

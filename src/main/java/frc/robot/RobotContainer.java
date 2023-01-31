@@ -1,14 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
-import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.auton.AutonChooser.AutonOption;
 /**
@@ -22,7 +21,8 @@ import frc.robot.auton.AutonChooser.AutonOption;
  */
 public class RobotContainer {
     /* Controllers */
-    private final CommandXboxController driver = new CommandXboxController(0);
+    // private final CommandXboxController driver = new CommandXboxController(0);
+    private final Joystick driver = new Joystick(0);
 
     /* Subsystems */
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(AutonFactory.autonEventMap);
@@ -37,10 +37,14 @@ public class RobotContainer {
         mapAutonCommands();
         s_Swerve.setDefaultCommand(
             s_Swerve.teleopDriveCmd(
-                () -> -driver.getLeftY(),
-                () -> -driver.getLeftX(),
-                () -> -driver.getRightX(),
-                driver.leftBumper()::getAsBoolean,
+                () -> -driver.getRawAxis(1),
+                // ()-> -1,
+                // () -> -driver.getLeftY(),
+                () -> -driver.getRawAxis(0),
+                // () -> -driver.getLeftX(),
+                () -> driver.getRawAxis(2),
+                // driver.leftBumper()::getAsBoolean,
+                () -> false,
                 () -> true // openLoop
             )
         );
@@ -60,10 +64,10 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(2, 0, true)));
-        driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
-        driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
+        // driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        // driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(2, 0, true)));
+        // driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
+        // driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
     }
 
     public void initShuffleBoard() {

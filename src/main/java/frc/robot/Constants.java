@@ -33,11 +33,15 @@ public final class Constants {
         public static final double kWheelCircumference = kSwerveModule.wheelCircumference;
 
         /*Swerve Kinematics */
-         public static final SwerveDriveKinematics kKinematics = new SwerveDriveKinematics(
+        public static final Translation2d[] kModuleTranslations = {
             new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0),
             new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0),
             new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0),
-            new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0));
+            new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0)
+        };
+
+        public static final SwerveDriveKinematics kKinematics =
+            new SwerveDriveKinematics(kModuleTranslations);
 
         /* Module Gear Ratios */
         public static final double kDriveGearRatio = kSwerveModule.driveGearRatio;
@@ -78,17 +82,16 @@ public final class Constants {
         public static final double kDriveKD = 0.0;
         public static final double kDriveKF = 0.0;
 
-        /* Drive Motor Characterization Values 
-         * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-        public static final double kDriveKS = (0.2 / 12); //TODO: This must be tuned to specific robot
-        public static final double kDriveKV = (2.25 / 12);
-        public static final double kDriveKA = (0.17 / 12);
+        /* Drive Motor Characterization Values */
+        public static final double kDriveKS = 0.2 / 12; //TODO: This must be tuned to specific robot
+        public static final double kDriveKV = 2.25 / 12;
+        public static final double kDriveKA = 0.17 / 12;
 
         /* Feedforwards */
         public static final SimpleMotorFeedforward kDriveFF = new SimpleMotorFeedforward( // real
-            kDriveKS * 12, // Voltage to break static friction
-            kDriveKV * 12, // Volts per meter per second
-            kDriveKA * 12 // Volts per meter per second squared
+            kDriveKS, // Voltage to break static friction
+            kDriveKV, // Volts per meter per second
+            kDriveKA // Volts per meter per second squared
         );
         // Steer feed forward
         public static final SimpleMotorFeedforward kSteerFF = new SimpleMotorFeedforward( // real
