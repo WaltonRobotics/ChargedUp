@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class AprilTagHelper {
     public static final PhotonCamera cam = new PhotonCamera("ov9281");
-
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
             new Translation3d(0.5, 0.0, 0.5),
@@ -48,7 +47,7 @@ public class AprilTagHelper {
                 camList);
     }
 
-    public static Pair<Pose2d, Double> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+    public static Pair<Pose2d, Double> getEstimatedGlobalPose2d(Pose2d prevEstimatedRobotPose) {
         robotPoseEstimator.setReferencePose(prevEstimatedRobotPose);
 
         double currentTime = Timer.getFPGATimestamp();
