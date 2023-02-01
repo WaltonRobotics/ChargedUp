@@ -167,15 +167,7 @@ public class Swerve extends SubsystemBase {
 	public void handleAutoBalance() {
 		double xRate = 0;
 		double yRate = 0;
-		double pitchAngleDegrees = gyro.getPitch();
-		double rollAngleDegrees = gyro.getRoll();
-
-		double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
-		xRate = Math.sin(pitchAngleRadians) * -1;
-		double rollAngleRadians = rollAngleDegrees * (Math.PI / 180.0);
-		yRate = Math.sin(rollAngleRadians) * -1;
-
-		drive(xRate, yRate, 0, true, true);
+		
 	}
 
 	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove) {
