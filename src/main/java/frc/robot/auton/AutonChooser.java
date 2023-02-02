@@ -11,6 +11,7 @@ public class AutonChooser {
 
         DO_NOTHING("Do Nothing"),
         MOVE_FORWARD("Move forward 1 meter"),
+        TWO_PIECE_PAUSE("Two Piece then Pause"),
         THREE_PIECE2("THREE PIECE AUTON 2");
 
         public final String description;

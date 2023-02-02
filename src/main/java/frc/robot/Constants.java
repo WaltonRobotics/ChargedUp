@@ -83,9 +83,9 @@ public final class Constants {
         public static final double kDriveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double kDriveKS = 0.2 / 12; //TODO: This must be tuned to specific robot
-        public static final double kDriveKV = 2.25 / 12;
-        public static final double kDriveKA = 0.17 / 12;
+        public static final double kDriveKS = 0.3 / 12; //TODO: This must be tuned to specific robot
+        public static final double kDriveKV = 1.0 / 12;
+        public static final double kDriveKA = 0.2 / 12;
 
         /* Feedforwards */
         public static final SimpleMotorFeedforward kDriveFF = new SimpleMotorFeedforward( // real

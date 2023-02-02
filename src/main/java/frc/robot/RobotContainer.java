@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -21,8 +20,7 @@ import frc.robot.auton.AutonChooser.AutonOption;
  */
 public class RobotContainer {
     /* Controllers */
-    // private final CommandXboxController driver = new CommandXboxController(0);
-    private final Joystick driver = new Joystick(0);
+    private final CommandXboxController driver = new CommandXboxController(0);
 
     /* Subsystems */
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(AutonFactory.autonEventMap);
@@ -37,14 +35,10 @@ public class RobotContainer {
         mapAutonCommands();
         s_Swerve.setDefaultCommand(
             s_Swerve.teleopDriveCmd(
-                () -> -driver.getRawAxis(1),
-                // ()-> -1,
-                // () -> -driver.getLeftY(),
-                () -> -driver.getRawAxis(0),
-                // () -> -driver.getLeftX(),
-                () -> driver.getRawAxis(2),
-                // driver.leftBumper()::getAsBoolean,
-                () -> false,
+                () -> -driver.getLeftY(),
+                () -> -driver.getLeftX(),
+                () -> -driver.getRightY(),
+                driver.leftBumper()::getAsBoolean,
                 () -> true // openLoop
             )
         );
@@ -64,10 +58,10 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        // driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        // driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(2, 0, true)));
-        // driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
-        // driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
+        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(2, 0, true)));
+        driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
+        driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
     }
 
     public void initShuffleBoard() {
@@ -78,6 +72,7 @@ public class RobotContainer {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
+        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(Paths.PPPaths.twoPiece).withName("TwoPiecePauseAuto"));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, Paths.PPPaths.threePiece2));
     }
 

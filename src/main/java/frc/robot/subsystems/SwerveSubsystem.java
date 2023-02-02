@@ -3,9 +3,9 @@ package frc.robot.subsystems;
 import frc.robot.SwerveModule;
 import frc.robot.vision.AprilTagHelper;
 import frc.lib.swerve.SwerveDriveState;
-import frc.lib.swerve.SwerveModuleMap;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -28,10 +28,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveK;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -88,13 +88,8 @@ public class SwerveSubsystem extends SubsystemBase {
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
-		autoThetaController.setTolerance(Rotation2d.fromDegrees(2.5).getRadians());
+		autoThetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 
-		// odometry = new SwerveDriveOdometry(
-		// 	kKinematics,
-		// 	getHeading(),
-		// 	getModulePositions()
-		// );
 
 		m_swerveState.update(getPose(), getModuleStates(), m_field);
 		DashboardManager.addTabSendable(this, "Field2d", m_field);
@@ -296,6 +291,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
 		return autoBuilder.fullAuto(trajectory);
 	}
+	
+	public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
+		return autoBuilder.fullAuto(trajectoryList);
+	}
 
 	public CommandBase rotateAboutPoint(double degrees) {
 		return run(() -> {
@@ -325,7 +324,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void simulationPeriodic() {
 		ChassisSpeeds chassisSpeed = kKinematics.toChassisSpeeds(getModuleStates());
 		m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
-		m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
+		m_pigeon.getSimCollection().setRawHeading(Units.radiansToDegrees(m_simYaw));
 
 		for (var module : m_modules) {
 			module.simulationPeriodic();
