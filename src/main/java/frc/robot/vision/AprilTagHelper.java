@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.RobotPoseEstimator;
-import org.photonvision.RobotPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -14,15 +15,12 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.Timer;
 
 public class AprilTagHelper {
     public static final PhotonCamera cam = new PhotonCamera("ov9281");
-
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
             new Translation3d(0.5, 0.0, 0.5),
@@ -30,7 +28,7 @@ public class AprilTagHelper {
 
     AprilTagFieldLayout aprilTagFieldLayout;
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
-    static RobotPoseEstimator robotPoseEstimator;
+    static PhotonPoseEstimator poseEstimator;
 
     public AprilTagHelper() {
         init();
@@ -44,20 +42,13 @@ public class AprilTagHelper {
         }
 
         camList.add(new Pair<PhotonCamera, Transform3d>(cam, robotToCam));
-        robotPoseEstimator = new RobotPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-                camList);
+        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, cam,
+                robotToCam);
     }
 
-    public static Pair<Pose2d, Double> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        robotPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-
-        double currentTime = Timer.getFPGATimestamp();
-        Optional<Pair<Pose3d, Double>> result = robotPoseEstimator.update();
-        if (result.isPresent()) {
-            return new Pair<Pose2d, Double>(result.get().getFirst().toPose2d(), currentTime - result.get().getSecond());
-        } else {
-            return new Pair<Pose2d, Double>(null, 0.0);
-        }
+    public static Optional<EstimatedRobotPose> getEstimatedGlobalPose2d(Pose2d prevEstimatedRobotPose) {
+        poseEstimator.setReferencePose(prevEstimatedRobotPose);
+        return poseEstimator.update();
     }
 
     // unfiltered view of camera

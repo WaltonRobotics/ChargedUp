@@ -9,6 +9,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
 import frc.robot.subsystems.*;
 import frc.robot.auton.AutonChooser.AutonOption;
+import static frc.robot.auton.AutonFactory.autonEventMap;
+import static frc.robot.auton.Paths.PPPaths.threePiece2;
+import static frc.robot.auton.Paths.PPPaths.threePiece3;
+import static frc.robot.auton.Paths.PPPaths.twoPiece;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -23,7 +28,7 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
 
     /* Subsystems */
-    private final SwerveSubsystem s_Swerve = new SwerveSubsystem(AutonFactory.autonEventMap);
+    private final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap);
 
     /* Auton */
 
@@ -72,12 +77,13 @@ public class RobotContainer {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
-        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(Paths.PPPaths.twoPiece).withName("TwoPiecePauseAuto"));
-        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, Paths.PPPaths.threePiece2));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
+        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.fullAuto(s_Swerve, threePiece3));
     }
 
     public void mapAutonEvents() {
-        AutonFactory.autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
+        autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
     }
 
     /**
