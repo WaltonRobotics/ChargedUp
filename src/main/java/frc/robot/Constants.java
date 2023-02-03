@@ -15,8 +15,7 @@ public final class Constants {
     public static final double stickDeadband = 0.1;
 
     public static final class SwerveK {
-
-        /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
+ /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
          * Set to false to always use external CANcoder for angle control.
          * Recommended to set to false and always use CANCoder. */
         public static final boolean kUseInternalEncoder = false;
@@ -170,8 +169,8 @@ public final class Constants {
 
         // Constraint for the motion profiled robt angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
-            new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+                new TrapezoidProfile.Constraints(
+                        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
         
         //used for PPSwerve Auto Builder
         public static final PIDConstants kTranslationPID = new PIDConstants(kPXController, 0 , 0);   //x & y
