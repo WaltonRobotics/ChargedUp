@@ -37,7 +37,7 @@ public class RobotContainer {
             s_Swerve.teleopDriveCmd(
                 () -> -driver.getLeftY(),
                 () -> -driver.getLeftX(),
-                () -> -driver.getRightY(),
+                () -> -driver.getRightX(),
                 driver.leftBumper()::getAsBoolean,
                 () -> true // openLoop
             )
