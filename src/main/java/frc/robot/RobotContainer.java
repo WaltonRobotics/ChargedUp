@@ -6,14 +6,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
-import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.auton.AutonChooser.AutonOption;
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.threePiece2;
 import static frc.robot.auton.Paths.PPPaths.threePiece3;
+import static frc.robot.auton.Paths.PPPaths.twoPiece;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -29,7 +28,7 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve(autonEventMap);
+    private final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap);
 
     /* Auton */
 
@@ -39,14 +38,15 @@ public class RobotContainer {
     public RobotContainer() {
         // Set up autons
         mapAutonCommands();
-        DashboardManager.addTab("TeleSwerve");
         s_Swerve.setDefaultCommand(
-                new TeleopSwerve(
-                        s_Swerve,
-                        () -> -driver.getLeftY(),
-                        () -> -driver.getLeftX(),
-                        () -> -driver.getRightX(),
-                        driver.leftBumper()::getAsBoolean));
+            s_Swerve.teleopDriveCmd(
+                () -> -driver.getLeftY(),
+                () -> -driver.getLeftX(),
+                () -> -driver.getRightY(),
+                driver.leftBumper()::getAsBoolean,
+                () -> true // openLoop
+            )
+        );
 
         initShuffleBoard();
         // Configure the button bindings
@@ -78,6 +78,7 @@ public class RobotContainer {
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
+        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.fullAuto(s_Swerve, threePiece3));
     }
 
