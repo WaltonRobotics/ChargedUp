@@ -14,6 +14,8 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -40,6 +42,8 @@ public class Swerve extends SubsystemBase {
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
 	private final Field2d m_field = new Field2d();
 	private final SwerveAutoBuilder autoBuilder;
+	private final SwerveDrivePoseEstimator m_PoseEstimator =
+			new SwerveDrivePoseEstimator(Constants.SwerveK.swerveKinematics, getYaw(), getModulePositions(), getPose());
 
 	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
 	public Swerve(HashMap<String, Command> autoEventMap) {
@@ -124,9 +128,11 @@ public class Swerve extends SubsystemBase {
 		return swerveOdometry.getPoseMeters();
 	}
 
+
 	public void resetOdometry(Pose2d pose) {
 		zeroGyro();
 		swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
+		m_PoseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
 	}
 
 	public SwerveModuleState[] getModuleStates() {
