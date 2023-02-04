@@ -3,6 +3,8 @@ package frc.robot.auton;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared;
 import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
@@ -31,5 +33,8 @@ public class Paths {
 				kMaxAccelerationMetersPerSecondSquared);
 		public static final List<PathPlannerTrajectory> twoPiece = PathPlanner.loadPathGroup("banks3", false,
 				kPPConstraints);
+	}
+
+	public static final class ReferencePoints{
 	}
 }

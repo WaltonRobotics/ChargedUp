@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
@@ -255,7 +256,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	/*
 	 * resets wheel odometry pose to poseEstimator
 	 */
-	public void resetOdometry(){
+	public void realignOdometry(){
 		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
 	}
 
@@ -298,6 +299,13 @@ public class SwerveSubsystem extends SubsystemBase {
 			drive(xRate, yRate, turnRate, true, true);
 		}
 		System.out.println("NO TARGET DETECTED");
+	}
+
+	/*
+	 * 
+	 */
+	public CommandBase autoScore(PathPlannerState finalPoint){
+		return null;
 	}
 
 	/*

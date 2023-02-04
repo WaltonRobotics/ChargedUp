@@ -144,6 +144,10 @@ public class SwerveModule {
         m_angleEncoder.configAllSettings(CTREConfigs.Get().swerveCanCoderConfig);
     }
 
+    private void brakeSteerMotor(){
+        
+    }
+
     private void configAngleMotor(){
         m_steerMotor.configFactoryDefault();
         m_steerMotor.configAllSettings(CTREConfigs.Get().swerveAngleFXConfig);
