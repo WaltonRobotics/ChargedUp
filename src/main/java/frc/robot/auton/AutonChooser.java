@@ -13,7 +13,8 @@ public class AutonChooser {
         MOVE_FORWARD("Move forward 1 meter"),
         THREE_PIECE2("THREE PIECE AUTON 2"),
         TWO_PIECE_PAUSE("Two Piece then Pause"),
-        THREE_PIECE3("THREE PIECE AUTON 3");
+        THREE_PIECE3("THREE PIECE AUTON 3"),
+        TWO_PIECE_BALANCE("two piece and park");
 
         public final String description;
 
