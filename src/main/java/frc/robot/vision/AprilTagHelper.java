@@ -2,6 +2,7 @@ package frc.robot.vision;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -15,6 +16,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -34,9 +36,29 @@ public class AprilTagHelper {
         init();
     }
 
+    public List<Pose3d> aprilTagPoses()
+	{
+		// PhotonPipelineResult result = AprilTagHelper.cam.getLatestResult();
+		// PhotonTrackedTarget target = result.getBestTarget();
+		// List<PhotonTrackedTarget> targets = result.getTargets();
+
+		ArrayList<Pose3d> aprilTagPoses = new ArrayList<>();
+		for (int i = 1; i < 9; i++) {
+            Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(i);
+            if(tagPose.isPresent())
+            {
+                aprilTagPoses.add(tagPose.get());
+            }
+		}
+
+        return aprilTagPoses;
+	}
+
+    
+
     private void init() {
         try {
-            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2022RapidReact.m_resourceFile);
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
