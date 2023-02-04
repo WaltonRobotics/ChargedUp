@@ -259,6 +259,16 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
 	}
 
+	/*
+	 * sets steer to brake and drive to coast
+	 */
+	public void testModules(){
+		for (var module : m_modules) {
+			module.brakeSteerMotor();
+			module.coastDriveMotor();
+		}
+	}
+
 	/**
 	 * Use Apriltag vision to balance robot
 	 * on the charging station

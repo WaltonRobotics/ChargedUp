@@ -16,6 +16,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -144,8 +145,12 @@ public class SwerveModule {
         m_angleEncoder.configAllSettings(CTREConfigs.Get().swerveCanCoderConfig);
     }
 
-    private void brakeSteerMotor(){
-        
+    public void brakeSteerMotor(){
+        m_steerMotor.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public void coastDriveMotor(){
+        m_driveMotor.setNeutralMode(NeutralMode.Coast);
     }
 
     private void configAngleMotor(){
