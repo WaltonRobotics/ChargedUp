@@ -97,6 +97,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		// m_field.setRobotPose(getPose());
 		m_swerveState.update(getPose(), getModuleStates(), m_field);
+		m_apriltagHelper.updateField2d(m_field);
 		DashboardManager.addTabSendable(this, "Field2d", m_field);
 		autoBuilder = new SwerveAutoBuilder(
 				this::getPose, // Pose2d supplier
