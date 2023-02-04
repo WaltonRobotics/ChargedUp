@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
 import frc.robot.subsystems.*;
+import frc.robot.vision.AprilTagHelper;
 import frc.robot.auton.AutonChooser.AutonOption;
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.threePiece2;
@@ -27,8 +28,10 @@ public class RobotContainer {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
 
+    private final AprilTagHelper m_apriltagHelper = new AprilTagHelper();
+
     /* Subsystems */
-    private final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap);
+    private final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap, m_apriltagHelper);
 
     /* Auton */
 

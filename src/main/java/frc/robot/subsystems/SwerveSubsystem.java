@@ -34,8 +34,11 @@ import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import org.photonvision.EstimatedRobotPose;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
@@ -59,14 +62,17 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveState m_swerveState = new SwerveDriveState(kModuleTranslations);
 	private final SwerveAutoBuilder autoBuilder;
 
-	private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
+	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
 			kKinematics,
 			getHeading(),
 			getModulePositions(),
 			new Pose2d());
 
+	private final AprilTagHelper m_apriltagHelper;
+
 	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
-	public SwerveSubsystem(HashMap<String, Command> autoEventMap) {
+	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagHelper apriltagHelper) {
+		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
 		zeroGyro();
@@ -201,11 +207,11 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public Pose2d getPose() {
-		return poseEstimator.getEstimatedPosition();
+		return m_poseEstimator.getEstimatedPosition();
 	}
 
 	public void resetOdometry(Pose2d pose) {
-		poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
+		m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
 	}
 
 	public SwerveModuleState[] getModuleStates() {
@@ -260,7 +266,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove) {
-		var targetOpt = AprilTagHelper.getBestTarget();
+		var targetOpt = m_apriltagHelper.getBestTarget();
 		if (targetOpt.isPresent()) {
 			System.out.println("TARGET DETECTED");
 			var target = targetOpt.get();
@@ -309,14 +315,32 @@ public class SwerveSubsystem extends SubsystemBase {
 				.until(() -> autoThetaController.atSetpoint());
 	}
 
+	public void updateRobotPose() {
+		m_poseEstimator.update(getHeading(), getModulePositions());
+		Optional<EstimatedRobotPose> result = m_apriltagHelper
+				.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
+
+		m_swerveState.update(getPose(), getModuleStates(), m_field);
+
+		if (result.isPresent()) {
+			EstimatedRobotPose camPose = result.get();
+			//updates swervePoseEstimator
+			m_poseEstimator.addVisionMeasurement(
+					camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+			m_field.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
+		} else {
+			// move it way off the screen to make it disappear
+			m_field.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
+		}
+	}
+
+
 	@Override
 	public void periodic() {
 		for (var module : m_modules) {
 			module.periodic();
 		}
-		// odometry.update(getHeading(), getModulePositions());
-		poseEstimator.update(getHeading(), getModulePositions());
+		updateRobotPose();
 
-		m_swerveState.update(getPose(), getModuleStates(), m_field);
 	}
 }

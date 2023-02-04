@@ -20,10 +20,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 public class AprilTagHelper {
-    public static final PhotonCamera cam = new PhotonCamera("ov9281");
+    public final PhotonCamera cam = new PhotonCamera("ov9281");
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
-            new Translation3d(0.5, 0.0, 0.5),
+            new Translation3d(0.5, 0.0, 0.5), // camera placement on robot
             new Rotation3d(0, 0, 0));
 
     AprilTagFieldLayout aprilTagFieldLayout;
@@ -46,13 +46,21 @@ public class AprilTagHelper {
                 robotToCam);
     }
 
-    public static Optional<EstimatedRobotPose> getEstimatedGlobalPose2d(Pose2d prevEstimatedRobotPose) {
+    /**
+     * 
+     * @param prevEstimatedRobotPose
+     * @return an EstimatedRobotPose which includes a Pose3d of the latest estimated
+     *         pose (using the selected strategy) along with a double of the 
+     *         timestamp when the robot pose was estimated
+     * Use this to update drivetrain pose estimator
+     */
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         poseEstimator.setReferencePose(prevEstimatedRobotPose);
         return poseEstimator.update();
     }
 
     // unfiltered view of camera
-    public static void toggleDriverMode() {
+    public void toggleDriverMode() {
         if (cam.getDriverMode()) {
             cam.setDriverMode(false);
         }
@@ -62,12 +70,12 @@ public class AprilTagHelper {
         }
     }
 
-    public static Optional<PhotonPipelineResult> getLatestResult() {
+    public Optional<PhotonPipelineResult> getLatestResult() {
         var result = cam.getLatestResult();
         return result != null ? Optional.of(result) : Optional.empty();
     }
 
-    public static Optional<PhotonTrackedTarget> getBestTarget() {
+    public Optional<PhotonTrackedTarget> getBestTarget() {
         var latestOpt = getLatestResult();
         if (latestOpt.isPresent()) {
             if (latestOpt.get().hasTargets()) {
