@@ -2,6 +2,7 @@ package frc.robot.vision;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagHelper {
     public final PhotonCamera cam = new PhotonCamera("ov9281");
@@ -36,25 +38,44 @@ public class AprilTagHelper {
         init();
     }
 
-    public List<Pose3d> aprilTagPoses()
+    public HashMap<Integer, Optional<Pose3d>> aprilTagPoses()
 	{
 		// PhotonPipelineResult result = AprilTagHelper.cam.getLatestResult();
 		// PhotonTrackedTarget target = result.getBestTarget();
 		// List<PhotonTrackedTarget> targets = result.getTargets();
 
-		ArrayList<Pose3d> aprilTagPoses = new ArrayList<>();
-		for (int i = 1; i < 9; i++) {
-            Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(i);
-            if(tagPose.isPresent())
-            {
-                aprilTagPoses.add(tagPose.get());
-            }
-		}
+		// ArrayList<Pose3d> aprilTagPoses = new ArrayList<>();
+		// for (int i = 1; i < 9; i++) {
+        //     Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(i);
+        //     if(tagPose.isPresent())
+        //     {
+        //         aprilTagPoses.add(tagPoses.get());
+        //     }
+		// }
+
+        HashMap<Integer, Optional<Pose3d>> aprilTagPoses = new HashMap<Integer, Optional<Pose3d>>();
+        for (int i = 1; i <= 8; i++) 
+        {
+            aprilTagPoses.put(i, aprilTagFieldLayout.getTagPose(i));
+        }
 
         return aprilTagPoses;
 	}
 
-    
+    public void updateField2d(Field2d field)
+    {
+        HashMap<Integer, Optional<Pose3d>> aprilTagPoses = aprilTagPoses();
+        for (Integer aprilTagId : aprilTagPoses.keySet()) 
+        {
+            Optional<Pose3d> tagPose = aprilTagPoses.get(aprilTagId);
+            if(tagPose.isPresent())
+            {
+                Pose2d tagPose2d = tagPose.get().toPose2d();
+                field.getObject("April Tag " + aprilTagId).setPose(tagPose2d);
+            }
+        }
+
+    }
 
     private void init() {
         try {
