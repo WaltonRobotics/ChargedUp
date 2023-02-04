@@ -1,0 +1,91 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "Auton Chooser": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/SwerveSubsystem/Field2d": "Field2d",
+      "/Shuffleboard/SwerveSubsystem/SwerveSubsystem": "Subsystem",
+      "/SmartDashboard/Auton Chooser": "String Chooser",
+      "/SmartDashboard/Field2d": "Field2d"
+    },
+    "windows": {
+      "/Shuffleboard/SwerveSubsystem/Field2d": {
+        "April Tag 1": {
+          "style": "Hidden"
+        },
+        "April Tag 2": {
+          "style": "Hidden"
+        },
+        "April Tag 3": {
+          "style": "Hidden"
+        },
+        "April Tag 4": {
+          "style": "Hidden"
+        },
+        "April Tag 5": {
+          "style": "Hidden"
+        },
+        "April Tag 6": {
+          "style": "Hidden"
+        },
+        "April Tag 7": {
+          "style": "Hidden"
+        },
+        "April Tag 8": {
+          "style": "Hidden"
+        },
+        "April Tags": {
+          "selectable": false
+        },
+        "Swerve Modules": {
+          "arrowColor": [
+            0.0,
+            0.3035717010498047,
+            1.0,
+            255.0
+          ],
+          "arrowSize": 11,
+          "style": "Hidden"
+        },
+        "height": 8.013699531555176,
+        "image": "C:\\Users\\xiegr\\GitHub\\ChargedUp\\field23.png",
+        "width": 16.541749954223633,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "2974",
+    "visible": false
+  },
+  "NetworkTables View": {
+    "visible": false
+  }
+}

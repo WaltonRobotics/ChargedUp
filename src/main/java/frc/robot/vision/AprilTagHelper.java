@@ -38,43 +38,13 @@ public class AprilTagHelper {
         init();
     }
 
-    public HashMap<Integer, Optional<Pose3d>> aprilTagPoses()
-	{
-		// PhotonPipelineResult result = AprilTagHelper.cam.getLatestResult();
-		// PhotonTrackedTarget target = result.getBestTarget();
-		// List<PhotonTrackedTarget> targets = result.getTargets();
-
-		// ArrayList<Pose3d> aprilTagPoses = new ArrayList<>();
-		// for (int i = 1; i < 9; i++) {
-        //     Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(i);
-        //     if(tagPose.isPresent())
-        //     {
-        //         aprilTagPoses.add(tagPoses.get());
-        //     }
-		// }
-
-        HashMap<Integer, Optional<Pose3d>> aprilTagPoses = new HashMap<Integer, Optional<Pose3d>>();
-        for (int i = 1; i <= 8; i++) 
-        {
-            aprilTagPoses.put(i, aprilTagFieldLayout.getTagPose(i));
+    public void updateField2d(Field2d field) {
+        var poseList = new ArrayList<Pose2d>();
+        for (int i = 1; i <= 8; i++) {
+            poseList.add(aprilTagFieldLayout.getTagPose(i).get().toPose2d());
         }
-
-        return aprilTagPoses;
-	}
-
-    public void updateField2d(Field2d field)
-    {
-        HashMap<Integer, Optional<Pose3d>> aprilTagPoses = aprilTagPoses();
-        for (Integer aprilTagId : aprilTagPoses.keySet()) 
-        {
-            Optional<Pose3d> tagPose = aprilTagPoses.get(aprilTagId);
-            if(tagPose.isPresent())
-            {
-                Pose2d tagPose2d = tagPose.get().toPose2d();
-                field.getObject("April Tag " + aprilTagId).setPose(tagPose2d);
-            }
-        }
-
+        
+        field.getObject("April Tags").setPoses(poseList);
     }
 
     private void init() {
