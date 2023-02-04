@@ -33,6 +33,9 @@ public class Paths {
 				kMaxAccelerationMetersPerSecondSquared);
 		public static final List<PathPlannerTrajectory> twoPiece = PathPlanner.loadPathGroup("banks3", false,
 				kPPConstraints);
+		public static final PathPlannerTrajectory twoPieceBalance = PathPlanner.loadPath("twoPieceBalance", 
+				kMaxSpeedMetersPerSecond, 
+				kMaxAccelerationMetersPerSecondSquared);
 	}
 
 	public static final class ReferencePoints{
