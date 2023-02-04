@@ -64,7 +64,7 @@ public class AprilTagHelper {
         }
 
         camList.add(new Pair<PhotonCamera, Transform3d>(cam, robotToCam));
-        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, cam,
+        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_LAST_POSE, cam,
                 robotToCam);
     }
 
@@ -78,6 +78,7 @@ public class AprilTagHelper {
      */
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         poseEstimator.setReferencePose(prevEstimatedRobotPose);
+        poseEstimator.setLastPose(prevEstimatedRobotPose);
         return poseEstimator.update();
     }
 
@@ -106,5 +107,9 @@ public class AprilTagHelper {
         }
 
         return Optional.empty();
+    }
+
+    public void updateReferencePose(Pose2d poseMeters) {
+        poseEstimator.setReferencePose(poseMeters);
     }
 }

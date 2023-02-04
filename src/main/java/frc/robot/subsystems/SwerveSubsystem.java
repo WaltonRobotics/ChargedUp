@@ -7,21 +7,19 @@ import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -35,18 +33,13 @@ import static frc.robot.Constants.SwerveK.*;
 import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import org.opencv.photo.Photo;
 import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
@@ -69,6 +62,9 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_swerveState = new SwerveDriveState(kModuleTranslations);
 	private final SwerveAutoBuilder autoBuilder;
+
+	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+		kKinematics, getHeading(), getModulePositions());
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
 			kKinematics,
@@ -254,6 +250,13 @@ public class SwerveSubsystem extends SubsystemBase {
 		resetOdometry(pose);
 	}
 
+	/*
+	 * resets wheel odometry pose to poseEstimator
+	 */
+	public void resetOdometry(){
+		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
+	}
+
 	/**
 	 * Use Apriltag vision to balance robot
 	 * on the charging station
@@ -323,8 +326,15 @@ public class SwerveSubsystem extends SubsystemBase {
 				.until(() -> autoThetaController.atSetpoint());
 	}
 
+	/**
+	 * 
+	 */
 	public void updateRobotPose() {
+		m_odometry.update(getHeading(), getModulePositions());
+		m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
+
 		m_poseEstimator.update(getHeading(), getModulePositions());
+		// m_apriltagHelper.updateReferencePose(m_odometry.getPoseMeters());
 		Optional<EstimatedRobotPose> result = m_apriltagHelper
 				.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
 
