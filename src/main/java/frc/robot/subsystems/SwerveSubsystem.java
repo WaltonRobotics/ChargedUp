@@ -254,9 +254,9 @@ public class SwerveSubsystem extends SubsystemBase {
 				: Rotation2d.fromDegrees(m_pigeon.getYaw());
 	}
 
-	// TODO:RESET POSE ESTIMATOR
 	public void resetPose(Pose2d pose) {
 		m_pigeon.setYaw(pose.getRotation().getDegrees());
+		//resets pose estimator
 		resetOdometry(pose);
 	}
 
@@ -321,7 +321,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	/*
 	 * 
 	 */
-	public CommandBase autoScore(PathPlannerState finalPoint){
+	public CommandBase autoScore(){
 		PathPoint currentPosition = PathPoint.fromCurrentHolonomicState(getPose(), new ChassisSpeeds(0, 0, 0));
 		return getFullAuto(PathPlanner.generatePath(
 			new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
@@ -339,6 +339,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
+		resetPose(getPose());
 		return autoBuilder.fullAuto(trajectory);
 	}
 

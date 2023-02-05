@@ -71,6 +71,7 @@ public class RobotContainer {
         driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
         driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
         driver.b().onTrue(new InstantCommand(() -> s_Swerve.realignOdometry()));
+        driver.leftBumper().whileTrue(s_Swerve.autoScore());
     }
 
     public void initShuffleBoard() {

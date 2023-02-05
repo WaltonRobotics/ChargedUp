@@ -47,5 +47,7 @@ public class Paths {
 		public static final PathPoint tag2 = new PathPoint(new Translation2d(14.80,4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
 		public static final PathPoint redRightOut = new PathPoint(new Translation2d(11.15, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
 		public static final PathPoint redRightIn = new PathPoint(new Translation2d(14.70, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint blue = new PathPoint(new Translation2d(14.70, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		
 	}
 }
