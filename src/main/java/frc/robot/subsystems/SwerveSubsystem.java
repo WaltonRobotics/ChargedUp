@@ -38,6 +38,9 @@ import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 import static frc.robot.auton.Paths.ReferencePoints.tag1;
 import static frc.robot.auton.Paths.ReferencePoints.redRightOut;
 import static frc.robot.auton.Paths.ReferencePoints.redRightIn;
+import static frc.robot.auton.Paths.ReferencePoints.blueRightOut;
+import static frc.robot.auton.Paths.ReferencePoints.blueRightIn;
+import static frc.robot.auton.Paths.ReferencePoints.tag7;
 
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +100,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 		autoThetaController.setTolerance(Rotation2d.fromDegrees(2.5).getRadians());
 
-		// m_field.setRobotPose(getPose());
 		m_swerveState.update(getPose(), getModuleStates(), m_field);
 		m_apriltagHelper.updateField2d(m_field);
 		DashboardManager.addTabSendable(this, "Field2d", m_field);
@@ -107,8 +109,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				kKinematics, // SwerveDriveKinematics
 				kTranslationPID,
 				kRotationPID,
-				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the drive
-																	// subsystem
+				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the subsystem
 				autoEventMap,
 				true,
 				this);
@@ -258,7 +259,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * resets wheel odometry pose to poseEstimator
+	 * resets wheel odometry pose to poseEstimator pose (apriltag)
 	 */
 	public void realignOdometry(){
 		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
@@ -275,8 +276,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * Use Apriltag vision to balance robot
-	 * on the charging station
+	 * Use gyro to balance on charging station
 	 */
 	public void handleAutoBalance() {
 		double xRate = 0;
@@ -323,9 +323,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		return getFullAuto(PathPlanner.generatePath(
 			new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
 			currentPosition,
-			redRightOut,
-			redRightIn,
-			tag1));
+			blueRightOut,
+			blueRightIn,
+			tag7));
 	}
 
 	/*

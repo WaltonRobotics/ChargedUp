@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagHelper {
@@ -25,7 +26,7 @@ public class AprilTagHelper {
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
             new Translation3d(0.5, 0.0, 0.5), // camera placement on robot
-            new Rotation3d(0, 0, 0));
+            new Rotation3d(0, Units.degreesToRadians(15), 0));
 
     AprilTagFieldLayout aprilTagFieldLayout;
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
