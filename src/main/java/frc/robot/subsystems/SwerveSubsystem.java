@@ -11,7 +11,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
@@ -22,6 +25,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -34,6 +38,9 @@ import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
+import static frc.robot.auton.Paths.ReferencePoints.tag1;
+import static frc.robot.auton.Paths.ReferencePoints.redRightOut;
+import static frc.robot.auton.Paths.ReferencePoints.redRightIn;
 
 import java.util.HashMap;
 import java.util.List;
@@ -315,7 +322,13 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * 
 	 */
 	public CommandBase autoScore(PathPlannerState finalPoint){
-		return null;
+		PathPoint currentPosition = PathPoint.fromCurrentHolonomicState(getPose(), new ChassisSpeeds(0, 0, 0));
+		return getFullAuto(PathPlanner.generatePath(
+			new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
+			currentPosition,
+			redRightOut,
+			redRightIn,
+			tag1));
 	}
 
 	/*
