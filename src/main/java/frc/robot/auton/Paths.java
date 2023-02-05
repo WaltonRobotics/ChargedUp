@@ -43,11 +43,11 @@ public class Paths {
 		//position, heading (rotation), holonomic rotation
 		public static final PathPoint tag1 = new PathPoint(new Translation2d(14.70, .5), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(90));
 		public static final PathPoint tag2 = new PathPoint(new Translation2d(14.80,4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint tag7 = new PathPoint(new Translation2d(2.04, 3.28), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(-180));
+		public static final PathPoint tag7 = new PathPoint(new Translation2d(2.04, 3.28), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint redRightOut = new PathPoint(new Translation2d(11.15, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
 		public static final PathPoint redRightIn = new PathPoint(new Translation2d(14.70, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint blueRightOut = new PathPoint(new Translation2d(6.15, 1.00), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint blueRightIn = new PathPoint(new Translation2d(2.50, 1.00), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint blueRightOut = new PathPoint(new Translation2d(6.15, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueRightIn = new PathPoint(new Translation2d(2.50, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 		
 		
 	}
