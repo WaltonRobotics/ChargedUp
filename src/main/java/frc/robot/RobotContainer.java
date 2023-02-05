@@ -14,6 +14,7 @@ import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.threePiece2;
 import static frc.robot.auton.Paths.PPPaths.threePiece3;
 import static frc.robot.auton.Paths.PPPaths.twoPiece;
+import static frc.robot.auton.Paths.PPPaths.twoPieceBalance;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -69,6 +70,7 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(2, 0, true)));
         driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
+        driver.leftTrigger().whileTrue(new InstantCommand(() -> s_Swerve.drive(-0.5, 0, 0, true, true)));
         driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
         driver.b().onTrue(new InstantCommand(() -> s_Swerve.realignOdometry()));
     }
@@ -84,6 +86,7 @@ public class RobotContainer {
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
         AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.fullAuto(s_Swerve, threePiece3));
+        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE, AutonFactory.fullAuto(s_Swerve, twoPieceBalance));
     }
 
     public void mapAutonEvents() {
