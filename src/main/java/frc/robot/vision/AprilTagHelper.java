@@ -25,7 +25,7 @@ public class AprilTagHelper {
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
             new Translation3d(0.5, 0.0, 0.5), // camera placement on robot
-            new Rotation3d(0, 0, 0));
+            new Rotation3d(0, Math.toRadians(15), 0));
 
     AprilTagFieldLayout aprilTagFieldLayout;
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
