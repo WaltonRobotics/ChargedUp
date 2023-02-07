@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.photonvision.EstimatedRobotPose;
+import frc.lib.vision.EstimatedRobotPose;
+// import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import frc.lib.vision.PhotonPoseEstimator;
+// import org.photonvision.PhotonPoseEstimator;
+import frc.lib.vision.PhotonPoseEstimator.PoseStrategy;
+// import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -25,7 +28,7 @@ public class AprilTagHelper {
     public final PhotonCamera cam = new PhotonCamera("ov9281");
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
-            new Translation3d(0.5, 0.0, 0.5), // camera placement on robot
+            new Translation3d(Units.inchesToMeters(6), 0.0, Units.inchesToMeters(34.75)), // camera placement on robot
             new Rotation3d(0, Units.degreesToRadians(-15), 0));
 
     AprilTagFieldLayout aprilTagFieldLayout;
@@ -53,7 +56,7 @@ public class AprilTagHelper {
         }
 
         camList.add(new Pair<PhotonCamera, Transform3d>(cam, robotToCam));
-        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_LAST_POSE, cam,
+        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cam,
                 robotToCam);
     }
 
