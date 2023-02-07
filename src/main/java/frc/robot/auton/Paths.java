@@ -43,12 +43,16 @@ public class Paths {
 		//position, heading (rotation), holonomic rotation
 		public static final PathPoint tag1 = new PathPoint(new Translation2d(14.70, 0.5), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(90));
 		public static final PathPoint tag2 = new PathPoint(new Translation2d(14.80, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint tag3 = new PathPoint(new Translation2d(14.80, 4.47), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint tag4 = new PathPoint(new Translation2d(15.78, 6.70), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
 		public static final PathPoint tag5 = new PathPoint(new Translation2d(0.91, 6.70), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag6 = new PathPoint(new Translation2d(1.77, 4.41), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag7 = new PathPoint(new Translation2d(1.77, 2.70), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag8 = new PathPoint(new Translation2d(1.77, 1.05), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint redRightOut = new PathPoint(new Translation2d(11.15, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
 		public static final PathPoint redRightIn = new PathPoint(new Translation2d(14.70, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redLeftOut = new PathPoint(new Translation2d(10.38, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		public static final PathPoint redLeftIn = new PathPoint(new Translation2d(13.75, 0.65), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
 		public static final PathPoint blueRightOut = new PathPoint(new Translation2d(6.15, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 		public static final PathPoint blueRightIn = new PathPoint(new Translation2d(2.50, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 		public static final PathPoint blueLeftOut = new PathPoint(new Translation2d(6.15, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
