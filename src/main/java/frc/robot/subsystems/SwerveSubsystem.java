@@ -16,8 +16,6 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -31,14 +29,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
-import static frc.robot.auton.Paths.ReferencePoints.blueRightOut;
-import static frc.robot.auton.Paths.ReferencePoints.blueRightIn;
-import static frc.robot.auton.Paths.ReferencePoints.tag7;
 import static frc.robot.auton.Paths.ReferencePoints.*;
 
 import java.util.HashMap;
@@ -330,9 +326,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
 					currentPathPoint,
-					redRightOut,
-					redRightIn,
-					tag3);
+					redA,
+					redB,
+					redC);
 		});
 
 		var followCmd = autoBuilder.followPath(() -> {return currentTrajectory;});

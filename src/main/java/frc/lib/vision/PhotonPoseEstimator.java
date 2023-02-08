@@ -284,7 +284,7 @@ public class PhotonPoseEstimator {
     }
 
     // multi-target solvePNP
-    System.out.println("SIZE: " + result.getTargets().size());
+    // System.out.println("SIZE: " + result.getTargets().size());
     if (result.getTargets().size() > 1) {
       CameraProperties temp = new CameraProperties();
       temp.setCalibration(1280, 720, 
