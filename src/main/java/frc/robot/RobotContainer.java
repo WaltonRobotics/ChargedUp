@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -48,7 +50,6 @@ public class RobotContainer {
                 () -> true // openLoop
             )
         );
-
         initShuffleBoard();
         // Configure the button bindings
         configureButtonBindings();
@@ -74,7 +75,9 @@ public class RobotContainer {
     }
 
     public void initShuffleBoard() {
-
+        SmartDashboard.putNumber("PX Controller", Constants.AutoConstants.kPXController);
+        SmartDashboard.putNumber("PY Controller", Constants.AutoConstants.kPYController);
+        SmartDashboard.putNumber("PTheta Controller", Constants.AutoConstants.kPThetaController);
     }
 
     public void mapAutonCommands() {
