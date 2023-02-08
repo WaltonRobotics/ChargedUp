@@ -49,8 +49,8 @@ public class Paths {
 		public static final PathPoint tag6 = new PathPoint(new Translation2d(1.77, 4.41), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag7 = new PathPoint(new Translation2d(1.77, 2.70), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag8 = new PathPoint(new Translation2d(1.77, 1.05), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
-		public static final PathPoint redRightOut = new PathPoint(new Translation2d(11.15, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
-		public static final PathPoint redRightIn = new PathPoint(new Translation2d(14.70, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redRightOut = new PathPoint(new Translation2d(11.15, 4.5), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		public static final PathPoint redRightIn = new PathPoint(new Translation2d(14.70, 4.5), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
 		public static final PathPoint redLeftOut = new PathPoint(new Translation2d(10.38, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
 		public static final PathPoint redLeftIn = new PathPoint(new Translation2d(13.75, 0.65), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
 		public static final PathPoint blueRightOut = new PathPoint(new Translation2d(6.15, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));

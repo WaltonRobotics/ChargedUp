@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.SwerveModule;
 import frc.robot.vision.AprilTagHelper;
 import frc.lib.swerve.SwerveDriveState;
+import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -38,6 +39,7 @@ import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 import static frc.robot.auton.Paths.ReferencePoints.blueRightOut;
 import static frc.robot.auton.Paths.ReferencePoints.blueRightIn;
 import static frc.robot.auton.Paths.ReferencePoints.tag7;
+import static frc.robot.auton.Paths.ReferencePoints.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,10 +70,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_swerveState = new SwerveDriveState(kModuleTranslations);
-	private final SwerveAutoBuilder autoBuilder;
+	private final WaltonSwerveAutoBuilder autoBuilder;
 
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
 		kKinematics, getHeading(), getModulePositions());
+	
+	private PathPoint currentPathPoint;
+	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
 			kKinematics,
@@ -101,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_swerveState.update(getPose(), getModuleStates(), m_field);
 		m_apriltagHelper.updateField2d(m_field);
 		DashboardManager.addTabSendable(this, "Field2d", m_field);
-		autoBuilder = new SwerveAutoBuilder(
+		autoBuilder = new WaltonSwerveAutoBuilder(
 				this::getPose, // Pose2d supplier
 				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
 				kKinematics, // SwerveDriveKinematics
@@ -317,13 +322,22 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * 
 	 */
 	public CommandBase autoScore(){
-		PathPoint currentPosition = PathPoint.fromCurrentHolonomicState(getPose(), new ChassisSpeeds(0, 0, 0));
-		return getFullAuto(PathPlanner.generatePath(
-			new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
-			currentPosition,
-			blueRightOut,
-			blueRightIn,
-			tag7));
+		// runOnce( curPos = thing; ppt = generate(thing))
+		var pathCmd = runOnce(() ->  {
+			currentPathPoint = PathPoint.fromCurrentHolonomicState(
+				getPose(), 
+				new ChassisSpeeds(0, 0, 0));
+			currentTrajectory = PathPlanner.generatePath(
+					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
+					currentPathPoint,
+					redRightOut,
+					redRightIn,
+					tag3);
+		});
+
+		var followCmd = autoBuilder.followPath(() -> {return currentTrajectory;});
+
+		return pathCmd.andThen(followCmd);
 	}
 
 	/*
