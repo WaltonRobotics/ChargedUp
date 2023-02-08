@@ -14,7 +14,8 @@ public class AutonChooser {
         THREE_PIECE2("THREE PIECE AUTON 2"),
         TWO_PIECE_PAUSE("Two Piece then Pause"),
         THREE_PIECE3("THREE PIECE AUTON 3"),
-        TWO_PIECE_BALANCE("two piece and park");
+        TWO_PIECE_BALANCE("two piece and park"),
+        ONE_PIECE("one piece and park");
 
         public final String description;
 

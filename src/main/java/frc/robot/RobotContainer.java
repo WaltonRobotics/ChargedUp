@@ -11,10 +11,7 @@ import frc.robot.subsystems.*;
 import frc.robot.vision.AprilTagHelper;
 import frc.robot.auton.AutonChooser.AutonOption;
 import static frc.robot.auton.AutonFactory.autonEventMap;
-import static frc.robot.auton.Paths.PPPaths.threePiece2;
-import static frc.robot.auton.Paths.PPPaths.threePiece3;
-import static frc.robot.auton.Paths.PPPaths.twoPiece;
-import static frc.robot.auton.Paths.PPPaths.twoPieceBalance;
+import static frc.robot.auton.Paths.PPPaths.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -88,6 +85,7 @@ public class RobotContainer {
         AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.fullAuto(s_Swerve, threePiece3));
         AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE, AutonFactory.fullAuto(s_Swerve, twoPieceBalance));
+        AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE, AutonFactory.fullAuto(s_Swerve, onePiece));        
     }
 
     public void mapAutonEvents() {

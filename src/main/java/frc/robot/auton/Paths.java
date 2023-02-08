@@ -37,6 +37,9 @@ public class Paths {
 		public static final PathPlannerTrajectory twoPieceBalance = PathPlanner.loadPath("twoPieceBalance", 
 				kMaxSpeedMetersPerSecond, 
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory onePiece = PathPlanner.loadPath("onePiece", 
+				kMaxSpeedMetersPerSecond, 
+				kMaxAccelerationMetersPerSecondSquared);
 	}
 
 	public static final class ReferencePoints{
