@@ -31,7 +31,7 @@ public class RobotContainer {
     private final AprilTagHelper m_apriltagHelper = new AprilTagHelper();
 
     /* Subsystems */
-    private final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap, m_apriltagHelper);
+    public final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap, m_apriltagHelper);
 
     /* Auton */
 

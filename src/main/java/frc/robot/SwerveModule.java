@@ -8,7 +8,9 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.DashboardManager;
@@ -58,11 +60,11 @@ public class SwerveModule {
         this.moduleNumber = moduleNumber;
         this.m_angleOffset = moduleConstants.angleOffset;
 
-        nte_driveTemp = DashboardManager.addTabDial("Swerve", moduleName + "/DriveTemp", 0, 100);
-        nte_steerTemp = DashboardManager.addTabDial("Swerve", moduleName + "/SteerTemp", 0, 100);
-        nte_cancoderAngle = DashboardManager.addTabItem("Swerve", moduleName + "/CancoderAngle", 0);
-        nte_modVelocity = DashboardManager.addTabItem("Swerve", moduleName + "/ModuleVelocity", 0);
-        nte_cancoderIntegratedAngle = DashboardManager.addTabItem("Swerve", moduleName + "/CancoderIntegratedAngle", 0);
+        nte_driveTemp = DashboardManager.addTabDial("SwerveSubsystem", moduleName + "/DriveTemp", 0, 100);
+        nte_steerTemp = DashboardManager.addTabDial("SwerveSubsystem", moduleName + "/SteerTemp", 0, 100);
+        nte_cancoderAngle = DashboardManager.addTabItem("SwerveSubsystem", moduleName + "/CancoderAngle", 0);
+        nte_modVelocity = DashboardManager.addTabItem("SwerveSubsystem", moduleName + "/ModuleVelocity", 0);
+        nte_cancoderIntegratedAngle = DashboardManager.addTabItem("SwerveSubsystem", moduleName + "/CancoderIntegratedAngle", 0);
         
         /* Angle Encoder Config */
         m_angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
@@ -142,6 +144,10 @@ public class SwerveModule {
     public void resetToAbsolute(){
         double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - m_angleOffset.getDegrees(), kAngleGearRatio);
         m_steerMotor.setSelectedSensorPosition(absolutePosition);
+    }
+
+    public void resetDriveToZero(){
+        m_driveMotor.setSelectedSensorPosition(0);
     }
 
     private void configAngleEncoder(){        

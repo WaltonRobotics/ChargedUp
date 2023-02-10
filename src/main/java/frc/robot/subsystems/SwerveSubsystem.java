@@ -275,6 +275,12 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.coastDriveMotor();
 		}
 	}
+	
+	public void resetDriveEncoders(){
+		for(var module : m_modules){
+			module.resetDriveToZero();
+		}
+	}
 
 	/**
 	 * Use gyro to balance on charging station
@@ -398,9 +404,11 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void periodic() {
 		for (var module : m_modules) {
 			module.periodic();
-			SmartDashboard.putNumber("Module Encoder Value", module.getDriveMotorPosition());
 		}
 		updateRobotPose();
-
+		SmartDashboard.putNumber("Left Front Module Encoder Value", m_modules[0].getDriveMotorPosition());
+		SmartDashboard.putNumber("Right Front Module Encoder Value", m_modules[1].getDriveMotorPosition());
+		SmartDashboard.putNumber("Left Rear Module Encoder Value", m_modules[2].getDriveMotorPosition());
+		SmartDashboard.putNumber("Right Rear Module Encoder Value", m_modules[3].getDriveMotorPosition());
 	}
 }
