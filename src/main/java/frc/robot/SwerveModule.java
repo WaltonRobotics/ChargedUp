@@ -131,6 +131,10 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(Conversions.falconToDegrees(m_steerMotor.getSelectedSensorPosition(), kAngleGearRatio));
     }
 
+    public double getDriveMotorPosition(){
+        return m_driveMotor.getSelectedSensorPosition();
+    }
+
     public Rotation2d getCanCoder(){
         return Rotation2d.fromDegrees(m_angleEncoder.getAbsolutePosition());
     }
