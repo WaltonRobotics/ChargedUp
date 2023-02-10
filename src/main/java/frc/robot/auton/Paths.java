@@ -1,5 +1,6 @@
 package frc.robot.auton;
 
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -11,6 +12,8 @@ import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondS
 import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
 import static frc.robot.Constants.SwerveK.kKinematics;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Paths {
@@ -42,6 +45,15 @@ public class Paths {
 				kMaxAccelerationMetersPerSecondSquared);
 	}
 
+	public static final class PPAutoscoreClass {
+		public static final PathConstraints pathConstraints = new PathConstraints(kMaxSpeedMetersPerSecond, kMaxSpeedMetersPerSecond);
+		
+		public static List<PathPoint> redBumpy = Arrays.asList(ReferencePoints.redLeft1, ReferencePoints.redLeft2, ReferencePoints.redLeft3);
+		public static List<PathPoint> redNotBumpy = Arrays.asList(ReferencePoints.redRight1, ReferencePoints.redRight2, ReferencePoints.redRight3);
+		public static List<PathPoint> blueBumpy = Arrays.asList(ReferencePoints.blueRight1, ReferencePoints.blueRight2, ReferencePoints.blueRight3);
+		public static List<PathPoint> blueNotBumpy = Arrays.asList(ReferencePoints.blueLeft1, ReferencePoints.blueLeft2, ReferencePoints.blueLeft3);
+	}
+
 	public static final class ReferencePoints{
 		//position, heading (rotation), holonomic rotation
 		public static final PathPoint tag1 = new PathPoint(new Translation2d(14.70, 0.5), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(90));
@@ -52,15 +64,25 @@ public class Paths {
 		public static final PathPoint tag6 = new PathPoint(new Translation2d(1.77, 4.41), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag7 = new PathPoint(new Translation2d(1.77, 2.70), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag8 = new PathPoint(new Translation2d(1.77, 1.05), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(-180));
-		public static final PathPoint redA = new PathPoint(new Translation2d(10.94, 4.67), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint redB = new PathPoint(new Translation2d(12.32, 4.67), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint redC = new PathPoint(new Translation2d(14.27, 4.67), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		
+		public static final PathPoint redRight1 = new PathPoint(new Translation2d(10.94, 4.67), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redRight2 = new PathPoint(new Translation2d(12.32, 4.67), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redRight3 = new PathPoint(new Translation2d(14.27, 4.67), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redLeft1 = new PathPoint(new Translation2d(10.94, 0.82), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redLeft2 = new PathPoint(new Translation2d(12.32, 0.82), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redLeft3 = new PathPoint(new Translation2d(14.27, 0.82), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint blueLeft1 = new PathPoint(new Translation2d(5.76, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueLeft2 = new PathPoint(new Translation2d(4.5, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueLeft3 = new PathPoint(new Translation2d(1.95, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueRight1 = new PathPoint(new Translation2d(5.76, 0.82), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueRight2 = new PathPoint(new Translation2d(4.5, 0.82), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueRight3 = new PathPoint(new Translation2d(1.95, 0.82), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
 
-		public static final PathPoint redLeftOut = new PathPoint(new Translation2d(10.38, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
-		public static final PathPoint redLeftIn = new PathPoint(new Translation2d(13.75, 0.65), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint blueRightOut = new PathPoint(new Translation2d(6.15, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueRightIn = new PathPoint(new Translation2d(2.50, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueLeftOut = new PathPoint(new Translation2d(6.15, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueLeftIn = new PathPoint(new Translation2d(2.50, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		// public static final PathPoint redLeftOut = new PathPoint(new Translation2d(10.38, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(180));
+		// public static final PathPoint redLeftIn = new PathPoint(new Translation2d(13.75, 0.65), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		// public static final PathPoint blueRightOut = new PathPoint(new Translation2d(6.15, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		// public static final PathPoint blueRightIn = new PathPoint(new Translation2d(2.50, 1.00), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		// public static final PathPoint blueLeftOut = new PathPoint(new Translation2d(6.15, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		// public static final PathPoint blueLeftIn = new PathPoint(new Translation2d(2.50, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 	}
 }

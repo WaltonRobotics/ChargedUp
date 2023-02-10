@@ -1,19 +1,32 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
 import frc.robot.subsystems.*;
+import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagHelper;
+import frc.robot.vision.PathChooser;
+import frc.robot.vision.AprilTagChooser.AprilTagOption;
+import frc.robot.vision.PathChooser.PathOption;
 import frc.robot.auton.AutonChooser.AutonOption;
+import frc.robot.auton.Paths.PPAutoscoreClass;
+import frc.robot.auton.Paths.ReferencePoints;
+
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
+
+import javax.lang.model.util.ElementScanner14;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -41,6 +54,10 @@ public class RobotContainer {
     public RobotContainer() {
         // Set up autons
         mapAutonCommands();
+        mapTrajectories();
+        mapAprilTagPoints();
+        // addPathChoices();
+        // addAprilTagChoices();
         s_Swerve.setDefaultCommand(
             s_Swerve.teleopDriveCmd(
                 () -> -driver.getLeftY(),
@@ -91,6 +108,28 @@ public class RobotContainer {
         AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE, AutonFactory.fullAuto(s_Swerve, onePiece));        
     }
 
+    public void mapTrajectories() {
+        if (DriverStation.getAlliance().equals(Alliance.Red)) {
+            PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
+            PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
+        } else if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+            PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.blueBumpy);
+            PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.blueNotBumpy);  
+        }       
+    }
+
+    public void mapAprilTagPoints() {
+        if (DriverStation.getAlliance().equals(Alliance.Red)) {
+            AprilTagChooser.AssignPoint(AprilTagOption.TAG_1, ReferencePoints.tag1);
+            AprilTagChooser.AssignPoint(AprilTagOption.TAG_2, ReferencePoints.tag2);
+            AprilTagChooser.AssignPoint(AprilTagOption.TAG_3, ReferencePoints.tag3);
+        } else if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+            AprilTagChooser.AssignPoint(AprilTagOption.TAG_6, ReferencePoints.tag6);
+            AprilTagChooser.AssignPoint(AprilTagOption.TAG_7, ReferencePoints.tag7);
+            AprilTagChooser.AssignPoint(AprilTagOption.TAG_8, ReferencePoints.tag8);
+        }
+    }
+
     public void mapAutonEvents() {
         autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
     }
@@ -103,4 +142,30 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return AutonChooser.GetChosenAuton();
     }
+
+    // public void addPathChoices() {
+    //     DashboardManager.addTab("Path Chooser");
+    //     if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    //         DashboardManager.addTabItem("Path Chooser", "bumper side", PathOption.RED_BUMPY);
+    //         DashboardManager.addTabItem("Path Chooser", "no bumper side", PathOption.RED_NON_BUMPY);
+    //     }
+    //     else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
+    //         DashboardManager.addTabItem("Path Chooser", "bumper side", PathOption.BLUE_BUMPY);
+    //         DashboardManager.addTabItem("Path Chooser", "no bumper side", PathOption.BLUE_NON_BUMPY);
+    //     }
+    // }
+
+    // public void addAprilTagChoices() {
+    //     DashboardManager.addTab("AprilTag Chooser");
+    //     if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 1", AprilTagOption.TAG_1);
+    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 2", AprilTagOption.TAG_2);
+    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 3", AprilTagOption.TAG_3);
+    //     }
+    //     else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
+    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 6", AprilTagOption.TAG_6);
+    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 7", AprilTagOption.TAG_7);
+    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 8", AprilTagOption.TAG_8);
+    //     }
+    // }
 }

@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagHelper;
+import frc.robot.vision.PathChooser;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
@@ -39,6 +41,7 @@ import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 import static frc.robot.auton.Paths.ReferencePoints.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -322,21 +325,23 @@ public class SwerveSubsystem extends SubsystemBase {
 		System.out.println("NO TARGET DETECTED");
 	}
 
-	/*
-	 * 
-	 */
 	public CommandBase autoScore(){
 		// runOnce( curPos = thing; ppt = generate(thing))
+
+
 		var pathCmd = runOnce(() ->  {
 			currentPathPoint = PathPoint.fromCurrentHolonomicState(
 				getPose(), 
 				new ChassisSpeeds(0, 0, 0));
+
+			List<PathPoint> allPoints = new ArrayList<>();
+			allPoints.add(currentPathPoint);
+			allPoints.addAll(PathChooser.GetChosenPath());
+			allPoints.add(AprilTagChooser.GetChosenAprilTag());
+			
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
-					currentPathPoint,
-					redA,
-					redB,
-					redC);
+					allPoints);
 		});
 
 		var followCmd = autoBuilder.followPath(() -> {return currentTrajectory;});
