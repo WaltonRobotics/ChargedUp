@@ -83,7 +83,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final AprilTagHelper m_apriltagHelper;
 
-	// TODO: set to neutral, measure encoder tics, find wheel diameter empircally
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagHelper apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
@@ -222,7 +221,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return m_poseEstimator.getEstimatedPosition();
 	}
 
-	public void resetOdometry(Pose2d pose) {
+	public void resetEstimatorPose(Pose2d pose) {
 		m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
 	}
 
@@ -255,14 +254,15 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void resetPose(Pose2d pose) {
 		m_pigeon.setYaw(pose.getRotation().getDegrees());
 		//resets pose estimator
-		resetOdometry(pose);
+		resetEstimatorPose(pose);	//resets poseEstimator
+		resetOdometryPose(pose);	//sets odometry to poseEstimator
 	}
 
 	/*
-	 * resets wheel odometry pose to poseEstimator pose (apriltag)
+	 * resets wheel odometry pose to pose
 	 */
-	public void realignOdometry(){
-		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
+	public void resetOdometryPose(Pose2d pose){
+		m_odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
 	}
 
 	/*
@@ -322,7 +322,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoScore(){
-		// runOnce( curPos = thing; ppt = generate(thing))
+		// runOnce(curPos = thing; ppt = generate(thing))
 
 
 		var pathCmd = runOnce(() ->  {
