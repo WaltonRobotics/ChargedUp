@@ -42,7 +42,6 @@ public class RobotContainer {
 
     /* Subsystems */
     public final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap, m_apriltagHelper);
-    private final Elevator s_Elevator = new Elevator();
     /* Drive Controls */
 
 
@@ -139,9 +138,6 @@ public class RobotContainer {
 
     public void mapAutonEvents() {
         autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
-        driver.a()
-            .onTrue(s_Elevator.setLiftTarget(0.3))
-            .onFalse(s_Elevator.setLiftTarget(0));
         // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
 
