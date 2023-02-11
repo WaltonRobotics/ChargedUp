@@ -341,14 +341,14 @@ public class SwerveSubsystem extends SubsystemBase {
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(currentPathPoint);
 
-			// for (PathPoint addedPP : PathChooser.GetChosenPath()) {
-			// 	boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			// 	var curPathPoint = (PathPointAccessor) currentPathPoint;
-			// 	var addedPathPoint 
-			// 	if(onRed && curPathPoint) {
-
-			// 	}
-			// }
+			for (PathPoint addedPP : PathChooser.GetChosenPath()) {
+				boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+				var curPathPoint = (PathPointAccessor) currentPathPoint;
+				var addedPathPoint = (PathPointAccessor) addedPP;
+				if(onRed && curPathPoint.getPosition().getX() > addedPathPoint.getPosition().getX()) {
+					
+				}
+			}
 
 
 			// allPoints.addAll(PathChooser.GetChosenPath());
