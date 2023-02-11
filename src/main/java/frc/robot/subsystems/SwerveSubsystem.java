@@ -271,6 +271,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
 	}
 
+	public void resetOdometryPose(){
+		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
+	}
+
 	/*
 	 * sets steer to brake and drive to coast for odometry testing
 	 */

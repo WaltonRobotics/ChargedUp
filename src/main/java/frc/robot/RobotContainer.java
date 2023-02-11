@@ -87,7 +87,7 @@ public class RobotContainer {
         driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
         driver.leftTrigger().whileTrue(new InstantCommand(() -> s_Swerve.drive(-0.5, 0, 0, true, true)));
         driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
-        driver.b().onTrue(new InstantCommand(() -> s_Swerve.resetOdometryPose(s_Swerve.getPose())));
+        driver.b().onTrue(new InstantCommand(() -> s_Swerve.resetOdometryPose()));
         driver.leftBumper().whileTrue(s_Swerve.autoScore());
     }
 
