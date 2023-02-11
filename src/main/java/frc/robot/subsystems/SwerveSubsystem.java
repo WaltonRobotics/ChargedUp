@@ -349,7 +349,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			double currentX = PathPointAccessor.poseFromPathPointHolo(currentPathPoint).getX();
 
 			for (PathPoint addedPP : chosenPathPoints) {
-				
+	
 				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
 				if(onRed && currentX > addedX) {
 					chosenPathPoints.remove(addedPP);
@@ -361,9 +361,8 @@ public class SwerveSubsystem extends SubsystemBase {
 					break;
 				}
 			}
-
 			allPoints.addAll(chosenPathPoints);
-			allPoints.add(AprilTagChooser.GetAprilTag(null));
+			allPoints.add(AprilTagChooser.GetChosenAprilTag());
 
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
