@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -138,6 +139,10 @@ public class RobotContainer {
             .onTrue(s_Elevator.setLiftTarget(0.3))
             .onFalse(s_Elevator.setLiftTarget(0));
         // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+    }
+
+    public void manageBalanceRumble(){
+        driver.getHID().setRumble(RumbleType.kBothRumble, s_Swerve.getBalanceRumble());
     }
 
     /**

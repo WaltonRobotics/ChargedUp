@@ -391,6 +391,18 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
+	 * Returns double based on angle from minimum
+	 */
+	public double getBalanceRumble(){
+		double pitchAngleDegrees = m_pigeon.getPitch();
+
+		if(pitchAngleDegrees > kMinimumBalanceDegrees){
+			return pitchAngleDegrees/(45-kMinimumBalanceDegrees);	//45 is max angle
+		}
+		return 0;
+	}
+
+	/*
 	 * Rotate to a robot-oriented degrees
 	 */
 	public CommandBase rotateAboutPoint(double degrees) {
@@ -440,9 +452,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
-		SmartDashboard.putNumber("Left Front Module Encoder Value", m_modules[0].getDriveMotorPosition());
-		SmartDashboard.putNumber("Right Front Module Encoder Value", m_modules[1].getDriveMotorPosition());
-		SmartDashboard.putNumber("Left Rear Module Encoder Value", m_modules[2].getDriveMotorPosition());
-		SmartDashboard.putNumber("Right Rear Module Encoder Value", m_modules[3].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Left Front Module Encoder Value", m_modules[0].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Right Front Module Encoder Value", m_modules[1].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Left Rear Module Encoder Value", m_modules[2].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Right Rear Module Encoder Value", m_modules[3].getDriveMotorPosition());
 	}
 }
