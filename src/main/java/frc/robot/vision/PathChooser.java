@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class PathChooser {
     public enum PathOption {
 
+       NOT_A_PATH("choose a different path smh"),
        RED_BUMPY("red left"),
        BLUE_BUMPY("blue right"),
        RED_NON_BUMPY("red right"),
