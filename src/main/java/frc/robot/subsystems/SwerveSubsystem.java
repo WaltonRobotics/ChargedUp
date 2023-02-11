@@ -208,6 +208,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		setChassisSpeeds(targetChassisSpeeds, false, false);
 	}
 
+	public ChassisSpeeds getChassisSpeeds(){
+		return kKinematics.toChassisSpeeds(getModuleStates());
+	}
+
 	/* Used by SwerveControllerCommand in Auto */
 	public void setModuleStates(SwerveModuleState[] desiredStates, boolean openLoop, boolean steerInPlace) {
 		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kMaxVelocityMps);
@@ -253,7 +257,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void resetPose(Pose2d pose) {
 		m_pigeon.setYaw(pose.getRotation().getDegrees());
-		//resets pose estimator
 		resetEstimatorPose(pose);	//resets poseEstimator
 		resetOdometryPose(pose);	//sets odometry to poseEstimator
 	}
@@ -266,7 +269,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * sets steer to brake and drive to coast
+	 * sets steer to brake and drive to coast for odometry testing
 	 */
 	public void testModules(){
 		for (var module : m_modules) {
@@ -275,6 +278,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 	
+	/*
+	 * sets relative drive encoders to 0
+	 */
 	public void resetDriveEncoders(){
 		for(var module : m_modules){
 			module.resetDriveToZero();
@@ -282,7 +288,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * Use gyro to balance on charging station
+	 * Use gyro to balance on charging station (CURRENTLY UNUSED)
 	 */
 	public void handleAutoBalance() {
 		double xRate = 0;
@@ -324,11 +330,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	public CommandBase autoScore(){
 		// runOnce(curPos = thing; ppt = generate(thing))
 
-
 		var pathCmd = runOnce(() ->  {
 			currentPathPoint = PathPoint.fromCurrentHolonomicState(
 				getPose(), 
-				new ChassisSpeeds(0, 0, 0));
+				getChassisSpeeds());
 
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(currentPathPoint);
@@ -361,6 +366,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		return autoBuilder.fullAuto(trajectoryList);
 	}
 
+	/*
+	 * Rotate to a robot-oriented degrees
+	 */
 	public CommandBase rotateAboutPoint(double degrees) {
 		return run(() -> {
 			autoThetaController.setSetpoint(Math.toRadians(degrees));
@@ -375,7 +383,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * 
+	 * updates odometry & poseEstimator positions
+	 * updates field
 	 */
 	public void updateRobotPose() {
 		m_odometry.update(getHeading(), getModulePositions());
@@ -390,7 +399,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		if (result.isPresent()) {
 			EstimatedRobotPose camPose = result.get();
-			//updates swervePoseEstimator
+			//updates swervePoseEstimator w/ Apriltag
 			m_poseEstimator.addVisionMeasurement(
 					camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
 			m_field.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
