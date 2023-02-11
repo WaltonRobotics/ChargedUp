@@ -7,6 +7,7 @@ import frc.robot.vision.PathChooser;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
+import frc.lib.util.PathPointAccessor;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -27,7 +28,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -337,7 +340,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(currentPathPoint);
-			allPoints.addAll(PathChooser.GetChosenPath());
+
+			// for (PathPoint addedPP : PathChooser.GetChosenPath()) {
+			// 	boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+			// 	var curPathPoint = (PathPointAccessor) currentPathPoint;
+			// 	var addedPathPoint 
+			// 	if(onRed && curPathPoint) {
+
+			// 	}
+			// }
+
+
+			// allPoints.addAll(PathChooser.GetChosenPath());
 			allPoints.add(AprilTagChooser.GetChosenAprilTag());
 			
 			currentTrajectory = PathPlanner.generatePath(
