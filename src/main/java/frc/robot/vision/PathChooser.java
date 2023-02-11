@@ -14,8 +14,8 @@ public class PathChooser {
     public enum PathOption {
 
        RED_BUMPY("red left"),
-       RED_NON_BUMPY("red right"),
        BLUE_BUMPY("blue right"),
+       RED_NON_BUMPY("red right"),
        BLUE_NON_BUMPY("blue left");
 
         public final String description;
