@@ -337,23 +337,28 @@ public class SwerveSubsystem extends SubsystemBase {
 			currentPathPoint = PathPoint.fromCurrentHolonomicState(
 				getPose(), 
 				getChassisSpeeds());
-
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(currentPathPoint);
+			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
+			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+			var curPathPoint = (PathPointAccessor) currentPathPoint;
 
-			for (PathPoint addedPP : PathChooser.GetChosenPath()) {
-				boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-				var curPathPoint = (PathPointAccessor) currentPathPoint;
+			for (PathPoint addedPP : chosenPathPoints) {
 				var addedPathPoint = (PathPointAccessor) addedPP;
 				if(onRed && curPathPoint.getPosition().getX() > addedPathPoint.getPosition().getX()) {
-					
+					chosenPathPoints.remove(addedPP);
+				}
+				else if(!onRed && curPathPoint.getPosition().getX() < addedPathPoint.getPosition().getX()) {
+					chosenPathPoints.remove(addedPP);
+				}
+				else {
+					break;
 				}
 			}
 
+			allPoints.addAll(chosenPathPoints);
+			allPoints.add(AprilTagChooser.GetAprilTag(null));
 
-			// allPoints.addAll(PathChooser.GetChosenPath());
-			allPoints.add(AprilTagChooser.GetChosenAprilTag());
-			
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
 					allPoints);
