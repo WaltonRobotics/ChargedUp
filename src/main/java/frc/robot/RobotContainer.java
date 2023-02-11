@@ -111,6 +111,8 @@ public class RobotContainer {
     }
 
     public void mapTrajectories() {
+        PathChooser.SetDefaultPath(PathOption.NOT_A_PATH);
+        PathChooser.AssignTrajectory(PathOption.NOT_A_PATH, PPAutoscoreClass.notAPath);
         if (DriverStation.getAlliance().equals(Alliance.Red)) {
             PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
             PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
@@ -121,6 +123,8 @@ public class RobotContainer {
     }
 
     public void mapAprilTagPoints() {
+        AprilTagChooser.SetDefaultAprilTag(AprilTagOption.NOT_A_TAG);
+        AprilTagChooser.AssignPoint(AprilTagOption.NOT_A_TAG, ReferencePoints.currentPoint);
         if (DriverStation.getAlliance().equals(Alliance.Red)) {
             AprilTagChooser.AssignPoint(AprilTagOption.TAG_1, ReferencePoints.tag1);
             AprilTagChooser.AssignPoint(AprilTagOption.TAG_2, ReferencePoints.tag2);

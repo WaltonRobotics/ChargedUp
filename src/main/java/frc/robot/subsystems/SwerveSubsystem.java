@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagHelper;
 import frc.robot.vision.PathChooser;
@@ -342,6 +343,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			currentPathPoint = PathPoint.fromCurrentHolonomicState(
 				getPose(), 
 				getChassisSpeeds());
+			ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(currentPathPoint);
 			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
