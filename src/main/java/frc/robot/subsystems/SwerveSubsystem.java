@@ -7,7 +7,6 @@ import frc.robot.vision.PathChooser;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
-import frc.lib.util.PathPointAccessor;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -19,6 +18,8 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.PathPointAccessor;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -345,14 +346,15 @@ public class SwerveSubsystem extends SubsystemBase {
 			allPoints.add(currentPathPoint);
 			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
 			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			var curPathPoint = (PathPointAccessor) currentPathPoint;
+			double currentX = PathPointAccessor.poseFromPathPointHolo(currentPathPoint).getX();
 
 			for (PathPoint addedPP : chosenPathPoints) {
-				var addedPathPoint = (PathPointAccessor) addedPP;
-				if(onRed && curPathPoint.getPosition().getX() > addedPathPoint.getPosition().getX()) {
+				
+				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+				if(onRed && currentX > addedX) {
 					chosenPathPoints.remove(addedPP);
 				}
-				else if(!onRed && curPathPoint.getPosition().getX() < addedPathPoint.getPosition().getX()) {
+				else if(!onRed && currentX < addedX) {
 					chosenPathPoints.remove(addedPP);
 				}
 				else {
