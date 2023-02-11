@@ -4,14 +4,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.lib.util.DashboardManager;
 import frc.robot.auton.*;
 import frc.robot.subsystems.*;
 import frc.robot.vision.AprilTagChooser;
@@ -25,8 +22,6 @@ import frc.robot.auton.Paths.ReferencePoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
-
-import javax.lang.model.util.ElementScanner14;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

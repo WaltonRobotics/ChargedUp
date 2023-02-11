@@ -1,6 +1,5 @@
 package frc.robot.auton;
 
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -12,7 +11,6 @@ import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondS
 import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
 import static frc.robot.Constants.SwerveK.kKinematics;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
