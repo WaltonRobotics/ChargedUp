@@ -8,6 +8,7 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,6 +31,9 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer = new RobotContainer();
   private final SwerveSubsystem m_swerve = m_robotContainer.s_Swerve;
 
+  private Alliance lastAlliance;
+  private Alliance currentAlliance;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -39,6 +43,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     PathPlannerServer.startServer(5811);
     DriverStation.silenceJoystickConnectionWarning(true);
+    lastAlliance = DriverStation.getAlliance();
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
@@ -64,6 +69,12 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
+    currentAlliance = DriverStation.getAlliance();
+    if (!(currentAlliance.equals(lastAlliance))) {
+      m_robotContainer.mapTrajectories();
+      m_robotContainer.mapAprilTagPoints();
+    }
+    lastAlliance = currentAlliance;
     Constants.AutoConstants.kPXController = SmartDashboard.getNumber("PX Controller", Constants.AutoConstants.kPXController);
     Constants.AutoConstants.kPYController = SmartDashboard.getNumber("PY Controller", Constants.AutoConstants.kPYController);
     Constants.AutoConstants.kPThetaController = SmartDashboard.getNumber("PTheta Controller", Constants.AutoConstants.kPThetaController);

@@ -56,10 +56,8 @@ public class RobotContainer {
     public RobotContainer() {
         // Set up autons
         mapAutonCommands();
-        mapTrajectories();
-        mapAprilTagPoints();
-        // addPathChoices();
-        // addAprilTagChoices();
+        // mapTrajectories();
+        // mapAprilTagPoints();
         s_Swerve.setDefaultCommand(
             s_Swerve.teleopDriveCmd(
                 () -> -driver.getLeftY(),
@@ -111,6 +109,7 @@ public class RobotContainer {
     }
 
     public void mapTrajectories() {
+        
         if (DriverStation.getAlliance().equals(Alliance.Red)) {
             PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
             PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
@@ -148,30 +147,4 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return AutonChooser.GetChosenAuton();
     }
-
-    // public void addPathChoices() {
-    //     DashboardManager.addTab("Path Chooser");
-    //     if(DriverStation.getAlliance().equals(Alliance.Red)) {
-    //         DashboardManager.addTabItem("Path Chooser", "bumper side", PathOption.RED_BUMPY);
-    //         DashboardManager.addTabItem("Path Chooser", "no bumper side", PathOption.RED_NON_BUMPY);
-    //     }
-    //     else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
-    //         DashboardManager.addTabItem("Path Chooser", "bumper side", PathOption.BLUE_BUMPY);
-    //         DashboardManager.addTabItem("Path Chooser", "no bumper side", PathOption.BLUE_NON_BUMPY);
-    //     }
-    // }
-
-    // public void addAprilTagChoices() {
-    //     DashboardManager.addTab("AprilTag Chooser");
-    //     if(DriverStation.getAlliance().equals(Alliance.Red)) {
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 1", AprilTagOption.TAG_1);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 2", AprilTagOption.TAG_2);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 3", AprilTagOption.TAG_3);
-    //     }
-    //     else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 6", AprilTagOption.TAG_6);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 7", AprilTagOption.TAG_7);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 8", AprilTagOption.TAG_8);
-    //     }
-    // }
 }
