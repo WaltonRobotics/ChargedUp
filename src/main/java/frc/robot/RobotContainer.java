@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
+import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagHelper;
@@ -40,6 +41,12 @@ public class RobotContainer {
 
     /* Subsystems */
     public final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap, m_apriltagHelper);
+    private final Elevator s_Elevator = new Elevator();
+    /* Drive Controls */
+
+
+
+    
 
     /* Auton */
 
@@ -63,7 +70,7 @@ public class RobotContainer {
             )
         );
         initShuffleBoard();
-        // Configure the button bindings
+        DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
     }
 
@@ -127,6 +134,10 @@ public class RobotContainer {
 
     public void mapAutonEvents() {
         autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
+        driver.a()
+            .onTrue(s_Elevator.setLiftTarget(0.3))
+            .onFalse(s_Elevator.setLiftTarget(0));
+        // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
 
     /**
