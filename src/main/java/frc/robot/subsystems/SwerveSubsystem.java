@@ -356,7 +356,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				}
 				else if(!onRed && currentX < addedX) {
 					chosenPathPoints.remove(addedPP);
-				}
+				}	
 				else {
 					break;
 				}
