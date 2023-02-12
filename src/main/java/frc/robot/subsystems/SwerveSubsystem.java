@@ -90,6 +90,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final AprilTagHelper m_apriltagHelper;
 
+	/*
+	 * TODO: write pathplanner utilities class, rewrite transformStateForAlliance method frm PathPlanner Trajectory class to use in WaltonPPSwerveControllerCommand to use
+	 * do FIELD_HEIGHT - X to get the transformed x for the new transformed pose.
+	 */
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagHelper apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
@@ -268,13 +272,20 @@ public class SwerveSubsystem extends SubsystemBase {
 		resetOdometryPose(pose);	//sets odometry to poseEstimator
 	}
 
-	/*
-	 * Reset wheel odometry pose to pose
-	 */
-	public void resetOdometryPose(Pose2d pose){
-		m_odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
+	private void resetPosePP(Pose2d pose) {
+
 	}
 
+	/*
+	 * Reset wheel odometry pose for autons
+	 */
+	public void resetOdometryPose(Pose2d pose){
+		m_odometry.resetPosition(getHeading(), getModulePositions(), pose);
+	}
+
+	/*
+	 * reset wheel odometry to poseEstimator for teleop
+	 */
 	public void resetOdometryPose(){
 		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
 	}
@@ -396,7 +407,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
-		resetPose(getPose());
+		// resetPose(getPose());
 		return autoBuilder.fullAuto(trajectory);
 	}
 
@@ -452,9 +463,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	 */
 	public void updateRobotPose() {
 		m_odometry.update(getHeading(), getModulePositions());
-		m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
+		// m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
 
 		m_poseEstimator.update(getHeading(), getModulePositions());
+		
 		// m_apriltagHelper.updateReferencePose(m_odometry.getPoseMeters());
 		Optional<EstimatedRobotPose> result = m_apriltagHelper
 				.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
