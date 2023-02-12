@@ -53,7 +53,7 @@ import java.util.function.DoubleSupplier;
 
 import frc.lib.vision.EstimatedRobotPose;
 // import org.photonvision.EstimatedRobotPose;
-
+//TODO: lower fps of poseestimator to 30 fps
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
 			new SwerveModule("Front Left", 0, Mod0.constants),
@@ -408,20 +408,26 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * Returns a double 0-1 based on angle from minimum balance degrees
 	 */
 	public double getInclinationRatio(){
-		double pitchAngleDegrees = m_pigeon.getPitch();
-		double rollAngleDegrees = m_pigeon.getRoll();
-		double yawAngleDegrees = m_pigeon.getYaw();
+		double pitch = m_pigeon.getPitch();	
+		double roll = m_pigeon.getRoll();
+		double yaw = m_pigeon.getYaw(); 
 		//inclination = atan(pitch/s(qrt(tan^2(roll)+tan^2(yaw))))
-		double inclination = Math.atan(pitchAngleDegrees/(Math.sqrt(Math.pow(Math.tan(rollAngleDegrees), 2)+ Math.pow(Math.tan(yawAngleDegrees),2))));
-		SmartDashboard.putNumber("Rumble inclination", inclination);
+		//rho = sqrt(pitch^2 + yaw^2))/roll
+		double inclination = Math.atan((Math.sqrt(Math.pow(Math.tan(pitch), 2)+ Math.pow(Math.tan(yaw),2)))/roll);
+		
+
+		double inclination2 = Math.toDegrees(pitch);
+		SmartDashboard.putNumber("ROBOTPITCH", pitch);
+		SmartDashboard.putNumber("ROBOTROLL", roll);
+		SmartDashboard.putNumber("ROBOTYAW", yaw);
 
 		//ratio of inclination to minimum degrees
 		if(inclination > kMinimumBalanceDegrees){
-			return inclination;
+			return 0;
 		//	return inclination/(34.55 - kMinimumBalanceDegrees);	//34.55 is max angle possible (10.45 when down)
 		}
 		//else no rumble bc inclination within limits
-		return inclination;
+		return 0;
 	}
 
 	/*
