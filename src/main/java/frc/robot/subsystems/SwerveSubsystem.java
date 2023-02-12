@@ -349,22 +349,22 @@ public class SwerveSubsystem extends SubsystemBase {
 			allPoints.add(ReferencePoints.currentPoint);
 			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
 			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			// double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-			// for (PathPoint addedPP : chosenPathPoints) {
+			for (PathPoint addedPP : chosenPathPoints) {
 	
-			// 	double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-			// 	if(onRed && currentX > addedX) {
-			// 		chosenPathPoints.remove(addedPP);
-			// 	}
-			// 	else if(!onRed && currentX < addedX) {
-			// 		chosenPathPoints.remove(addedPP);
-			// 	}	
-			// 	else {
-			// 		break;
-			// 	}
-			// }
-			allPoints.addAll(chosenPathPoints);
+				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+				if(onRed && currentX < addedX) {
+					allPoints.add(addedPP);
+				}
+				else if(!onRed && currentX > addedX) {
+					allPoints.add(addedPP);
+				}	
+				// else {
+				// 	break;
+				// }
+			}
+			
 			allPoints.add(AprilTagChooser.GetChosenAprilTag());
 
 			currentTrajectory = PathPlanner.generatePath(
