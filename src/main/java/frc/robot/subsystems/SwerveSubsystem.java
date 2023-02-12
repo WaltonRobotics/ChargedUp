@@ -33,6 +33,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -343,7 +344,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			currentPathPoint = PathPoint.fromCurrentHolonomicState(
 				getPose(), 
 				getChassisSpeeds());
-			ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(currentPathPoint);
 			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
@@ -400,6 +400,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		double rollAngleDegrees = m_pigeon.getRoll();
 		//inclination = atan(sqrt(tan^2(roll)+tan^2(pitch)))
 		double inclination = Math.atan(Math.sqrt(Math.pow(Math.tan(rollAngleDegrees), 2)+ Math.pow(Math.tan(pitchAngleDegrees),2)));
+		SmartDashboard.putNumber("Rumble inclination", inclination);
 
 		//ratio of inclination to minimum degrees
 		if(inclination > kMinimumBalanceDegrees){
