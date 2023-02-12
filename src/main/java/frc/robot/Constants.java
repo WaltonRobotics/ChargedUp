@@ -218,6 +218,7 @@ public final class Constants {
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
         public static final double kOnBalanceAngleThresholdDegrees  = Math.toRadians(5);
+        public static final double kMinimumBalanceDegrees = 2;
 
         public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 

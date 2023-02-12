@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -41,7 +42,6 @@ public class RobotContainer {
 
     /* Subsystems */
     public final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap, m_apriltagHelper);
-    private final Elevator s_Elevator = new Elevator();
     /* Drive Controls */
 
 
@@ -111,6 +111,8 @@ public class RobotContainer {
     }
 
     public void mapTrajectories() {
+        PathChooser.SetDefaultPath(PathOption.NOT_A_PATH);
+        PathChooser.AssignTrajectory(PathOption.NOT_A_PATH, PPAutoscoreClass.notAPath);
         if (DriverStation.getAlliance().equals(Alliance.Red)) {
             PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
             PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
@@ -121,6 +123,8 @@ public class RobotContainer {
     }
 
     public void mapAprilTagPoints() {
+        AprilTagChooser.SetDefaultAprilTag(AprilTagOption.NOT_A_TAG);
+        AprilTagChooser.AssignPoint(AprilTagOption.NOT_A_TAG, ReferencePoints.currentPoint);
         if (DriverStation.getAlliance().equals(Alliance.Red)) {
             AprilTagChooser.AssignPoint(AprilTagOption.TAG_1, ReferencePoints.tag1);
             AprilTagChooser.AssignPoint(AprilTagOption.TAG_2, ReferencePoints.tag2);
@@ -134,10 +138,11 @@ public class RobotContainer {
 
     public void mapAutonEvents() {
         autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
-        driver.a()
-            .onTrue(s_Elevator.setLiftTarget(0.3))
-            .onFalse(s_Elevator.setLiftTarget(0));
         // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+    }
+
+    public void manageBalanceRumble(){
+        driver.getHID().setRumble(RumbleType.kBothRumble, s_Swerve.getInclinationRatio());
     }
 
     /**

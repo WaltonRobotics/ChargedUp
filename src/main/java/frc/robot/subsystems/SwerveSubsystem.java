@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagHelper;
 import frc.robot.vision.PathChooser;
@@ -32,6 +33,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -76,7 +78,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
 		kKinematics, getHeading(), getModulePositions());
 	
-	private PathPoint currentPathPoint;
+	// private PathPoint currentPathPoint;
 	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -253,7 +255,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_pigeon.setYaw(0);
 	}
 
-	// side to side
+	// Side to side
 	public Rotation2d getHeading() {
 		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - m_pigeon.getYaw())
 				: Rotation2d.fromDegrees(m_pigeon.getYaw());
@@ -266,7 +268,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * resets wheel odometry pose to pose
+	 * Reset wheel odometry pose to pose
 	 */
 	public void resetOdometryPose(Pose2d pose){
 		m_odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
@@ -277,7 +279,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * sets steer to brake and drive to coast for odometry testing
+	 * Set steer to brake and drive to coast for odometry testing
 	 */
 	public void testModules(){
 		for (var module : m_modules) {
@@ -287,7 +289,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 	
 	/*
-	 * sets relative drive encoders to 0
+	 * Set relative drive encoders to 0
 	 */
 	public void resetDriveEncoders(){
 		for(var module : m_modules){
@@ -339,31 +341,31 @@ public class SwerveSubsystem extends SubsystemBase {
 		// runOnce(curPos = thing; ppt = generate(thing))
 
 		var pathCmd = runOnce(() ->  {
-			currentPathPoint = PathPoint.fromCurrentHolonomicState(
+			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
 				getPose(), 
 				getChassisSpeeds());
+			// ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
-			allPoints.add(currentPathPoint);
+			allPoints.add(ReferencePoints.currentPoint);
 			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
 			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			double currentX = PathPointAccessor.poseFromPathPointHolo(currentPathPoint).getX();
+			// double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-			for (PathPoint addedPP : chosenPathPoints) {
-				
-				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-				if(onRed && currentX > addedX) {
-					chosenPathPoints.remove(addedPP);
-				}
-				else if(!onRed && currentX < addedX) {
-					chosenPathPoints.remove(addedPP);
-				}	
-				else {
-					break;
-				}
-			}
-
+			// for (PathPoint addedPP : chosenPathPoints) {
+	
+			// 	double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+			// 	if(onRed && currentX > addedX) {
+			// 		chosenPathPoints.remove(addedPP);
+			// 	}
+			// 	else if(!onRed && currentX < addedX) {
+			// 		chosenPathPoints.remove(addedPP);
+			// 	}	
+			// 	else {
+			// 		break;
+			// 	}
+			// }
 			allPoints.addAll(chosenPathPoints);
-			allPoints.add(AprilTagChooser.GetAprilTag(null));
+			allPoints.add(AprilTagChooser.GetChosenAprilTag());
 
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
@@ -389,6 +391,24 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
 		return autoBuilder.fullAuto(trajectoryList);
+	}
+
+	/*
+	 * Returns a double 0-1 based on angle from minimum balance degrees
+	 */
+	public double getInclinationRatio(){
+		double pitchAngleDegrees = m_pigeon.getPitch();
+		double rollAngleDegrees = m_pigeon.getRoll();
+		//inclination = atan(sqrt(tan^2(roll)+tan^2(pitch)))
+		double inclination = Math.atan(Math.sqrt(Math.pow(Math.tan(rollAngleDegrees), 2)+ Math.pow(Math.tan(pitchAngleDegrees),2)));
+		SmartDashboard.putNumber("Rumble inclination", inclination);
+
+		//ratio of inclination to minimum degrees
+		if(inclination > kMinimumBalanceDegrees){
+			return inclination/(34.55 - kMinimumBalanceDegrees);	//34.55 is max angle possible (10.45 when down)
+		}
+		//else no rumble bc inclination within limits
+		return 0;
 	}
 
 	/*
@@ -441,9 +461,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
-		SmartDashboard.putNumber("Left Front Module Encoder Value", m_modules[0].getDriveMotorPosition());
-		SmartDashboard.putNumber("Right Front Module Encoder Value", m_modules[1].getDriveMotorPosition());
-		SmartDashboard.putNumber("Left Rear Module Encoder Value", m_modules[2].getDriveMotorPosition());
-		SmartDashboard.putNumber("Right Rear Module Encoder Value", m_modules[3].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Left Front Module Encoder Value", m_modules[0].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Right Front Module Encoder Value", m_modules[1].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Left Rear Module Encoder Value", m_modules[2].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Right Rear Module Encoder Value", m_modules[3].getDriveMotorPosition());
 	}
 }
