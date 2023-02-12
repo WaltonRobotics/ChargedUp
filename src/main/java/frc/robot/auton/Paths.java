@@ -50,7 +50,7 @@ public class Paths {
 		public static List<PathPoint> redBumpy = Arrays.asList(ReferencePoints.redLeft1, ReferencePoints.redLeft2, ReferencePoints.redLeft3);
 		public static List<PathPoint> redNotBumpy = Arrays.asList(ReferencePoints.redRight1, ReferencePoints.redRight2, ReferencePoints.redRight3);
 		public static List<PathPoint> blueBumpy = Arrays.asList(ReferencePoints.blueRight1, ReferencePoints.blueRight2, ReferencePoints.blueRight3);
-		public static List<PathPoint> blueNotBumpy = Arrays.asList(ReferencePoints.blueLeft1, ReferencePoints.blueLeft2, ReferencePoints.blueLeft3);
+		public static List<PathPoint> blueNotBumpy = Arrays.asList(ReferencePoints.blueLeft1, ReferencePoints.blueLeft2);
 	}
 
 	public static final class ReferencePoints{
@@ -72,8 +72,8 @@ public class Paths {
 		public static final PathPoint redLeft2 = new PathPoint(new Translation2d(12.52, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0), 2);
 		public static final PathPoint redLeft3 = new PathPoint(new Translation2d(13.180, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
 		public static final PathPoint blueLeft1 = new PathPoint(new Translation2d(5.84, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueLeft2 = new PathPoint(new Translation2d(3.26, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueLeft3 = new PathPoint(new Translation2d(2.45, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueLeft2 = new PathPoint(new Translation2d(3.36, 4.75), Rotation2d.fromDegrees(175),Rotation2d.fromDegrees(180));
+		// public static final PathPoint blueLeft3 = new PathPoint(new Translation2d(2.45, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 		public static final PathPoint blueRight1 = new PathPoint(new Translation2d(5.84, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180), 2);
 		public static final PathPoint blueRight2 = new PathPoint(new Translation2d(3.26, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 		public static final PathPoint blueRight3 = new PathPoint(new Translation2d(2.45, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
