@@ -52,7 +52,7 @@ import java.util.function.DoubleSupplier;
 
 import frc.lib.vision.EstimatedRobotPose;
 // import org.photonvision.EstimatedRobotPose;
-
+//TODO: lower fps of poseestimator to 30 fps
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
 			new SwerveModule("Front Left", 0, Mod0.constants),
@@ -406,9 +406,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		
 
 		double inclination2 = Math.toDegrees(pitch);
-		SmartDashboard.putNumber("PITCH", pitch);
-		SmartDashboard.putNumber("ROLL", roll);
-		SmartDashboard.putNumber("YAW", yaw);
+		SmartDashboard.putNumber("ROBOTPITCH", pitch);
+		SmartDashboard.putNumber("ROBOTROLL", roll);
+		SmartDashboard.putNumber("ROBOTYAW", yaw);
 
 		//ratio of inclination to minimum degrees
 		if(inclination > kMinimumBalanceDegrees){
