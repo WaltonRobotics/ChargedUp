@@ -399,16 +399,18 @@ public class SwerveSubsystem extends SubsystemBase {
 	public double getInclinationRatio(){
 		double pitchAngleDegrees = m_pigeon.getPitch();
 		double rollAngleDegrees = m_pigeon.getRoll();
-		//inclination = atan(sqrt(tan^2(roll)+tan^2(pitch)))
-		double inclination = Math.atan(Math.sqrt(Math.pow(Math.tan(rollAngleDegrees), 2)+ Math.pow(Math.tan(pitchAngleDegrees),2)));
+		double yawAngleDegrees = m_pigeon.getYaw();
+		//inclination = atan(pitch/s(qrt(tan^2(roll)+tan^2(yaw))))
+		double inclination = Math.atan(pitchAngleDegrees/(Math.sqrt(Math.pow(Math.tan(rollAngleDegrees), 2)+ Math.pow(Math.tan(yawAngleDegrees),2))));
 		SmartDashboard.putNumber("Rumble inclination", inclination);
 
 		//ratio of inclination to minimum degrees
 		if(inclination > kMinimumBalanceDegrees){
-			return inclination/(34.55 - kMinimumBalanceDegrees);	//34.55 is max angle possible (10.45 when down)
+			return inclination;
+		//	return inclination/(34.55 - kMinimumBalanceDegrees);	//34.55 is max angle possible (10.45 when down)
 		}
 		//else no rumble bc inclination within limits
-		return 0;
+		return inclination;
 	}
 
 	/*

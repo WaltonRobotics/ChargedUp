@@ -145,6 +145,10 @@ public class RobotContainer {
         driver.getHID().setRumble(RumbleType.kBothRumble, s_Swerve.getInclinationRatio());
     }
 
+    public void turnOffRumble(){
+        driver.getHID().setRumble(RumbleType.kBothRumble, 0);
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

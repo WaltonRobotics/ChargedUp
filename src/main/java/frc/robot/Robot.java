@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     //m_swerve.resetDriveEncoders();;
+    m_robotContainer.turnOffRumble();
 
   }
 
