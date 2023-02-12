@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
@@ -374,7 +375,17 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		var followCmd = autoBuilder.followPath(() -> {return currentTrajectory;});
 
-		return pathCmd.andThen(followCmd);
+		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
+	}
+
+	private CommandBase goToChosenTag() {
+		return run(() -> {
+			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(AprilTagChooser.GetChosenAprilTag());
+			var botPose = getPose();
+			double xRate = xController.calculate(botPose.getX(), tagPPPose.getX());
+			double yRate = yController.calculate(botPose.getY(), tagPPPose.getY());
+			drive(xRate, yRate, new Rotation2d(0), true);
+		}).until(() ->  xController.atSetpoint() && yController.atSetpoint());
 	}
 
 	/*

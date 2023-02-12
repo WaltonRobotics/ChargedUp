@@ -111,29 +111,21 @@ public class RobotContainer {
     }
 
     public void mapTrajectories() {
-        PathChooser.SetDefaultPath(PathOption.NOT_A_PATH);
-        PathChooser.AssignTrajectory(PathOption.NOT_A_PATH, PPAutoscoreClass.notAPath);
-        if (DriverStation.getAlliance().equals(Alliance.Red)) {
-            PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
-            PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
-        } else if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.blueBumpy);
-            PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.blueNotBumpy);  
-        }       
+        PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
+        PathChooser.SetDefaultPath(PathOption.RED_NON_BUMPY);
+        PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
+        PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.blueBumpy);
+        PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.blueNotBumpy);    
     }
 
     public void mapAprilTagPoints() {
-        AprilTagChooser.SetDefaultAprilTag(AprilTagOption.NOT_A_TAG);
-        AprilTagChooser.AssignPoint(AprilTagOption.NOT_A_TAG, ReferencePoints.currentPoint);
-        if (DriverStation.getAlliance().equals(Alliance.Red)) {
-            AprilTagChooser.AssignPoint(AprilTagOption.TAG_1, ReferencePoints.tag1);
-            AprilTagChooser.AssignPoint(AprilTagOption.TAG_2, ReferencePoints.tag2);
-            AprilTagChooser.AssignPoint(AprilTagOption.TAG_3, ReferencePoints.tag3);
-        } else if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            AprilTagChooser.AssignPoint(AprilTagOption.TAG_6, ReferencePoints.tag6);
-            AprilTagChooser.AssignPoint(AprilTagOption.TAG_7, ReferencePoints.tag7);
-            AprilTagChooser.AssignPoint(AprilTagOption.TAG_8, ReferencePoints.tag8);
-        }
+        AprilTagChooser.AssignPoint(AprilTagOption.TAG_1, ReferencePoints.tag1);
+        AprilTagChooser.SetDefaultAprilTag(AprilTagOption.TAG_1);
+        AprilTagChooser.AssignPoint(AprilTagOption.TAG_2, ReferencePoints.tag2);
+        AprilTagChooser.AssignPoint(AprilTagOption.TAG_3, ReferencePoints.tag3);
+        AprilTagChooser.AssignPoint(AprilTagOption.TAG_6, ReferencePoints.tag6);
+        AprilTagChooser.AssignPoint(AprilTagOption.TAG_7, ReferencePoints.tag7);
+        AprilTagChooser.AssignPoint(AprilTagOption.TAG_8, ReferencePoints.tag8);
     }
 
     public void mapAutonEvents() {

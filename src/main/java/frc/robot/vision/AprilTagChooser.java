@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class AprilTagChooser {
     public enum AprilTagOption {
     
-       NOT_A_TAG("no tag selected!!!"),
+       
        TAG_1("tag 1"),
        TAG_2("tag 2"),
        TAG_3("tag 3"),
