@@ -254,7 +254,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_pigeon.setYaw(0);
 	}
 
-	// side to side
+	// Side to side
 	public Rotation2d getHeading() {
 		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - m_pigeon.getYaw())
 				: Rotation2d.fromDegrees(m_pigeon.getYaw());
@@ -267,7 +267,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * resets wheel odometry pose to pose
+	 * Reset wheel odometry pose to pose
 	 */
 	public void resetOdometryPose(Pose2d pose){
 		m_odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
@@ -278,7 +278,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * sets steer to brake and drive to coast for odometry testing
+	 * Set steer to brake and drive to coast for odometry testing
 	 */
 	public void testModules(){
 		for (var module : m_modules) {
@@ -288,7 +288,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 	
 	/*
-	 * sets relative drive encoders to 0
+	 * Set relative drive encoders to 0
 	 */
 	public void resetDriveEncoders(){
 		for(var module : m_modules){
@@ -393,14 +393,19 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * Returns double based on angle from minimum
+	 * Returns a double 0-1 based on angle from minimum balance degrees
 	 */
-	public double getBalanceRumble(){
+	public double getInclinationRatio(){
 		double pitchAngleDegrees = m_pigeon.getPitch();
+		double rollAngleDegrees = m_pigeon.getRoll();
+		//inclination = atan(sqrt(tan^2(roll)+tan^2(pitch)))
+		double inclination = Math.atan(Math.sqrt(Math.pow(Math.tan(rollAngleDegrees), 2)+ Math.pow(Math.tan(pitchAngleDegrees),2)));
 
-		if(pitchAngleDegrees > kMinimumBalanceDegrees){
-			return pitchAngleDegrees/(45-kMinimumBalanceDegrees);	//45 is max angle
+		//ratio of inclination to minimum degrees
+		if(inclination > kMinimumBalanceDegrees){
+			return inclination/(34.55 - kMinimumBalanceDegrees);	//34.55 is max angle possible (10.45 when down)
 		}
+		//else no rumble bc inclination within limits
 		return 0;
 	}
 

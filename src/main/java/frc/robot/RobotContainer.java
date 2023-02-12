@@ -142,7 +142,7 @@ public class RobotContainer {
     }
 
     public void manageBalanceRumble(){
-        driver.getHID().setRumble(RumbleType.kBothRumble, s_Swerve.getBalanceRumble());
+        driver.getHID().setRumble(RumbleType.kBothRumble, s_Swerve.getInclinationRatio());
     }
 
     /**
