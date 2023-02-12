@@ -78,7 +78,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
 		kKinematics, getHeading(), getModulePositions());
 	
-	private PathPoint currentPathPoint;
+	// private PathPoint currentPathPoint;
 	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -341,28 +341,29 @@ public class SwerveSubsystem extends SubsystemBase {
 		// runOnce(curPos = thing; ppt = generate(thing))
 
 		var pathCmd = runOnce(() ->  {
-			currentPathPoint = PathPoint.fromCurrentHolonomicState(
+			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
 				getPose(), 
 				getChassisSpeeds());
+			// ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
-			allPoints.add(currentPathPoint);
+			allPoints.add(ReferencePoints.currentPoint);
 			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
 			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			double currentX = PathPointAccessor.poseFromPathPointHolo(currentPathPoint).getX();
+			// double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-			for (PathPoint addedPP : chosenPathPoints) {
+			// for (PathPoint addedPP : chosenPathPoints) {
 	
-				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-				if(onRed && currentX > addedX) {
-					chosenPathPoints.remove(addedPP);
-				}
-				else if(!onRed && currentX < addedX) {
-					chosenPathPoints.remove(addedPP);
-				}	
-				else {
-					break;
-				}
-			}
+			// 	double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+			// 	if(onRed && currentX > addedX) {
+			// 		chosenPathPoints.remove(addedPP);
+			// 	}
+			// 	else if(!onRed && currentX < addedX) {
+			// 		chosenPathPoints.remove(addedPP);
+			// 	}	
+			// 	else {
+			// 		break;
+			// 	}
+			// }
 			allPoints.addAll(chosenPathPoints);
 			allPoints.add(AprilTagChooser.GetChosenAprilTag());
 
