@@ -4,6 +4,9 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -55,6 +58,8 @@ public class Paths {
 
 	public static final class ReferencePoints{
 		//position, heading (rotation), holonomic rotation
+		public static AprilTagFieldLayout aprilTagFieldLayout;
+
 		public static PathPoint currentPoint;
 		public static final PathPoint tag1 = new PathPoint(new Translation2d(14.22, 1.05), Rotation2d.fromDegrees(-90),Rotation2d.fromDegrees(0));
 		public static final PathPoint tag2 = new PathPoint(new Translation2d(14.22, 2.30), Rotation2d.fromDegrees(-90),Rotation2d.fromDegrees(0));
@@ -64,6 +69,27 @@ public class Paths {
 		public static final PathPoint tag6 = new PathPoint(new Translation2d(2, 4.37), Rotation2d.fromDegrees(-90),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag7 = new PathPoint(new Translation2d(2, 2.70), Rotation2d.fromDegrees(-90),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag8 = new PathPoint(new Translation2d(2, 1.05), Rotation2d.fromDegrees(-90),Rotation2d.fromDegrees(-180));
+
+
+		public static final Pose2d redCone1 = new Pose2d(new Translation2d(14.76, 0.50), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCube1 = new Pose2d(new Translation2d(14.76, 1.06), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCone2 = new Pose2d(new Translation2d(14.76, 1.62), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCoopCone1 = new Pose2d(new Translation2d(14.76, 2.18), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCoopCube1 = new Pose2d(new Translation2d(14.76, 2.74), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCoopCone2 = new Pose2d(new Translation2d(14.76, 3.29), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCone3 = new Pose2d(new Translation2d(14.76, 3.85), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCube2 = new Pose2d(new Translation2d(14.76, 4.42), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCone4 = new Pose2d(new Translation2d(14.76, 4.98), Rotation2d.fromDegrees(0));
+
+		public static final Pose2d blueCone1 = new Pose2d(new Translation2d(1.77, 0.50), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCube1 = new Pose2d(new Translation2d(1.77, 1.06), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCone2 = new Pose2d(new Translation2d(1.77, 1.62), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCoopCone1 = new Pose2d(new Translation2d(1.77, 2.18), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCoopCube1 = new Pose2d(new Translation2d(1.77, 2.74), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCoopCone2 = new Pose2d(new Translation2d(1.77, 3.29), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCone3 = new Pose2d(new Translation2d(1.77, 3.85), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCube2 = new Pose2d(new Translation2d(1.77, 4.42), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCone4 = new Pose2d(new Translation2d(1.77, 4.98), Rotation2d.fromDegrees(180));
 
 		public static final PathPoint redRight1 = new PathPoint(new Translation2d(10.25, 4.65), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
 		public static final PathPoint redRight2 = new PathPoint(new Translation2d(13.28, 4.65), Rotation2d.fromDegrees(2.42),Rotation2d.fromDegrees(0));
@@ -78,4 +104,6 @@ public class Paths {
 		public static final PathPoint blueRight2 = new PathPoint(new Translation2d(3.26, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 		public static final PathPoint blueRight3 = new PathPoint(new Translation2d(2.45, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 	}
+
+
 }
