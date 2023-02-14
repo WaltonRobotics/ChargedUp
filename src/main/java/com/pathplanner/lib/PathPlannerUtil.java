@@ -1,11 +1,10 @@
 package com.pathplanner.lib;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.PathPlannerTrajectory.StopEvent;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,8 +14,9 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class PathPlannerUtil {
-    private static final double FIELD_WIDTH_METERS = 8.02;
-    private static final double FIELD_HEIGHT_METERS = 16.54;
+    public static final double FIELD_WIDTH_METERS = 8.02;
+    public static final double FIELD_HEIGHT_METERS = 16.54;
+
     public static PathPlannerState transformStateForAlliance(
         PathPlannerState state, DriverStation.Alliance alliance) {
       if (alliance == DriverStation.Alliance.Red) {
@@ -35,9 +35,9 @@ public class PathPlannerUtil {
         transformedState.angularVelocityRadPerSec = -state.angularVelocityRadPerSec;
         transformedState.holonomicRotation = transformedHolonomicRotation;
         transformedState.holonomicAngularVelocityRadPerSec = -state.holonomicAngularVelocityRadPerSec;
-        transformedState.curveRadius = -state.curveRadius;
+        // transformedState.curveRadius = -state.curveRadius;
         transformedState.curvatureRadPerMeter = -state.curvatureRadPerMeter;
-        transformedState.deltaPos = state.deltaPos;
+        // transformedState.deltaPos = state.deltaPos;
   
         return transformedState;
       } else {
@@ -78,14 +78,5 @@ public class PathPlannerUtil {
       } else {
         return trajectory;
       }
-    }
-
-    public static class PathPlannerState extends State {
-    public double angularVelocityRadPerSec = 0;
-    public Rotation2d holonomicRotation = new Rotation2d();
-    public double holonomicAngularVelocityRadPerSec = 0;
-
-    private double curveRadius = 0;
-    private double deltaPos = 0;
     }
 }

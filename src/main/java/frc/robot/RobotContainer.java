@@ -1,9 +1,7 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -102,12 +100,12 @@ public class RobotContainer {
     public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-        AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.MoveOneMeter(s_Swerve));
-        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.fullAuto(s_Swerve, threePiece2));
+        AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.WaltonPPAuto(s_Swerve, oneMeter));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.WaltonPPAuto(s_Swerve, threePiece2));
         AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
-        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.fullAuto(s_Swerve, threePiece3));
-        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE, AutonFactory.fullAuto(s_Swerve, twoPieceBalance));
-        AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE, AutonFactory.fullAuto(s_Swerve, onePiece));        
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.WaltonPPAuto(s_Swerve, threePiece3));
+        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE, AutonFactory.WaltonPPAuto(s_Swerve, twoPieceBalance));
+        AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE, AutonFactory.WaltonPPAuto(s_Swerve, onePiece));        
     }
 
     public void mapTrajectories() {
