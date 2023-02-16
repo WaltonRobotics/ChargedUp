@@ -6,12 +6,11 @@ import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.CommandBase;
-// import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AprilTagChooser {
     public enum AprilTagOption {
-
+    
+       
        TAG_1("tag 1"),
        TAG_2("tag 2"),
        TAG_3("tag 3"),

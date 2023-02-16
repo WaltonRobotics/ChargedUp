@@ -28,7 +28,7 @@ public class AprilTagHelper {
     public final PhotonCamera cam = new PhotonCamera("ov9281");
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
-            new Translation3d(Units.inchesToMeters(6), 0.0, Units.inchesToMeters(34.75)), // camera placement on robot
+            new Translation3d(Units.inchesToMeters(6), 0, Units.inchesToMeters(34.75)), // camera placement on robot
             new Rotation3d(0, Units.degreesToRadians(0), 0));
 
     AprilTagFieldLayout aprilTagFieldLayout;

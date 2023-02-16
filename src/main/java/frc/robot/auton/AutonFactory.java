@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.SwerveSubsystem;
-import static frc.robot.auton.Paths.PPPaths.oneMeter;
-
 import java.util.HashMap;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -15,8 +13,8 @@ public final class AutonFactory {
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
 
     /* PATHING COMMANDS */
-    public static CommandBase MoveOneMeter(SwerveSubsystem swerve) {
-        return swerve.getFullAuto(oneMeter);
+    public static CommandBase WaltonPPAuto(SwerveSubsystem swerve, PathPlannerTrajectory traj) {
+        return swerve.getWaltonPPSwerveAutonCommand(traj);
     }
 
     /* EVENT COMMANDS */

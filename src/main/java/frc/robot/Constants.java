@@ -210,14 +210,15 @@ public final class Constants {
         public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 0.9);
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
         
-        public static double kPXController = 2.8;
-        public static double kPYController = 2.8;
+        public static double kPXController = 8;
+        public static double kPYController = 8;
         public static double kPThetaController = 6.75;
         public static final double kDThetaController = 0.1;
         public static final double kFThetaController = 1;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
         public static final double kOnBalanceAngleThresholdDegrees  = Math.toRadians(5);
+        public static final double kMinimumBalanceDegrees = 2;
 
         public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 

@@ -23,15 +23,20 @@
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Elevator/Elevator": "Subsystem",
       "/Shuffleboard/Elevator/Lift Sim": "Mechanism2d",
-      "/Shuffleboard/Swerve/Swerve": "Subsystem"
+      "/Shuffleboard/Swerve/Swerve": "Subsystem",
+      "/Shuffleboard/SwerveSubsystem/Field2d": "Field2d",
+      "/Shuffleboard/SwerveSubsystem/SwerveSubsystem": "Subsystem",
+      "/SmartDashboard/AprilTag Chooser": "String Chooser",
+      "/SmartDashboard/Auton Chooser": "String Chooser",
+      "/SmartDashboard/Path Chooser": "String Chooser"
     },
     "windows": {
-      "/Shuffleboard/Elevator/Elevator": {
+      "/Shuffleboard/SwerveSubsystem/Field2d": {
         "window": {
           "visible": true
         }
       },
-      "/Shuffleboard/Elevator/Lift Sim": {
+      "/SmartDashboard/Auton Chooser": {
         "window": {
           "visible": true
         }

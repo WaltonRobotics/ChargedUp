@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagHelper;
 import frc.robot.vision.PathChooser;
 import frc.lib.swerve.SwerveDriveState;
+import frc.lib.swerve.WaltonPPSwerveControllerCommand;
 import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
@@ -18,6 +20,9 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.PathPointAccessor;
+import com.pathplanner.lib.ReflectedTransform;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -27,7 +32,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +44,8 @@ import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
+
+import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +54,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import frc.lib.vision.EstimatedRobotPose;
-// import org.photonvision.EstimatedRobotPose;
 
+//TODO: lower fps of poseestimator to 30 fps
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
 			new SwerveModule("Front Left", 0, Mod0.constants),
@@ -70,9 +79,9 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final WaltonSwerveAutoBuilder autoBuilder;
 
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-		kKinematics, getHeading(), getModulePositions());
-	
-	private PathPoint currentPathPoint;
+			kKinematics, getHeading(), getModulePositions());
+
+	// private PathPoint currentPathPoint;
 	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -108,7 +117,8 @@ public class SwerveSubsystem extends SubsystemBase {
 				kKinematics, // SwerveDriveKinematics
 				kTranslationPID,
 				kRotationPID,
-				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the subsystem
+				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the
+																	// subsystem
 				autoEventMap,
 				true,
 				this);
@@ -208,12 +218,24 @@ public class SwerveSubsystem extends SubsystemBase {
 		setChassisSpeeds(targetChassisSpeeds, false, false);
 	}
 
+	public ChassisSpeeds getChassisSpeeds() {
+		return kKinematics.toChassisSpeeds(getModuleStates());
+	}
+
 	/* Used by SwerveControllerCommand in Auto */
 	public void setModuleStates(SwerveModuleState[] desiredStates, boolean openLoop, boolean steerInPlace) {
 		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kMaxVelocityMps);
 
 		for (SwerveModule mod : m_modules) {
 			mod.setDesiredState(desiredStates[mod.moduleNumber], openLoop, steerInPlace);
+		}
+	}
+
+	public void setModuleStates(SwerveModuleState[] desiredStates) {
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kMaxSpeedMetersPerSecond);
+
+		for (SwerveModule mod : m_modules) {
+			mod.setDesiredState(desiredStates[mod.moduleNumber], false, false);
 		}
 	}
 
@@ -245,7 +267,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_pigeon.setYaw(0);
 	}
 
-	// side to side
+	// Side to side
 	public Rotation2d getHeading() {
 		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - m_pigeon.getYaw())
 				: Rotation2d.fromDegrees(m_pigeon.getYaw());
@@ -253,36 +275,45 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void resetPose(Pose2d pose) {
 		m_pigeon.setYaw(pose.getRotation().getDegrees());
-		//resets pose estimator
-		resetEstimatorPose(pose);	//resets poseEstimator
-		resetOdometryPose(pose);	//sets odometry to poseEstimator
+		resetEstimatorPose(pose); // resets poseEstimator
+		resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
 
 	/*
-	 * resets wheel odometry pose to pose
+	 * Reset wheel odometry pose for autons
 	 */
-	public void resetOdometryPose(Pose2d pose){
-		m_odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
+	public void resetOdometryPose(Pose2d pose) {
+		m_odometry.resetPosition(getHeading(), getModulePositions(), pose);
 	}
 
 	/*
-	 * sets steer to brake and drive to coast
+	 * reset wheel odometry to poseEstimator for teleop
 	 */
-	public void testModules(){
+	public void resetOdometryPose() {
+		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
+	}
+
+	/*
+	 * Set steer to brake and drive to coast for odometry testing
+	 */
+	public void testModules() {
 		for (var module : m_modules) {
 			module.brakeSteerMotor();
 			module.coastDriveMotor();
 		}
 	}
-	
-	public void resetDriveEncoders(){
-		for(var module : m_modules){
+
+	/*
+	 * Set relative drive encoders to 0
+	 */
+	public void resetDriveEncoders() {
+		for (var module : m_modules) {
 			module.resetDriveToZero();
 		}
 	}
 
 	/**
-	 * Use gyro to balance on charging station
+	 * Use gyro to balance on charging station (CURRENTLY UNUSED)
 	 */
 	public void handleAutoBalance() {
 		double xRate = 0;
@@ -321,28 +352,55 @@ public class SwerveSubsystem extends SubsystemBase {
 		System.out.println("NO TARGET DETECTED");
 	}
 
-	public CommandBase autoScore(){
+	public CommandBase autoScore() {
 		// runOnce(curPos = thing; ppt = generate(thing))
 
-
-		var pathCmd = runOnce(() ->  {
-			currentPathPoint = PathPoint.fromCurrentHolonomicState(
-				getPose(), 
-				new ChassisSpeeds(0, 0, 0));
-
+		var pathCmd = runOnce(() -> {
+			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
+					getPose(),
+					getChassisSpeeds());
+			// ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
-			allPoints.add(currentPathPoint);
-			allPoints.addAll(PathChooser.GetChosenPath());
+			allPoints.add(ReferencePoints.currentPoint);
+			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
+			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+
+			for (PathPoint addedPP : chosenPathPoints) {
+
+				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+				if (onRed && currentX < addedX) {
+					allPoints.add(addedPP);
+				} else if (!onRed && currentX > addedX) {
+					allPoints.add(addedPP);
+				}
+				// else {
+				// break;
+				// }
+			}
+
 			allPoints.add(AprilTagChooser.GetChosenAprilTag());
-			
+
 			currentTrajectory = PathPlanner.generatePath(
-					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared), 
+					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
 					allPoints);
 		});
 
-		var followCmd = autoBuilder.followPath(() -> {return currentTrajectory;});
+		var followCmd = autoBuilder.followPath(() -> {
+			return currentTrajectory;
+		});
 
-		return pathCmd.andThen(followCmd);
+		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
+	}
+
+	private CommandBase goToChosenTag() {
+		return run(() -> {
+			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(AprilTagChooser.GetChosenAprilTag());
+			var botPose = getPose();
+			double xRate = xController.calculate(botPose.getX(), tagPPPose.getX());
+			double yRate = yController.calculate(botPose.getY(), tagPPPose.getY());
+			drive(xRate, yRate, new Rotation2d(0), true);
+		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
 
 	/*
@@ -353,7 +411,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
-		resetPose(getPose());
+		// resetPose(getPose());
 		return autoBuilder.fullAuto(trajectory);
 	}
 
@@ -361,6 +419,71 @@ public class SwerveSubsystem extends SubsystemBase {
 		return autoBuilder.fullAuto(trajectoryList);
 	}
 
+	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
+		var resetCmd = runOnce(() -> {
+			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
+			if (DriverStation.getAlliance() == Alliance.Red) {
+				initialState = ReflectedTransform.reflectiveTransformState(
+						initialState);
+			}
+			resetPose(initialState.poseMeters);
+		});
+
+		
+		var pathCmd = new WaltonPPSwerveControllerCommand(
+				() -> trajectory,
+				this::getPose,
+				kKinematics,
+				xController,
+				yController,
+				autoThetaController,
+				this::setModuleStates,
+				true,
+				this);
+		if(DriverStation.getAlliance() == Alliance.Blue){
+			pathCmd = new WaltonPPSwerveControllerCommand(
+				() -> ReflectedTransform.reflectiveTransformTrajectory(trajectory),
+				this::getPose,
+				kKinematics,
+				xController,
+				yController,
+				autoThetaController,
+				this::setModuleStates,
+				true,
+				this);
+		}
+		return resetCmd.andThen(pathCmd);
+	}
+
+	/*
+	 * Returns a double 0-1 based on angle from minimum balance degrees
+	 */
+	public double getInclinationRatio() {
+		double pitch = m_pigeon.getPitch();
+		double roll = m_pigeon.getRoll();
+		double yaw = m_pigeon.getYaw();
+		// inclination = atan(pitch/s(qrt(tan^2(roll)+tan^2(yaw))))
+		// rho = sqrt(pitch^2 + yaw^2))/roll
+		double inclination = Math.atan((Math.sqrt(Math.pow(Math.tan(pitch), 2) + Math.pow(Math.tan(yaw), 2))) / roll);
+
+		// double inclination2 = Math.toDegrees(pitch);
+		SmartDashboard.putNumber("ROBOTPITCH", pitch);
+		SmartDashboard.putNumber("ROBOTROLL", roll);
+		SmartDashboard.putNumber("ROBOTYAW", yaw);
+
+		// ratio of inclination to minimum degrees
+		if (inclination > kMinimumBalanceDegrees) {
+			return 0;
+			// return inclination/(34.55 - kMinimumBalanceDegrees); //34.55 is max angle
+			// possible (10.45 when down)
+		}
+		// else no rumble bc inclination within limits
+		return 0;
+	}
+
+	/*
+	 * Rotate to a robot-oriented degrees
+	 */
 	public CommandBase rotateAboutPoint(double degrees) {
 		return run(() -> {
 			autoThetaController.setSetpoint(Math.toRadians(degrees));
@@ -375,13 +498,15 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * 
+	 * updates odometry & poseEstimator positions
+	 * updates field
 	 */
 	public void updateRobotPose() {
 		m_odometry.update(getHeading(), getModulePositions());
-		m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
+		// m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
 
 		m_poseEstimator.update(getHeading(), getModulePositions());
+
 		// m_apriltagHelper.updateReferencePose(m_odometry.getPoseMeters());
 		Optional<EstimatedRobotPose> result = m_apriltagHelper
 				.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
@@ -390,7 +515,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		if (result.isPresent()) {
 			EstimatedRobotPose camPose = result.get();
-			//updates swervePoseEstimator
+			// updates swervePoseEstimator w/ Apriltag
 			m_poseEstimator.addVisionMeasurement(
 					camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
 			m_field.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
@@ -400,16 +525,19 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
-
 	@Override
 	public void periodic() {
 		for (var module : m_modules) {
 			module.periodic();
 		}
 		updateRobotPose();
-		SmartDashboard.putNumber("Left Front Module Encoder Value", m_modules[0].getDriveMotorPosition());
-		SmartDashboard.putNumber("Right Front Module Encoder Value", m_modules[1].getDriveMotorPosition());
-		SmartDashboard.putNumber("Left Rear Module Encoder Value", m_modules[2].getDriveMotorPosition());
-		SmartDashboard.putNumber("Right Rear Module Encoder Value", m_modules[3].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Left Front Module Encoder Value",
+		// m_modules[0].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Right Front Module Encoder Value",
+		// m_modules[1].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Left Rear Module Encoder Value",
+		// m_modules[2].getDriveMotorPosition());
+		// SmartDashboard.putNumber("Right Rear Module Encoder Value",
+		// m_modules[3].getDriveMotorPosition());
 	}
 }

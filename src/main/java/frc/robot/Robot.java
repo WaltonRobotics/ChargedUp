@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     //m_swerve.resetDriveEncoders();;
+    m_robotContainer.turnOffRumble();
 
   }
 
@@ -113,6 +114,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    m_robotContainer.manageBalanceRumble();
   }
 
   @Override
