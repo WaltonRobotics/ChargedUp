@@ -1,0 +1,54 @@
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+
+public class AddressableLED {
+    private static final int LED_PWM_PORT = 0;  // Change to your desired PWM port number
+    private static final int LED_COUNT = 60;  // Change to the number of LEDs in your strip
+
+    private AddressableLED m_led;
+    private AddressableLEDBuffer m_ledBuffer;
+    private int m_rainbowFirstPixelHue;
+
+    public void robotInit() {
+        m_led = new AddressableLED(LED_PWM_PORT);
+        m_ledBuffer = new AddressableLEDBuffer(LED_COUNT);
+        m_led.setLength(m_ledBuffer.getLength());
+
+        // Set the entire strip to one color
+        setStripColor(255, 0, 0);  // Red
+
+        // Initialize rainbow effect
+        m_rainbowFirstPixelHue = 0;
+    }
+
+    public void robotPeriodic() {
+        // Rainbow effect
+        rainbow();
+        m_led.setData(m_ledBuffer);
+        m_led.start();
+    }
+
+    private void setStripColor(int r, int g, int b) {
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+            m_ledBuffer.setRGB(i, r, g, b);
+        }
+        m_led.setData(m_ledBuffer);
+        m_led.start();
+    }
+
+    private void rainbow() {
+        // For every pixel
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+            // Calculate the hue - the % operator is used to create a repeating rainbow pattern
+            final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+            // Set the pixel color
+            m_ledBuffer.setHSV(i, hue, 255, 128);
+        }
+        // Increase by to make the rainbow "move"
+        m_rainbowFirstPixelHue += 3;
+        // Check bounds
+        if (m_rainbowFirstPixelHue >= 180) {
+            m_rainbowFirstPixelHue -= 180;
+        }
+    }
+}
