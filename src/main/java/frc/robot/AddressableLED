@@ -2,7 +2,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class AddressableLED {
-    private static final int LED_PWM_PORT = 0;  // Change to your desired PWM port number
+    private static final int LED_PWM_PORT = 0;  // Change PWM port number
     private static final int LED_COUNT = 60;  // Change to the number of LEDs in your strip
 
     private AddressableLED m_led;
