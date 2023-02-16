@@ -129,37 +129,43 @@ public class Paths {
 		// public static final PathPoint blueRight3 = new PathPoint(new Translation2d(2.45, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
 	}
 
-	public enum ScoringOptionRed {
-		CONE_1(ReferencePoints.redCone1),
-		CUBE_1(ReferencePoints.redCube1),
-		CONE_2(ReferencePoints.redCone2),
-		COOP_CONE_1(ReferencePoints.redCoopCone1),
-		COOP_CUBE_1(ReferencePoints.redCoopCube1),
-		COOP_CONE_2(ReferencePoints.redCoopCone2),
-		RED_CONE_3(ReferencePoints.redCone3),
-		RED_CUBE_2(ReferencePoints.redCube2),
-		RED_CONE_4(ReferencePoints.redCone4);
-
-		public final Pose2d m_scoringPlace; 
-		private ScoringOptionRed(Pose2d scoringPlace) {
-			m_scoringPlace = scoringPlace;
+	public static class ScoringOptions {
+		public enum ScoringOptionRed {
+			CONE_1(ReferencePoints.redCone1, true),
+			CUBE_1(ReferencePoints.redCube1, false),
+			CONE_2(ReferencePoints.redCone2, true),
+			COOP_CONE_1(ReferencePoints.redCoopCone1, true),
+			COOP_CUBE_1(ReferencePoints.redCoopCube1, false),
+			COOP_CONE_2(ReferencePoints.redCoopCone2, true),
+			CONE_3(ReferencePoints.redCone3, true),
+			CUBE_2(ReferencePoints.redCube2, false),
+			CONE_4(ReferencePoints.redCone4, true);
+	
+			public final Pose2d m_scoringPlace; 
+			public final boolean m_cone;
+			private ScoringOptionRed(Pose2d scoringPlace, boolean cone) {
+				m_scoringPlace = scoringPlace;
+				m_cone = cone;
+			}
 		}
-	}
-
-	public enum ScoringOptionBlue {
-		CONE_1(ReferencePoints.blueCone1),
-		CUBE_1(ReferencePoints.blueCube1),
-		CONE_2(ReferencePoints.blueCone2),
-		COOP_CONE_1(ReferencePoints.blueCoopCone1),
-		COOP_CUBE_1(ReferencePoints.blueCoopCube1),
-		COOP_CONE_2(ReferencePoints.blueCoopCone2),
-		RED_CONE_3(ReferencePoints.blueCone3),
-		RED_CUBE_2(ReferencePoints.blueCube2),
-		RED_CONE_4(ReferencePoints.blueCone4);
-
-		public final Pose2d m_scoringPlace; 
-		private ScoringOptionBlue(Pose2d scoringPlace) {
-			m_scoringPlace = scoringPlace;
+	
+		public enum ScoringOptionBlue {
+			CONE_1(ReferencePoints.blueCone1, true),
+			CUBE_1(ReferencePoints.blueCube1, false),
+			CONE_2(ReferencePoints.blueCone2, true),
+			COOP_CONE_1(ReferencePoints.blueCoopCone1, true),
+			COOP_CUBE_1(ReferencePoints.blueCoopCube1, false),
+			COOP_CONE_2(ReferencePoints.blueCoopCone2, true),
+			CONE_3(ReferencePoints.blueCone3, true),
+			CUBE_2(ReferencePoints.blueCube2, false),
+			CONE_4(ReferencePoints.blueCone4, true);
+	
+			public final Pose2d m_scoringPlace; 
+			public final boolean m_cone;
+			private ScoringOptionBlue(Pose2d scoringPlace, boolean cone) {
+				m_scoringPlace = scoringPlace;
+				m_cone = cone;
+			}
 		}
 	}
 
