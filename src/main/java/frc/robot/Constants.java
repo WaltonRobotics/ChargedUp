@@ -157,8 +157,8 @@ public final class Constants {
    }
 
     // Elevator tilting motor
-    public static final class ElevatorTiltK {
-        public static final int kTiltCANID = 11;
+    public static final class TiltK {
+        public static final int kTiltCANID = 12;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -176,9 +176,10 @@ public final class Constants {
     }
 
     // Elevator lifting motor(s)
-    public static final class ElevatorLiftK {
+    public static final class ElevatorK {
         // Motor Constants
-        public static final int kExtendCANID = 10;
+        public static final int kLeftElevatorCANID = 10;
+        public static final int kRightElevatorCANID = 11;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);

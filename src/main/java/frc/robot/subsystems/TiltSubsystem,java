@@ -1,0 +1,58 @@
+private final WPI_TalonFX m_tiltMotor = new WPI_TalonFX(ElevatorTiltK.kCANID); // change IDs later
+	// Sensors
+	private final AnalogInput m_tiltPot = new AnalogInput(ElevatorTiltK.PotPort);
+    m_tiltMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+    nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
+    nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
+    nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
+        ElevatorTiltK.kMinAngleDegrees, ElevatorTiltK.kMaxAngleDegrees);
+    nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
+
+    //periodic
+    		// tilt
+		// m_tiltController.setGoal(m_tiltTargetAngle);
+		double tiltPDEffort = m_tiltController.calculate(potToDegrees(), m_tiltTargetAngle);
+		// double tiltFFEffort = 0;
+		// tiltFFEffort = ElevatorTiltK.kFeedforward.calculate();
+		// }
+		double tiltTotalEffort = tiltPDEffort;// + tiltFFEffort;
+		m_tiltMotor.setVoltage(tiltTotalEffort);
+
+        nte_tiltActualAngle.setDouble(getTiltActualDegrees());
+		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
+		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
+		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
+
+        	// tilt
+	// telemetry	
+	private final GenericEntry /* nte_tiltMotorFFEffort, */ nte_tiltMotorPDEffort, 
+    nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
+   nte_tiltActualAngle;
+// control
+private final PIDController m_tiltController = new PIDController(
+kP, 0, kD);
+
+// target angle
+private double m_tiltTargetAngle = 0;
+
+public CommandBase setTiltTarget(double degrees) {
+return runOnce(() -> i_setTiltTarget(degrees));
+}
+
+private void i_setTiltTarget(double degrees) {
+// don't allow impossible angles :D
+
+m_tiltTargetAngle = MathUtil.clamp(degrees, 0, 45);
+
+// nte_liftTargetHeight.setDouble(m_liftTargetHeight);
+}
+
+private double potToDegrees()
+{
+return m_tiltPot.getVoltage(); // go back later
+}
+
+private double getTiltActualDegrees()
+{
+return potToDegrees();
+}
