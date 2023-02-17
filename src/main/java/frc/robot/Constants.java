@@ -240,7 +240,7 @@ public final class Constants {
         public static final double kTargetHeight = 1;   //TODO: update value
     }
 
-    public static final class IntakeK {
+    public static final class WristK {
         public static final int kWristCANID = 13;
         public static final double kP = 0.25;
         public static final double kD = 0.01;
@@ -255,4 +255,6 @@ public final class Constants {
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
     }
+
+
 }

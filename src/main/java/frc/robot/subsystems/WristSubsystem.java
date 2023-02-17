@@ -7,8 +7,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
-import static frc.robot.Constants.IntakeK.kWristCANID;
-import frc.robot.Constants.IntakeK;
+import static frc.robot.Constants.WristK.kWristCANID;
+import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_wristMotor = new WPI_TalonFX(kWristCANID);  // change device number later
@@ -18,7 +18,7 @@ public class WristSubsystem extends SubsystemBase {
   private double wristPDEffort = 0;
 
   private final ProfiledPIDController m_wristController = new ProfiledPIDController(
-		IntakeK.kP, 0, IntakeK.kD, IntakeK.kConstraints
+		WristK.kP, 0, WristK.kD, WristK.kConstraints
 	);
 
   //FFEffort = feedforward; PDEffort = proportional-derivative
@@ -37,9 +37,9 @@ public class WristSubsystem extends SubsystemBase {
 		nte_wristMotorPDEffort = DashboardManager.addTabDial(this, "WristPDEffort", -1, 1);
 		nte_wristMotorTotalEffort = DashboardManager.addTabDial(this, "WristTotalEffort", -1, 1);
 		nte_wristMotorTargetAngle = DashboardManager.addTabNumberBar(this, "WristTargetAngle",
-			IntakeK.kMinAngleDegrees, IntakeK.kMaxAngleDegrees);
+			WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
 		nte_wristMotorActualAngle = DashboardManager.addTabNumberBar(this, "WristActualAngle",
-			IntakeK.kMinAngleDegrees, IntakeK.kMaxAngleDegrees);
+			WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
         nte_wristMotorTemp = DashboardManager.addTabNumberBar(this,"WristMotorTemp",0,100);
   }
 
