@@ -32,6 +32,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -91,6 +92,8 @@ public class SwerveSubsystem extends SubsystemBase {
 			new Pose2d());
 
 	private final AprilTagHelper m_apriltagHelper;
+
+	private double m_simYaw = 0.0;
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagHelper apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
@@ -541,5 +544,16 @@ public class SwerveSubsystem extends SubsystemBase {
 		// m_modules[2].getDriveMotorPosition());
 		// SmartDashboard.putNumber("Right Rear Module Encoder Value",
 		// m_modules[3].getDriveMotorPosition());
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		ChassisSpeeds chassisSpeed = kKinematics.toChassisSpeeds(getModuleStates());
+		m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
+		m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
+
+		for (var module : m_modules) {
+			module.simulationPeriodic();
+		}
 	}
 }
