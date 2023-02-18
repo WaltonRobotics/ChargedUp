@@ -257,5 +257,9 @@ public final class Constants {
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
     }
 
+    public static final class TheClawK{
+        public static final int kTheClawID = 0; //TODO: change this
+    }
+
 
 }
