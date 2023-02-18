@@ -158,7 +158,7 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
-        public static final int kTiltCANID = 12;
+        public static final int kCANID = 12;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -172,7 +172,7 @@ public final class Constants {
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
 
-        public static final int PotPort = 0;
+        public static final int potPort = 0;
     }
 
     // Elevator lifting motor(s)

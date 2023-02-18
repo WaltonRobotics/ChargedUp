@@ -1,0 +1,8 @@
+public class Superstructure extends SubsystemBase{
+    private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    private final SwerveSubsystem swerve = new SwerveSubsystem();
+    private final TheClaw claw = new TheClaw();
+    private final TiltSubsystem tilt = new TiltSubsystem();
+    private final WristSubsystem wrist = new WristSubsystem();
+    
+}
