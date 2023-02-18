@@ -191,7 +191,7 @@ public final class Constants {
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
-        public static final double kMaxHeightMeters = Units.inchesToMeters(50);
+        public static final double kMaxHeightMeters = Units.inchesToMeters(61);
 
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
@@ -234,7 +234,7 @@ public final class Constants {
     }
 
     //in meters
-    public static final class VisionConstants{
+    public static final class VisionConstants {
         public static final double kCameraHeight = 0.88265;
         public static final double kCameraX = 0;
         public static final double kCameraY = 0.1524;
