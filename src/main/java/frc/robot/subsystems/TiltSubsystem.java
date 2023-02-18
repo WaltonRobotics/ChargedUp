@@ -41,8 +41,6 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	private void i_setTiltTarget(double degrees) {
-		// TODO: don't allow impossible angles :D
-
 		m_tiltTargetAngle = MathUtil.clamp(degrees, 0, 45);
 	}
 	private double potToDegrees() {
@@ -55,8 +53,6 @@ public class TiltSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// Lift control
-
 		// Set controller goal position
 		m_tiltController.setSetpoint(m_tiltTargetAngle);
 

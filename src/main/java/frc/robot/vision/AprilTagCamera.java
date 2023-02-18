@@ -24,7 +24,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
-public class AprilTagHelper {
+public class AprilTagCamera {
     public final PhotonCamera cam = new PhotonCamera("ov9281");
     // distance from robot to camera
     Transform3d robotToCam = new Transform3d(
@@ -35,7 +35,7 @@ public class AprilTagHelper {
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
     static PhotonPoseEstimator poseEstimator;
 
-    public AprilTagHelper() {
+    public AprilTagCamera() {
         init();
     }
 

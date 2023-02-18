@@ -12,7 +12,6 @@ import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.vision.AprilTagChooser;
-import frc.robot.vision.AprilTagHelper;
 import frc.robot.vision.PathChooser;
 import frc.robot.vision.AprilTagChooser.AprilTagOption;
 import frc.robot.vision.PathChooser.PathOption;
@@ -35,18 +34,10 @@ import static frc.robot.auton.Paths.PPPaths.*;
 public class RobotContainer {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
-
-    private final AprilTagHelper m_apriltagHelper = new AprilTagHelper();
+    private final CommandXboxController manipulator = new CommandXboxController(1);
 
     /* Subsystems */
-    public final SwerveSubsystem s_Swerve = new SwerveSubsystem(autonEventMap, m_apriltagHelper);
-    /* Drive Controls */
-
-
-
-    
-
-    /* Auton */
+    public final Superstructure godSubsystem = new Superstructure();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -58,15 +49,14 @@ public class RobotContainer {
         mapAprilTagPoints();
         // addPathChoices();
         // addAprilTagChoices();
-        s_Swerve.setDefaultCommand(
-            s_Swerve.teleopDriveCmd(
-                () -> -driver.getLeftY(),
-                () -> -driver.getLeftX(),
-                () -> -driver.getRightX(),
-                driver.leftBumper()::getAsBoolean,
-                () -> true // openLoop
-            )
-        );
+        godSubsystem.getSwerve().setDefaultCommand(
+                godSubsystem.getSwerve().teleopDriveCmd(
+                        () -> -driver.getLeftY(),
+                        () -> -driver.getLeftX(),
+                        () -> -driver.getRightX(),
+                        driver.leftBumper()::getAsBoolean,
+                        () -> true // openLoop
+                ));
         initShuffleBoard();
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
@@ -82,13 +72,16 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        driver.a().whileTrue(new RunCommand(() -> s_Swerve.followAprilTag(2, 0, true)));
-        driver.rightBumper().onTrue(new InstantCommand(() -> s_Swerve.handleAutoBalance()));
-        driver.leftTrigger().whileTrue(new InstantCommand(() -> s_Swerve.drive(-0.5, 0, 0, true, true)));
-        driver.x().onTrue(s_Swerve.rotateAboutPoint(90));
-        driver.b().onTrue(new InstantCommand(() -> s_Swerve.resetOdometryPose()));
-        driver.leftBumper().whileTrue(s_Swerve.autoScore());
+        driver.y().onTrue(new InstantCommand(() -> godSubsystem.getSwerve().zeroGyro()));
+        driver.a().whileTrue(new RunCommand(() -> godSubsystem.getSwerve().followAprilTag(2, 0, true)));
+        driver.rightBumper().onTrue(new InstantCommand(() -> godSubsystem.getSwerve().handleAutoBalance()));
+        driver.leftTrigger()
+                .whileTrue(new InstantCommand(() -> godSubsystem.getSwerve().drive(-0.5, 0, 0, true, true)));
+        driver.x().onTrue(godSubsystem.getSwerve().rotateAboutPoint(90));
+        driver.b().onTrue(new InstantCommand(() -> godSubsystem.getSwerve().resetOdometryPose()));
+        driver.leftBumper().whileTrue(godSubsystem.getSwerve().autoScore());
+
+        manipulator.rightTrigger().onTrue(new InstantCommand(() -> godSubsystem.getClaw().toggleClaw()));
     }
 
     public void initShuffleBoard() {
@@ -100,12 +93,18 @@ public class RobotContainer {
     public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-        AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD, AutonFactory.WaltonPPAuto(s_Swerve, oneMeter));
-        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2, AutonFactory.WaltonPPAuto(s_Swerve, threePiece2));
-        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE, s_Swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
-        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3, AutonFactory.WaltonPPAuto(s_Swerve, threePiece3));
-        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE, AutonFactory.WaltonPPAuto(s_Swerve, twoPieceBalance));
-        AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE, AutonFactory.WaltonPPAuto(s_Swerve, onePiece));        
+        AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD,
+                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), oneMeter));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2,
+                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), threePiece2));
+        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE,
+                godSubsystem.getSwerve().getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
+        AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3,
+                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), threePiece3));
+        AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE,
+                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), twoPieceBalance));
+        AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE,
+                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), onePiece));
     }
 
     public void mapTrajectories() {
@@ -113,7 +112,7 @@ public class RobotContainer {
         PathChooser.SetDefaultPath(PathOption.RED_NON_BUMPY);
         PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
         PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.blueBumpy);
-        PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.blueNotBumpy);    
+        PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.blueNotBumpy);
     }
 
     public void mapAprilTagPoints() {
@@ -127,15 +126,15 @@ public class RobotContainer {
     }
 
     public void mapAutonEvents() {
-        autonEventMap.put("testEvent", AutonFactory.TestEvent(s_Swerve));
+        autonEventMap.put("testEvent", AutonFactory.TestEvent(godSubsystem.getSwerve()));
         // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
 
-    public void manageBalanceRumble(){
-        driver.getHID().setRumble(RumbleType.kBothRumble, s_Swerve.getInclinationRatio());
+    public void manageBalanceRumble() {
+        driver.getHID().setRumble(RumbleType.kBothRumble, godSubsystem.getSwerve().getInclinationRatio());
     }
 
-    public void turnOffRumble(){
+    public void turnOffRumble() {
         driver.getHID().setRumble(RumbleType.kBothRumble, 0);
     }
 
@@ -149,28 +148,38 @@ public class RobotContainer {
     }
 
     // public void addPathChoices() {
-    //     DashboardManager.addTab("Path Chooser");
-    //     if(DriverStation.getAlliance().equals(Alliance.Red)) {
-    //         DashboardManager.addTabItem("Path Chooser", "bumper side", PathOption.RED_BUMPY);
-    //         DashboardManager.addTabItem("Path Chooser", "no bumper side", PathOption.RED_NON_BUMPY);
-    //     }
-    //     else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
-    //         DashboardManager.addTabItem("Path Chooser", "bumper side", PathOption.BLUE_BUMPY);
-    //         DashboardManager.addTabItem("Path Chooser", "no bumper side", PathOption.BLUE_NON_BUMPY);
-    //     }
+    // DashboardManager.addTab("Path Chooser");
+    // if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    // DashboardManager.addTabItem("Path Chooser", "bumper side",
+    // PathOption.RED_BUMPY);
+    // DashboardManager.addTabItem("Path Chooser", "no bumper side",
+    // PathOption.RED_NON_BUMPY);
+    // }
+    // else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
+    // DashboardManager.addTabItem("Path Chooser", "bumper side",
+    // PathOption.BLUE_BUMPY);
+    // DashboardManager.addTabItem("Path Chooser", "no bumper side",
+    // PathOption.BLUE_NON_BUMPY);
+    // }
     // }
 
     // public void addAprilTagChoices() {
-    //     DashboardManager.addTab("AprilTag Chooser");
-    //     if(DriverStation.getAlliance().equals(Alliance.Red)) {
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 1", AprilTagOption.TAG_1);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 2", AprilTagOption.TAG_2);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 3", AprilTagOption.TAG_3);
-    //     }
-    //     else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 6", AprilTagOption.TAG_6);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 7", AprilTagOption.TAG_7);
-    //         DashboardManager.addTabItem("AprilTag Chooser", "tag 8", AprilTagOption.TAG_8);
-    //     }
+    // DashboardManager.addTab("AprilTag Chooser");
+    // if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    // DashboardManager.addTabItem("AprilTag Chooser", "tag 1",
+    // AprilTagOption.TAG_1);
+    // DashboardManager.addTabItem("AprilTag Chooser", "tag 2",
+    // AprilTagOption.TAG_2);
+    // DashboardManager.addTabItem("AprilTag Chooser", "tag 3",
+    // AprilTagOption.TAG_3);
+    // }
+    // else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
+    // DashboardManager.addTabItem("AprilTag Chooser", "tag 6",
+    // AprilTagOption.TAG_6);
+    // DashboardManager.addTabItem("AprilTag Chooser", "tag 7",
+    // AprilTagOption.TAG_7);
+    // DashboardManager.addTabItem("AprilTag Chooser", "tag 8",
+    // AprilTagOption.TAG_8);
+    // }
     // }
 }
