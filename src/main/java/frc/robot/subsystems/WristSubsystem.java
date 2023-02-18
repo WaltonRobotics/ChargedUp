@@ -2,6 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
@@ -11,7 +15,8 @@ import static frc.robot.Constants.WristK.kWristCANID;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
-  private final WPI_TalonFX m_wristMotor = new WPI_TalonFX(kWristCANID);  // change device number later
+  private final CANSparkMax m_wristMotor = new CANSparkMax(kWristCANID, MotorType.kBrushless);  // change device number later
+  private final SparkMaxAbsoluteEncoder absoluteEncoder =  m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
   // private final Solenoid m_intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);  // change channel later
   private double wristAngleSetpoint = 0;
   private double wristFFEffort = 0;
@@ -31,7 +36,8 @@ public class WristSubsystem extends SubsystemBase {
   public WristSubsystem() {
     DashboardManager.addTab(this);
 
-    m_wristMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+
+    // m_wristMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
     nte_wristMotorFFEffort = DashboardManager.addTabDial(this, "WristFFEffort", -1, 1);
 		nte_wristMotorPDEffort = DashboardManager.addTabDial(this, "WristPDEffort", -1, 1);
@@ -51,14 +57,18 @@ public class WristSubsystem extends SubsystemBase {
   //   m_intakeSolenoid.set(isOpen);
   // }
 
-  public void setWristToAngle(double setPoint) {
-    m_wristMotor.set(ControlMode.Position, setPoint);
+  public double ticksToDegrees(double ticks) {
+    return (ticks / 3360) * 360;
   }
 
-  public double getWristAngle(){
-    return m_wristMotor.getSelectedSensorPosition();
-
+  public void setWristToAngle(double speed) {
+    m_wristMotor.set(speed);
   }
+
+  // public double getWristAngle(){
+  //   return m_wristMotor.getSelectedSensorPosition();
+
+  // }
 
 
 
@@ -72,8 +82,8 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorTotalEffort.setDouble(wristPDEffort+wristFFEffort);
     nte_wristMotorFFEffort.setDouble(wristFFEffort);
     nte_wristMotorPDEffort.setDouble(wristPDEffort);
-    nte_wristMotorActualAngle.setDouble(getWristAngle());
+    // nte_wristMotorActualAngle.setDouble(getWristAngle());
     nte_wristMotorTargetAngle.setDouble(wristAngleSetpoint);
-    nte_wristMotorTemp.setDouble(m_wristMotor.getTemperature());
+    nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
   }
 }
