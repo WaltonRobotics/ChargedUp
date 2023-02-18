@@ -234,7 +234,7 @@ public final class Constants {
     }
 
     //in meters
-    public static final class VisionConstants{
+    public static final class VisionConstants {
         public static final double kCameraHeight = 0.88265;
         public static final double kCameraX = 0;
         public static final double kCameraY = 0.1524;
@@ -257,7 +257,7 @@ public final class Constants {
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
     }
 
-    public static final class TheClawK{
+    public static final class TheClawK {
         public static final int kTheClawID = 0; 
         public static final int kLeftCamID = 1;
         public static final int kRightCamID = 2;
