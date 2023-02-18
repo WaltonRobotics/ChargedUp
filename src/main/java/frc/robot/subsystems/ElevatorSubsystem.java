@@ -46,7 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_liftMotorTotalEffort = DashboardManager.addTabDial(this, "LiftMotorTotalEffort", -1, 1);
 		nte_liftTargetHeight = DashboardManager.addTabNumberBar(this, "LiftTargetHeight",
 			kMinHeightMeters, kMaxHeightMeters);
-			nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
+		nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
 			kMinHeightMeters, kMaxHeightMeters);
 		DashboardManager.addTab(this);
 	}
