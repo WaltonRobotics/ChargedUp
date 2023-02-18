@@ -133,26 +133,37 @@ public class ElevatorSubsystem extends SubsystemBase {
 	// 	}
 	// }
 
-	private void setState(ElevatorState state) {
+	private void setState(ElevatorStates state) {
 		switch (state) {
 			case MAX:
-				setLiftTarget(kMaxHeightMeters);
+				setLiftTarget(ElevatorStates.MAX.height);
+				goToTarget();
+				break;
+			case HIGH:
+				setLiftTarget(ElevatorStates.HIGH.height);
 				goToTarget();
 				break;
 			case MID:
-				setLiftTarget(kMaxHeightMeters / 2);
+				setLiftTarget(ElevatorStates.MID.height);
 				goToTarget();
 				break;
 			case MIN: // default?
-				setLiftTarget(kMinHeightMeters);
+				setLiftTarget(ElevatorStates.MIN.height);
 				goToTarget();
 				break;
 		}
 	}
 
-	public enum ElevatorState {
-		MAX,
-		MID,
-		MIN;
+	public enum ElevatorStates {
+		MAX(kMaxHeightMeters),
+		HIGH(kMaxHeightMeters * 3 / 4),
+		MID(kMaxHeightMeters / 2),
+		MIN(kMinHeightMeters);
+
+		public final double height;
+
+		private ElevatorStates(double height) {
+			this.height = height;
+		}
 	}
 }

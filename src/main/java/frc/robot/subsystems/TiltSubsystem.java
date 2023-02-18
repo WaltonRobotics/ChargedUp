@@ -77,4 +77,17 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
 		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
 	}
+
+	public enum TiltStates {
+		MAX(kMaxAngleDegrees),
+		HIGH(30),
+		MID(kMaxAngleDegrees / 2),
+		MIN(kMinAngleDegrees);
+
+		public final double angle;
+
+		private TiltStates(double angle) {
+			this.angle = angle;
+		}
+	}
 }

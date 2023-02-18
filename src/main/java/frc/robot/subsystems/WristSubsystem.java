@@ -87,22 +87,19 @@ public class WristSubsystem extends SubsystemBase {
 
   public double minValue = 0; //change later
 
-  public void toPosition(double speed, WristPositions position) {
+  public void toPosition(double speed, WristStates position) {
     switch (position) {
       case MAX:
-        setWristToAngle(speed, MathUtil.clamp(WristPositions.MAX.degrees, 0, minValue));
+        setWristToAngle(speed, MathUtil.clamp(WristStates.MAX.degrees, 0, minValue));
         break;
       case HIGH:
-        setWristToAngle(speed, MathUtil.clamp(WristPositions.HIGH.degrees, 0, minValue));
+        setWristToAngle(speed, MathUtil.clamp(WristStates.HIGH.degrees, 0, minValue));
         break;
-      case MEDIUM:
-        setWristToAngle(speed, MathUtil.clamp(WristPositions.MEDIUM.degrees, 0, minValue));
-        break;
-      case LOW:
-        setWristToAngle(speed, MathUtil.clamp(WristPositions.LOW.degrees, 0, minValue));
+      case MID:
+        setWristToAngle(speed, MathUtil.clamp(WristStates.MID.degrees, 0, minValue));
         break;
       case MIN:
-        setWristToAngle(speed, MathUtil.clamp(WristPositions.MIN.degrees, 0, minValue));
+        setWristToAngle(speed, MathUtil.clamp(WristStates.MIN.degrees, 0, minValue));
         break;
     }
   }
@@ -122,16 +119,15 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
   }
 
-  public enum WristPositions { // change degrees later
+  public enum WristStates { // change degrees later
     MAX(0),
     HIGH(30),
-    MEDIUM(60),
-    LOW(100),
+    MID(60),
     MIN(115);
 
     public final double degrees;
 
-    private WristPositions(double degrees) {
+    private WristStates(double degrees) {
       this.degrees = degrees;
     }
     }
