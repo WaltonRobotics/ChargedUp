@@ -263,5 +263,10 @@ public final class Constants {
         public static final int kRightCamID = 2;
     }
 
+    public static final class IndicatorLightsK{
+        public static final int kNumLEDs = 20; //TODO: change this
+        public static final int kLedPort = 0; //TODO: change this
+    }
+
 
 }

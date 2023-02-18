@@ -11,6 +11,7 @@ public class Superstructure extends SubsystemBase{
     private final TheClaw m_claw = new TheClaw();
     private final TiltSubsystem m_tilt = new TiltSubsystem();
     private final WristSubsystem m_wrist = new WristSubsystem();
+    private final LEDSubsystem m_leds = new LEDSubsystem();
 
     public Superstructure(){
     }   
@@ -38,5 +39,9 @@ public class Superstructure extends SubsystemBase{
 
     public WristSubsystem getWrist(){
         return m_wrist;
+    }
+
+    public LEDSubsystem getLEDs(){
+        return m_leds;
     }
 }
