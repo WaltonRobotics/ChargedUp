@@ -1,19 +1,17 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
 
-import frc.robot.Constants;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
@@ -85,11 +83,32 @@ public class WristSubsystem extends SubsystemBase {
     }
   }
 
+
   public double getWristAngle() {
     return ticksToDegrees(m_absoluteEncoder.getPosition());
   }
 
+  public double minValue = 0; //change later
 
+  public void toPosition(double speed, WristPositions position) {
+    switch (position) {
+      case MAX:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.MAX.degrees, 0, minValue));
+        break;
+      case HIGH:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.HIGH.degrees, 0, minValue));
+        break;
+      case MEDIUM:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.MEDIUM.degrees, 0, minValue));
+        break;
+      case LOW:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.LOW.degrees, 0, minValue));
+        break;
+      case MIN:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.MIN.degrees, 0, minValue));
+        break;
+    }
+  }
 
   @Override
   public void periodic() {
@@ -105,4 +124,18 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorTargetAngle.setDouble(wristAngleSetpoint);
     nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
   }
-}
+
+  public enum WristPositions { // change degrees later
+    MAX(0),
+    HIGH(30),
+    MEDIUM(60),
+    LOW(100),
+    MIN(115);
+
+    public final double degrees;
+
+    private WristPositions(double degrees) {
+      this.degrees = degrees;
+    }
+    }
+  }
