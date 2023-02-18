@@ -158,7 +158,7 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
-        public static final int kTiltCANID = 12;
+        public static final int kTiltCANID = 13;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -178,8 +178,8 @@ public final class Constants {
     // Elevator lifting motor(s)
     public static final class ElevatorK {
         // Motor Constants
-        public static final int kLeftElevatorCANID = 10;
-        public static final int kRightElevatorCANID = 11;
+        public static final int kLeftElevatorCANID = 11;
+        public static final int kRightElevatorCANID = 12;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
@@ -242,7 +242,7 @@ public final class Constants {
     }
 
     public static final class WristK {
-        public static final int kWristCANID = 13;
+        public static final int kWristCANID = 21;
         public static final double kP = 0.25;
         public static final double kD = 0.01;
         public static final double kS = 1.2;    // change values later
@@ -255,6 +255,12 @@ public final class Constants {
         public static final double kGearRatio = 1; // change later
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
+    }
+
+    public static final class TheClawK{
+        public static final int kTheClawID = 0; 
+        public static final int kLeftCamID = 1;
+        public static final int kRightCamID = 2;
     }
 
 

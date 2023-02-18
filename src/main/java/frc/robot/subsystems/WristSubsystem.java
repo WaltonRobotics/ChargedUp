@@ -57,6 +57,7 @@ public class WristSubsystem extends SubsystemBase {
 
   public double getWristAngle(){
     return m_wristMotor.getSelectedSensorPosition();
+
   }
 
 
