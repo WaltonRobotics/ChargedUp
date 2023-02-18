@@ -82,6 +82,8 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(godSubsystem.getSwerve().autoScore());
 
         manipulator.rightTrigger().onTrue(new InstantCommand(() -> godSubsystem.getClaw().toggleClaw()));
+        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(0)));    //cone
+        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(1)));    //cube
     }
 
     public void initShuffleBoard() {

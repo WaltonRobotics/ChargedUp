@@ -158,7 +158,7 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
-        public static final int kCANID = 21;
+        public static final int kCANID = 13;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -262,7 +262,11 @@ public final class Constants {
         public static final int kTheClawID = 0; 
         public static final int kLeftCamID = 1;
         public static final int kRightCamID = 2;
-        // tilt sparkmax id = 21
+    }
+
+    public static final class IndicatorLightsK{
+        public static final int kNumLEDs = 20; //TODO: change this
+        public static final int kLedPort = 0; //TODO: change this
     }
 
 
