@@ -63,6 +63,12 @@ public class LEDSubsystem {
         }
     }
 
+    public void setWhite(){
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 255, 255, 255);
+        }
+    }
+
     // cone is 0, cube is 1
     public void handleLED(int gamePiece) {
         GamePieceMode piece = GamePieceMode.values()[gamePiece];
@@ -73,6 +79,8 @@ public class LEDSubsystem {
             case CUBE:
                 setPurple();
                 break;
+            default:
+                setWhite();
         }
     }
 }
