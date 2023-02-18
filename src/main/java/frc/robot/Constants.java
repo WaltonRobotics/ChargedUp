@@ -242,7 +242,7 @@ public final class Constants {
     }
 
     public static final class WristK {
-        public static final int kWristCANID = 13;
+        public static final int kWristCANID = 21;
         public static final double kP = 0.25;
         public static final double kD = 0.01;
         public static final double kS = 1.2;    // change values later
@@ -261,6 +261,7 @@ public final class Constants {
         public static final int kTheClawID = 0; 
         public static final int kLeftCamID = 1;
         public static final int kRightCamID = 2;
+        // tilt sparkmax id = 21
     }
 
 
