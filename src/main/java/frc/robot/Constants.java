@@ -243,6 +243,7 @@ public final class Constants {
 
     public static final class WristK {
         public static final int kWristCANID = 21;
+        public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.25;
         public static final double kD = 0.01;
         public static final double kS = 1.2;    // change values later

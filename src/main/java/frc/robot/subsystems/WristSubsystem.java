@@ -11,16 +11,20 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
-import static frc.robot.Constants.WristK.kWristCANID;
+import static frc.robot.Constants.WristK.*;
+
+import frc.robot.Constants;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
   private final CANSparkMax m_wristMotor = new CANSparkMax(kWristCANID, MotorType.kBrushless);  // change device number later
-  private final SparkMaxAbsoluteEncoder absoluteEncoder =  m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
+  private final SparkMaxAbsoluteEncoder m_absoluteEncoder =  m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
   // private final Solenoid m_intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);  // change channel later
   private double wristAngleSetpoint = 0;
   private double wristFFEffort = 0;
   private double wristPDEffort = 0;
+  private boolean zeroed;
+
 
   private final ProfiledPIDController m_wristController = new ProfiledPIDController(
 		WristK.kP, 0, WristK.kD, WristK.kConstraints
@@ -34,6 +38,9 @@ public class WristSubsystem extends SubsystemBase {
 
   /** Creates a new Intake. */
   public WristSubsystem() {
+
+    zeroed = false;
+
     DashboardManager.addTab(this);
 
 
@@ -58,17 +65,23 @@ public class WristSubsystem extends SubsystemBase {
   // }
 
   public double ticksToDegrees(double ticks) {
-    return (ticks / 3360) * 360;
+    return ticks * (1 / (kAbsEncoderTicksPerRotation / 360));
   }
 
-  public void setWristToAngle(double speed) {
-    m_wristMotor.set(speed);
+  public double degreesToTicks(double degrees) {
+    return degrees * (kAbsEncoderTicksPerRotation / 360);
   }
 
-  // public double getWristAngle(){
-  //   return m_wristMotor.getSelectedSensorPosition();
+  public void setWristToAngle(double speed, double targetAngle) {
+    
+    while(getWristAngle() != targetAngle) {
+      
+    }
+  }
 
-  // }
+  public double getWristAngle() {
+    return ticksToDegrees(m_absoluteEncoder.getPosition());
+  }
 
 
 
@@ -82,7 +95,7 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorTotalEffort.setDouble(wristPDEffort+wristFFEffort);
     nte_wristMotorFFEffort.setDouble(wristFFEffort);
     nte_wristMotorPDEffort.setDouble(wristPDEffort);
-    // nte_wristMotorActualAngle.setDouble(getWristAngle());
+    nte_wristMotorActualAngle.setDouble(getWristAngle());
     nte_wristMotorTargetAngle.setDouble(wristAngleSetpoint);
     nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
   }
