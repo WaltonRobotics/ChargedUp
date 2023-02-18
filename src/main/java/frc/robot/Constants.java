@@ -258,7 +258,7 @@ public final class Constants {
     }
 
     public static final class TheClawK{
-        public static final int kTheClawID = 0; //TODO: change this
+        public static final int kTheClawID = 0; 
     }
 
 

@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -15,7 +15,7 @@ import static frc.robot.Constants.TiltK.kCANID;
 import static frc.robot.Constants.TiltK.potPort;
 
 public class TiltSubsystem extends SubsystemBase {
-	private final WPI_TalonFX m_tiltMotor = new WPI_TalonFX(kCANID);
+	private final CANSparkMax m_tiltMotor = new CANSparkMax(kCANID, MotorType.kBrushless);
 	private final AnalogInput m_tiltPot = new AnalogInput(potPort);
 	private final PIDController m_tiltController = new PIDController(kP, 0, kD);
 	private double m_tiltTargetAngle = 0;
@@ -25,7 +25,6 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public TiltSubsystem() {
 		DashboardManager.addTab(this);
-		m_tiltMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
 		nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
 		nte_tiltMotorFFEffort = DashboardManager.addTabDial(this, "TiltMotorFFEffort", -1, 1);
 ;		nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
