@@ -1,21 +1,27 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
-import static frc.robot.Constants.WristK.kWristCANID;
+import static frc.robot.Constants.WristK.*;
+
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
-  private final WPI_TalonFX m_wristMotor = new WPI_TalonFX(kWristCANID);  // change device number later
+  private final CANSparkMax m_wristMotor = new CANSparkMax(kWristCANID, MotorType.kBrushless);  // change device number later
+  private final SparkMaxAbsoluteEncoder m_absoluteEncoder =  m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
   // private final Solenoid m_intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);  // change channel later
   private double wristAngleSetpoint = 0;
   private double wristFFEffort = 0;
   private double wristPDEffort = 0;
+
 
   private final ProfiledPIDController m_wristController = new ProfiledPIDController(
 		WristK.kP, 0, WristK.kD, WristK.kConstraints
@@ -29,9 +35,11 @@ public class WristSubsystem extends SubsystemBase {
 
   /** Creates a new Intake. */
   public WristSubsystem() {
+
     DashboardManager.addTab(this);
 
-    m_wristMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+
+    // m_wristMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
     nte_wristMotorFFEffort = DashboardManager.addTabDial(this, "WristFFEffort", -1, 1);
 		nte_wristMotorPDEffort = DashboardManager.addTabDial(this, "WristPDEffort", -1, 1);
@@ -51,16 +59,53 @@ public class WristSubsystem extends SubsystemBase {
   //   m_intakeSolenoid.set(isOpen);
   // }
 
-  public void setWristToAngle(double setPoint) {
-    m_wristMotor.set(ControlMode.Position, setPoint);
+  public double ticksToDegrees(double ticks) {
+    return ticks * (1 / (kAbsEncoderTicksPerRotation / 360));
   }
 
-  public double getWristAngle(){
-    return m_wristMotor.getSelectedSensorPosition();
+  public double degreesToTicks(double degrees) {
+    return degrees * (kAbsEncoderTicksPerRotation / 360);
+  }
 
+  public void setWristToAngle(double speed, double targetAngle) {
+    
+    while(getWristAngle() != targetAngle) {
+      if(getWristAngle() - targetAngle < 0) {
+        m_wristMotor.setInverted(true);
+        m_wristMotor.set(speed);
+      }
+      else if(getWristAngle() - targetAngle > 0) {
+        m_wristMotor.set(speed);
+      }
+    }
   }
 
 
+  public double getWristAngle() {
+    return ticksToDegrees(m_absoluteEncoder.getPosition());
+  }
+
+  public double minValue = 0; //change later
+
+  public void toPosition(double speed, WristPositions position) {
+    switch (position) {
+      case MAX:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.MAX.degrees, 0, minValue));
+        break;
+      case HIGH:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.HIGH.degrees, 0, minValue));
+        break;
+      case MEDIUM:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.MEDIUM.degrees, 0, minValue));
+        break;
+      case LOW:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.LOW.degrees, 0, minValue));
+        break;
+      case MIN:
+        setWristToAngle(speed, MathUtil.clamp(WristPositions.MIN.degrees, 0, minValue));
+        break;
+    }
+  }
 
   @Override
   public void periodic() {
@@ -74,6 +119,20 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorPDEffort.setDouble(wristPDEffort);
     nte_wristMotorActualAngle.setDouble(getWristAngle());
     nte_wristMotorTargetAngle.setDouble(wristAngleSetpoint);
-    nte_wristMotorTemp.setDouble(m_wristMotor.getTemperature());
+    nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
   }
-}
+
+  public enum WristPositions { // change degrees later
+    MAX(0),
+    HIGH(30),
+    MEDIUM(60),
+    LOW(100),
+    MIN(115);
+
+    public final double degrees;
+
+    private WristPositions(double degrees) {
+      this.degrees = degrees;
+    }
+    }
+  }

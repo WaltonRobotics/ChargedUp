@@ -422,13 +422,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		var resetCmd = runOnce(() -> {
 			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
 			if (DriverStation.getAlliance() == Alliance.Red) {
-				initialState = ReflectedTransform.reflectiveTransformState(
-						initialState);
+				initialState = ReflectedTransform.reflectiveTransformState(initialState);
 			}
 			resetPose(initialState.poseMeters);
 		});
-
-		
 		var pathCmd = new WaltonPPSwerveControllerCommand(
 				() -> trajectory,
 				this::getPose,
@@ -439,18 +436,6 @@ public class SwerveSubsystem extends SubsystemBase {
 				this::setModuleStates,
 				true,
 				this);
-		if(DriverStation.getAlliance() == Alliance.Blue){
-			pathCmd = new WaltonPPSwerveControllerCommand(
-				() -> ReflectedTransform.reflectiveTransformTrajectory(trajectory),
-				this::getPose,
-				kKinematics,
-				xController,
-				yController,
-				autoThetaController,
-				this::setModuleStates,
-				true,
-				this);
-		}
 		return resetCmd.andThen(pathCmd);
 	}
 
