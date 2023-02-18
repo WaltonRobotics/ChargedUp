@@ -21,7 +21,6 @@ public class WristSubsystem extends SubsystemBase {
   private double wristAngleSetpoint = 0;
   private double wristFFEffort = 0;
   private double wristPDEffort = 0;
-  private boolean zeroed;
 
 
   private final ProfiledPIDController m_wristController = new ProfiledPIDController(
@@ -36,8 +35,6 @@ public class WristSubsystem extends SubsystemBase {
 
   /** Creates a new Intake. */
   public WristSubsystem() {
-
-    zeroed = false;
 
     DashboardManager.addTab(this);
 
