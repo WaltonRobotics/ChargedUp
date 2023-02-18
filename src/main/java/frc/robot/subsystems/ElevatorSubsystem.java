@@ -2,81 +2,67 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
+
 import static frc.robot.Constants.ElevatorK.*;
 import static frc.robot.Constants.ElevatorK.kLeftElevatorCANID;
 import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
 
 public class ElevatorSubsystem extends SubsystemBase {
+	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID);
+	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID);
 	
-	// Motors
-	private final WPI_TalonFX m_liftLeader = new WPI_TalonFX(kLeftElevatorCANID); // change IDs later
-	private final WPI_TalonFX m_liftFollower = new WPI_TalonFX(kRightElevatorCANID); // change IDs later
-	
-
-	// Control
-	private final ProfiledPIDController m_ElevatorController = new ProfiledPIDController(
+	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
 		kP, 0, kD, kConstraints
 	);
 
-	// Simulation
-	private final ElevatorSim m_liftSim = new ElevatorSim(
-		kMotor, kGearRatio,
-		kCarriageMassKg, kDrumRadiusMeters,
-		kMinHeightMeters,kMaxHeightMeters,
-true);
-
-	// State
-	private double m_liftTargetHeight = 0;
+	private double m_liftTargetHeight;
+	// private boolean zeroing;
+	// private boolean zeroed;
 
 	private final GenericEntry nte_liftMotorFFEffort, nte_liftMotorPDEffort, 
                              nte_liftMotorTotalEffort, nte_liftTargetHeight,
 														 nte_liftActualHeight;
 
-	private final Mechanism2d m_mech2d = new Mechanism2d(20, 50);
-	private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 10, 0);
-	private final MechanismLigament2d m_elevatorMech2d =
-	  m_mech2dRoot.append(
-		  new MechanismLigament2d(
-			  "Elevator", Units.metersToInches(m_liftSim.getPositionMeters()), 90));
-
 	public ElevatorSubsystem() {
+		// zeroing = false;
+		// zeroed = true;
+
 		DashboardManager.addTab(this);
 
-		m_liftLeader.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		m_elevatorRight.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		m_elevatorLeft.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
 		nte_liftMotorFFEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
 		nte_liftMotorPDEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
 		nte_liftMotorTotalEffort = DashboardManager.addTabDial(this, "LiftMotorTotalEffort", -1, 1);
 		nte_liftTargetHeight = DashboardManager.addTabNumberBar(this, "LiftTargetHeight",
 			kMinHeightMeters, kMaxHeightMeters);
-			nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
+		nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
 			kMinHeightMeters, kMaxHeightMeters);
-
-		DashboardManager.addTabSendable(this, "Lift Sim", m_mech2d);
-
 		DashboardManager.addTab(this);
 	}
 
+	// @Override
+	// public void periodic() {
+	// 	setState();
+
+	// 	nte_liftActualHeight.setDouble(getLiftActualHeight());
+	// }
+
 	private double falconToMeters() {
-		var falconPos = m_liftLeader.getSelectedSensorPosition();
+		var falconPos = m_elevatorRight.getSelectedSensorPosition();
 		var meters = Conversions.falconToMeters(
-			falconPos, kDrumCircumferenceMeters , kGearRatio);
+			falconPos, kDrumCircumferenceMeters, kGearRatio);
 		return meters;
 	}
-
 
 	public CommandBase setLiftTarget(double meters) {
 		return runOnce(() -> {
@@ -84,75 +70,89 @@ true);
 		});
 	}
 
-	// public CommandBase setLiftTargetAdjustable(DoubleSupplier meters) {
-	// 	return run(() -> {
-	// 		i_setLiftTarget(meters.getAsDouble());
-	// 	});
-	// }
-
 	private void i_setLiftTarget(double meters) {
+		double height = getLiftActualHeight();
 		// don't allow impossible heights
-		if (meters < kMinHeightMeters) meters = kMinHeightMeters;
-		if (meters > kMaxHeightMeters) meters = kMaxHeightMeters;
-
-		m_liftTargetHeight = meters;
+		m_liftTargetHeight = MathUtil.clamp(height, kMinHeightMeters, kMaxHeightMeters);
 		nte_liftTargetHeight.setDouble(m_liftTargetHeight);
+	}
+
+	private double getLiftTarget() {
+		return Conversions.MetersToFalcon(m_liftTargetHeight, kDrumCircumferenceMeters, kGearRatio);
+	}
+
+	private void setMotors(double voltage) {
+		m_elevatorLeft.setVoltage(voltage);
+		m_elevatorRight.follow(m_elevatorLeft);
+	}
+
+	private void goToTarget() {
+		double liftPDEffort = m_elevatorController.calculate(falconToMeters());
+
+		double liftFFEffort = 0;
+
+		if (m_elevatorController.getSetpoint().velocity != 0) {
+			liftFFEffort = kFeedforward.calculate(m_elevatorController.getSetpoint().velocity);
+		}
+
+		double liftTotalEffort = liftFFEffort + liftPDEffort;
+
+		setMotors(liftTotalEffort);
+
+		nte_liftMotorFFEffort.setDouble(liftFFEffort);
+		nte_liftMotorPDEffort.setDouble(liftPDEffort);
+		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
 	}
 
 	private double getLiftActualHeight() {
 		return falconToMeters();
 	}
 
-	@Override
-	public void periodic() {
-		// Lift control
+	// private void zero() {
+	// 	zeroing = true;
+	// 	while (!atLowerPosition()) {
+	// 		setMotors(-0.2);
+	// 	}
+	// 	zeroed = true;
+	// 	zeroing = false;
+	// }
 
-		// Set controller goal position
-		m_ElevatorController.setGoal(m_liftTargetHeight);
-
-		// Calculate profile setpoint and effort
-		double liftPDEffort = m_ElevatorController.calculate(falconToMeters());
-
-		// Calculate FF effort from profile setpoint
-		double liftFFEffort = 0;
-		if (m_ElevatorController.getSetpoint().velocity != 0) {
-			liftFFEffort = kFeedforward.calculate(m_ElevatorController.getSetpoint().velocity);
-		}
-		// Combine for total effort
-		double liftTotalEffort = liftFFEffort + liftPDEffort;
-
-		// Command motor
-		m_liftLeader.setVoltage(liftTotalEffort);
-		m_liftFollower.follow(m_liftLeader);
-
-		// Push telemetry
-		nte_liftMotorFFEffort.setDouble(liftFFEffort);
-		nte_liftMotorPDEffort.setDouble(liftPDEffort);
-		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
-		nte_liftActualHeight.setDouble(getLiftActualHeight());
+	private boolean atLowerPosition() {
+		double height = getLiftActualHeight();
+		return height <= kMinHeightMeters;
 	}
 
-	@Override
-	public void simulationPeriodic() {
-		if (!DriverStation.isEnabled()) {
-			return; // break out if not enabled. Robots can't move when disabled!
+	private boolean atUpperPosition() {
+		double height = getLiftActualHeight();
+		return height >= kMaxHeightMeters;
+	}
+
+	// private void startZero() {
+	// 	if (!zeroed) {
+	// 		zero();
+	// 	}
+	// }
+
+	private void setState(ElevatorState state) {
+		switch (state) {
+			case MAX:
+				setLiftTarget(kMaxHeightMeters);
+				goToTarget();
+				break;
+			case MID:
+				setLiftTarget(kMaxHeightMeters / 2);
+				goToTarget();
+				break;
+			case MIN: // default?
+				setLiftTarget(kMinHeightMeters);
+				goToTarget();
+				break;
 		}
+	}
 
-		double motorVoltage = m_liftLeader.get() * m_liftLeader.getBusVoltage();
-		m_liftSim.setInput(motorVoltage);
-		m_liftSim.update(0.020);
-
-		m_liftLeader.getSimCollection()
-			.setIntegratedSensorRawPosition(
-				(int)Conversions.MetersToFalcon(
-					m_liftSim.getPositionMeters(),
-					kDrumCircumferenceMeters,
-					kGearRatio)
-		);
-
-		// TODO: move out so all sim objects can add their load together
-		// RoboRioSim.setVInVoltage(
-		// BatterySim.calculateDefaultBatteryLoadedVoltage(m_liftSim.getCurrentDrawAmps()));
-		m_elevatorMech2d.setLength(Units.metersToInches(m_liftSim.getPositionMeters()));
+	public enum ElevatorState {
+		MAX,
+		MID,
+		MIN;
 	}
 }
