@@ -14,6 +14,7 @@ import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kCANID;
 import static frc.robot.Constants.TiltK.potPort;
 
+//TODO: limit switch (hall-effect) 
 public class TiltSubsystem extends SubsystemBase {
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kCANID, MotorType.kBrushless);
 	private final AnalogInput m_tiltPot = new AnalogInput(potPort);

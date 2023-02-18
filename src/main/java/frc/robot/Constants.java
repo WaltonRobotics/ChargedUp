@@ -259,6 +259,8 @@ public final class Constants {
 
     public static final class TheClawK{
         public static final int kTheClawID = 0; 
+        public static final int kLeftCamID = 1;
+        public static final int kRightCamID = 2;
     }
 
 
