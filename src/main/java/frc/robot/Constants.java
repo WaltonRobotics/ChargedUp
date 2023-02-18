@@ -158,7 +158,7 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
-        public static final int kTiltCANID = 13;
+        public static final int kCANID = 13;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -172,7 +172,7 @@ public final class Constants {
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
 
-        public static final int PotPort = 0;
+        public static final int potPort = 0;
     }
 
     // Elevator lifting motor(s)
@@ -257,10 +257,15 @@ public final class Constants {
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
     }
 
-    public static final class TheClawK {
+    public static final class TheClawK{
         public static final int kTheClawID = 0; 
         public static final int kLeftCamID = 1;
         public static final int kRightCamID = 2;
+    }
+
+    public static final class IndicatorLightsK{
+        public static final int kNumLEDs = 20; //TODO: change this
+        public static final int kLedPort = 0; //TODO: change this
     }
 
 

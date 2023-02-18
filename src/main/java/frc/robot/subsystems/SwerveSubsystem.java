@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.SwerveModule;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagChooser;
-import frc.robot.vision.AprilTagHelper;
+import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.PathChooser;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonPPSwerveControllerCommand;
@@ -45,7 +45,6 @@ import static frc.robot.Constants.SwerveK.*;
 import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 
-import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,9 +89,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			getModulePositions(),
 			new Pose2d());
 
-	private final AprilTagHelper m_apriltagHelper;
+	private final AprilTagCamera m_apriltagHelper;
 
-	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagHelper apriltagHelper) {
+	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
