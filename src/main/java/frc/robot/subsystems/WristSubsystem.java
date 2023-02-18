@@ -75,7 +75,13 @@ public class WristSubsystem extends SubsystemBase {
   public void setWristToAngle(double speed, double targetAngle) {
     
     while(getWristAngle() != targetAngle) {
-      
+      if(getWristAngle() - targetAngle < 0) {
+        m_wristMotor.setInverted(true);
+        m_wristMotor.set(speed);
+      }
+      else if(getWristAngle() - targetAngle > 0) {
+        m_wristMotor.set(speed);
+      }
     }
   }
 
