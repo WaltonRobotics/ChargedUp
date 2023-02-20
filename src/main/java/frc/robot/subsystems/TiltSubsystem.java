@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -18,6 +20,7 @@ import static frc.robot.Constants.TiltK.kCANID;
 //TODO: limit switch (hall-effect) 
 public class TiltSubsystem extends SubsystemBase {
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kCANID, MotorType.kBrushless);
+	private final SparkMaxAbsoluteEncoder m_tiltEncoder = m_tiltMotor.getAbsoluteEncoder(Type.kDutyCycle);
 	//add encoders
 	private final PIDController m_tiltController = new PIDController(kP, 0, kD);
 	private double m_tiltTargetAngle = 0;
@@ -49,7 +52,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 	//42 ticks per rev
 	public double getNEOdegrees(){
-		return 0; //TODO: figure this out
+		return m_tiltEncoder.getPosition() * (1 / (kAbsEncoderTicksPerRotation / 360)); //TODO: figure this out
 	}
 
 	@Override
@@ -72,7 +75,7 @@ public class TiltSubsystem extends SubsystemBase {
 		m_tiltMotor.setVoltage(tiltTotalEffort);
 
 		// Push telemetry
-		nte_tiltActualAngle.setDouble(0);//fix
+		nte_tiltActualAngle.setDouble(getNEOdegrees());//fix
 		nte_tiltMotorFFEffort.setDouble(tiltFFEffort);
 		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
 		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
