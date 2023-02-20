@@ -159,6 +159,10 @@ public final class Constants {
     // Elevator tilting motor
     public static final class TiltK {
         public static final int kCANID = 13;
+        public static final int kTiltQuadratureEncoderA = 6;
+        public static final int kTiltQuadratureEncoderB = 7;
+        public static final int kTiltAbsoluteEncoder = 8;
+        public static final int kTiltMotorCurrLimit = 5;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -172,7 +176,6 @@ public final class Constants {
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
 
-        public static final int potPort = 0;
     }
 
     // Elevator lifting motor(s)
@@ -180,6 +183,10 @@ public final class Constants {
         // Motor Constants
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
+        public static final int kLeftElevatorCurrLimit = 5;
+        public static final int kRightElevatorCurrLimit = 5;
+        public static final int kUpperLimitSwitch = 9;
+        public static final int kLowerLimitSwitch = 5;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
@@ -243,6 +250,7 @@ public final class Constants {
 
     public static final class WristK {
         public static final int kWristCANID = 21;
+        public static final int kWristCurrLimit = 5;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.25;
         public static final double kD = 0.01;
@@ -260,8 +268,8 @@ public final class Constants {
 
     public static final class TheClawK{
         public static final int kTheClawID = 0; 
-        public static final int kLeftCamID = 1;
-        public static final int kRightCamID = 2;
+        public static final int kLeftCamID = 0;
+        public static final int kRightCamID = 1;
     }
 
     public static final class IndicatorLightsK{

@@ -18,6 +18,7 @@ import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
 public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID);
 	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID);
+
 	
 	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
 		kP, 0, kD, kConstraints
@@ -34,7 +35,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public ElevatorSubsystem() {
 		// zeroing = false;
 		// zeroed = true;
-
 		DashboardManager.addTab(this);
 
 		m_elevatorRight.getSensorCollection().setIntegratedSensorPosition(0, 0);

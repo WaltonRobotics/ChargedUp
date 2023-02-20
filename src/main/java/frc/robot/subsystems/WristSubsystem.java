@@ -35,7 +35,8 @@ public class WristSubsystem extends SubsystemBase {
 
   /** Creates a new Intake. */
   public WristSubsystem() {
-
+    
+    m_wristMotor.setSmartCurrentLimit(kWristCurrLimit);
     DashboardManager.addTab(this);
 
 
