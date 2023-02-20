@@ -8,13 +8,16 @@
 // import static frc.robot.Constants.ElevatorK.*;
 
 // import com.ctre.phoenix.motorcontrol.ControlMode;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
 // import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+// import com.revrobotics.CANSparkMax.IdleMode;
 
 // import edu.wpi.first.math.MathUtil;
 // import edu.wpi.first.math.controller.ProfiledPIDController;
 // import edu.wpi.first.networktables.GenericEntry;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 // import edu.wpi.first.wpilibj2.command.CommandBase;
 // import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.lib.math.Conversions;
@@ -39,10 +42,15 @@
 //                              nte_liftMotorTotalEffort, nte_liftTargetHeight,
 // 														 nte_liftActualHeight;
 
-// 	public ElevatorSubsystem() {
-// 		// zeroing = false;
-// 		// zeroed = true;
-// 		DashboardManager.addTab(this);
+	// private GenericEntry nte_coast = Shuffleboard.getTab("elevator lift idle mode")
+	// 		.add("coast", false)
+	// 		.withWidget("Toggle Button")
+	// 		.getEntry();
+
+	// public ElevatorSubsystem() {
+	// 	// zeroing = false;
+	// 	// zeroed = true;
+	// 	DashboardManager.addTab(this);
 
 // 		m_elevatorLeft.configFactoryDefault();
 //         m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
@@ -74,11 +82,21 @@
 // 		return meters;
 // 	}
 
-// 	public CommandBase setLiftTarget(double meters) {
-// 		return runOnce(() -> {
-// 			i_setLiftTarget(meters);
-// 		});
-// 	}
+	// private void setCoast(boolean coast) {
+	// 	if (coast) {
+	// 		m_elevatorLeft.setNeutralMode(NeutralMode.Coast);
+	// 		m_elevatorRight.setNeutralMode(NeutralMode.Coast);
+	// 	} else {
+	// 		m_elevatorLeft.setNeutralMode(NeutralMode.Brake);
+	// 		m_elevatorRight.setNeutralMode(NeutralMode.Brake);
+	// 	}
+	// }
+
+	// public CommandBase setLiftTarget(double meters) {
+	// 	return runOnce(() -> {
+	// 		i_setLiftTarget(meters);
+	// 	});
+	// }
 
 // 	private void i_setLiftTarget(double meters) {
 // 		double height = getLiftActualHeight();
@@ -185,5 +203,7 @@
 // 	public void periodic() {
 // 		SmartDashboard.putNumber("Elevator Ticks", m_elevatorRight.getSelectedSensorPosition());
 // 		nte_liftActualHeight.setDouble(getLiftActualHeight());
+
+// 		setCoast(nte_coast.getBoolean(false));
 // 	}
 // }
