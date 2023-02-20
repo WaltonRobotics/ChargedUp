@@ -7,11 +7,13 @@ import static frc.robot.Constants.ElevatorK.kLeftElevatorCANID;
 import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
 import static frc.robot.Constants.ElevatorK.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
@@ -22,7 +24,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID);
 	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID);
 
-	
+	private final DigitalInput m_lowerLimitSwitch = new DigitalInput(kLowerLimitSwitch);
+
 	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
 		kElevatorP, 0, kElevatorD, kConstraints
 	);
@@ -92,9 +95,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return Conversions.MetersToFalcon(m_liftTargetHeight, kDrumCircumferenceMeters, kGearRatio);
 	}
 
-	private void setMotors(double voltage) {
-		m_elevatorLeft.setVoltage(voltage);
-		m_elevatorRight.follow(m_elevatorLeft);
+	public CommandBase setMotors(double joystick) {
+		return run(() -> {
+			if (joystick == 0) {
+				while (!m_lowerLimitSwitch.get()) { 
+					m_elevatorLeft.set(ControlMode.Velocity, -0.2);
+					m_elevatorRight.follow(m_elevatorLeft);
+				}
+			}
+			m_elevatorLeft.set(ControlMode.Velocity, kMaxVelocity * joystick);
+			m_elevatorRight.follow(m_elevatorLeft);
+		});
 	}
 
 	private void goToTarget() {
@@ -144,37 +155,33 @@ public class ElevatorSubsystem extends SubsystemBase {
 	// 	}
 	// }
 
-	private void setState(ElevatorStates state) {
+	public CommandBase setState(ElevatorStates state) {
 		switch (state) {
 			case MAX:
-				setLiftTarget(ElevatorStates.MAX.height);
-				goToTarget();
-				break;
-			case HIGH:
-				setLiftTarget(ElevatorStates.HIGH.height);
-				goToTarget();
-				break;
+				setLiftTarget(kMaxHeightMeters);
+				return runOnce(() -> goToTarget());
 			case MID:
-				setLiftTarget(ElevatorStates.MID.height);
-				goToTarget();
-				break;
-			case MIN: // default?
-				setLiftTarget(ElevatorStates.MIN.height);
-				goToTarget();
-				break;
+				setLiftTarget(kMaxHeightMeters / 2);
+				return runOnce(() -> goToTarget());
+			default:
+				setLiftTarget(kMinHeightMeters);
+				return runOnce(() -> goToTarget());
 		}
 	}
 
+	// public ElevatorState getState(double value) {
+	// 	if (value <= 0.25) {
+	// 		return ElevatorState.MIN;
+	// 	} else if (value <= 0.75) {
+	// 		return ElevatorState.MID;
+	// 	}
+
+	// 	return ElevatorState.MAX;
+	// }
+
 	public enum ElevatorStates {
-		MAX(kMaxHeightMeters),
-		HIGH(kMaxHeightMeters * 3 / 4),
-		MID(kMaxHeightMeters / 2),
-		MIN(kMinHeightMeters);
-
-		public final double height;
-
-		private ElevatorStates(double height) {
-			this.height = height;
-		}
+		MAX,
+		MID,
+		MIN;
 	}
 }
