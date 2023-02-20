@@ -6,6 +6,7 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
+import static frc.robot.Constants.ElevatorK.*;
 
 public final class CTREConfigs {
     private static final class Container {
@@ -17,11 +18,13 @@ public final class CTREConfigs {
     public final TalonFXConfiguration swerveAngleFXConfig;
     public final TalonFXConfiguration swerveDriveFXConfig;
     public final CANCoderConfiguration swerveCanCoderConfig;
+    public final TalonFXConfiguration elevatorFXConfig;
 
     private CTREConfigs(){
         swerveAngleFXConfig = new TalonFXConfiguration();
         swerveDriveFXConfig = new TalonFXConfiguration();
         swerveCanCoderConfig = new CANCoderConfiguration();
+        elevatorFXConfig = new TalonFXConfiguration();
 
         /* Swerve Angle Motor Configurations */
         SupplyCurrentLimitConfiguration angleSupplyLimit = new SupplyCurrentLimitConfiguration(
@@ -56,5 +59,14 @@ public final class CTREConfigs {
         swerveCanCoderConfig.sensorDirection = Constants.SwerveK.kInvertCanCoder;
         swerveCanCoderConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
         swerveCanCoderConfig.sensorTimeBase = SensorTimeBase.PerSecond;
+
+        /*Elevator Left and Right Motor Configuration */
+        SupplyCurrentLimitConfiguration elevatorSupplyLimit = new SupplyCurrentLimitConfiguration(
+            kElevatorEnableCurrentLimit,
+            kElevatorContinuousCurrentLimit,
+            kElevatorPeakCurrentLimit,
+            kElevatorePeakCurrentDuration);
+        elevatorFXConfig.slot0.kP = kElevatorP;
+        elevatorFXConfig.slot0.kD = kElevatorD;
     }
 }

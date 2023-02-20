@@ -180,20 +180,24 @@ public final class Constants {
 
     // Elevator lifting motor(s)
     public static final class ElevatorK {
-        // Motor Constants
+
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
-        public static final int kLeftElevatorCurrLimit = 5;
-        public static final int kRightElevatorCurrLimit = 5;
         public static final int kUpperLimitSwitch = 9;
         public static final int kLowerLimitSwitch = 5;
 
+         /* Elevator Current Limiting */
+         public static final int kElevatorContinuousCurrentLimit = 5;
+         public static final int kElevatorPeakCurrentLimit = 10;
+         public static final double kElevatorePeakCurrentDuration = 0.1;
+         public static final boolean kElevatorEnableCurrentLimit = true;
+
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
-        public static final double kP = 0.25;
-        public static final double kD = 0.01;
-        public static final double kS = 1.2;
-        public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
+        public static final double kElevatorP = 0.25;
+        public static final double kElevatorD = 0.01;
+        public static final double kElevatorS = 1.2;
+        public static final double kElevatorV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
@@ -203,7 +207,7 @@ public final class Constants {
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
 
-        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kCarriageMassKg, kV);
+        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kElevatorS, kCarriageMassKg, kElevatorV);
         public static final TrapezoidProfile.Constraints kConstraints =
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     }
