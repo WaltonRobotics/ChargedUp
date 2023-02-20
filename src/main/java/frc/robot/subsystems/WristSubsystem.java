@@ -17,7 +17,6 @@ import frc.robot.Constants.WristK;
 public class WristSubsystem extends SubsystemBase {
   private final CANSparkMax m_wristMotor = new CANSparkMax(kWristCANID, MotorType.kBrushless);  // change device number later
   private final SparkMaxAbsoluteEncoder m_absoluteEncoder =  m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-  // private final Solenoid m_intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);  // change channel later
   private double wristAngleSetpoint = 0;
   private double wristFFEffort = 0;
   private double wristPDEffort = 0;

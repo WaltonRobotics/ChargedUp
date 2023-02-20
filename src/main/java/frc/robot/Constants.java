@@ -158,10 +158,11 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
-        public static final int kCANID = 13;
+        public static final int kTiltMotorCANID = 13;
+        public static final int kTiltLimitSwitchPort = 5;
         public static final int kTiltQuadratureEncoderA = 6;
         public static final int kTiltQuadratureEncoderB = 7;
-        public static final int kTiltAbsoluteEncoderID = 8;
+        public static final int kTiltAbsoluteEncoderPort = 8;
         public static final int kTiltMotorCurrLimit = 5;
 
         public static final int kAbsEncoderTicksPerRotation = 42;
@@ -187,7 +188,6 @@ public final class Constants {
         public static final int kRightElevatorCANID = 12;
 
         public static final int kUpperLimitSwitch = 9;
-        public static final int kLowerLimitSwitch = 5;
 
          /* Elevator Current Limiting */
          public static final int kElevatorContinuousCurrentLimit = 5;
@@ -279,8 +279,8 @@ public final class Constants {
 
     public static final class TheClawK{
         public static final int kTheClawID = 0; 
-        public static final int kLeftCamID = 0;
-        public static final int kRightCamID = 1;
+        public static final int kLeftEyeID = 0;
+        public static final int kRightEyeID = 1;
     }
 
     public static final class IndicatorLightsK{

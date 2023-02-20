@@ -11,8 +11,8 @@ import static frc.robot.Constants.TheClawK.*;
 
 public class TheClaw extends SubsystemBase {
     private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheClawID);
-    private final DigitalInput leftCam = new DigitalInput(kLeftCamID);
-    private final DigitalInput rightCam = new DigitalInput(kRightCamID);
+    private final DigitalInput leftCam = new DigitalInput(kLeftEyeID);
+    private final DigitalInput rightCam = new DigitalInput(kRightEyeID);
     private boolean isClosed = false;
     private final GenericEntry nte_isClawClosed;
 
