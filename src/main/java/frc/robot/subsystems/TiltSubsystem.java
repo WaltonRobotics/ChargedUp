@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -49,6 +50,14 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public double getTiltActualDegrees() {
 		return potToDegrees();
+	}
+
+	private void setCoast(boolean coast) {
+		if (coast) {
+			m_tiltMotor.setIdleMode(IdleMode.kCoast);
+		} else {
+			m_tiltMotor.setIdleMode(IdleMode.kBrake);
+		}
 	}
 
 	@Override
