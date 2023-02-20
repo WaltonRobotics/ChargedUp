@@ -88,6 +88,7 @@ public class SwerveModule {
             nte_modVelocity.setDouble(getState().speedMetersPerSecond);
             nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
         }
+        SmartDashboard.putNumber(moduleName + "Cancoder Angle", m_angleEncoder.getAbsolutePosition());
         
     }
 

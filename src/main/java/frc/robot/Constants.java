@@ -150,7 +150,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(90.17) ;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(279.4) ;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -183,7 +183,7 @@ public final class Constants {
 
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
-        
+
         public static final int kUpperLimitSwitch = 9;
         public static final int kLowerLimitSwitch = 5;
 
