@@ -98,102 +98,6 @@
 	// 	});
 	// }
 
-// 	private void i_setLiftTarget(double meters) {
-// 		double height = getLiftActualHeight();
-// 		// don't allow impossible heights
-// 		m_liftTargetHeight = MathUtil.clamp(height, kMinHeightMeters, kMaxHeightMeters);
-// 		nte_liftTargetHeight.setDouble(m_liftTargetHeight);
-// 	}
-
-// 	private double getLiftTarget() {
-// 		return Conversions.MetersToFalcon(m_liftTargetHeight, kDrumCircumferenceMeters, kGearRatio);
-// 	}
-
-// 	public CommandBase setMotors(double joystick) {
-// 		return run(() -> {
-// 			if (joystick == 0) {
-// 				while (!m_lowerLimitSwitch.get()) { 
-// 					m_elevatorLeft.set(ControlMode.Velocity, -0.2);
-// 					m_elevatorRight.follow(m_elevatorLeft);
-// 				}
-// 			}
-// 			m_elevatorLeft.set(ControlMode.Velocity, kMaxVelocity * joystick);
-// 			m_elevatorRight.follow(m_elevatorLeft);
-// 		});
-// 	}
-
-// 	private void goToTarget() {
-// 		double liftPDEffort = m_elevatorController.calculate(falconToMeters());
-
-// 		double liftFFEffort = 0;
-
-// 		if (m_elevatorController.getSetpoint().velocity != 0) {
-// 			liftFFEffort = kFeedforward.calculate(m_elevatorController.getSetpoint().velocity);
-// 		}
-
-// 		double liftTotalEffort = liftFFEffort + liftPDEffort;
-
-// 		setMotors(liftTotalEffort);
-
-// 		nte_liftMotorFFEffort.setDouble(liftFFEffort);
-// 		nte_liftMotorPDEffort.setDouble(liftPDEffort);
-// 		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
-// 	}
-
-// 	private double getLiftActualHeight() {
-// 		//return falconToMeters();
-// 		return m_elevatorRight.getSelectedSensorPosition();
-// 	}
-
-// 	// private void zero() {
-// 	// 	zeroing = true;
-// 	// 	while (!atLowerPosition()) {
-// 	// 		setMotors(-0.2);
-// 	// 	}
-// 	// 	zeroed = true;
-// 	// 	zeroing = false;
-// 	// }
-
-// 	private boolean atLowerPosition() {
-// 		double height = getLiftActualHeight();
-// 		return height <= kMinHeightMeters;
-// 	}
-
-// 	private boolean atUpperPosition() {
-// 		double height = getLiftActualHeight();
-// 		return height >= kMaxHeightMeters;
-// 	}
-
-// 	// private void startZero() {
-// 	// 	if (!zeroed) {
-// 	// 		zero();
-// 	// 	}
-// 	// }
-
-// 	public CommandBase setState(ElevatorStates state) {
-// 		switch (state) {
-// 			case MAX:
-// 				setLiftTarget(kMaxHeightMeters);
-// 				return runOnce(() -> goToTarget());
-// 			case MID:
-// 				setLiftTarget(kMaxHeightMeters / 2);
-// 				return runOnce(() -> goToTarget());
-// 			default:
-// 				setLiftTarget(kMinHeightMeters);
-// 				return runOnce(() -> goToTarget());
-// 		}
-// 	}
-
-// 	// public ElevatorState getState(double value) {
-// 	// 	if (value <= 0.25) {
-// 	// 		return ElevatorState.MIN;
-// 	// 	} else if (value <= 0.75) {
-// 	// 		return ElevatorState.MID;
-// 	// 	}
-
-// 	// 	return ElevatorState.MAX;
-// 	// }
-
 // 	public enum ElevatorStates {
 // 		MAX,
 // 		MID,
@@ -203,7 +107,8 @@
 // 	public void periodic() {
 // 		SmartDashboard.putNumber("Elevator Ticks", m_elevatorRight.getSelectedSensorPosition());
 // 		nte_liftActualHeight.setDouble(getLiftActualHeight());
+// 		SmartDashboard.putBoolean("elevator lift idle mode", nte_coast.get().getBoolean());
 
-// 		setCoast(nte_coast.getBoolean(false));
+// 		setCoast(nte_coast.get().getBoolean());
 // 	}
 // }

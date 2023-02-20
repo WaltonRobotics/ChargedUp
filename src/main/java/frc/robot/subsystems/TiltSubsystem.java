@@ -92,9 +92,11 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
 		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
 		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
+		
+		SmartDashboard.putBoolean("elevator tilt idle mode", nte_coast.get().getBoolean());
 
-		setCoast(nte_coast.getBoolean(false));
 		SmartDashboard.putNumber("Tilt absolute position", m_tiltAbsoluteEncoder.get());
+		setCoast(nte_coast.get().getBoolean());
 	}
 
 	public enum TiltStates {
