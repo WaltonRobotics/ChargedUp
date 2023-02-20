@@ -57,6 +57,11 @@ public class RobotContainer {
                         driver.leftBumper()::getAsBoolean,
                         () -> true // openLoop
                 ));
+        godSubsystem.getElevator().setDefaultCommand(
+                godSubsystem.getElevator().setMotors(
+                    -manipulator.getLeftY()
+                )
+        );
         initShuffleBoard();
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
