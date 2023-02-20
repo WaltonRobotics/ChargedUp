@@ -87,11 +87,6 @@ public class SwerveModule {
             nte_cancoderAngle.setDouble(m_angleEncoder.getAbsolutePosition());
             nte_modVelocity.setDouble(getState().speedMetersPerSecond);
             nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
-        } else {
-            nte_steerTemp.setDouble(m_steerMotor.getTemperature());
-            nte_cancoderAngle.setDouble(m_angleEncoder.getAbsolutePosition());
-            nte_modVelocity.setDouble(getState().speedMetersPerSecond);
-            nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
         }
     }
 
