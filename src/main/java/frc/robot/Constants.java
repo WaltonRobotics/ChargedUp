@@ -164,6 +164,8 @@ public final class Constants {
         public static final int kTiltAbsoluteEncoderID = 8;
         public static final int kTiltMotorCurrLimit = 5;
 
+        public static final int kAbsEncoderTicksPerRotation = 42;
+
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
         public static final double kMaxVelocity = 1.0; //meters per sec

@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -51,10 +53,6 @@ public class TiltSubsystem extends SubsystemBase {
 		m_tiltTargetAngle = MathUtil.clamp(degrees, 0, 45);
 	}
 
-	//42 ticks per rev
-	public double getNEOdegrees(){
-		return 0; //TODO: figure this out
-	}
 
 	@Override
 	public void periodic() {
