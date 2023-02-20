@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -8,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
@@ -24,6 +26,10 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_tiltMotorFFEffort, nte_tiltMotorPDEffort,
 			nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
 			nte_tiltActualAngle;
+	private GenericEntry nte_coast = Shuffleboard.getTab("elevator tilt idle mode")
+			.add("coast", false)
+			.withWidget("Toggle Button")
+			.getEntry();
 
 	public TiltSubsystem() {
 		m_tiltMotor.setSmartCurrentLimit(kTiltMotorCurrLimit);
@@ -52,6 +58,14 @@ public class TiltSubsystem extends SubsystemBase {
 		return 0; //TODO: figure this out
 	}
 
+	private void setCoast(boolean coast) {
+		if (coast) {
+			m_tiltMotor.setIdleMode(IdleMode.kCoast);
+		} else {
+			m_tiltMotor.setIdleMode(IdleMode.kBrake);
+		}
+	}
+
 	@Override
 	public void periodic() {
 		// Set controller goal position
@@ -77,6 +91,8 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
 		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
 		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
+
+		setCoast(nte_coast.getBoolean(false));
 	}
 
 	public enum TiltStates {
