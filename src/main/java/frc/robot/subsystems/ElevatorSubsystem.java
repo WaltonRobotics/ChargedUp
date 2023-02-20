@@ -42,9 +42,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_elevatorLeft.configFactoryDefault();
         m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+		m_elevatorLeft.setSelectedSensorPosition(0);
 
 		m_elevatorRight.configFactoryDefault();
         m_elevatorRight.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+		m_elevatorLeft.setSelectedSensorPosition(0);
 
 		m_elevatorRight.getSensorCollection().setIntegratedSensorPosition(0, 0);
 		m_elevatorLeft.getSensorCollection().setIntegratedSensorPosition(0, 0);

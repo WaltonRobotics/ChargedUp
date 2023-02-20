@@ -66,7 +66,9 @@ public final class CTREConfigs {
             kElevatorContinuousCurrentLimit,
             kElevatorPeakCurrentLimit,
             kElevatorePeakCurrentDuration);
+
         elevatorFXConfig.slot0.kP = kElevatorP;
         elevatorFXConfig.slot0.kD = kElevatorD;
+        elevatorFXConfig.supplyCurrLimit = elevatorSupplyLimit;
     }
 }
