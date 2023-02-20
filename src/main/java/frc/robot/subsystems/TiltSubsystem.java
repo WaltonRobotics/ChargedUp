@@ -8,6 +8,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
@@ -18,6 +20,8 @@ import static frc.robot.Constants.TiltK.kCANID;
 //TODO: limit switch (hall-effect) 
 public class TiltSubsystem extends SubsystemBase {
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kCANID, MotorType.kBrushless);
+	private final DutyCycleEncoder m_tiltAbsoluteEncoder = new DutyCycleEncoder(kTiltAbsoluteEncoderID);
+	private final Encoder m_tiltQuadratureEncoder = new Encoder(6, 7);
 	//add encoders
 	private final PIDController m_tiltController = new PIDController(kP, 0, kD);
 	private double m_tiltTargetAngle = 0;

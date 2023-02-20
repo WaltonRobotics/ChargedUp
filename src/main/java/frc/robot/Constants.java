@@ -161,7 +161,7 @@ public final class Constants {
         public static final int kCANID = 13;
         public static final int kTiltQuadratureEncoderA = 6;
         public static final int kTiltQuadratureEncoderB = 7;
-        public static final int kTiltAbsoluteEncoder = 8;
+        public static final int kTiltAbsoluteEncoderID = 8;
         public static final int kTiltMotorCurrLimit = 5;
 
         public static final double kMaxAngleDegrees = 45;
@@ -183,6 +183,7 @@ public final class Constants {
 
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
+        
         public static final int kUpperLimitSwitch = 9;
         public static final int kLowerLimitSwitch = 5;
 
