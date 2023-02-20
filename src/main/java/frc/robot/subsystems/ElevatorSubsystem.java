@@ -7,6 +7,7 @@ import static frc.robot.Constants.ElevatorK.kLeftElevatorCANID;
 import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
 import static frc.robot.Constants.ElevatorK.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -90,9 +91,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return Conversions.MetersToFalcon(m_liftTargetHeight, kDrumCircumferenceMeters, kGearRatio);
 	}
 
-	private void setMotors(double voltage) {
-		m_elevatorLeft.setVoltage(voltage);
-		m_elevatorRight.follow(m_elevatorLeft);
+	public CommandBase setMotors(double joystick) {
+		return run(() -> {
+			if (joystick == 0) {
+				while (getLiftActualHeight() > kMinHeightMeters) { 
+					m_elevatorLeft.set(ControlMode.Velocity, -0.2);
+					m_elevatorRight.follow(m_elevatorLeft);
+				}
+			}
+			m_elevatorLeft.set(ControlMode.Velocity, kMaxVelocity * joystick);
+			m_elevatorRight.follow(m_elevatorLeft);
+		});
 	}
 
 	private void goToTarget() {
@@ -142,22 +151,29 @@ public class ElevatorSubsystem extends SubsystemBase {
 	// 	}
 	// }
 
-	private void setState(ElevatorState state) {
+	public CommandBase setState(ElevatorState state) {
 		switch (state) {
 			case MAX:
 				setLiftTarget(kMaxHeightMeters);
-				goToTarget();
-				break;
+				return runOnce(() -> goToTarget());
 			case MID:
 				setLiftTarget(kMaxHeightMeters / 2);
-				goToTarget();
-				break;
-			case MIN: // default?
+				return runOnce(() -> goToTarget());
+			default:
 				setLiftTarget(kMinHeightMeters);
-				goToTarget();
-				break;
+				return runOnce(() -> goToTarget());
 		}
 	}
+
+	// public ElevatorState getState(double value) {
+	// 	if (value <= 0.25) {
+	// 		return ElevatorState.MIN;
+	// 	} else if (value <= 0.75) {
+	// 		return ElevatorState.MID;
+	// 	}
+
+	// 	return ElevatorState.MAX;
+	// }
 
 	public enum ElevatorState {
 		MAX,
