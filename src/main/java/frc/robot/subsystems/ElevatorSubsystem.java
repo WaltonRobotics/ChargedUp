@@ -1,5 +1,12 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.ElevatorK.kConstraints;
+import static frc.robot.Constants.ElevatorK.kElevatorD;
+import static frc.robot.Constants.ElevatorK.kElevatorP;
+import static frc.robot.Constants.ElevatorK.kLeftElevatorCANID;
+import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
+import static frc.robot.Constants.ElevatorK.*;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -7,20 +14,16 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
-
-import static frc.robot.Constants.ElevatorK.*;
-import static frc.robot.Constants.ElevatorK.kLeftElevatorCANID;
-import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
+import frc.robot.CTREConfigs;
 
 public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID);
 	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID);
 	
 	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
-		kP, 0, kD, kConstraints
+		kElevatorP, 0, kElevatorD, kConstraints
 	);
 
 	private double m_liftTargetHeight;
@@ -36,6 +39,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 		// zeroed = true;
 
 		DashboardManager.addTab(this);
+
+		m_elevatorLeft.configFactoryDefault();
+        m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+
+		m_elevatorRight.configFactoryDefault();
+        m_elevatorRight.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
 
 		m_elevatorRight.getSensorCollection().setIntegratedSensorPosition(0, 0);
 		m_elevatorLeft.getSensorCollection().setIntegratedSensorPosition(0, 0);
