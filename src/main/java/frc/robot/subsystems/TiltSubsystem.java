@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
@@ -91,8 +92,10 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
 		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
 		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
+		
+		SmartDashboard.putBoolean("elevator tilt idle mode", nte_coast.get().getBoolean());
 
-		setCoast(nte_coast.getBoolean(false));
+		setCoast(nte_coast.get().getBoolean());
 	}
 
 	public enum TiltStates {

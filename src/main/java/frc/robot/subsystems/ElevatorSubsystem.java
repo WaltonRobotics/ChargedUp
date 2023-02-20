@@ -203,7 +203,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public void periodic() {
 		SmartDashboard.putNumber("Elevator Ticks", m_elevatorRight.getSelectedSensorPosition());
 		nte_liftActualHeight.setDouble(getLiftActualHeight());
+		SmartDashboard.putBoolean("elevator lift idle mode", nte_coast.get().getBoolean());
 
-		setCoast(nte_coast.getBoolean(false));
+		setCoast(nte_coast.get().getBoolean());
 	}
 }
