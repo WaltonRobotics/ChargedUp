@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
@@ -18,6 +19,8 @@ import static frc.robot.Constants.TiltK.kCANID;
 
 //TODO: limit switch (hall-effect) 
 public class TiltSubsystem extends SubsystemBase {
+	//lower limit: .555 ticks absolute
+	//uppeer limit:
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kCANID, MotorType.kBrushless);
 	private final DutyCycleEncoder m_tiltAbsoluteEncoder = new DutyCycleEncoder(kTiltAbsoluteEncoderID);
 	private final Encoder m_tiltQuadratureEncoder = new Encoder(6, 7);
@@ -33,6 +36,7 @@ public class TiltSubsystem extends SubsystemBase {
 			.getEntry();
 
 	public TiltSubsystem() {
+		m_tiltAbsoluteEncoder.reset();
 		m_tiltMotor.setSmartCurrentLimit(kTiltMotorCurrLimit);
 		DashboardManager.addTab(this);
 		nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
@@ -65,22 +69,22 @@ public class TiltSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// Set controller goal position
-		m_tiltController.setSetpoint(m_tiltTargetAngle);
+		// // Set controller goal position
+		// m_tiltController.setSetpoint(m_tiltTargetAngle);
 
-		// Calculate profile setpoint and effort
+		// // Calculate profile setpoint and effort
 		double tiltPDEffort = m_tiltController.calculate(0);// TODO: conversion
 
-		// Calculate FF effort from profile setpoint
+		// // Calculate FF effort from profile setpoint
 		double tiltFFEffort = 0;
-		if (m_tiltController.getSetpoint() != 0) {
+		// if (m_tiltController.getSetpoint() != 0) {
 			tiltFFEffort = kFeedforward.calculate(m_tiltController.getSetpoint());
-		}
-		// Combine for total effort
+		// }
+		// // Combine for total effort
 		double tiltTotalEffort = tiltFFEffort + tiltPDEffort;
 
-		// Command motor
-		m_tiltMotor.setVoltage(tiltTotalEffort);
+		// // Command motor
+		// m_tiltMotor.setVoltage(tiltTotalEffort);
 
 		// Push telemetry
 		nte_tiltActualAngle.setDouble(0);//fix
@@ -90,6 +94,7 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
 
 		setCoast(nte_coast.getBoolean(false));
+		SmartDashboard.putNumber("Tilt absolute position", m_tiltAbsoluteEncoder.get());
 	}
 
 	public enum TiltStates {
