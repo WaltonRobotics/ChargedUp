@@ -46,8 +46,8 @@ public class TheClaw extends SubsystemBase {
 
     @Override
     public void periodic(){
-        nte_isClawClosed.setBoolean(isClosed());
-        handleSnap();
+       // nte_isClawClosed.setBoolean(isClosed());
+        //handleSnap();
     }
     
 }

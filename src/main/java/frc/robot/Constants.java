@@ -188,9 +188,13 @@ public final class Constants {
 
          /* Elevator Current Limiting */
          public static final int kElevatorContinuousCurrentLimit = 5;
-         public static final int kElevatorPeakCurrentLimit = 10;
+         public static final int kElevatorPeakCurrentLimit = 5;
          public static final double kElevatorePeakCurrentDuration = 0.1;
          public static final boolean kElevatorEnableCurrentLimit = true;
+         public static final int kElevatorForwardLimit = 0;
+         public static final int kElevatorReverseLimit = 0;
+         public static final boolean kElevatorEnableForwardLimit = false;
+         public static final boolean kElevatorEnableReverseLimit = false;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);

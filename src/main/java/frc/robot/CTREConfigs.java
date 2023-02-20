@@ -69,6 +69,12 @@ public final class CTREConfigs {
 
         elevatorFXConfig.slot0.kP = kElevatorP;
         elevatorFXConfig.slot0.kD = kElevatorD;
+        elevatorFXConfig.reverseSoftLimitThreshold = kElevatorForwardLimit;
+        elevatorFXConfig.forwardSoftLimitThreshold = kElevatorReverseLimit;
+        elevatorFXConfig.forwardSoftLimitEnable = kElevatorEnableForwardLimit;
+        elevatorFXConfig.reverseSoftLimitEnable = kElevatorEnableReverseLimit;
+
+        
         elevatorFXConfig.supplyCurrLimit = elevatorSupplyLimit;
     }
 }

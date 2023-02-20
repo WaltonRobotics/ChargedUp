@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
@@ -61,12 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		DashboardManager.addTab(this);
 	}
 
-	// @Override
-	// public void periodic() {
-	// 	setState();
-
-	// 	nte_liftActualHeight.setDouble(getLiftActualHeight());
-	// }
+	
 
 	private double falconToMeters() {
 		var falconPos = m_elevatorRight.getSelectedSensorPosition();
@@ -116,7 +112,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	private double getLiftActualHeight() {
-		return falconToMeters();
+		//return falconToMeters();
+		return m_elevatorRight.getSelectedSensorPosition();
 	}
 
 	// private void zero() {
@@ -176,5 +173,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 		private ElevatorStates(double height) {
 			this.height = height;
 		}
+	}
+	@Override
+	public void periodic() {
+		SmartDashboard.putNumber("Elevator Ticks", m_elevatorRight.getSelectedSensorPosition());
+		nte_liftActualHeight.setDouble(getLiftActualHeight());
 	}
 }
