@@ -78,7 +78,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	public boolean isAtLowerLimit() {
-		return m_lowerLimit.get();
+		return !m_lowerLimit.get();
 	}
 
 	private double falconToMeters() {
@@ -147,7 +147,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_liftMotorPDEffort.setDouble(0);
 		nte_liftMotorTotalEffort.setDouble(0);
 		nte_liftTargetHeight.setDouble(getTargetHeight());
-		nte_atLowerLimit.setBoolean(m_lowerLimit.get());
+		nte_atLowerLimit.setBoolean(isAtLowerLimit());
 		SmartDashboard.putBoolean("elevator lift idle mode", nte_coast.get().getBoolean());
 	}
 }
