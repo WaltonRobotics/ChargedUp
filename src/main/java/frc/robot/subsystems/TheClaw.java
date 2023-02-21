@@ -32,7 +32,7 @@ public class TheClaw extends SubsystemBase {
 
     /**
      * snap the claw on sight 
-     * open claw with no sight
+     * release claw with no sight
      */
     public void handleSnap(){
         if((leftCam.get() || rightCam.get()) && !isClosed){
@@ -46,8 +46,8 @@ public class TheClaw extends SubsystemBase {
 
     @Override
     public void periodic(){
-       // nte_isClawClosed.setBoolean(isClosed());
-        //handleSnap();
+       nte_isClawClosed.setBoolean(isClosed());
+        handleSnap();
     }
     
 }

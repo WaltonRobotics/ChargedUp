@@ -187,7 +187,7 @@ public final class Constants {
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
 
-        public static final int kUpperLimitSwitch = 9;
+        public static final int kUpperLimitSwitchPort = 9;
 
          /* Elevator Current Limiting */
          public static final int kElevatorContinuousCurrentLimit = 5;

@@ -17,11 +17,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kTiltMotorCANID;
-
+import static frc.robot.Constants.*;
+import java.util.function.DoubleSupplier;
 
 public class TiltSubsystem extends SubsystemBase {
-	//lower limit: .555 ticks absolute
-	//uppeer limit:  .635 ticks absolute
+	// lower limit: .555 ticks absolute
+	// uppeer limit: .635 ticks absolute
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kTiltMotorCANID, MotorType.kBrushless);
 	private final DutyCycleEncoder m_tiltAbsoluteEncoder = new DutyCycleEncoder(kTiltAbsoluteEncoderPort);
 	private final Encoder m_tiltQuadratureEncoder = new Encoder(6, 7);
@@ -29,6 +30,9 @@ public class TiltSubsystem extends SubsystemBase {
 
 	private final PIDController m_tiltController = new PIDController(kP, 0, kD);
 	private double m_tiltTargetAngle = 0;
+	private double m_tiltFFEffort = 0;
+	private double m_tiltPDEffort = 0;
+	private double m_tiltTotalEffort = 0;
 	private final GenericEntry nte_tiltMotorFFEffort, nte_tiltMotorPDEffort,
 			nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
 			nte_tiltActualAngle;
@@ -42,7 +46,7 @@ public class TiltSubsystem extends SubsystemBase {
 		m_tiltMotor.setSmartCurrentLimit(kTiltMotorCurrLimit);
 		m_tiltMotor.setSoftLimit(SoftLimitDirection.kForward, kTiltMotorCurrLimit);
 
-		//reset relative encoder on switch activation
+		// reset relative encoder on switch activation
 		m_tiltQuadratureEncoder.setIndexSource(m_tiltLimitSwitch);
 		DashboardManager.addTab(this);
 		nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
@@ -53,7 +57,7 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
 	}
 
-	//TODO:fix
+	// TODO:fix
 	double tiltPDEffort = m_tiltController.calculate(0, m_tiltTargetAngle);
 
 	public CommandBase setTiltTarget(double degrees) {
@@ -64,7 +68,6 @@ public class TiltSubsystem extends SubsystemBase {
 		m_tiltTargetAngle = MathUtil.clamp(degrees, 0, 45);
 	}
 
-
 	private void setCoast(boolean coast) {
 		if (coast) {
 			m_tiltMotor.setIdleMode(IdleMode.kCoast);
@@ -73,6 +76,13 @@ public class TiltSubsystem extends SubsystemBase {
 		}
 	}
 
+	public CommandBase teleopTiltCmd(DoubleSupplier power) {
+		return run(() -> {
+			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
+			double dampener = .1;
+			m_tiltMotor.set(powerVal * dampener);
+		});
+	}
 
 	@Override
 	public void periodic() {
@@ -80,31 +90,31 @@ public class TiltSubsystem extends SubsystemBase {
 		// m_tiltController.setSetpoint(m_tiltTargetAngle);
 
 		// // Calculate profile setpoint and effort
-		double tiltPDEffort = m_tiltController.calculate(0);// TODO: conversion
+		m_tiltPDEffort = m_tiltController.calculate(0);// TODO: conversion
 
 		// // Calculate FF effort from profile setpoint
-		double tiltFFEffort = 0;
+		double tiltFFEffort = 0; // TODO:Add FF
 		// if (m_tiltController.getSetpoint() != 0) {
-			tiltFFEffort = kFeedforward.calculate(m_tiltController.getSetpoint());
+		tiltFFEffort = kFeedforward.calculate(m_tiltController.getSetpoint());
 		// }
 		// // Combine for total effort
-		double tiltTotalEffort = tiltFFEffort + tiltPDEffort;
+		m_tiltTotalEffort = tiltFFEffort + tiltPDEffort;
+		updateShuffleBoard();
+		setCoast(nte_coast.get().getBoolean());
+	}
 
-		// // Command motor
-		// m_tiltMotor.setVoltage(tiltTotalEffort);
-
+	public void updateShuffleBoard() {
 		// Push telemetry
-		nte_tiltActualAngle.setDouble(0);//fix
-		nte_tiltMotorFFEffort.setDouble(tiltFFEffort);
-		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
-		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
+		nte_tiltActualAngle.setDouble(0);// fix
+		nte_tiltMotorFFEffort.setDouble(m_tiltFFEffort);
+		nte_tiltMotorPDEffort.setDouble(m_tiltPDEffort);
+		nte_tiltMotorTotalEffort.setDouble(m_tiltTotalEffort);
 		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
-		
+
 		SmartDashboard.putBoolean("elevator tilt idle mode", nte_coast.get().getBoolean());
 
 		SmartDashboard.putNumber("Tilt absolute position", m_tiltAbsoluteEncoder.get());
 		SmartDashboard.putNumber("Tilt Quad Encoder position", m_tiltQuadratureEncoder.getRaw());
-		setCoast(nte_coast.get().getBoolean());
 	}
 
 	public enum TiltStates {
