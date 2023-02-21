@@ -36,7 +36,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private final Elevator s_Elevator = new Elevator();
+    private final ElevatorLift s_Elevator = new ElevatorLift();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */

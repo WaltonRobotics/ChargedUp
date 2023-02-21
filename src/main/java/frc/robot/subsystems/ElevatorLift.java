@@ -7,8 +7,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -20,15 +21,14 @@ import frc.lib.math.Conversions;
 import frc.robot.Constants.ElevatorLiftK;
 import frc.robot.Constants.ElevatorTiltK;
 
-public class Elevator extends SubsystemBase {
+public class ElevatorLift extends SubsystemBase {
 	
 	// Motors
 	private final WPI_TalonFX m_liftLeader = new WPI_TalonFX(ElevatorLiftK.kCANID); // change IDs later
 	private final WPI_TalonFX m_liftFollower = new WPI_TalonFX(ElevatorLiftK.kCANID); // change IDs later
-	private final WPI_TalonFX m_tiltMotor = new WPI_TalonFX(ElevatorTiltK.kCANID); // change IDs later
 
 	// Sensors
-	private final AnalogInput m_tiltPot = new AnalogInput(ElevatorTiltK.PotPort);
+	
 	
 	// Control
 	private final ProfiledPIDController m_liftController = new ProfiledPIDController(
@@ -56,7 +56,7 @@ true);
 		  new MechanismLigament2d(
 			  "Elevator", Units.metersToInches(m_liftSim.getPositionMeters()), 90));
 
-	public Elevator() {
+	public ElevatorLift() {
 		DashboardManager.addTab(this);
 
 		m_liftLeader.getSensorCollection().setIntegratedSensorPosition(0, 0);
@@ -81,22 +81,26 @@ true);
 			ElevatorTiltK.kMinAngleDegrees, ElevatorTiltK.kMaxAngleDegrees);
 		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
 
+		m_liftLeader.configForwardSoftLimitThreshold(ElevatorLiftK.kMaxTicks);
+		m_liftLeader.configForwardSoftLimitEnable(true);
+
 		// TODO: instead of adding a Mechanism2d, tilt the lift Mechanism2d based on the tilt angle.
 		// DashboardManager.addTabSendable(this, "Tilt", m_mech2d); 
 	}
 
-	private double falconToMeters() {
+	private double getLiftHeightMeters() {
 		var falconPos = m_liftLeader.getSelectedSensorPosition();
 		var meters = Conversions.falconToMeters(
 			falconPos, ElevatorLiftK.kDrumCircumferenceMeters , ElevatorLiftK.kGearRatio);
 		return meters;
 	}
 
-
 	public CommandBase setLiftTarget(double meters) {
 		return runOnce(() -> {
 			i_setLiftTarget(meters);
-		});
+		}).andThen(run(() -> {
+
+		}));
 	}
 
 	// public CommandBase setLiftTargetAdjustable(DoubleSupplier meters) {
@@ -115,7 +119,7 @@ true);
 	}
 
 	private double getLiftActualHeight() {
-		return falconToMeters();
+		return getLiftHeightMeters();
 	}
 
 	@Override
@@ -135,7 +139,7 @@ true);
 		m_liftController.setGoal(m_liftTargetHeight);
 
 		// Calculate profile setpoint and effort
-		double liftPDEffort = m_liftController.calculate(falconToMeters());
+		double liftPDEffort = m_liftController.calculate(getLiftHeightMeters());
 
 		// Calculate FF effort from profile setpoint
 		double liftFFEffort = 0;
@@ -213,7 +217,7 @@ true);
 
 	private double potToDegrees()
 	{
-		return m_tiltPot.getVoltage(); // go back later
+		return m_tiltAbsEnc.getAbsolutePosition(); // go back later
 	}
 
 	private double getTiltActualDegrees()

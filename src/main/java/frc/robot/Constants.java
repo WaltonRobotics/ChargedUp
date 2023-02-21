@@ -162,19 +162,27 @@ public final class Constants {
     public static final class ElevatorTiltK {
         public static final int kCANID = 11;
 
-        public static final double kMaxAngleDegrees = 45;
+        public static final double kMaxAngleDegrees = 30;
         public static final double kMinAngleDegrees = 0;
         public static final double kMaxVelocity = 1.0; //meters per sec
         public static final double kMaxAcceleration = 1.0; //meters per sec squared
         public static final double kP = 0.25;
         public static final double kD = 0.01;
         public static final double kS = 1.2;
-        public static final double kGearRatio = 25.0 / 1.0;
-        public static final DCMotor kMotor = DCMotor.getFalcon500(1);
+        public static final double kGearRatio = 49.0 / 1.0;
+        public static final DCMotor kMotor = DCMotor.getNeo550(1);
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
 
-        public static final int PotPort = 0;
+        public static final double kArmLengthMeters = 1;
+        public static final double kJKgMetersSquared = 1;
+        public static final double kMinAngleRads = Units.degreesToRadians(kMinAngleDegrees);
+        public static final double kMaxAngleRads = Units.degreesToRadians(kMaxAngleDegrees);
+        public static final double kArmMassKg = 10;
+
+        public static final int kAngleAbsPort = 0;
+        public static final int kAngleRelAPort = 1;
+        public static final int kAngleRelBPort = 2;
     }
 
     // Elevator lifting motor(s)
@@ -193,6 +201,8 @@ public final class Constants {
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50);
+
+        public static final double kMaxTicks = 139000;
 
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
