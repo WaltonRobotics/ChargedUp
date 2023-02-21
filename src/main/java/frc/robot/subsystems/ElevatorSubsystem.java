@@ -29,16 +29,17 @@ import frc.robot.CTREConfigs;
 public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID, canbus);
 	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID, canbus);
-	private final DigitalInput m_lowerLimit = new DigitalInput(kUpperLimitSwitchPort);
+	private final DigitalInput m_lowerLimit = new DigitalInput(kLowerLimitSwitchPort);
 
 	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
 			kElevatorP, 0, kElevatorD, kConstraints);
 
 	private double m_targetHeight = 0;
+	private double m_liftTotalEffort = 0;
 
 	private final GenericEntry nte_liftMotorFFEffort, nte_liftMotorPDEffort,
 			nte_liftMotorTotalEffort, nte_liftTargetHeight,
-			nte_liftActualHeight;
+			nte_liftActualHeight, nte_atLowerLimit;
 
 	private GenericEntry nte_coast = Shuffleboard.getTab("elevator lift idle mode")
 			.add("coast", false)
@@ -67,6 +68,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 				kMinHeightMeters, kMaxHeightMeters);
 		nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
 				kMinHeightMeters, kMaxHeightMeters);
+		nte_atLowerLimit = DashboardManager.addTabBooleanBox(
+			this, "At Lower Limit");
 		DashboardManager.addTab(this);
 	}
 
@@ -132,12 +135,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		updateShuffleBoard();
+		setCoast(nte_coast.get().getBoolean());
+	}
+
+	public void updateShuffleBoard(){
 		SmartDashboard.putNumber("Elevator Ticks", getElevatorHeight());
 		nte_liftActualHeight.setDouble(getLiftActualHeight());
-
+		//TODO: print out these values fr
+		nte_liftMotorFFEffort.setDouble(0);
+		nte_liftMotorPDEffort.setDouble(0);
+		nte_liftMotorTotalEffort.setDouble(0);
 		nte_liftTargetHeight.setDouble(getTargetHeight());
+		nte_atLowerLimit.setBoolean(m_lowerLimit.get());
 		SmartDashboard.putBoolean("elevator lift idle mode", nte_coast.get().getBoolean());
-
-		setCoast(nte_coast.get().getBoolean());
 	}
 }

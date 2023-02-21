@@ -48,6 +48,11 @@ public class Superstructure extends SubsystemBase{
         return m_leds;
     }
 
+    // public CommandBase AutoScore(){
+
+
+    // }
+    
     public enum ScoringStates {
         MAX(ElevatorStates.MAX, TiltStates.MAX, WristStates.MAX),
         MID(ElevatorStates.MID, TiltStates.MID, WristStates.MID),

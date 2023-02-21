@@ -11,18 +11,16 @@ import static frc.robot.Constants.TheClawK.*;
 
 public class TheClaw extends SubsystemBase {
     private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheClawID);
-    private final DigitalInput leftCam = new DigitalInput(kLeftEyeID);
-    private final DigitalInput rightCam = new DigitalInput(kRightEyeID);
+    private final DigitalInput leftEye = new DigitalInput(kLeftEyeID);
+    private final DigitalInput rightEye = new DigitalInput(kRightEyeID);
     private boolean isClosed = false;
-    private final GenericEntry nte_isClawClosed;
+    private final GenericEntry nte_isClawClosed, nte_leftEye, nte_rightEye;
 
     public TheClaw(){
         DashboardManager.addTab(this);
         nte_isClawClosed = DashboardManager.addTabBooleanBox(this, "Is Claw Closed");
-    }
-
-    public boolean isClosed(){
-        return isClosed();
+        nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
+        nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
     }
 
     public void toggleClaw(){
@@ -35,19 +33,21 @@ public class TheClaw extends SubsystemBase {
      * release claw with no sight
      */
     public void handleSnap(){
-        if((leftCam.get() || rightCam.get()) && !isClosed){
+        if((leftEye.get() || rightEye.get()) && !isClosed){
             toggleClaw();
             isClosed = true;
         }
-        if(!leftCam.get() && !rightCam.get() && isClosed){
+        if(!leftEye.get() && !rightEye.get() && isClosed){
             toggleClaw();
         }
     }
 
     @Override
     public void periodic(){
-       nte_isClawClosed.setBoolean(isClosed());
-        handleSnap();
+       nte_isClawClosed.setBoolean(isClosed);
+       nte_leftEye.setBoolean(leftEye.get());
+       nte_rightEye.setBoolean(rightEye.get());
+        // handleSnap();
     }
     
 }
