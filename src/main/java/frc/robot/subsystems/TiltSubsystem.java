@@ -21,8 +21,6 @@ import static frc.robot.Constants.*;
 import java.util.function.DoubleSupplier;
 
 public class TiltSubsystem extends SubsystemBase {
-	// lower limit: .555 ticks absolute
-	// uppeer limit: .635 ticks absolute
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kTiltMotorCANID, MotorType.kBrushless);
 	private final DutyCycleEncoder m_tiltAbsoluteEncoder = new DutyCycleEncoder(kTiltAbsoluteEncoderPort);
 	private final Encoder m_tiltQuadratureEncoder = new Encoder(6, 7);

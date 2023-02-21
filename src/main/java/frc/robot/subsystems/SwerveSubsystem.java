@@ -54,7 +54,6 @@ import java.util.function.DoubleSupplier;
 
 import frc.lib.vision.EstimatedRobotPose;
 
-//TODO: lower fps of poseestimator to 30 fps
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
 			new SwerveModule("Front Left", 0, Mod0.constants),

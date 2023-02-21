@@ -27,8 +27,8 @@ import frc.lib.util.DashboardManager;
 import frc.robot.CTREConfigs;
 
 public class ElevatorSubsystem extends SubsystemBase {
-	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID, "Canivore");
-	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID, "Canivore");
+	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID, canbus);
+	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID, canbus);
 	private final DigitalInput m_lowerLimit = new DigitalInput(kUpperLimitSwitchPort);
 
 	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
@@ -94,7 +94,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	private void i_setLiftTarget(double meters) {
-		double height = getLiftActualHeight();
 		// don't allow impossible heights
 		m_targetHeight = MathUtil.clamp(meters, kMinHeightMeters, kMaxHeightMeters);
 	}

@@ -19,6 +19,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    public static final String canbus = "Canivore";
 
     public static final class SwerveK {
  /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
@@ -166,6 +167,8 @@ public final class Constants {
         public static final int kTiltMotorCurrLimit = 5;
 
         public static final int kAbsEncoderTicksPerRotation = 42;
+        public static final double kMinRawEncoder = .555;   //0 in absolute encoder
+        public static final double kMaxRawEncoder = .635;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
