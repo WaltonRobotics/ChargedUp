@@ -18,9 +18,10 @@ public class WristSubsystem extends SubsystemBase {
   private final CANSparkMax m_wristMotor = new CANSparkMax(kWristCANID, MotorType.kBrushless); // change device number
                                                                                                // later
   private final SparkMaxAbsoluteEncoder m_absoluteEncoder = m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-  private double wristAngleSetpoint = 0;
-  private double wristFFEffort = 0;
-  private double wristPDEffort = 0;
+  private double m_wristTargetAngle = 0;
+  private double m_wristFFEffort = 0;
+  private double m_wristPDEffort = 0;
+  private double m_wristTotalEffort = 0;
 
   private final ProfiledPIDController m_wristController = new ProfiledPIDController(
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
@@ -101,16 +102,18 @@ public class WristSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    m_wristPDEffort = m_wristController.calculate(getWristAngle(), m_wristTargetAngle);
+    m_wristTotalEffort = m_wristFFEffort + m_wristPDEffort;
     updateShuffleBoard();
   }
 
   public void updateShuffleBoard() {
     if (nte_wristMotorTemp != null)
-      nte_wristMotorTotalEffort.setDouble(wristPDEffort + wristFFEffort);
-    nte_wristMotorFFEffort.setDouble(wristFFEffort);
-    nte_wristMotorPDEffort.setDouble(wristPDEffort);
+    nte_wristMotorTotalEffort.setDouble(m_wristTotalEffort);
+    nte_wristMotorFFEffort.setDouble(m_wristFFEffort);
+    nte_wristMotorPDEffort.setDouble(m_wristPDEffort);
     nte_wristMotorActualAngle.setDouble(getWristAngle());
-    nte_wristMotorTargetAngle.setDouble(wristAngleSetpoint);
+    nte_wristMotorTargetAngle.setDouble(m_wristTargetAngle);
     nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
   }
 
