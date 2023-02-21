@@ -64,6 +64,9 @@ public class TiltSubsystem extends SubsystemBase {
 		m_tiltTargetAngle = MathUtil.clamp(degrees, 0, 45);
 	}
 
+	private double getDegrees() {
+		return m_tiltAbsoluteEncoder.get() / 360; // get returns rotations, so rotations * (360 degrees / 1 rotation)
+	}
 
 	private void setCoast(boolean coast) {
 		if (coast) {
@@ -94,7 +97,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// m_tiltMotor.setVoltage(tiltTotalEffort);
 
 		// Push telemetry
-		nte_tiltActualAngle.setDouble(0);//fix
+		nte_tiltActualAngle.setDouble(getDegrees());//fix
 		nte_tiltMotorFFEffort.setDouble(tiltFFEffort);
 		nte_tiltMotorPDEffort.setDouble(tiltPDEffort);
 		nte_tiltMotorTotalEffort.setDouble(tiltTotalEffort);
