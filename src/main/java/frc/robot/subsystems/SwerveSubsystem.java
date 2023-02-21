@@ -516,4 +516,15 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		updateRobotPose();
 	}
+
+	@Override
+	public void simulationPeriodic() {
+		ChassisSpeeds chassisSpeed = kKinematics.toChassisSpeeds(getModuleStates());
+		m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
+		m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
+
+		for (var module : m_modules) {
+			module.simulationPeriodic();
+		}
+	}
 }
