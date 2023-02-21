@@ -104,7 +104,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public void updateShuffleBoard() {
 		// Push telemetry
-		nte_tiltActualAngle.setDouble(getDegrees());// fix
+		nte_tiltActualAngle.setDouble(getDegrees());//TODO: send actual converted anglee
 		nte_tiltMotorFFEffort.setDouble(m_tiltFFEffort);
 		nte_tiltMotorPDEffort.setDouble(m_tiltPDEffort);
 		nte_tiltMotorTotalEffort.setDouble(m_tiltTotalEffort);
