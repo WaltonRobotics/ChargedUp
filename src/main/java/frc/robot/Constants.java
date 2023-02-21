@@ -148,6 +148,8 @@ public final class Constants {
 
         /* Back right Module - Module 3 */
         public static final class Mod3 {
+
+
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 5;
@@ -159,6 +161,7 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
+        //199.83 start tilt
         public static final int kTiltMotorCANID = 13;
         public static final int kTiltLimitSwitchPort = 5;
         public static final int kTiltQuadratureEncoderA = 6;
@@ -166,9 +169,8 @@ public final class Constants {
         public static final int kTiltAbsoluteEncoderPort = 8;
         public static final int kTiltMotorCurrLimit = 5;
 
-        public static final int kAbsEncoderTicksPerRotation = 42;
-        public static final double kMinRawEncoder = .555;   //0 in absolute encoder
-        public static final double kMaxRawEncoder = .635;
+        public static final double kAbsZeroDegreeOffset = 199.8;    //where zero is at
+        public static final double kAbsMaxDegree = 40.0; //max possible from offset
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -190,7 +192,7 @@ public final class Constants {
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
 
-        public static final int kLowerLimitSwitchPort = 9;
+        public static final int kLowerLimitSwitchPort = 5;
 
          /* Elevator Current Limiting */
          public static final int kElevatorContinuousCurrentLimit = 5;
@@ -263,6 +265,7 @@ public final class Constants {
     }
 
     public static final class WristK {
+        //lower: .527
         public static final int kWristCANID = 21;
         public static final int kWristCurrLimit = 5;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later

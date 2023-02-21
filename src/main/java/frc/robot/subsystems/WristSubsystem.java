@@ -112,7 +112,7 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorTotalEffort.setDouble(m_wristTotalEffort);
     nte_wristMotorFFEffort.setDouble(m_wristFFEffort);
     nte_wristMotorPDEffort.setDouble(m_wristPDEffort);
-    nte_wristMotorActualAngle.setDouble(getWristAngle());
+    nte_wristMotorActualAngle.setDouble(m_absoluteEncoder.getPosition());
     nte_wristMotorTargetAngle.setDouble(m_wristTargetAngle);
     nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
   }

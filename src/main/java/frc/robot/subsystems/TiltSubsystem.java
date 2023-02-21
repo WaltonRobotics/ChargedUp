@@ -10,7 +10,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +23,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kTiltMotorCANID, MotorType.kBrushless);
 	private final DutyCycleEncoder m_tiltAbsoluteEncoder = new DutyCycleEncoder(kTiltAbsoluteEncoderPort);
 	private final Encoder m_tiltQuadratureEncoder = new Encoder(6, 7);
-	private final DigitalInput m_tiltLimitSwitch = new DigitalInput(kTiltLimitSwitchPort);
+	private final DigitalInput m_tiltLimitSwitch = new DigitalInput(9);
 
 	private final PIDController m_tiltController = new PIDController(kP, 0, kD);
 	private double m_tiltTargetAngle = 0;
@@ -33,7 +32,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private double m_tiltTotalEffort = 0;
 	private final GenericEntry nte_tiltMotorFFEffort, nte_tiltMotorPDEffort,
 			nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
-			nte_tiltActualAngle, nte_coast;
+			nte_tiltActualAngle, nte_coast, nte_homeSwitch;
 
 	public TiltSubsystem() {
 		m_tiltAbsoluteEncoder.reset();
@@ -50,6 +49,7 @@ public class TiltSubsystem extends SubsystemBase {
 				kMinAngleDegrees, kMaxAngleDegrees);
 		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
 		nte_coast = DashboardManager.addTabBooleanBox(this, "tilt coast");
+		nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 	}
 
 	// TODO:fix
@@ -64,7 +64,8 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	private double getDegrees() {
-		return m_tiltAbsoluteEncoder.get() / 360; // get returns rotations, so rotations * (360 degrees / 1 rotation)
+		var rawDeg = (m_tiltAbsoluteEncoder.get() * 360) - kAbsZeroDegreeOffset;
+		return MathUtil.clamp(rawDeg, 0, 50); // get returns rotations, so rotations * (360 degrees / 1 rotation)
 	}
 
 	private void setCoast(boolean coast) {
@@ -81,6 +82,10 @@ public class TiltSubsystem extends SubsystemBase {
 			double dampener = .1;
 			m_tiltMotor.set(powerVal * dampener);
 		});
+	}
+
+	public boolean isAtZero(){
+		return !m_tiltLimitSwitch.get();
 	}
 
 	@Override
@@ -109,6 +114,7 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltMotorPDEffort.setDouble(m_tiltPDEffort);
 		nte_tiltMotorTotalEffort.setDouble(m_tiltTotalEffort);
 		nte_tiltTargetAngle.setDouble(m_tiltTargetAngle);
+		nte_homeSwitch.setBoolean(isAtZero());
 
 		SmartDashboard.putBoolean("elevator tilt idle mode", nte_coast.get().getBoolean());
 
