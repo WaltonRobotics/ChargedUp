@@ -57,11 +57,9 @@ public class RobotContainer {
                         driver.leftBumper()::getAsBoolean,
                         () -> true // openLoop
                 ));
-        godSubsystem.getElevator().setDefaultCommand(
-                godSubsystem.getElevator().setMotors(
-                    -manipulator.getLeftY()
-                )
-        );
+        godSubsystem.getElevator()
+                .setDefaultCommand(godSubsystem.getElevator().teleOpElevatorCmd(() -> manipulator.getLeftY()));
+        godSubsystem.getTilt().setDefaultCommand(godSubsystem.getTilt().teleopTiltCmd(() -> manipulator.getRightY()));
         initShuffleBoard();
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
@@ -87,8 +85,8 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(godSubsystem.getSwerve().autoScore());
 
         manipulator.rightTrigger().onTrue(new InstantCommand(() -> godSubsystem.getClaw().toggleClaw()));
-        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(0)));    //cone
-        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(1)));    //cube
+        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(0))); // cone
+        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(1))); // cube
     }
 
     public void initShuffleBoard() {

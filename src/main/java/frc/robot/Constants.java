@@ -19,6 +19,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    public static final String canbus = "Canivore";
 
     public static final class SwerveK {
  /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
@@ -150,7 +151,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(90.17) ;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(279.4) ;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -158,11 +159,16 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
-        public static final int kCANID = 13;
+        public static final int kTiltMotorCANID = 13;
+        public static final int kTiltLimitSwitchPort = 5;
         public static final int kTiltQuadratureEncoderA = 6;
         public static final int kTiltQuadratureEncoderB = 7;
-        public static final int kTiltAbsoluteEncoder = 8;
+        public static final int kTiltAbsoluteEncoderPort = 8;
         public static final int kTiltMotorCurrLimit = 5;
+
+        public static final int kAbsEncoderTicksPerRotation = 42;
+        public static final double kMinRawEncoder = .555;   //0 in absolute encoder
+        public static final double kMaxRawEncoder = .635;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -183,8 +189,8 @@ public final class Constants {
 
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
-        public static final int kUpperLimitSwitch = 9;
-        public static final int kLowerLimitSwitch = 5;
+
+        public static final int kLowerLimitSwitchPort = 9;
 
          /* Elevator Current Limiting */
          public static final int kElevatorContinuousCurrentLimit = 5;
@@ -276,8 +282,8 @@ public final class Constants {
 
     public static final class TheClawK{
         public static final int kTheClawID = 0; 
-        public static final int kLeftCamID = 0;
-        public static final int kRightCamID = 1;
+        public static final int kLeftEyeID = 0;
+        public static final int kRightEyeID = 1;
     }
 
     public static final class IndicatorLightsK{
