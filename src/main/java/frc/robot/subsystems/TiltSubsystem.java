@@ -33,11 +33,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private double m_tiltTotalEffort = 0;
 	private final GenericEntry nte_tiltMotorFFEffort, nte_tiltMotorPDEffort,
 			nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
-			nte_tiltActualAngle;
-	private GenericEntry nte_coast = Shuffleboard.getTab("elevator tilt idle mode")
-			.add("coast", false)
-			.withWidget("Toggle Button")
-			.getEntry();
+			nte_tiltActualAngle, nte_coast;
 
 	public TiltSubsystem() {
 		m_tiltAbsoluteEncoder.reset();
@@ -53,6 +49,7 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
 				kMinAngleDegrees, kMaxAngleDegrees);
 		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
+		nte_coast = DashboardManager.addTabBooleanBox(this, "tilt coast");
 	}
 
 	// TODO:fix
