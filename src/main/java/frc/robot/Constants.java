@@ -30,7 +30,7 @@ public final class Constants {
         public static final boolean kInvertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         public static final COTSFalconSwerveConstants kSwerveModule = 
-            COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L1);
+            COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
         /* Drivetrain Constants in meters */
         public static final double kTrackWidth = 0.622;
@@ -157,8 +157,12 @@ public final class Constants {
    }
 
     // Elevator tilting motor
-    public static final class ElevatorTiltK {
-        public static final int kCANID = 11;
+    public static final class TiltK {
+        public static final int kCANID = 13;
+        public static final int kTiltQuadratureEncoderA = 6;
+        public static final int kTiltQuadratureEncoderB = 7;
+        public static final int kTiltAbsoluteEncoder = 8;
+        public static final int kTiltMotorCurrLimit = 5;
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -172,30 +176,42 @@ public final class Constants {
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
 
-        public static final int PotPort = 0;
     }
 
     // Elevator lifting motor(s)
-    public static final class ElevatorLiftK {
-        // Motor Constants
-        public static final int kCANID = 10;
+    public static final class ElevatorK {
+
+        public static final int kLeftElevatorCANID = 11;
+        public static final int kRightElevatorCANID = 12;
+        public static final int kUpperLimitSwitch = 9;
+        public static final int kLowerLimitSwitch = 5;
+
+         /* Elevator Current Limiting */
+         public static final int kElevatorContinuousCurrentLimit = 5;
+         public static final int kElevatorPeakCurrentLimit = 5;
+         public static final double kElevatorePeakCurrentDuration = 0.1;
+         public static final boolean kElevatorEnableCurrentLimit = true;
+         public static final int kElevatorForwardLimit = 0;
+         public static final int kElevatorReverseLimit = 0;
+         public static final boolean kElevatorEnableForwardLimit = false;
+         public static final boolean kElevatorEnableReverseLimit = false;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
-        public static final double kP = 0.25;
-        public static final double kD = 0.01;
-        public static final double kS = 1.2;
-        public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
+        public static final double kElevatorP = 0.25;
+        public static final double kElevatorD = 0.01;
+        public static final double kElevatorS = 1.2;
+        public static final double kElevatorV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
-        public static final double kMaxHeightMeters = Units.inchesToMeters(50);
+        public static final double kMaxHeightMeters = Units.inchesToMeters(61);
 
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
 
-        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kCarriageMassKg, kV);
+        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kElevatorS, kCarriageMassKg, kElevatorV);
         public static final TrapezoidProfile.Constraints kConstraints =
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     }
@@ -233,14 +249,17 @@ public final class Constants {
     }
 
     //in meters
-    public static final class VisionConstants{
+    public static final class VisionConstants {
         public static final double kCameraHeight = 0.88265;
         public static final double kCameraX = 0;
         public static final double kCameraY = 0.1524;
         public static final double kTargetHeight = 1;   //TODO: update value
     }
 
-    public static final class IntakeK {
+    public static final class WristK {
+        public static final int kWristCANID = 21;
+        public static final int kWristCurrLimit = 5;
+        public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.25;
         public static final double kD = 0.01;
         public static final double kS = 1.2;    // change values later
@@ -254,4 +273,17 @@ public final class Constants {
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
     }
+
+    public static final class TheClawK{
+        public static final int kTheClawID = 0; 
+        public static final int kLeftCamID = 0;
+        public static final int kRightCamID = 1;
+    }
+
+    public static final class IndicatorLightsK{
+        public static final int kNumLEDs = 20; //TODO: change this
+        public static final int kLedPort = 0; //TODO: change this
+    }
+
+
 }

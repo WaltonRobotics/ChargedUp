@@ -4,7 +4,7 @@ import frc.robot.SwerveModule;
 import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagChooser;
-import frc.robot.vision.AprilTagHelper;
+import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.PathChooser;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonPPSwerveControllerCommand;
@@ -47,7 +47,6 @@ import static frc.robot.Constants.SwerveK.*;
 import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 
-import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,11 +91,11 @@ public class SwerveSubsystem extends SubsystemBase {
 			getModulePositions(),
 			new Pose2d());
 
-	private final AprilTagHelper m_apriltagHelper;
+	private final AprilTagCamera m_apriltagHelper;
 
-	private double m_simYaw = 0.0;
-
-	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagHelper apriltagHelper) {
+	private double m_simYaw = 0;
+	
+	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
@@ -571,13 +570,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		var resetCmd = runOnce(() -> {
 			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
 			if (DriverStation.getAlliance() == Alliance.Red) {
-				initialState = ReflectedTransform.reflectiveTransformState(
-						initialState);
+				initialState = ReflectedTransform.reflectiveTransformState(initialState);
 			}
 			resetPose(initialState.poseMeters);
 		});
-
-		
 		var pathCmd = new WaltonPPSwerveControllerCommand(
 				() -> trajectory,
 				this::getPose,
@@ -588,18 +584,6 @@ public class SwerveSubsystem extends SubsystemBase {
 				this::setModuleStates,
 				true,
 				this);
-		if(DriverStation.getAlliance() == Alliance.Blue){
-			pathCmd = new WaltonPPSwerveControllerCommand(
-				() -> ReflectedTransform.reflectiveTransformTrajectory(trajectory),
-				this::getPose,
-				kKinematics,
-				xController,
-				yController,
-				autoThetaController,
-				this::setModuleStates,
-				true,
-				this);
-		}
 		return resetCmd.andThen(pathCmd);
 	}
 
@@ -679,14 +663,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
-		// SmartDashboard.putNumber("Left Front Module Encoder Value",
-		// m_modules[0].getDriveMotorPosition());
-		// SmartDashboard.putNumber("Right Front Module Encoder Value",
-		// m_modules[1].getDriveMotorPosition());
-		// SmartDashboard.putNumber("Left Rear Module Encoder Value",
-		// m_modules[2].getDriveMotorPosition());
-		// SmartDashboard.putNumber("Right Rear Module Encoder Value",
-		// m_modules[3].getDriveMotorPosition());
 	}
 
 	@Override
