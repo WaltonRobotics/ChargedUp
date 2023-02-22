@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -10,9 +11,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
+
+import java.util.function.DoubleSupplier;
+
+import static frc.robot.Constants.*;
 
 import frc.robot.Constants.WristK;
 
@@ -36,8 +42,13 @@ public class WristSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   public WristSubsystem() {
 
+    m_wristMotor.setIdleMode(IdleMode.kBrake);
     m_wristMotor.setSmartCurrentLimit(kWristCurrLimit);
     DashboardManager.addTab(this);
+    m_wristMotor.setSoftLimit(SoftLimitDirection.kForward, kMaxAnglePosition);
+    //m_wristMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+    m_wristMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    m_wristMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
     // m_wristMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
@@ -92,6 +103,15 @@ public class WristSubsystem extends SubsystemBase {
     return ticksToDegrees(m_absoluteEncoder.getPosition());
   }
 
+  public CommandBase teleopWristCmd(DoubleSupplier power){
+    return run(() ->{
+      double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
+      double dampener = .1;
+      m_wristMotor.set(powerVal*dampener);
+    });
+  }
+
+
   public double minValue = 0; // change later
 
   public void toPosition(double speed, WristStates position) {
@@ -124,7 +144,7 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorTotalEffort.setDouble(m_wristTotalEffort);
     nte_wristMotorFFEffort.setDouble(m_wristFFEffort);
     nte_wristMotorPDEffort.setDouble(m_wristPDEffort);
-    nte_wristMotorActualAngle.setDouble(m_absoluteEncoder.getPosition());
+    nte_wristMotorActualAngle.setDouble(m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
     nte_wristMotorTargetAngle.setDouble(m_wristTargetAngle);
     nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
     SmartDashboard.putBoolean("wrist idle mode", nte_coast.get().getBoolean());

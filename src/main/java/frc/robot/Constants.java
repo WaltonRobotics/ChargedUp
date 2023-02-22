@@ -279,6 +279,7 @@ public final class Constants {
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
         public static final double kMinAngleDegrees = 0;
         public static final double kMaxAngleDegrees = 45; // change later
+        public static final float kMaxAnglePosition = 0.284f;
         public static final double kGearRatio = 1; // change later
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
