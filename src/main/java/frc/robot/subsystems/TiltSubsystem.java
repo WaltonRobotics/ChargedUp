@@ -68,14 +68,6 @@ public class TiltSubsystem extends SubsystemBase {
 		return MathUtil.clamp(rawDeg, 0, 50); // get returns rotations, so rotations * (360 degrees / 1 rotation)
 	}
 
-	private void setCoast(boolean coast) {
-		if (coast) {
-			m_tiltMotor.setIdleMode(IdleMode.kCoast);
-		} else {
-			m_tiltMotor.setIdleMode(IdleMode.kBrake);
-		}
-	}
-
 	public CommandBase teleopTiltCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
@@ -86,6 +78,14 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public boolean isAtZero(){
 		return !m_tiltLimitSwitch.get();
+	}
+
+	private void setCoast(boolean coast) {
+		if (coast) {
+			m_tiltMotor.setIdleMode(IdleMode.kCoast);
+		} else {
+			m_tiltMotor.setIdleMode(IdleMode.kBrake);
+		}
 	}
 
 	@Override
