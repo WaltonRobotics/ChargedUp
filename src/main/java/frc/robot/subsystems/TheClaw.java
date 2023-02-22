@@ -27,7 +27,6 @@ public class TheClaw extends SubsystemBase {
         nte_isClawClosed = DashboardManager.addTabBooleanBox(this, "Is Claw Closed");
         nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
         nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
-
     }
 
     public CommandBase autoGrab(boolean autoRelease) {
@@ -48,7 +47,5 @@ public class TheClaw extends SubsystemBase {
        nte_isClawClosed.setBoolean(isClosed);
        nte_leftEye.setBoolean(leftEye.get());
        nte_rightEye.setBoolean(rightEye.get());
-        // handleSnap();
-    }
-    
+    }   
 }
