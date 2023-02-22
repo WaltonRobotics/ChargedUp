@@ -19,6 +19,7 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerUtil;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
 import com.pathplanner.lib.ReflectedTransform;
@@ -32,6 +33,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -51,6 +53,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import frc.lib.vision.EstimatedRobotPose;
 
@@ -81,6 +84,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	// private PathPoint currentPathPoint;
 	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
+	private PathPlannerTrajectory trajectoryUsed = new PathPlannerTrajectory();
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
 			kKinematics,
@@ -90,6 +94,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final AprilTagCamera m_apriltagHelper;
 
+	private double m_simYaw = 0;
+	
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
@@ -385,7 +391,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		});
 
 		var followCmd = autoBuilder.followPath(() -> {
-			return currentTrajectory;
+			return Optional.ofNullable(currentTrajectory);
 		});
 
 		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
@@ -420,21 +426,23 @@ public class SwerveSubsystem extends SubsystemBase {
 	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
 		var resetCmd = runOnce(() -> {
 			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
-			if (DriverStation.getAlliance() == Alliance.Red) {
-				initialState = ReflectedTransform.reflectiveTransformState(initialState);
-			}
+			initialState = PathPlannerUtil.transformStateForAlliance(initialState, DriverStation.getAlliance());
+			trajectoryUsed = PathPlannerUtil.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 			resetPose(initialState.poseMeters);
 		});
+
+		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
+
 		var pathCmd = new WaltonPPSwerveControllerCommand(
-				() -> trajectory,
-				this::getPose,
-				kKinematics,
-				xController,
-				yController,
-				autoThetaController,
-				this::setModuleStates,
-				true,
-				this);
+			trajSupplier,
+			this::getPose,
+			kKinematics,
+			xController,
+			yController,
+			autoThetaController,
+			this::setModuleStates,
+			true,
+			this);
 		return resetCmd.andThen(pathCmd);
 	}
 
@@ -514,5 +522,16 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		ChassisSpeeds chassisSpeed = kKinematics.toChassisSpeeds(getModuleStates());
+		m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
+		m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
+
+		for (var module : m_modules) {
+			module.simulationPeriodic();
+		}
 	}
 }
