@@ -40,9 +40,6 @@ public class TheClaw extends SubsystemBase {
                 toggleClaw();
                 isClosed = true;
             }
-            if(!leftEye.get() && !rightEye.get() && isClosed){
-                toggleClaw();
-            }
         });
     }
 
