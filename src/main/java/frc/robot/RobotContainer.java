@@ -62,7 +62,7 @@ public class RobotContainer {
                 swerve.teleopDriveCmd(
                         () -> -driver.getLeftY(),
                         () -> -driver.getLeftX(),
-                        () -> -driver.getRightX(),
+                        () ->  driver.getRightX(),
                         driver.leftBumper()::getAsBoolean,
                         () -> true // openLoop
                 ));
@@ -72,6 +72,7 @@ public class RobotContainer {
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
 
+        manipulator.leftTrigger().onTrue(claw.release());
         initShuffleBoard();
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();

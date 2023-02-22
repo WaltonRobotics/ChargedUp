@@ -39,7 +39,7 @@ public class TheClaw extends SubsystemBase {
     }
 
     public CommandBase release() {
-        return runOnce(() -> claw.set(false));
+        return runOnce(() -> claw.set(true));
     }
 
     @Override

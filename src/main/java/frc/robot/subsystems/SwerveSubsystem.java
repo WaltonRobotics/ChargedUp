@@ -271,10 +271,14 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_pigeon.setYaw(0);
 	}
 
+	private double getGyroYaw() {
+		return m_pigeon.getYaw() - 180;
+	}
+
 	// Side to side
 	public Rotation2d getHeading() {
-		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - m_pigeon.getYaw())
-				: Rotation2d.fromDegrees(m_pigeon.getYaw());
+		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - getGyroYaw())
+				: Rotation2d.fromDegrees(getGyroYaw());
 	}
 
 	public void resetPose(Pose2d pose) {
@@ -452,7 +456,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	public double getInclinationRatio() {
 		double pitch = m_pigeon.getPitch();
 		double roll = m_pigeon.getRoll();
-		double yaw = m_pigeon.getYaw();
+		double yaw = getGyroYaw();
 		// inclination = atan(pitch/s(qrt(tan^2(roll)+tan^2(yaw))))
 		// rho = sqrt(pitch^2 + yaw^2))/roll
 		double inclination = Math.atan((Math.sqrt(Math.pow(Math.tan(pitch), 2) + Math.pow(Math.tan(yaw), 2))) / roll);
