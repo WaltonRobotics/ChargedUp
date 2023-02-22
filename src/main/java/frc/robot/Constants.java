@@ -19,6 +19,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    public static final String canbus = "Canivore";
 
     public static final class SwerveK {
  /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
@@ -147,10 +148,12 @@ public final class Constants {
 
         /* Back right Module - Module 3 */
         public static final class Mod3 {
+
+
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(90.17) ;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(279.4) ;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -158,7 +161,16 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
-        public static final int kCANID = 13;
+        //199.83 start tilt
+        public static final int kTiltMotorCANID = 13;
+        public static final int kTiltLimitSwitchPort = 5;
+        public static final int kTiltQuadratureEncoderA = 6;
+        public static final int kTiltQuadratureEncoderB = 7;
+        public static final int kTiltAbsoluteEncoderPort = 8;
+        public static final int kTiltMotorCurrLimit = 5;
+
+        public static final double kAbsZeroDegreeOffset = 199.8;    //where zero is at
+        public static final double kAbsMaxDegree = 40.0; //max possible from offset
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -172,7 +184,6 @@ public final class Constants {
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
 
-        public static final int potPort = 0;
     }
 
     // Elevator lifting motor(s)
@@ -188,6 +199,18 @@ public final class Constants {
          public static final int kElevatorPeakCurrentLimit = 10;
          public static final double kElevatorePeakCurrentDuration = 0.1;
          public static final boolean kElevatorEnableCurrentLimit = true;
+
+        public static final int kLowerLimitSwitchPort = 5;
+
+         /* Elevator Current Limiting */
+         public static final int kElevatorContinuousCurrentLimit = 5;
+         public static final int kElevatorPeakCurrentLimit = 5;
+         public static final double kElevatorePeakCurrentDuration = 0.1;
+         public static final boolean kElevatorEnableCurrentLimit = true;
+         public static final int kElevatorForwardLimit = 0;
+         public static final int kElevatorReverseLimit = 0;
+         public static final boolean kElevatorEnableForwardLimit = false;
+         public static final boolean kElevatorEnableReverseLimit = false;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
@@ -250,7 +273,9 @@ public final class Constants {
     }
 
     public static final class WristK {
+        //lower: .527
         public static final int kWristCANID = 21;
+        public static final int kWristCurrLimit = 5;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.25;
         public static final double kD = 0.01;
@@ -268,8 +293,8 @@ public final class Constants {
 
     public static final class TheClawK{
         public static final int kTheClawID = 0; 
-        public static final int kLeftCamID = 1;
-        public static final int kRightCamID = 2;
+        public static final int kLeftEyeID = 0;
+        public static final int kRightEyeID = 1;
     }
 
     public static final class IndicatorLightsK{

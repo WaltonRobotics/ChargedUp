@@ -37,6 +37,7 @@ public class AprilTagCamera {
 
     public AprilTagCamera() {
         init();
+        PhotonCamera.setVersionCheckEnabled(false);
     }
 
     public void updateField2d(Field2d field) {

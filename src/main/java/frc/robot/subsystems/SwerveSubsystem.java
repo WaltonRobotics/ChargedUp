@@ -32,6 +32,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -54,7 +55,6 @@ import java.util.function.DoubleSupplier;
 
 import frc.lib.vision.EstimatedRobotPose;
 
-//TODO: lower fps of poseestimator to 30 fps
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
 			new SwerveModule("Front Left", 0, Mod0.constants),
@@ -91,6 +91,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final AprilTagCamera m_apriltagHelper;
 
+	private double m_simYaw = 0;
+	
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
@@ -515,13 +517,16 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
-		// SmartDashboard.putNumber("Left Front Module Encoder Value",
-		// m_modules[0].getDriveMotorPosition());
-		// SmartDashboard.putNumber("Right Front Module Encoder Value",
-		// m_modules[1].getDriveMotorPosition());
-		// SmartDashboard.putNumber("Left Rear Module Encoder Value",
-		// m_modules[2].getDriveMotorPosition());
-		// SmartDashboard.putNumber("Right Rear Module Encoder Value",
-		// m_modules[3].getDriveMotorPosition());
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		ChassisSpeeds chassisSpeed = kKinematics.toChassisSpeeds(getModuleStates());
+		m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
+		m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
+
+		for (var module : m_modules) {
+			module.simulationPeriodic();
+		}
 	}
 }

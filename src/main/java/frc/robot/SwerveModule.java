@@ -9,6 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.DashboardManager;
@@ -92,6 +93,7 @@ public class SwerveModule {
             nte_modVelocity.setDouble(getState().speedMetersPerSecond);
             nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
         }
+        SmartDashboard.putNumber(moduleName + "Cancoder Angle", m_angleEncoder.getAbsolutePosition());
     }
 
     /**
