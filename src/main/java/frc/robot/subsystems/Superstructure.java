@@ -1,7 +1,19 @@
 package frc.robot.subsystems;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.pathplanner.lib.PathPoint;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.auton.Paths;
+import frc.robot.auton.Paths.PPAutoscoreClass;
+import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
 import frc.robot.subsystems.TiltSubsystem.TiltStates;
 import frc.robot.subsystems.WristSubsystem.WristStates;
@@ -67,5 +79,44 @@ public class Superstructure extends SubsystemBase{
             this.elevatorTilt = elevatorTilt;
             this.wristTilt = wristTilt;
         }
+    }
+
+    // aka autoScore
+    // to do: make it a command :D
+    /**
+     * @param state high, mid, or low
+     * @param place where to score :D (also includes cone/cube mode)
+     * @param isBumpy if it is bumpy or not
+     * @return command to autoscore
+     */
+    public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces place, boolean isBumpy) {
+        // System.out.println("YAYAYAYAY :DDD");
+        var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
+        var autoScore = runOnce(() -> {
+            if(isBumpy) {
+                if(DriverStation.getAlliance().equals(Alliance.Red)) {
+                    m_swerve.autoScore(PPAutoscoreClass.redBumpy, ScoringPoints.toPathPoint(place.redPt));
+                }
+                else {
+                    m_swerve.autoScore(PPAutoscoreClass.blueBumpy, ScoringPoints.toPathPoint(place.redPt));
+                }
+            }
+            else {
+                if(DriverStation.getAlliance().equals(Alliance.Red)) {
+                    m_swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.toPathPoint(place.redPt));
+                }
+                else {
+                    m_swerve.autoScore(PPAutoscoreClass.blueNotBumpy, ScoringPoints.toPathPoint(place.redPt));
+                }
+            }
+        });
+        var elevatorHeight = runOnce(() -> {
+            m_elevator.setState(state.elevatorHeight);
+        });
+        var finalPos = runOnce(() -> {
+            m_tilt.setTiltTarget(state.elevatorTilt.angle); // finish later maybe?
+            m_wrist.toPosition(.5, state.wristTilt);
+        });
+        return leds.andThen(autoScore).andThen(elevatorHeight).andThen(finalPos);
     }
 }

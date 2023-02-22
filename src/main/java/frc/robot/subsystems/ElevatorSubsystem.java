@@ -127,6 +127,51 @@ public class ElevatorSubsystem extends SubsystemBase {
 		});
 	}
 
+	public CommandBase setMotors(double joystick) {
+		return run(() -> {
+			if (joystick == 0) {
+				while (getLiftActualHeight() > kMinHeightMeters) { 
+					m_elevatorLeft.set(ControlMode.Velocity, -0.2);
+					m_elevatorRight.follow(m_elevatorLeft);
+				}
+			}
+			m_elevatorLeft.set(ControlMode.Velocity, kMaxVelocity * joystick);
+			m_elevatorRight.follow(m_elevatorLeft);
+		});
+	}
+	
+	private void goToTarget() {
+		double liftPDEffort = m_elevatorController.calculate(falconToMeters());
+
+		double liftFFEffort = 0;
+
+		if (m_elevatorController.getSetpoint().velocity != 0) {
+			liftFFEffort = kFeedforward.calculate(m_elevatorController.getSetpoint().velocity);
+		}
+
+		double liftTotalEffort = liftFFEffort + liftPDEffort;
+
+		setMotors(liftTotalEffort);
+
+		nte_liftMotorFFEffort.setDouble(liftFFEffort);
+		nte_liftMotorPDEffort.setDouble(liftPDEffort);
+		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
+	}
+
+	public CommandBase setState(ElevatorStates state) {
+		switch (state) {
+			case MAX:
+				setLiftTarget(kMaxHeightMeters);
+				return runOnce(() -> goToTarget());
+			case MID:
+				setLiftTarget(kMaxHeightMeters / 2);
+				return runOnce(() -> goToTarget());
+			default:
+				setLiftTarget(kMinHeightMeters);
+				return runOnce(() -> goToTarget());
+		}
+	}
+
 	public enum ElevatorStates {
 		MAX,
 		MID,

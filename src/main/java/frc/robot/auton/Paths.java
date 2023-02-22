@@ -70,7 +70,21 @@ public class Paths {
 		public static final PathPoint tag7 = new PathPoint(new Translation2d(2, 2.70), Rotation2d.fromDegrees(-90),Rotation2d.fromDegrees(-180));
 		public static final PathPoint tag8 = new PathPoint(new Translation2d(2, 1.05), Rotation2d.fromDegrees(-90),Rotation2d.fromDegrees(-180));
 
+		public static final PathPoint redRight1 = new PathPoint(new Translation2d(10.25, 4.65), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redRight2 = new PathPoint(new Translation2d(13.28, 4.65), Rotation2d.fromDegrees(2.42),Rotation2d.fromDegrees(0));
+		// public static final PathPoint redRight3 = new PathPoint(new Translation2d(13.75, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint redLeft1 = new PathPoint(new Translation2d(10.25, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0), 3);
+		public static final PathPoint redLeft2 = new PathPoint(new Translation2d(13.28, 0.75), Rotation2d.fromDegrees(2.42),Rotation2d.fromDegrees(0), 2);
+		// public static final PathPoint redLeft3 = new PathPoint(new Translation2d(13.180, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
+		public static final PathPoint blueLeft1 = new PathPoint(new Translation2d(5.84, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueLeft2 = new PathPoint(new Translation2d(3.36, 4.75), Rotation2d.fromDegrees(175),Rotation2d.fromDegrees(180));
+		// public static final PathPoint blueLeft3 = new PathPoint(new Translation2d(2.45, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueRight1 = new PathPoint(new Translation2d(5.84, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180), 2);
+		public static final PathPoint blueRight2 = new PathPoint(new Translation2d(3.26, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		public static final PathPoint blueRight3 = new PathPoint(new Translation2d(2.45, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+	}
 
+	public static final class ScoringPoints {
 		public static final Pose2d redCone1 = new Pose2d(new Translation2d(14.76, 0.50), Rotation2d.fromDegrees(0));
 		public static final Pose2d redCube1 = new Pose2d(new Translation2d(14.76, 1.06), Rotation2d.fromDegrees(0));
 		public static final Pose2d redCone2 = new Pose2d(new Translation2d(14.76, 1.62), Rotation2d.fromDegrees(0));
@@ -91,19 +105,33 @@ public class Paths {
 		public static final Pose2d blueCube2 = new Pose2d(new Translation2d(1.77, 4.42), Rotation2d.fromDegrees(180));
 		public static final Pose2d blueCone4 = new Pose2d(new Translation2d(1.77, 4.98), Rotation2d.fromDegrees(180));
 
-		public static final PathPoint redRight1 = new PathPoint(new Translation2d(10.25, 4.65), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint redRight2 = new PathPoint(new Translation2d(13.28, 4.65), Rotation2d.fromDegrees(2.42),Rotation2d.fromDegrees(0));
-		// public static final PathPoint redRight3 = new PathPoint(new Translation2d(13.75, 4.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint redLeft1 = new PathPoint(new Translation2d(10.25, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0), 3);
-		public static final PathPoint redLeft2 = new PathPoint(new Translation2d(13.28, 0.75), Rotation2d.fromDegrees(2.42),Rotation2d.fromDegrees(0), 2);
-		// public static final PathPoint redLeft3 = new PathPoint(new Translation2d(13.180, 0.75), Rotation2d.fromDegrees(0),Rotation2d.fromDegrees(0));
-		public static final PathPoint blueLeft1 = new PathPoint(new Translation2d(5.84, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueLeft2 = new PathPoint(new Translation2d(3.36, 4.75), Rotation2d.fromDegrees(175),Rotation2d.fromDegrees(180));
-		// public static final PathPoint blueLeft3 = new PathPoint(new Translation2d(2.45, 4.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueRight1 = new PathPoint(new Translation2d(5.84, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180), 2);
-		public static final PathPoint blueRight2 = new PathPoint(new Translation2d(3.26, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
-		public static final PathPoint blueRight3 = new PathPoint(new Translation2d(2.45, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		public static PathPoint toPathPoint(Pose2d point) {
+			return new PathPoint(point.getTranslation(), Rotation2d.fromDegrees(0), point.getRotation());
+		}
+
+		public enum ScoringPlaces {
+			CONE_1(ScoringPoints.redCone1, ScoringPoints.blueCone1, 0),
+			CUBE_1(ScoringPoints.redCube1, ScoringPoints.blueCube1, 1),
+			CONE_2(ScoringPoints.redCone2, ScoringPoints.blueCone2, 0),
+			COOP_CONE_1(ScoringPoints.redCoopCone1, ScoringPoints.blueCoopCone1, 0),
+			COOP_CUBE_1(ScoringPoints.redCoopCube1, ScoringPoints.blueCoopCube1, 1),
+			COOP_CONE_2(ScoringPoints.redCoopCone2, ScoringPoints.blueCoopCone2, 0),
+			CONE_3(ScoringPoints.redCone3, ScoringPoints.blueCone3, 0),
+			CUBE_2(ScoringPoints.redCube2, ScoringPoints.blueCube2, 1),
+			CONE_4(ScoringPoints.redCone4, ScoringPoints.blueCone4, 0);
+
+			public Pose2d redPt;
+			public Pose2d bluePt;
+			public int coneOrCube; // 0 is cone, 1 is cube
+
+			private ScoringPlaces(Pose2d redPt, Pose2d bluePt, int coneOrCube) {
+				this.redPt = redPt;
+				this.bluePt = bluePt;
+				this.coneOrCube = coneOrCube;
+			}
+		}
 	}
+
 
 
 }
