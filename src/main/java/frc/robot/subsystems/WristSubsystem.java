@@ -2,12 +2,14 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
@@ -29,7 +31,7 @@ public class WristSubsystem extends SubsystemBase {
   // FFEffort = feedforward; PDEffort = proportional-derivative
   private final GenericEntry nte_wristMotorFFEffort, nte_wristMotorPDEffort,
       nte_wristMotorTotalEffort, nte_wristMotorTargetAngle,
-      nte_wristMotorActualAngle, nte_wristMotorTemp;
+      nte_wristMotorActualAngle, nte_wristMotorTemp, nte_coast;
 
   /** Creates a new Intake. */
   public WristSubsystem() {
@@ -46,6 +48,7 @@ public class WristSubsystem extends SubsystemBase {
         WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
     nte_wristMotorActualAngle = DashboardManager.addTabNumberBar(this, "WristActualAngle",
         WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
+    nte_coast = DashboardManager.addTabBooleanBox(this, "tilt coast");
     nte_wristMotorTemp = DashboardManager.addTabNumberBar(this, "WristMotorTemp", 0, 100);
   }
 
@@ -57,8 +60,16 @@ public class WristSubsystem extends SubsystemBase {
   // m_intakeSolenoid.set(isOpen);
   // }
 
+  private void setCoast(boolean coast) {
+		if (coast) {
+			m_wristMotor.setIdleMode(IdleMode.kCoast);
+		} else {
+			m_wristMotor.setIdleMode(IdleMode.kBrake);
+		}
+	}
+
   public double ticksToDegrees(double ticks) {
-    return ticks * (1 / (kAbsEncoderTicksPerRotation / 360));
+    return ticks * (360 / kAbsEncoderTicksPerRotation);
   }
 
   public double degreesToTicks(double degrees) {
@@ -104,6 +115,7 @@ public class WristSubsystem extends SubsystemBase {
   public void periodic() {
     m_wristPDEffort = m_wristController.calculate(getWristAngle(), m_wristTargetAngle);
     m_wristTotalEffort = m_wristFFEffort + m_wristPDEffort;
+    setCoast(nte_coast.get().getBoolean());
     updateShuffleBoard();
   }
 
@@ -115,6 +127,7 @@ public class WristSubsystem extends SubsystemBase {
     nte_wristMotorActualAngle.setDouble(m_absoluteEncoder.getPosition());
     nte_wristMotorTargetAngle.setDouble(m_wristTargetAngle);
     nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
+    SmartDashboard.putBoolean("wrist idle mode", nte_coast.get().getBoolean());
   }
 
   public enum WristStates { // change degrees later
