@@ -22,7 +22,9 @@ public final class Constants {
     public static final String canbus = "Canivore";
 
     public static final class SwerveK {
- /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
+        public static final String DB_TAB_NAME = "SwerveSubsys";
+
+        /** Set to true to use external CANcoder for inital zero and switch to internal falcon encoder for angle control.
          * Set to false to always use external CANcoder for angle control.
          * Recommended to set to false and always use CANCoder. */
         public static final boolean kUseInternalEncoder = false;
@@ -161,6 +163,7 @@ public final class Constants {
 
     // Elevator tilting motor
     public static final class TiltK {
+        public static final String DB_TAB_NAME = "TiltSubsys";
         //199.83 start tilt
         public static final int kTiltMotorCANID = 13;
         public static final int kTiltLimitSwitchPort = 5;
@@ -188,6 +191,7 @@ public final class Constants {
 
     // Elevator lifting motor(s)
     public static final class ElevatorK {
+        public static final String DB_TAB_NAME = "LiftSubsys";
 
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
@@ -267,6 +271,8 @@ public final class Constants {
     }
 
     public static final class WristK {
+        public static final String DB_TAB_NAME = "WristSubsys";
+
         //lower: .527
         public static final int kWristCANID = 21;
         public static final int kWristCurrLimit = 5;
@@ -286,15 +292,17 @@ public final class Constants {
     }
 
     public static final class TheClawK{
+        public static final String DB_TAB_NAME = "ClawSubsys";
+
         public static final int kTheClawID = 0; 
         public static final int kLeftEyeID = 0;
         public static final int kRightEyeID = 1;
     }
 
     public static final class IndicatorLightsK{
+        public static final String DB_TAB_NAME = "LEDSubsys";
+
         public static final int kNumLEDs = 20; //TODO: change this
         public static final int kLedPort = 0; //TODO: change this
     }
-
-
 }

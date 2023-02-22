@@ -9,11 +9,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.DashboardManager;
 import frc.lib.util.SwerveModuleConstants;
+import frc.robot.Constants.SwerveK;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -47,8 +47,6 @@ public class SwerveModule {
         kAngleGearRatio
     );
 
-    // private double m_drivePercentOutput;
-    // private double m_steerPercentOutput;
     private double m_driveMotorSimDistance;
     private double m_steerMotorSimDistance;
 
@@ -59,11 +57,11 @@ public class SwerveModule {
         this.moduleNumber = moduleNumber;
         this.m_angleOffset = moduleConstants.angleOffset;
 
-        nte_driveTemp = DashboardManager.addTabDial("SwerveSubsystem", moduleName + "/DriveTemp", 0, 100);
-        nte_steerTemp = DashboardManager.addTabDial("SwerveSubsystem", moduleName + "/SteerTemp", 0, 100);
-        nte_cancoderAngle = DashboardManager.addTabItem("SwerveSubsystem", moduleName + "/CancoderAngle", 0);
-        nte_modVelocity = DashboardManager.addTabItem("SwerveSubsystem", moduleName + "/ModuleVelocity", 0);
-        nte_cancoderIntegratedAngle = DashboardManager.addTabItem("SwerveSubsystem", moduleName + "/CancoderIntegratedAngle", 0);
+        nte_driveTemp = DashboardManager.addTabDial(SwerveK.DB_TAB_NAME, moduleName + "/DriveTemp", 0, 100);
+        nte_steerTemp = DashboardManager.addTabDial(SwerveK.DB_TAB_NAME, moduleName + "/SteerTemp", 0, 100);
+        nte_cancoderAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/CancoderAngle", 0);
+        nte_modVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ModuleVelocity", 0);
+        nte_cancoderIntegratedAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/CancoderIntegratedAngle", 0);
         
         /* Angle Encoder Config */
         m_angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
@@ -81,14 +79,11 @@ public class SwerveModule {
     }
 
     public void periodic() {
-        if (nte_driveTemp != null) {
-            nte_driveTemp.setDouble(m_driveMotor.getTemperature());
-            nte_steerTemp.setDouble(m_steerMotor.getTemperature());
-            nte_cancoderAngle.setDouble(m_angleEncoder.getAbsolutePosition());
-            nte_modVelocity.setDouble(getState().speedMetersPerSecond);
-            nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
-        }
-        SmartDashboard.putNumber(moduleName + "Cancoder Angle", m_angleEncoder.getAbsolutePosition());
+        nte_driveTemp.setDouble(m_driveMotor.getTemperature());
+        nte_steerTemp.setDouble(m_steerMotor.getTemperature());
+        nte_cancoderAngle.setDouble(m_angleEncoder.getAbsolutePosition());
+        nte_modVelocity.setDouble(getState().speedMetersPerSecond);
+        nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
     }
 
     /**
@@ -97,13 +92,10 @@ public class SwerveModule {
      * @param steerInPlace If modules should steer to target angle when target velocity is 0
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean steerInPlace) {
-        /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
+    /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
         setAngle(desiredState, steerInPlace);
         setSpeed(desiredState, isOpenLoop);
-
-        // m_drivePercentOutput = m_driveMotor.getMotorOutputLeadVoltage / 12();
-        // m_steerPercentOutput = m_steerMotor.getMotorOutputPercent();
     }
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){

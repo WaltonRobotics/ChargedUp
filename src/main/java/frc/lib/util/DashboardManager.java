@@ -26,12 +26,26 @@ public class DashboardManager {
 		return Collections.unmodifiableMap(Map.of("Min", min, "Max", max));
 	}
 
+	/**
+	 * Adds a tab on Shuffleboard. All other addTab* methods will do this automatically.
+	 * @param tabName
+	 */
 	public static void addTab(String tabName) {
 		Shuffleboard.getTab(tabName);
 	}
 
+	/**
+	 * Adds a tab on Shuffleboard, with the Subsystem widget.
+	 * If the tab already exists, the widget will be added.
+	 * @param subsystemBase Subsystem to add a tab for
+	 */
 	public static void addTab(SubsystemBase subsystemBase) {
-		Shuffleboard.getTab(subsystemBase.getName()).add(subsystemBase);
+		var tab = Shuffleboard.getTab(subsystemBase.getName());
+		try {
+			tab.add(subsystemBase);
+		} catch (IllegalArgumentException ex) {
+			// ignore
+		}
 	}
 
 	public static GenericEntry addTabItem(SubsystemBase subsystemBase, String itemName, Object defaultValue, WidgetType widget) {
