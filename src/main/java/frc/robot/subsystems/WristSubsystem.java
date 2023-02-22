@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -36,6 +37,7 @@ public class WristSubsystem extends SubsystemBase {
 
     m_wristMotor.setSmartCurrentLimit(kWristCurrLimit);
     DashboardManager.addTab(this);
+    m_wristMotor.setSoftLimit(SoftLimitDirection.kForward, (float) kMaxAngleDegrees);
 
     // m_wristMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
