@@ -163,7 +163,6 @@ public final class Constants {
     public static final class TiltK {
         //199.83 start tilt
         public static final int kTiltMotorCANID = 13;
-        public static final int kTiltLimitSwitchPort = 5;
         public static final int kTiltQuadratureEncoderA = 6;
         public static final int kTiltQuadratureEncoderB = 7;
         public static final int kTiltAbsoluteEncoderPort = 8;
@@ -191,7 +190,6 @@ public final class Constants {
 
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
-        public static final int kUpperLimitSwitch = 9;
         public static final int kLowerLimitSwitch = 5;
 
         public static final int kLowerLimitSwitchPort = 5;
@@ -269,6 +267,7 @@ public final class Constants {
     public static final class WristK {
         //lower: .527
         public static final int kWristCANID = 21;
+
         public static final int kWristCurrLimit = 5;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.25;

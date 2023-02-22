@@ -33,7 +33,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
 			kElevatorP, 0, kElevatorD, kConstraints);
 
+			//TODO: Actually set these values
 	private double m_targetHeight = 0;
+	private double m_liftPDEffort = 0;
+	private double m_liftFFEffort = 0;
 	private double m_liftTotalEffort = 0;
 
 	private final GenericEntry nte_liftMotorFFEffort, nte_liftMotorPDEffort, 
@@ -101,7 +104,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return m_elevatorRight.getSelectedSensorPosition();
 	}
 
-	public double getTargetHeight(){
+	public double getTargetHeightRaw(){
 		return m_targetHeight;
 	}
 
@@ -121,10 +124,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 		});
 	}
 
-	private double getLiftTarget() {
+	private double getTargetHeight() {
 		return Conversions.MetersToFalcon(m_targetHeight, kDrumCircumferenceMeters, kGearRatio);
 	}
 
+	//TODO: Redo setmotot & gototarget methods
 	public CommandBase setMotors(double joystick) {
 		return run(() -> {
 			if (joystick == 0) {
@@ -155,31 +159,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_liftMotorPDEffort.setDouble(liftPDEffort);
 		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
 	}
-
-	// private void zero() {
-	// 	zeroing = true;
-	// 	while (!atLowerPosition()) {
-	// 		setMotors(-0.2);
-	// 	}
-	// 	zeroed = true;
-	// 	zeroing = false;
-	// }
-
-	private boolean atLowerPosition() {
-		double height = getLiftActualHeight();
-		return height <= kMinHeightMeters;
-	}
-
-	private boolean atUpperPosition() {
-		double height = getLiftActualHeight();
-		return height >= kMaxHeightMeters;
-	}
-
-	// private void startZero() {
-	// 	if (!zeroed) {
-	// 		zero();
-	// 	}
-	// }
 
 	public CommandBase setState(ElevatorStates state) {
 		switch (state) {
@@ -220,11 +199,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public void updateShuffleBoard(){
 		SmartDashboard.putNumber("Elevator Ticks", getElevatorHeight());
 		nte_liftActualHeight.setDouble(getLiftActualHeight());
-		//TODO: print out these values fr
-		nte_liftMotorFFEffort.setDouble(0);
-		nte_liftMotorPDEffort.setDouble(0);
-		nte_liftMotorTotalEffort.setDouble(0);
-		nte_liftTargetHeight.setDouble(getTargetHeight());
+		nte_liftMotorFFEffort.setDouble(m_liftFFEffort);
+		nte_liftMotorPDEffort.setDouble(m_liftPDEffort);
+		nte_liftMotorTotalEffort.setDouble(m_liftTotalEffort);
+		nte_liftTargetHeight.setDouble(getTargetHeightRaw());
 		nte_atLowerLimit.setBoolean(isAtLowerLimit());
 		SmartDashboard.putBoolean("elevator lift idle mode", nte_coast.get().getBoolean());
 	}

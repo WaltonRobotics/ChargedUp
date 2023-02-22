@@ -4,7 +4,10 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
 
 import static frc.robot.Constants.TheClawK.*;
@@ -16,30 +19,28 @@ public class TheClaw extends SubsystemBase {
     private boolean isClosed = false;
     private final GenericEntry nte_isClawClosed, nte_leftEye, nte_rightEye;
 
-    public TheClaw(){
+    public final Trigger leftEyeTrig = new Trigger(leftEye::get);
+    public final Trigger rightEyeTrig = new Trigger(rightEye::get);
+
+    public TheClaw() {
         DashboardManager.addTab(this);
         nte_isClawClosed = DashboardManager.addTabBooleanBox(this, "Is Claw Closed");
         nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
         nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
+
     }
 
-    public void toggleClaw(){
-        claw.toggle();
-        isClosed = !isClosed;
+    public CommandBase autoGrab(boolean autoRelease) {
+
+        return runOnce(() -> claw.set(true)) // open claw
+            .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.3) // wait 0.3sec before sensor
+            .andThen(
+                startEnd(()->{}, ()-> claw.set(false)).until(leftEyeTrig.and(rightEyeTrig))
+            );
     }
 
-    /**
-     * snap the claw on sight 
-     * release claw with no sight
-     */
-    public void handleSnap(){
-        if((leftEye.get() || rightEye.get()) && !isClosed){
-            toggleClaw();
-            isClosed = true;
-        }
-        if(!leftEye.get() && !rightEye.get() && isClosed){
-            toggleClaw();
-        }
+    public CommandBase release() {
+        return runOnce(() -> claw.set(false));
     }
 
     @Override

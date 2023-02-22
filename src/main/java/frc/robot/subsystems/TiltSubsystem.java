@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -37,7 +36,7 @@ public class TiltSubsystem extends SubsystemBase {
 	public TiltSubsystem() {
 		m_tiltAbsoluteEncoder.reset();
 		m_tiltMotor.setSmartCurrentLimit(kTiltMotorCurrLimit);
-		m_tiltMotor.setSoftLimit(SoftLimitDirection.kForward, kTiltMotorCurrLimit);
+		// m_tiltMotor.setSoftLimit(SoftLimitDirection.kForward, kAbsMaxDegree);
 
 		// reset relative encoder on switch activation
 		m_tiltQuadratureEncoder.setIndexSource(m_tiltLimitSwitch);
@@ -59,6 +58,18 @@ public class TiltSubsystem extends SubsystemBase {
 		return runOnce(() -> i_setTiltTarget(degrees));
 	}
 
+	/*
+	 * Return true if hitting max degree
+	 */
+	private boolean forwardLimit(){
+		if(m_tiltAbsoluteEncoder.get() >= kAbsMaxDegree){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
 	private void i_setTiltTarget(double degrees) {
 		m_tiltTargetAngle = MathUtil.clamp(degrees, 0, 45);
 	}
@@ -69,9 +80,13 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase teleopTiltCmd(DoubleSupplier power) {
+		double output;
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			double dampener = .1;
+			if(forwardLimit() && m_tiltQuadratureEncoder.getDirection()){
+				// output = 0; 
+			}
 			m_tiltMotor.set(powerVal * dampener);
 		});
 	}
