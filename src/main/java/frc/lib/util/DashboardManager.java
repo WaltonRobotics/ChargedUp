@@ -57,12 +57,12 @@ public class DashboardManager {
 	}
 
 	public static GenericEntry addTabItem(String tabName, String itemName, Object defaultValue, WidgetType widget, Map<String, Object> properties) {
-		if (!shuffleboardTabs.containsKey(tabName)) return null;
+		if (!shuffleboardTabs.containsKey(tabName)) addTab(tabName);
 		return shuffleboardTabs.get(tabName).add(itemName, defaultValue).withWidget(widget).withProperties(properties).getEntry();
 	}
 
 	public static GenericEntry addTabItem(String tabName, String itemName, Object defaultValue, WidgetType widget, int width, int height, Map<String, Object> properties) {
-		if (!shuffleboardTabs.containsKey(tabName)) return null;
+		if (!shuffleboardTabs.containsKey(tabName)) addTab(tabName);
 		return shuffleboardTabs.get(tabName).add(itemName, defaultValue).withWidget(widget).withSize(width, height).withProperties(properties).getEntry();
 	}
 
@@ -100,7 +100,7 @@ public class DashboardManager {
 	}
 
 	public static void addTabButton(String tabName, String buttonName, Runnable onPress) {
-		if (!shuffleboardTabs.containsKey(tabName)) return;
+		if (!shuffleboardTabs.containsKey(tabName)) addTab(tabName);
 		InstantCommand command = new InstantCommand(onPress);
 		command.setName(buttonName);
 		shuffleboardTabs.get(tabName).add(command);
@@ -111,12 +111,12 @@ public class DashboardManager {
 	}
 
 	public static void addTabSendable(String tabName, String itemName, Sendable sendable) {
-		if (!shuffleboardTabs.containsKey(tabName)) return;
+		if (!shuffleboardTabs.containsKey(tabName)) addTab(tabName);
 		shuffleboardTabs.get(tabName).add(itemName, sendable);
 	}
 
 	public static <E extends Enum<E>> SendableChooser<E> addTabChooser(String tabName, String chooserName, E[] choosable, E defaultChosen) {
-		if (!shuffleboardTabs.containsKey(tabName)) return null;
+		if (!shuffleboardTabs.containsKey(tabName)) addTab(tabName);
 
 		SendableChooser<E> chooser = new SendableChooser<>();
 
