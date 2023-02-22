@@ -19,6 +19,7 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerUtil;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
 import com.pathplanner.lib.ReflectedTransform;
@@ -52,6 +53,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import frc.lib.vision.EstimatedRobotPose;
 
@@ -82,6 +84,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	// private PathPoint currentPathPoint;
 	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
+	private PathPlannerTrajectory trajectoryUsed = new PathPlannerTrajectory();
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
 			kKinematics,
@@ -388,7 +391,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		});
 
 		var followCmd = autoBuilder.followPath(() -> {
-			return currentTrajectory;
+			return Optional.ofNullable(currentTrajectory);
 		});
 
 		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
@@ -423,21 +426,23 @@ public class SwerveSubsystem extends SubsystemBase {
 	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
 		var resetCmd = runOnce(() -> {
 			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
-			if (DriverStation.getAlliance() == Alliance.Red) {
-				initialState = ReflectedTransform.reflectiveTransformState(initialState);
-			}
+			initialState = PathPlannerUtil.transformStateForAlliance(initialState, DriverStation.getAlliance());
+			trajectoryUsed = PathPlannerUtil.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 			resetPose(initialState.poseMeters);
 		});
+
+		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
+
 		var pathCmd = new WaltonPPSwerveControllerCommand(
-				() -> trajectory,
-				this::getPose,
-				kKinematics,
-				xController,
-				yController,
-				autoThetaController,
-				this::setModuleStates,
-				true,
-				this);
+			trajSupplier,
+			this::getPose,
+			kKinematics,
+			xController,
+			yController,
+			autoThetaController,
+			this::setModuleStates,
+			true,
+			this);
 		return resetCmd.andThen(pathCmd);
 	}
 

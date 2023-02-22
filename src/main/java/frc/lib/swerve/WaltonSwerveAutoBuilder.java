@@ -1,6 +1,7 @@
 package frc.lib.swerve;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -45,7 +46,7 @@ public class WaltonSwerveAutoBuilder extends SwerveAutoBuilder {
 
     }
 
-    public CommandBase followPath(Supplier<PathPlannerTrajectory> trajSupplier) {
+    public CommandBase followPath(Supplier<Optional<PathPlannerTrajectory>> trajSupplier) {
         return new WaltonPPSwerveControllerCommand(
             trajSupplier,
             poseSupplier,

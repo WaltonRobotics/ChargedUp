@@ -23,9 +23,13 @@
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Elevator/Elevator": "Subsystem",
       "/Shuffleboard/Elevator/Lift Sim": "Mechanism2d",
+      "/Shuffleboard/ElevatorSubsystem/ElevatorSubsystem": "Subsystem",
       "/Shuffleboard/Swerve/Swerve": "Subsystem",
       "/Shuffleboard/SwerveSubsystem/Field2d": "Field2d",
       "/Shuffleboard/SwerveSubsystem/SwerveSubsystem": "Subsystem",
+      "/Shuffleboard/TheClaw/TheClaw": "Subsystem",
+      "/Shuffleboard/TiltSubsystem/TiltSubsystem": "Subsystem",
+      "/Shuffleboard/WristSubsystem/WristSubsystem": "Subsystem",
       "/SmartDashboard/AprilTag Chooser": "String Chooser",
       "/SmartDashboard/Auton Chooser": "String Chooser",
       "/SmartDashboard/Path Chooser": "String Chooser"

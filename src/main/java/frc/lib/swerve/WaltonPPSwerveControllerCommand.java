@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -23,7 +25,7 @@ import java.util.function.Supplier;
 /** Custom PathPlanner version of SwerveControllerCommand */
 public class WaltonPPSwerveControllerCommand extends CommandBase {
   private final Timer timer = new Timer();
-  private final Supplier<PathPlannerTrajectory> trajectorySupplier;
+  private final Supplier<Optional<PathPlannerTrajectory>> trajectorySupplier;
   private final Supplier<Pose2d> poseSupplier;
   private final SwerveDriveKinematics kinematics;
   private final PPHolonomicDriveController controller;
@@ -61,7 +63,7 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
    * @param requirements The subsystems to require.
    */
   public WaltonPPSwerveControllerCommand(
-      Supplier<PathPlannerTrajectory> trajectory,
+      Supplier<Optional<PathPlannerTrajectory>> trajectory,
       Supplier<Pose2d> poseSupplier,
       PIDController xController,
       PIDController yController,
@@ -80,12 +82,17 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
 
     addRequirements(requirements);
 
-    if (useAllianceColor && trajectory.get().fromGUI && trajectory.get().getInitialPose().getX() > 8.27) {
-      DriverStation.reportWarning(
-          "You have constructed a path following command that will automatically transform path states depending"
-              + " on the alliance color, however, it appears this path was created on the red side of the field"
-              + " instead of the blue side. This is likely an error.",
-          false);
+    
+    if (trajectory.get().isPresent()) {
+      if (useAllianceColor && 
+          trajectory.get().get().fromGUI && 
+          trajectory.get().get().getInitialPose().getX() > 8.27) {
+            DriverStation.reportWarning(
+            "You have constructed a path following command that will automatically transform path states depending"
+                + " on the alliance color, however, it appears this path was created on the red side of the field"
+                + " instead of the blue side. This is likely an error.",
+            false);
+      }
     }
   }
 
@@ -107,7 +114,7 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
    * @param requirements The subsystems to require.
    */
   public WaltonPPSwerveControllerCommand(
-      Supplier<PathPlannerTrajectory> trajectory,
+      Supplier<Optional<PathPlannerTrajectory>> trajectory,
       Supplier<Pose2d> poseSupplier,
       PIDController xController,
       PIDController yController,
@@ -147,7 +154,7 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
    * @param requirements The subsystems to require.
    */
   public WaltonPPSwerveControllerCommand(
-      Supplier<PathPlannerTrajectory> trajectory,
+      Supplier<Optional<PathPlannerTrajectory>> trajectory,
       Supplier<Pose2d> poseSupplier,
       SwerveDriveKinematics kinematics,
       PIDController xController,
@@ -167,12 +174,17 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
 
     addRequirements(requirements);
 
-    if (useAllianceColor && trajectory.get().fromGUI && trajectory.get().getInitialPose().getX() > 8.27) {
-      DriverStation.reportWarning(
-          "You have constructed a path following command that will automatically transform path states depending"
-              + " on the alliance color, however, it appears this path was created on the red side of the field"
-              + " instead of the blue side. This is likely an error.",
-          false);
+    
+    if (trajectory.get().isPresent()) {
+      if (useAllianceColor && 
+          trajectory.get().get().fromGUI && 
+          trajectory.get().get().getInitialPose().getX() > 8.27) {
+            DriverStation.reportWarning(
+            "You have constructed a path following command that will automatically transform path states depending"
+                + " on the alliance color, however, it appears this path was created on the red side of the field"
+                + " instead of the blue side. This is likely an error.",
+            false);
+      }
     }
   }
 
@@ -195,7 +207,7 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
    * @param requirements The subsystems to require.
    */
   public WaltonPPSwerveControllerCommand(
-      Supplier<PathPlannerTrajectory> trajectory,
+      Supplier<Optional<PathPlannerTrajectory>> trajectory,
       Supplier<Pose2d> poseSupplier,
       SwerveDriveKinematics kinematics,
       PIDController xController,
@@ -217,7 +229,15 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    var trajectory = trajectorySupplier.get();
+    var trajectoryOpt = trajectorySupplier.get();
+
+    if (trajectoryOpt.isEmpty()) {
+      DriverStation.reportWarning("WaltonPPSwCoCo - bad traj optional!", null);
+      return;
+    }
+
+    var trajectory = trajectoryOpt.get();
+
     if (useAllianceColor && trajectory.fromGUI) {
       transformedTrajectory =
           ReflectedTransform.reflectiveTransformTrajectory(
@@ -233,7 +253,9 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
     timer.reset();
     timer.start();
 
-    PathPlannerServer.sendActivePath(transformedTrajectory.getStates());
+    if (!transformedTrajectory.getStates().isEmpty()) {
+      PathPlannerServer.sendActivePath(transformedTrajectory.getStates());
+    }
   }
 
   @Override
