@@ -61,7 +61,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_elevatorRight.configAllSettings(CTREConfigs.Get().elevatorRightConfig);
 
 		m_elevatorRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-		m_elevatorRight.setSelectedSensorPosition(0);
+		// m_elevatorRight.setSelectedSensorPosition(0);
 
 		m_elevatorRight.setNeutralMode(NeutralMode.Brake);
 		m_elevatorLeft.setNeutralMode(NeutralMode.Brake);
@@ -99,10 +99,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		m_targetHeight = MathUtil.clamp(meters, kMinHeightMeters, kMaxHeightMeters);
 	}
 
-	//TODO: Convert to height
 	private double getLiftActualHeight() {
-		// return falconToMeters();
-		return m_elevatorRight.getSelectedSensorPosition();
+		return falconToMeters() + 0.019;
+		// return m_elevatorRight.getSelectedSensorPosition();
 	}
 
 	public double getTargetHeightRaw(){

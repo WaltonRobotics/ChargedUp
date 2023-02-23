@@ -218,7 +218,7 @@ public final class Constants {
         public static final double kElevatorD = 0.01;
         public static final double kElevatorS = 1.2;
         public static final double kElevatorV = kMotor.KvRadPerSecPerVolt / kGearRatio;
-        public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
+        public static final double kDrumRadiusMeters = Units.inchesToMeters(1.8);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
@@ -290,7 +290,7 @@ public final class Constants {
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
         public static final double kZeroDegOffset = 5.5;
         public static final double kMinAnglePosition = 0.01;
-        public static final double kMaxAnglePosition = 0.281;
+        public static final double kMaxAnglePosition = 0.2903;
         public static final double kMinAngleDegrees = (kMinAnglePosition * 360) + kZeroDegOffset;
         public static final double kMaxAngleDegrees = (kMaxAnglePosition * 360) + kZeroDegOffset;
         public static final double kGearRatio = 80/1; // change later
