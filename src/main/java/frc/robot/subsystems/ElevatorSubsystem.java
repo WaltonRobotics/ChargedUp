@@ -35,20 +35,25 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
 			kElevatorP, 0, kElevatorD, kConstraints);
 
-			//TODO: Actually set these values
+	//TODO: Actually set these values
 	private double m_targetHeight = 0;
 	private double m_liftPDEffort = 0;
 	private double m_liftFFEffort = 0;
 	private double m_liftTotalEffort = 0;
 
-	private final GenericEntry nte_liftMotorFFEffort, nte_liftMotorPDEffort, 
-                             nte_liftMotorTotalEffort, nte_liftTargetHeight,
-														 nte_liftActualHeight, 
-														 nte_coast, nte_atLowerLimit;
+	private final GenericEntry nte_liftMotorFFEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
+	private final GenericEntry nte_liftMotorPDEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
+	private final GenericEntry nte_liftMotorTotalEffort = DashboardManager.addTabDial(this, "LiftMotorTotalEffort", -1, 1);
+	private final GenericEntry nte_liftTargetHeight = DashboardManager.addTabNumberBar(this, "LiftTargetHeight",
+			kMinHeightMeters, kMaxHeightMeters);
+	private final GenericEntry nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
+		kMinHeightMeters, kMaxHeightMeters);
+	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "lift coast");
+	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 
 	public ElevatorSubsystem() {
-		DashboardManager.addTab(this);
-
+		// DashboardManager.addTab(this);
+		
 		m_elevatorLeft.configFactoryDefault();
         m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorLeftConfig);
 
@@ -63,18 +68,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_elevatorLeft.follow(m_elevatorRight);
 		m_elevatorLeft.setInverted(TalonFXInvertType.OpposeMaster);
-
-		nte_liftMotorFFEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
-		nte_liftMotorPDEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
-		nte_liftMotorTotalEffort = DashboardManager.addTabDial(this, "LiftMotorTotalEffort", -1, 1);
-		nte_liftTargetHeight = DashboardManager.addTabNumberBar(this, "LiftTargetHeight",
-				kMinHeightMeters, kMaxHeightMeters);
-		nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
-			kMinHeightMeters, kMaxHeightMeters);
-		nte_coast = DashboardManager.addTabBooleanBox(this, "lift coast");
-		nte_coast.setBoolean(false);
-		nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
-		DashboardManager.addTab(this);
 	}
 
 	public double getElevatorHeight() {
@@ -208,6 +201,5 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_liftMotorTotalEffort.setDouble(m_liftTotalEffort);
 		nte_liftTargetHeight.setDouble(getTargetHeightRaw());
 		nte_atLowerLimit.setBoolean(isAtLowerLimit());
-		SmartDashboard.putBoolean("elevator lift idle mode", nte_coast.get().getBoolean());
 	}
 }

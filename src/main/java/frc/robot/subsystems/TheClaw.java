@@ -17,16 +17,15 @@ public class TheClaw extends SubsystemBase {
     private final DigitalInput leftEye = new DigitalInput(kLeftEyeID);
     private final DigitalInput rightEye = new DigitalInput(kRightEyeID);
     private boolean isClosed = false;
-    private final GenericEntry nte_isClawClosed, nte_leftEye, nte_rightEye;
+    private final GenericEntry nte_isClawClosed = DashboardManager.addTabBooleanBox(this, "Is Claw Closed");
+    private final GenericEntry nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
+    private final GenericEntry nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
 
     public final Trigger leftEyeTrig = new Trigger(leftEye::get);
     public final Trigger rightEyeTrig = new Trigger(rightEye::get);
 
     public TheClaw() {
-        DashboardManager.addTab(this);
-        nte_isClawClosed = DashboardManager.addTabBooleanBox(this, "Is Claw Closed");
-        nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
-        nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
+        // DashboardManager.addTab(this);
     }
 
     public CommandBase autoGrab(boolean autoRelease) {

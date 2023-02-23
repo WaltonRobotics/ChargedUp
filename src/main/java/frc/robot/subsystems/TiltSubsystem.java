@@ -27,35 +27,28 @@ public class TiltSubsystem extends SubsystemBase {
 
 	private final PIDController m_tiltController = new PIDController(kP, 0, kD);
 	private double m_targetAngle = 0;
-	private double m_ffEffort = 0; // TODO: calculate efforts
+	private double m_ffEffort = 0;
 	private double m_pdEffort = 0;
 	private double m_totalEffort = 0;
+	private boolean m_isCoast = false;
 
-	private final GenericEntry nte_tiltMotorFFEffort, nte_tiltMotorPDEffort,
-			nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
-			nte_tiltActualAngle, nte_coast, nte_homeSwitch, nte_forwardLimit;
+	private final GenericEntry nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
+	private final GenericEntry nte_tiltMotorFFEffort = DashboardManager.addTabDial(this, "TiltMotorFFEffort", -1, 1);
+	private final GenericEntry nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
+	private final GenericEntry nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
+			kMinAngleDegrees, kMaxAngleDegrees);
+	private final GenericEntry nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
+	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "tilt coast");
+	private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
+	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	public TiltSubsystem() {
 		m_tiltAbsoluteEncoder.reset();
 		m_tiltMotor.setIdleMode(IdleMode.kBrake);
 		m_tiltMotor.setSmartCurrentLimit(kTiltMotorCurrLimit);
-		// m_tiltMotor.setSoftLimit(SoftLimitDirection.kForward, kAbsMaxDegree);
 
 		// reset relative encoder on switch activation
 		m_tiltQuadratureEncoder.setIndexSource(m_homeSwitch);
-
-		DashboardManager.addTab(this);
-		nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
-		nte_tiltMotorFFEffort = DashboardManager.addTabDial(this, "TiltMotorFFEffort", -1, 1);
-		nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
-		nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
-				kMinAngleDegrees, kMaxAngleDegrees);
-		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
-		nte_coast = DashboardManager.addTabBooleanBox(this, "Tilt Coast");
-		nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
-		nte_forwardLimit = DashboardManager.addTabBooleanBox(this,"At Forward Limit");
-
-		setCoast(false);
 	}
 
 	public CommandBase setTiltTarget(double degrees) {
@@ -122,8 +115,10 @@ public class TiltSubsystem extends SubsystemBase {
 
 	private void setCoast(boolean coast) {
 		if (coast) {
+			m_isCoast = true;
 			m_tiltMotor.setIdleMode(IdleMode.kCoast);
 		} else {
+			m_isCoast = false;
 			m_tiltMotor.setIdleMode(IdleMode.kBrake);
 		}
 	}
@@ -146,19 +141,20 @@ public class TiltSubsystem extends SubsystemBase {
 		// }
 		// // Combine for total effort
 		m_totalEffort = tiltFFEffort + m_pdEffort;
-		// setCoast(nte_coast.get().getBoolean());
+		setCoast(nte_coast.get().getBoolean());
 		updateShuffleBoard();
 	}
 
 	public void updateShuffleBoard() {
 		// Push telemetry
-		nte_tiltActualAngle.setDouble(getDegrees());// TODO: send actual converted anglee
+		nte_tiltActualAngle.setDouble(getDegrees());
 		nte_tiltMotorFFEffort.setDouble(m_ffEffort);
 		nte_tiltMotorPDEffort.setDouble(m_pdEffort);
 		nte_tiltMotorTotalEffort.setDouble(m_totalEffort);
 		nte_tiltTargetAngle.setDouble(m_targetAngle);
 		nte_homeSwitch.setBoolean(atReverseLimit());
 		nte_forwardLimit.setBoolean(atForwardLimit());
+		nte_coast.setBoolean(m_isCoast);
 
 		SmartDashboard.putNumber("Tilt absolute position", m_tiltAbsoluteEncoder.get());
 		SmartDashboard.putNumber("Tilt Quad Encoder position", m_tiltQuadratureEncoder.getRaw());
