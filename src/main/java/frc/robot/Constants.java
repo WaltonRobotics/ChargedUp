@@ -5,7 +5,6 @@ import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -220,6 +219,7 @@ public final class Constants {
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
+        public static final double kSafeHeight = Units.inchesToMeters(0);   //where wrist is free to move
 
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared

@@ -29,6 +29,7 @@ public class WristSubsystem extends SubsystemBase {
   private double m_ffEffort = 0;
   private double m_pdEffort = 0;
   private double m_totalEffort = 0;
+  private double m_maxDegrees = kMaxAngleDegrees;
 
   private final ProfiledPIDController m_controller = new ProfiledPIDController(
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
@@ -98,8 +99,15 @@ public class WristSubsystem extends SubsystemBase {
   //   }
   // }
 
+  public double getWristMaxDegrees(){
+    return m_maxDegrees;
+  }
+
+  public void setWristMaxDegrees(double degrees){
+    m_maxDegrees = MathUtil.clamp(degrees, kMaxAngleDegrees, kMinAngleDegrees);
+  } 
   private boolean atBottomLimit() {
-    return getDegrees() >= kMaxAngleDegrees;
+    return getDegrees() >= m_maxDegrees;
   }
 
   private boolean atTopLimit() {
@@ -117,7 +125,6 @@ public class WristSubsystem extends SubsystemBase {
       output = 0;
       System.out.println("Wrist - TopLimit!!!");
     }
-
     m_motor.set(output);
   }
 

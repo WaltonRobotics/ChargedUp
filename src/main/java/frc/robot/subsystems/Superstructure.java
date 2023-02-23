@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
 import frc.robot.subsystems.TiltSubsystem.TiltStates;
 import frc.robot.subsystems.WristSubsystem.WristStates;
+import static frc.robot.Constants.WristK.*;
+import static frc.robot.Constants.ElevatorK.*;
 
 public class Superstructure extends SubsystemBase{
     private final TiltSubsystem m_tilt;
@@ -35,5 +37,13 @@ public class Superstructure extends SubsystemBase{
             this.elevatorTilt = elevatorTilt;
             this.wristTilt = wristTilt;
         }
+    }
+
+    public void limitWristDynamic(){
+        double dynamicLimit = kMinAngleDegrees;
+        if(m_elevator.getElevatorHeight() >= kSafeHeight){
+        }
+        m_wrist.setWristMaxDegrees(dynamicLimit);
+
     }
 }
