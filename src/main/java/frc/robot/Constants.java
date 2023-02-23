@@ -171,7 +171,7 @@ public final class Constants {
         public static final int kTiltMotorCurrLimit = 20;
 
         public static final double kAbsZeroDegreeOffset = 199.8;    //where zero is at
-        public static final double kAbsMaxDegree = 38.0; //max possible from offset
+        public static final double kAbsMaxDegree = 33; //max possible from offset
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;

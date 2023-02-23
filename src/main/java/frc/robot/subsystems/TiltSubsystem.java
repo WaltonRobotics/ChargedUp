@@ -66,7 +66,7 @@ public class TiltSubsystem extends SubsystemBase {
 	 * Return true if hitting max degree
 	 */
 	private boolean atForwardLimit() {
-		if (m_tiltAbsoluteEncoder.get() >= kAbsMaxDegree) {
+		if (getDegrees() >= kAbsMaxDegree) {
 			return true;
 		}
 		return false;
