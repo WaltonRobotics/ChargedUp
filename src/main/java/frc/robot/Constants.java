@@ -5,6 +5,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -188,6 +189,7 @@ public final class Constants {
     // Elevator lifting motor(s)
     public static final class ElevatorK {
 
+        // max height 130580
         public static final int kLeftElevatorCANID = 11;
         public static final int kRightElevatorCANID = 12;
         public static final int kLowerLimitSwitch = 5;
@@ -195,8 +197,8 @@ public final class Constants {
         public static final int kLowerLimitSwitchPort = 5;
 
          /* Elevator Current Limiting */
-         public static final int kElevatorContinuousCurrentLimit = 5;
-         public static final int kElevatorPeakCurrentLimit = 5;
+         public static final int kElevatorContinuousCurrentLimit = 10;
+         public static final int kElevatorPeakCurrentLimit = 10;
          public static final double kElevatorePeakCurrentDuration = 0.1;
          public static final boolean kElevatorEnableCurrentLimit = true;
          public static final int kElevatorForwardLimit = 0;
@@ -214,7 +216,7 @@ public final class Constants {
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
-        public static final double kMaxHeightMeters = Units.inchesToMeters(61);
+        public static final double kMaxHeightMeters = 130580;   //assuming 0 @ lowest
 
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
@@ -268,7 +270,7 @@ public final class Constants {
         //lower: .527
         public static final int kWristCANID = 21;
 
-        public static final int kWristCurrLimit = 5;
+        public static final int kWristCurrLimit = 35;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.25;
         public static final double kD = 0.01;
@@ -277,12 +279,17 @@ public final class Constants {
         public static final double kMaxAcceleration = 1.0; // change later
         public static final TrapezoidProfile.Constraints kConstraints =
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
-        public static final double kMinAngleDegrees = 0;
-        public static final double kMaxAngleDegrees = 45; // change later
-        public static final float kMaxAnglePosition = 0.284f;
-        public static final double kGearRatio = 1; // change later
+        public static final double kZeroDegOffset = 5.5;
+        public static final double kMinAnglePosition = 0.01;
+        public static final double kMaxAnglePosition = 0.281;
+        public static final double kMinAngleDegrees = (kMinAnglePosition * 360) + kZeroDegOffset;
+        public static final double kMaxAngleDegrees = (kMaxAnglePosition * 360) + kZeroDegOffset;
+        public static final double kGearRatio = 80/1; // change later
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
+
+        // public static final ArmFeedforward kFeedforward = new ArmFeedforward(0.5);
+        public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(0.5, DCMotor.getNEO(1).KvRadPerSecPerVolt * kGearRatio);
     }
 
     public static final class TheClawK{

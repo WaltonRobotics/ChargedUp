@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
@@ -23,44 +24,43 @@ import static frc.robot.Constants.*;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
-  private final CANSparkMax m_wristMotor = new CANSparkMax(kWristCANID, MotorType.kBrushless); // change device number
+  private final CANSparkMax m_motor = new CANSparkMax(kWristCANID, MotorType.kBrushless); // change device number
                                                                                                // later
-  private final SparkMaxAbsoluteEncoder m_absoluteEncoder = m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-  private double m_wristTargetAngle = 0;
-  private double m_wristFFEffort = 0;
-  private double m_wristPDEffort = 0;
-  private double m_wristTotalEffort = 0;
+  private final SparkMaxAbsoluteEncoder m_absoluteEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
+  private double m_targetAngle = 0;
+  private double m_ffEffort = 0;
+  private double m_pdEffort = 0;
+  private double m_totalEffort = 0;
 
-  private final ProfiledPIDController m_wristController = new ProfiledPIDController(
+  private final ProfiledPIDController m_controller = new ProfiledPIDController(
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
 
   // FFEffort = feedforward; PDEffort = proportional-derivative
-  private final GenericEntry nte_wristMotorFFEffort, nte_wristMotorPDEffort,
-      nte_wristMotorTotalEffort, nte_wristMotorTargetAngle,
-      nte_wristMotorActualAngle, nte_wristMotorTemp, nte_coast;
+  private final GenericEntry nte_motorFFEffort, nte_motorPDEffort,
+      nte_totalEffort, nte_targetAngle, nte_rawAbsEncoder,
+      nte_actualAngle, nte_motorTemp, nte_coast, nte_bottomLimit, nte_topLimit;
 
   /** Creates a new Intake. */
   public WristSubsystem() {
 
-    m_wristMotor.setIdleMode(IdleMode.kBrake);
-    m_wristMotor.setSmartCurrentLimit(kWristCurrLimit);
+    //ANTI-DROOPY
+    m_motor.setIdleMode(IdleMode.kBrake);
+    m_motor.setSmartCurrentLimit(kWristCurrLimit);
     DashboardManager.addTab(this);
-    m_wristMotor.setSoftLimit(SoftLimitDirection.kForward, kMaxAnglePosition);
-    //m_wristMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-    m_wristMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
-    m_wristMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+  
 
-    // m_wristMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
-
-    nte_wristMotorFFEffort = DashboardManager.addTabDial(this, "WristFFEffort", -1, 1);
-    nte_wristMotorPDEffort = DashboardManager.addTabDial(this, "WristPDEffort", -1, 1);
-    nte_wristMotorTotalEffort = DashboardManager.addTabDial(this, "WristTotalEffort", -1, 1);
-    nte_wristMotorTargetAngle = DashboardManager.addTabNumberBar(this, "WristTargetAngle",
+    nte_motorFFEffort = DashboardManager.addTabDial(this, "WristFFEffort", -1, 1);
+    nte_motorPDEffort = DashboardManager.addTabDial(this, "WristPDEffort", -1, 1);
+    nte_totalEffort = DashboardManager.addTabDial(this, "WristTotalEffort", -1, 1);
+    nte_targetAngle = DashboardManager.addTabNumberBar(this, "WristTargetAngle",
         WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
-    nte_wristMotorActualAngle = DashboardManager.addTabNumberBar(this, "WristActualAngle",
+    nte_rawAbsEncoder = DashboardManager.addTabDial(this, "RawAbsEnc", 0, 1);
+    nte_actualAngle = DashboardManager.addTabNumberBar(this, "WristActualAngle",
         WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
-    nte_coast = DashboardManager.addTabBooleanBox(this, "tilt coast");
-    nte_wristMotorTemp = DashboardManager.addTabNumberBar(this, "WristMotorTemp", 0, 100);
+    nte_coast = DashboardManager.addTabBooleanToggle(this, "Wrist Coast");
+    nte_motorTemp = DashboardManager.addTabNumberBar(this, "WristMotorTemp", 0, 100);
+    nte_bottomLimit = DashboardManager.addTabBooleanBox(this, "BotLimit");
+    nte_topLimit = DashboardManager.addTabBooleanBox(this, "TopLimit");
   }
 
   // public boolean isIntakeOpen() {
@@ -73,81 +73,119 @@ public class WristSubsystem extends SubsystemBase {
 
   private void setCoast(boolean coast) {
 		if (coast) {
-			m_wristMotor.setIdleMode(IdleMode.kCoast);
+			m_motor.setIdleMode(IdleMode.kCoast);
 		} else {
-			m_wristMotor.setIdleMode(IdleMode.kBrake);
+			m_motor.setIdleMode(IdleMode.kBrake);
 		}
 	}
 
-  public double ticksToDegrees(double ticks) {
-    return ticks * (360 / kAbsEncoderTicksPerRotation);
+  private double getDegrees() {
+    return (m_absoluteEncoder.getPosition() * 360) + kZeroDegOffset;
   }
 
   public double degreesToTicks(double degrees) {
     return degrees * (kAbsEncoderTicksPerRotation / 360);
   }
 
-  public void setWristToAngle(double speed, double targetAngle) {
+  //  TODO: review with grace why this is bad - 3 reasons
+  // public void setWristToAngle(double speed, double targetAngle) {
 
-    while (getWristAngle() != targetAngle) {
-      if (getWristAngle() - targetAngle < 0) {
-        m_wristMotor.setInverted(true);
-        m_wristMotor.set(speed);
-      } else if (getWristAngle() - targetAngle > 0) {
-        m_wristMotor.set(speed);
-      }
-    }
+  //   while (getWristAngle() != targetAngle) {
+  //     if (getWristAngle() - targetAngle < 0) {
+  //       m_wristMotor.setInverted(true);
+  //       m_wristMotor.set(speed);
+  //     } else if (getWristAngle() - targetAngle > 0) {
+  //       m_wristMotor.set(speed);
+  //     }
+  //   }
+  // }
+
+  private boolean atBottomLimit() {
+    return getDegrees() >= kMaxAngleDegrees;
   }
 
-  public double getWristAngle() {
-    return ticksToDegrees(m_absoluteEncoder.getPosition());
+  private boolean atTopLimit() {
+    return getDegrees() <= kMinAngleDegrees;
+  }
+
+  private void setWristPower(double power) {
+    double output = power;
+    double dir = Math.signum(power);
+
+    if(atBottomLimit() && dir == 1) {
+      output = 0;
+      System.out.println("Wrist - BotLimit!!!");
+    } else if(atTopLimit() && dir == -1) {
+      output = 0;
+      System.out.println("Wrist - TopLimit!!!");
+    }
+
+    m_motor.set(output);
   }
 
   public CommandBase teleopWristCmd(DoubleSupplier power){
     return run(() ->{
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-      double dampener = .1;
-      m_wristMotor.set(powerVal*dampener);
+      setWristPower(powerVal);
     });
+  }
+
+  public CommandBase toAngle(DoubleSupplier angle) {
+    return run(()-> {
+      m_targetAngle = angle.getAsDouble();
+      // m_wristPDEffort = m_wristController.calculate(getDegrees(), m_wristTargetAngle);
+      m_totalEffort = m_ffEffort + m_pdEffort;
+
+      setWristPower(m_totalEffort);
+    })
+    .until(m_controller::atSetpoint)
+    .withName("ToAngle");
   }
 
 
   public double minValue = 0; // change later
 
-  public void toPosition(double speed, WristStates position) {
+  public CommandBase toPosition(double speed, WristStates position) {
     switch (position) {
       case MAX:
-        setWristToAngle(speed, MathUtil.clamp(WristStates.MAX.degrees, 0, minValue));
+        // setWristToAngle(speed, MathUtil.clamp(WristStates.MAX.degrees, 0, minValue));
         break;
       case HIGH:
-        setWristToAngle(speed, MathUtil.clamp(WristStates.HIGH.degrees, 0, minValue));
+        // setWristToAngle(speed, MathUtil.clamp(WristStates.HIGH.degrees, 0, minValue));
         break;
       case MID:
-        setWristToAngle(speed, MathUtil.clamp(WristStates.MID.degrees, 0, minValue));
+        // setWristToAngle(speed, MathUtil.clamp(WristStates.MID.degrees, 0, minValue));
         break;
       case MIN:
-        setWristToAngle(speed, MathUtil.clamp(WristStates.MIN.degrees, 0, minValue));
+        // setWristToAngle(speed, MathUtil.clamp(WristStates.MIN.degrees, 0, minValue));
         break;
     }
+
+    // TODO: command-ify
+    return Commands.none();
   }
 
   @Override
   public void periodic() {
-    m_wristPDEffort = m_wristController.calculate(getWristAngle(), m_wristTargetAngle);
-    m_wristTotalEffort = m_wristFFEffort + m_wristPDEffort;
+    
     setCoast(nte_coast.get().getBoolean());
     updateShuffleBoard();
   }
 
   public void updateShuffleBoard() {
-    if (nte_wristMotorTemp != null)
-    nte_wristMotorTotalEffort.setDouble(m_wristTotalEffort);
-    nte_wristMotorFFEffort.setDouble(m_wristFFEffort);
-    nte_wristMotorPDEffort.setDouble(m_wristPDEffort);
-    nte_wristMotorActualAngle.setDouble(m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
-    nte_wristMotorTargetAngle.setDouble(m_wristTargetAngle);
-    nte_wristMotorTemp.setDouble(m_wristMotor.getMotorTemperature());
-    SmartDashboard.putBoolean("wrist idle mode", nte_coast.get().getBoolean());
+    if (nte_motorTemp != null)
+    nte_totalEffort.setDouble(m_totalEffort);
+    nte_motorFFEffort.setDouble(m_ffEffort);
+    nte_motorPDEffort.setDouble(m_pdEffort);
+    nte_actualAngle.setDouble(getDegrees());
+    nte_rawAbsEncoder.setDouble(m_absoluteEncoder.getPosition());
+    nte_targetAngle.setDouble(m_targetAngle);
+    nte_motorTemp.setDouble(m_motor.getMotorTemperature());
+    nte_bottomLimit.setBoolean(atBottomLimit());
+    nte_topLimit.setBoolean(atTopLimit());
+
+    // boolean shouldCoast = nte_coast.getBoolean(false);
+    // m_motor.setIdleMode(shouldCoast ? IdleMode.kCoast : IdleMode.kBrake);
   }
 
   public enum WristStates { // change degrees later

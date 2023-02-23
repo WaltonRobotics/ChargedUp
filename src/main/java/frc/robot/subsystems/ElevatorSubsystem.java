@@ -88,7 +88,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public CommandBase teleOpElevatorCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			double dampener = .5;
+			double dampener = 1;
 			m_elevatorRight.set(ControlMode.PercentOutput, powerVal*dampener);
 		});
 	}
