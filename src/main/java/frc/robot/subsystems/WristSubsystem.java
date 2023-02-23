@@ -142,9 +142,6 @@ public class WristSubsystem extends SubsystemBase {
     .withName("ToAngle");
   }
 
-
-  public double minValue = 0; // change later
-
   public CommandBase toPosition(double speed, WristStates position) {
     switch (position) {
       case MAX:
