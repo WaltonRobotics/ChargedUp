@@ -18,6 +18,7 @@ import static frc.robot.Constants.TiltK.kTiltMotorCANID;
 import static frc.robot.Constants.*;
 import java.util.function.DoubleSupplier;
 
+//TODO: Fix forwardlimit, fix coast,
 public class TiltSubsystem extends SubsystemBase {
 	private final CANSparkMax m_tiltMotor = new CANSparkMax(kTiltMotorCANID, MotorType.kBrushless);
 	private final DutyCycleEncoder m_tiltAbsoluteEncoder = new DutyCycleEncoder(kTiltAbsoluteEncoderPort);
@@ -32,7 +33,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 	private final GenericEntry nte_tiltMotorFFEffort, nte_tiltMotorPDEffort,
 			nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
-			nte_tiltActualAngle, nte_coast, nte_homeSwitch;
+			nte_tiltActualAngle, nte_coast, nte_homeSwitch, nte_forwardLimit;
 
 	public TiltSubsystem() {
 		m_tiltAbsoluteEncoder.reset();
@@ -52,6 +53,9 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
 		nte_coast = DashboardManager.addTabBooleanBox(this, "Tilt Coast");
 		nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
+		nte_forwardLimit = DashboardManager.addTabBooleanBox(this,"At Forward Limit");
+
+		setCoast(false);
 	}
 
 	public CommandBase setTiltTarget(double degrees) {
@@ -126,6 +130,9 @@ public class TiltSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		if(m_homeSwitch.get()) {
+
+		}
 		// // Set controller goal position
 		// m_tiltController.setSetpoint(m_tiltTargetAngle);
 
@@ -139,7 +146,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// }
 		// // Combine for total effort
 		m_totalEffort = tiltFFEffort + m_pdEffort;
-		setCoast(nte_coast.get().getBoolean());
+		// setCoast(nte_coast.get().getBoolean());
 		updateShuffleBoard();
 	}
 
@@ -151,8 +158,7 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_tiltMotorTotalEffort.setDouble(m_totalEffort);
 		nte_tiltTargetAngle.setDouble(m_targetAngle);
 		nte_homeSwitch.setBoolean(atReverseLimit());
-
-		SmartDashboard.putBoolean("elevator tilt idle mode", nte_coast.get().getBoolean());
+		nte_forwardLimit.setBoolean(atForwardLimit());
 
 		SmartDashboard.putNumber("Tilt absolute position", m_tiltAbsoluteEncoder.get());
 		SmartDashboard.putNumber("Tilt Quad Encoder position", m_tiltQuadratureEncoder.getRaw());

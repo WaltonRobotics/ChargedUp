@@ -163,14 +163,15 @@ public final class Constants {
     // Elevator tilting motor
     public static final class TiltK {
         //199.83 start tilt
+        
         public static final int kTiltMotorCANID = 13;
         public static final int kTiltQuadratureEncoderA = 6;
         public static final int kTiltQuadratureEncoderB = 7;
         public static final int kTiltAbsoluteEncoderPort = 8;
-        public static final int kTiltMotorCurrLimit = 5;
+        public static final int kTiltMotorCurrLimit = 20;
 
         public static final double kAbsZeroDegreeOffset = 199.8;    //where zero is at
-        public static final double kAbsMaxDegree = 40.0; //max possible from offset
+        public static final double kAbsMaxDegree = 38.0; //max possible from offset
 
         public static final double kMaxAngleDegrees = 45;
         public static final double kMinAngleDegrees = 0;
@@ -203,6 +204,8 @@ public final class Constants {
          public static final boolean kElevatorEnableCurrentLimit = true;
          public static final int kElevatorForwardLimit = 130000;
          public static final int kElevatorReverseLimit = 0;
+         public static final double kMaxTiltMinTicks = 12259.0;
+         public static final double kMaxTiltMinHeight = 0; //TODO: Convert above to height
          public static final boolean kElevatorEnableForwardLimit = true;
          public static final boolean kElevatorEnableReverseLimit = true;
 
