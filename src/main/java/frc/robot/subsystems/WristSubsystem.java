@@ -47,12 +47,14 @@ public class WristSubsystem extends SubsystemBase {
   private final GenericEntry nte_motorTemp = DashboardManager.addTabNumberBar(this, "WristMotorTemp", 0, 100);
   private final GenericEntry nte_bottomLimit = DashboardManager.addTabBooleanBox(this, "BotLimit");
   private final GenericEntry nte_topLimit = DashboardManager.addTabBooleanBox(this, "TopLimit");
+  private final GenericEntry nte_stickVoltage = DashboardManager.addTabDial(this, "Stick Voltage", -15, 15);
+
 
   /** Creates a new Intake. */
   public WristSubsystem() {
 
     //ANTI-DROOPY
-    m_motor.setIdleMode(IdleMode.kBrake);
+    m_motor.setIdleMode(IdleMode.kCoast);
     m_motor.setSmartCurrentLimit(kWristCurrLimit);
     // DashboardManager.addTab(this);
   }
@@ -109,7 +111,7 @@ public class WristSubsystem extends SubsystemBase {
     return getDegrees() <= kMinAngleDegrees;
   }
 
-  private void setWristPower(double power) {
+  private void setWristPower(double power, boolean voltage) {
     double output = power;
     double dir = Math.signum(power);
 
@@ -120,13 +122,19 @@ public class WristSubsystem extends SubsystemBase {
       output = 0;
       System.out.println("Wrist - TopLimit!!!");
     }
-    m_motor.set(output);
+    if (voltage) {
+      m_motor.setVoltage(output * 12);
+    } else {
+      m_motor.set(output);
+    }
   }
 
   public CommandBase teleopWristCmd(DoubleSupplier power){
     return run(() ->{
+      var volts = power.getAsDouble() * m_motor.getBusVoltage();
+      nte_stickVoltage.setDouble(volts);
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-      setWristPower(powerVal);
+      setWristPower(powerVal, true);
     });
   }
 
@@ -136,12 +144,17 @@ public class WristSubsystem extends SubsystemBase {
       // m_wristPDEffort = m_wristController.calculate(getDegrees(), m_wristTargetAngle);
       m_totalEffort = m_ffEffort + m_pdEffort;
 
-      setWristPower(m_totalEffort);
+      setWristPower(m_totalEffort, true);
     })
     .until(m_controller::atSetpoint)
     .withName("ToAngle");
   }
 
+  public CommandBase toFlat(){
+    return run(()->{
+      m_controller.calculate(getDegrees(), 90);
+    });
+  }
   public CommandBase toPosition(double speed, WristStates position) {
     switch (position) {
       case MAX:

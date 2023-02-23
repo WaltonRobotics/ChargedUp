@@ -67,8 +67,8 @@ public class RobotContainer {
                         () -> true // openLoop
                 ));
         elevator.setDefaultCommand(elevator.teleOpElevatorCmd(() -> -manipulator.getLeftY()));
-        tilt.setDefaultCommand(tilt.teleopTiltCmd(() -> manipulator.getRightY()));
-        //wrist.setDefaultCommand(wrist.teleopWristCmd(()-> manipulator.getRightY()));
+        // tilt.setDefaultCommand(tilt.teleopTiltCmd(() -> manipulator.getRightY()));
+        wrist.setDefaultCommand(wrist.teleopWristCmd(()-> manipulator.getRightY()));
         
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));

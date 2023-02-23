@@ -293,12 +293,14 @@ public final class Constants {
         public static final double kMaxAnglePosition = 0.2903;
         public static final double kMinAngleDegrees = (kMinAnglePosition * 360) + kZeroDegOffset;
         public static final double kMaxAngleDegrees = (kMaxAnglePosition * 360) + kZeroDegOffset;
-        public static final double kGearRatio = 80/1; // change later
+        public static final double kGearRatio = (80.0/1) * (16.0/22.0); // change later
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
 
+
+
         // public static final ArmFeedforward kFeedforward = new ArmFeedforward(0.5);
-        public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(0.5, DCMotor.getNEO(1).KvRadPerSecPerVolt * kGearRatio);
+        // public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(0.5, DCMotor.getNEO(1).KvRadPerSecPerVolt * kGearRatio);
     }
 
     public static final class TheClawK{
