@@ -75,7 +75,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			thetaController);
 
 	private final Field2d m_field = new Field2d();
-	private final SwerveDriveState m_swerveState = new SwerveDriveState(kModuleTranslations);
+	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
 	private final WaltonSwerveAutoBuilder autoBuilder;
 
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -111,7 +111,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 		autoThetaController.setTolerance(Rotation2d.fromDegrees(2.5).getRadians());
 
-		m_swerveState.update(getPose(), getModuleStates(), m_field);
+		m_state.update(getPose(), getModuleStates(), m_field);
 		m_apriltagHelper.updateField2d(m_field);
 		DashboardManager.addTabSendable(this, "Field2d", m_field);
 		autoBuilder = new WaltonSwerveAutoBuilder(
@@ -501,7 +501,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		Optional<EstimatedRobotPose> result = m_apriltagHelper
 				.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
 
-		m_swerveState.update(getPose(), getModuleStates(), m_field);
+		m_state.update(getPose(), getModuleStates(), m_field);
 
 		if (result.isPresent()) {
 			EstimatedRobotPose camPose = result.get();

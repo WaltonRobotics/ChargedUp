@@ -62,17 +62,17 @@ public final class CTREConfigs {
 
         /*Elevator Left and Right Motor Configuration */
         SupplyCurrentLimitConfiguration elevatorSupplyLimit = new SupplyCurrentLimitConfiguration(
-            kElevatorEnableCurrentLimit,
-            kElevatorContinuousCurrentLimit,
-            kElevatorPeakCurrentLimit,
-            kElevatorePeakCurrentDuration);
+            kEnableCurrentLimit,
+            kContinuousCurrentLimit,
+            kPeakCurrentLimit,
+            kPeakCurrentDuration);
 
-        elevatorFXConfig.slot0.kP = kElevatorP;
-        elevatorFXConfig.slot0.kD = kElevatorD;
-        elevatorFXConfig.reverseSoftLimitThreshold = kElevatorForwardLimit;
-        elevatorFXConfig.forwardSoftLimitThreshold = kElevatorReverseLimit;
-        elevatorFXConfig.forwardSoftLimitEnable = kElevatorEnableForwardLimit;
-        elevatorFXConfig.reverseSoftLimitEnable = kElevatorEnableReverseLimit;
+        elevatorFXConfig.slot0.kP = kP;
+        elevatorFXConfig.slot0.kD = kD;
+        elevatorFXConfig.reverseSoftLimitThreshold = kForwardLimit;
+        elevatorFXConfig.forwardSoftLimitThreshold = kReverseLimit;
+        elevatorFXConfig.forwardSoftLimitEnable = kEnableForwardLimit;
+        elevatorFXConfig.reverseSoftLimitEnable = kEnableReverseLimit;
 
         
         elevatorFXConfig.supplyCurrLimit = elevatorSupplyLimit;

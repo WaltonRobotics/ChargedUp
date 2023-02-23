@@ -165,12 +165,12 @@ public final class Constants {
     public static final class TiltK {
         public static final String DB_TAB_NAME = "TiltSubsys";
         //199.83 start tilt
-        public static final int kTiltMotorCANID = 13;
-        public static final int kTiltLimitSwitchPort = 5;
-        public static final int kTiltQuadratureEncoderA = 6;
-        public static final int kTiltQuadratureEncoderB = 7;
-        public static final int kTiltAbsoluteEncoderPort = 8;
-        public static final int kTiltMotorCurrLimit = 5;
+        public static final int kMotorCANID = 13;
+        public static final int kLimitSwitchPort = 5;
+        public static final int kQuadratureEncoderA = 6;
+        public static final int kQuadratureEncoderB = 7;
+        public static final int kAbsoluteEncoderPort = 8;
+        public static final int kMotorCurrLimit = 5;
 
         public static final double kAbsZeroDegreeOffset = 199.8;    //where zero is at
         public static final double kAbsMaxDegree = 40.0; //max possible from offset
@@ -193,29 +193,29 @@ public final class Constants {
     public static final class ElevatorK {
         public static final String DB_TAB_NAME = "LiftSubsys";
 
-        public static final int kLeftElevatorCANID = 11;
-        public static final int kRightElevatorCANID = 12;
+        public static final int kLeftCANID = 11;
+        public static final int kRightCANID = 12;
         public static final int kUpperLimitSwitch = 9;
         public static final int kLowerLimitSwitch = 5;
 
         public static final int kLowerLimitSwitchPort = 5;
 
          /* Elevator Current Limiting */
-         public static final int kElevatorContinuousCurrentLimit = 5;
-         public static final int kElevatorPeakCurrentLimit = 5;
-         public static final double kElevatorePeakCurrentDuration = 0.1;
-         public static final boolean kElevatorEnableCurrentLimit = true;
-         public static final int kElevatorForwardLimit = 0;
-         public static final int kElevatorReverseLimit = 0;
-         public static final boolean kElevatorEnableForwardLimit = false;
-         public static final boolean kElevatorEnableReverseLimit = false;
+         public static final int kContinuousCurrentLimit = 5;
+         public static final int kPeakCurrentLimit = 5;
+         public static final double kPeakCurrentDuration = 0.1;
+         public static final boolean kEnableCurrentLimit = true;
+         public static final int kForwardLimit = 0;
+         public static final int kReverseLimit = 0;
+         public static final boolean kEnableForwardLimit = false;
+         public static final boolean kEnableReverseLimit = false;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
-        public static final double kElevatorP = 0.25;
-        public static final double kElevatorD = 0.01;
-        public static final double kElevatorS = 1.2;
-        public static final double kElevatorV = kMotor.KvRadPerSecPerVolt / kGearRatio;
+        public static final double kP = 0.25;
+        public static final double kD = 0.01;
+        public static final double kS = 1.2;
+        public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
@@ -225,7 +225,7 @@ public final class Constants {
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
 
-        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kElevatorS, kCarriageMassKg, kElevatorV);
+        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kCarriageMassKg, kV);
         public static final TrapezoidProfile.Constraints kConstraints =
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     }
@@ -274,8 +274,8 @@ public final class Constants {
         public static final String DB_TAB_NAME = "WristSubsys";
 
         //lower: .527
-        public static final int kWristCANID = 21;
-        public static final int kWristCurrLimit = 5;
+        public static final int kCANID = 21;
+        public static final int kCurrLimit = 5;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.25;
         public static final double kD = 0.01;
@@ -294,7 +294,7 @@ public final class Constants {
     public static final class TheClawK{
         public static final String DB_TAB_NAME = "ClawSubsys";
 
-        public static final int kTheClawID = 0; 
+        public static final int kID = 0; 
         public static final int kLeftEyeID = 0;
         public static final int kRightEyeID = 1;
     }

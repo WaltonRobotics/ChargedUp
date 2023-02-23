@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.ElevatorK.kConstraints;
-import static frc.robot.Constants.ElevatorK.kElevatorD;
-import static frc.robot.Constants.ElevatorK.kElevatorP;
-import static frc.robot.Constants.ElevatorK.kLeftElevatorCANID;
-import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
+import static frc.robot.Constants.ElevatorK.kD;
+import static frc.robot.Constants.ElevatorK.kP;
+import static frc.robot.Constants.ElevatorK.kLeftCANID;
+import static frc.robot.Constants.ElevatorK.kRightCANID;
 import static frc.robot.Constants.ElevatorK.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -26,12 +26,12 @@ import java.util.function.DoubleSupplier;
 import static frc.robot.Constants.*;
 
 public class ElevatorSubsystem extends SubsystemBase {
-	private final WPI_TalonFX m_elevatorLeft = new WPI_TalonFX(kLeftElevatorCANID, canbus);
-	private final WPI_TalonFX m_elevatorRight = new WPI_TalonFX(kRightElevatorCANID, canbus);
+	private final WPI_TalonFX m_left = new WPI_TalonFX(kLeftCANID, canbus);
+	private final WPI_TalonFX m_right = new WPI_TalonFX(kRightCANID, canbus);
 	private final DigitalInput m_lowerLimit = new DigitalInput(kLowerLimitSwitchPort);
 
-	private final ProfiledPIDController m_elevatorController = new ProfiledPIDController(
-			kElevatorP, 0, kElevatorD, kConstraints);
+	private final ProfiledPIDController m_controller = new ProfiledPIDController(
+			kP, 0, kD, kConstraints);
 
 	private double m_targetHeight = 0;
 	private double m_liftTotalEffort = 0;
@@ -44,16 +44,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
 
-		m_elevatorLeft.configFactoryDefault();
-        m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+		m_left.configFactoryDefault();
+        m_left.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
 
-		m_elevatorRight.configFactoryDefault();
-        m_elevatorRight.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+		m_right.configFactoryDefault();
+        m_right.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
 
-		m_elevatorRight.getSensorCollection().setIntegratedSensorPosition(0, 0);
-		m_elevatorLeft.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		m_right.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		m_left.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
-		m_elevatorLeft.follow(m_elevatorRight);
+		m_left.follow(m_right);
 
 		nte_liftMotorFFEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
 		nte_liftMotorPDEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
@@ -66,8 +66,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 	}
 
-	public double getElevatorHeight() {
-		return m_elevatorRight.getSelectedSensorPosition(0);
+	public double getHeight() {
+		return m_right.getSelectedSensorPosition(0);
 	}
 
 	public boolean isAtLowerLimit() {
@@ -75,17 +75,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	private double falconToMeters() {
-		var falconPos = m_elevatorRight.getSelectedSensorPosition();
+		var falconPos = m_right.getSelectedSensorPosition();
 		var meters = Conversions.falconToMeters(
 				falconPos, kDrumCircumferenceMeters, kGearRatio);
 		return meters;
 	}
 
-	public CommandBase teleOpElevatorCmd(DoubleSupplier power) {
+	public CommandBase teleOpCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			double dampener = .5;
-			m_elevatorRight.set(ControlMode.PercentOutput, powerVal*dampener);
+			m_right.set(ControlMode.PercentOutput, powerVal*dampener);
 		});
 	}
 
@@ -97,7 +97,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	//TODO: Convert to height
 	private double getLiftActualHeight() {
 		// return falconToMeters();
-		return m_elevatorRight.getSelectedSensorPosition();
+		return m_right.getSelectedSensorPosition();
 	}
 
 	public double getTargetHeight(){
@@ -106,11 +106,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	private void setCoast(boolean coast) {
 		if (coast) {
-			m_elevatorLeft.setNeutralMode(NeutralMode.Coast);
-			m_elevatorRight.setNeutralMode(NeutralMode.Coast);
+			m_left.setNeutralMode(NeutralMode.Coast);
+			m_right.setNeutralMode(NeutralMode.Coast);
 		} else {
-			m_elevatorLeft.setNeutralMode(NeutralMode.Brake);
-			m_elevatorRight.setNeutralMode(NeutralMode.Brake);
+			m_left.setNeutralMode(NeutralMode.Brake);
+			m_right.setNeutralMode(NeutralMode.Brake);
 		}
 	}
 
@@ -128,22 +128,22 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return run(() -> {
 			if (joystick == 0) {
 				while (getLiftActualHeight() > kMinHeightMeters) { 
-					m_elevatorLeft.set(ControlMode.Velocity, -0.2);
-					m_elevatorRight.follow(m_elevatorLeft);
+					m_left.set(ControlMode.Velocity, -0.2);
+					m_right.follow(m_left);
 				}
 			}
-			m_elevatorLeft.set(ControlMode.Velocity, kMaxVelocity * joystick);
-			m_elevatorRight.follow(m_elevatorLeft);
+			m_left.set(ControlMode.Velocity, kMaxVelocity * joystick);
+			m_right.follow(m_left);
 		});
 	}
 
 	private void goToTarget() {
-		double liftPDEffort = m_elevatorController.calculate(falconToMeters());
+		double liftPDEffort = m_controller.calculate(falconToMeters());
 
 		double liftFFEffort = 0;
 
-		if (m_elevatorController.getSetpoint().velocity != 0) {
-			liftFFEffort = kFeedforward.calculate(m_elevatorController.getSetpoint().velocity);
+		if (m_controller.getSetpoint().velocity != 0) {
+			liftFFEffort = kFeedforward.calculate(m_controller.getSetpoint().velocity);
 		}
 
 		double liftTotalEffort = liftFFEffort + liftPDEffort;
@@ -217,7 +217,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	public void updateShuffleBoard(){
-		SmartDashboard.putNumber("Elevator Ticks", getElevatorHeight());
+		SmartDashboard.putNumber("Elevator Ticks", getHeight());
 		nte_liftActualHeight.setDouble(getLiftActualHeight());
 		//TODO: print out these values fr
 		nte_liftMotorFFEffort.setDouble(0);
