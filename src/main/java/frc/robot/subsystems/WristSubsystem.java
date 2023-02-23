@@ -168,24 +168,25 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     
-    setCoast(nte_coast.get().getBoolean());
+    // setCoast(nte_coast.get().getBoolean());
     updateShuffleBoard();
   }
 
   public void updateShuffleBoard() {
-    if (nte_motorTemp != null)
-    nte_totalEffort.setDouble(m_totalEffort);
-    nte_motorFFEffort.setDouble(m_ffEffort);
-    nte_motorPDEffort.setDouble(m_pdEffort);
-    nte_actualAngle.setDouble(getDegrees());
-    nte_rawAbsEncoder.setDouble(m_absoluteEncoder.getPosition());
-    nte_targetAngle.setDouble(m_targetAngle);
-    nte_motorTemp.setDouble(m_motor.getMotorTemperature());
-    nte_bottomLimit.setBoolean(atBottomLimit());
-    nte_topLimit.setBoolean(atTopLimit());
-
-    // boolean shouldCoast = nte_coast.getBoolean(false);
-    // m_motor.setIdleMode(shouldCoast ? IdleMode.kCoast : IdleMode.kBrake);
+    if (nte_motorTemp != null) {
+      nte_totalEffort.setDouble(m_totalEffort);
+      nte_motorFFEffort.setDouble(m_ffEffort);
+      nte_motorPDEffort.setDouble(m_pdEffort);
+      nte_actualAngle.setDouble(getDegrees());
+      nte_rawAbsEncoder.setDouble(m_absoluteEncoder.getPosition());
+      nte_targetAngle.setDouble(m_targetAngle);
+      nte_motorTemp.setDouble(m_motor.getMotorTemperature());
+      nte_bottomLimit.setBoolean(atBottomLimit());
+      nte_topLimit.setBoolean(atTopLimit());
+    }
+    
+    boolean shouldCoast = nte_coast.getBoolean(false);
+    m_motor.setIdleMode(shouldCoast ? IdleMode.kCoast : IdleMode.kBrake);
   }
 
   public enum WristStates { // change degrees later
