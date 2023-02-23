@@ -75,7 +75,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_coast = DashboardManager.addTabBooleanBox(this, "lift coast");
 		nte_coast.setBoolean(false);
 		nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
-		DashboardManager.addTab(this);
 	}
 
 	public double getElevatorHeight() {

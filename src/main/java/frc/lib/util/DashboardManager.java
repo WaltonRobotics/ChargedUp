@@ -4,14 +4,12 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2. command.SubsystemBase;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 public class DashboardManager {
@@ -27,20 +25,26 @@ public class DashboardManager {
 	public static Map<String, Object> getRangePropertiesMap(double min, double max) {
 		return Collections.unmodifiableMap(Map.of("Min", min, "Max", max));
 	}
-	private static HashMap<String, ShuffleboardTab> shuffleboardTabs = new HashMap<>();
 
+	/**
+	 * Adds a tab on Shuffleboard. All other addTab* methods will do this automatically.
+	 * @param tabName
+	 */
 	public static void addTab(String tabName) {
-		if (!shuffleboardTabs.containsKey(tabName)) {
-			var tab = Shuffleboard.getTab(tabName);
-			shuffleboardTabs.put(tabName, tab);
-		}
+		Shuffleboard.getTab(tabName);
 	}
 
+	/**
+	 * Adds a tab on Shuffleboard, with the Subsystem widget.
+	 * If the tab already exists, the widget will be added.
+	 * @param subsystemBase Subsystem to add a tab for
+	 */
 	public static void addTab(SubsystemBase subsystemBase) {
-		if (!shuffleboardTabs.containsKey(subsystemBase.getName())) {
-			var tab = Shuffleboard.getTab(subsystemBase.getName());
-			shuffleboardTabs.put(subsystemBase.getName(), tab);
+		var tab = Shuffleboard.getTab(subsystemBase.getName());
+		try {
 			tab.add(subsystemBase);
+		} catch (IllegalArgumentException ex) {
+			// ignore
 		}
 	}
 
@@ -57,13 +61,11 @@ public class DashboardManager {
 	}
 
 	public static GenericEntry addTabItem(String tabName, String itemName, Object defaultValue, WidgetType widget, Map<String, Object> properties) {
-		if (!shuffleboardTabs.containsKey(tabName)) return null;
-		return shuffleboardTabs.get(tabName).add(itemName, defaultValue).withWidget(widget).withProperties(properties).getEntry();
+		return Shuffleboard.getTab(tabName).add(itemName, defaultValue).withWidget(widget).withProperties(properties).getEntry();
 	}
 
 	public static GenericEntry addTabItem(String tabName, String itemName, Object defaultValue, WidgetType widget, int width, int height, Map<String, Object> properties) {
-		if (!shuffleboardTabs.containsKey(tabName)) return null;
-		return shuffleboardTabs.get(tabName).add(itemName, defaultValue).withWidget(widget).withSize(width, height).withProperties(properties).getEntry();
+		return Shuffleboard.getTab(tabName).add(itemName, defaultValue).withWidget(widget).withSize(width, height).withProperties(properties).getEntry();
 	}
 
 	public static GenericEntry addTabItem(SubsystemBase subsystemBase, String itemName, Object defaultValue) {
@@ -108,10 +110,9 @@ public class DashboardManager {
 	}
 
 	public static void addTabButton(String tabName, String buttonName, Runnable onPress) {
-		if (!shuffleboardTabs.containsKey(tabName)) return;
 		InstantCommand command = new InstantCommand(onPress);
 		command.setName(buttonName);
-		shuffleboardTabs.get(tabName).add(command);
+		Shuffleboard.getTab(tabName).add(command);
 	}
 
 	public static void addTabSendable(SubsystemBase subsystem, String itemName, Sendable sendable) {
@@ -119,13 +120,10 @@ public class DashboardManager {
 	}
 
 	public static void addTabSendable(String tabName, String itemName, Sendable sendable) {
-		if (!shuffleboardTabs.containsKey(tabName)) return;
-		shuffleboardTabs.get(tabName).add(itemName, sendable);
+		Shuffleboard.getTab(tabName).add(itemName, sendable);
 	}
 
 	public static <E extends Enum<E>> SendableChooser<E> addTabChooser(String tabName, String chooserName, E[] choosable, E defaultChosen) {
-		if (!shuffleboardTabs.containsKey(tabName)) return null;
-
 		SendableChooser<E> chooser = new SendableChooser<>();
 
 		for (E _enum : choosable) {
@@ -136,16 +134,8 @@ public class DashboardManager {
 			}
 		}
 
-		getTab(tabName).add(chooserName, chooser);
+		Shuffleboard.getTab(tabName).add(chooserName, chooser);
 
 		return chooser;
-	}
-
-	public static ShuffleboardTab getTab(String tabName) {
-		return shuffleboardTabs.get(tabName);
-	}
-
-	public static ShuffleboardTab getTab(SubsystemBase subsystemBase) {
-		return shuffleboardTabs.get(subsystemBase.getName());
 	}
 }
