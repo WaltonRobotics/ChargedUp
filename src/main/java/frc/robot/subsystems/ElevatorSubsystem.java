@@ -49,7 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
-
+		
 		m_elevatorLeft.configFactoryDefault();
         m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorLeftConfig);
 
@@ -72,8 +72,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 				kMinHeightMeters, kMaxHeightMeters);
 		nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
 			kMinHeightMeters, kMaxHeightMeters);
-		nte_coast = DashboardManager.addTabBooleanBox(this, "lift coast");
-		nte_coast.setBoolean(false);
+		nte_coast = DashboardManager.addTabBooleanToggle(this, "lift coast");
+		// nte_coast.setBoolean(false);
 		nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 	}
 
