@@ -91,6 +91,15 @@ public class SwerveModule {
         SmartDashboard.putNumber(moduleName + "Cancoder Angle", m_angleEncoder.getAbsolutePosition());
     }
 
+    public double makePositiveDegrees(double angle){
+        double degrees = angle;
+        degrees = degrees % 360;
+        if(degrees < 0.0){
+            degrees = degrees + 360;
+        }
+        return degrees;
+    }
+
     /**
      * Command this swerve module to the desired angle and velocity.
      * Falcon onboard control is used instead of on-RIO control to avoid latency.
@@ -142,7 +151,7 @@ public class SwerveModule {
     }
 
     public void resetToAbsolute(){
-        double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - m_angleOffset.getDegrees(), kAngleGearRatio);
+        double absolutePosition = Conversions.degreesToFalcon(makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees(), kAngleGearRatio);
         m_steerMotor.setSelectedSensorPosition(absolutePosition);
     }
 
