@@ -29,9 +29,14 @@ public class TiltSubsystem extends SubsystemBase {
 	private double m_tiltFFEffort = 0;
 	private double m_tiltPDEffort = 0;
 	private double m_tiltTotalEffort = 0;
-	private final GenericEntry nte_tiltMotorFFEffort, nte_tiltMotorPDEffort,
-			nte_tiltMotorTotalEffort, nte_tiltTargetAngle,
-			nte_tiltActualAngle, nte_coast, nte_homeSwitch;
+	private final GenericEntry nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
+	private final GenericEntry nte_tiltMotorFFEffort = DashboardManager.addTabDial(this, "TiltMotorFFEffort", -1, 1);
+	private final GenericEntry nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
+	private final GenericEntry nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
+			kMinAngleDegrees, kMaxAngleDegrees);
+	private final GenericEntry nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
+	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "tilt coast");
+	private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 
 	public TiltSubsystem() {
 		m_tiltAbsoluteEncoder.reset();
@@ -40,15 +45,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 		// reset relative encoder on switch activation
 		m_tiltQuadratureEncoder.setIndexSource(m_tiltLimitSwitch);
-		DashboardManager.addTab(this);
-		nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
-		nte_tiltMotorFFEffort = DashboardManager.addTabDial(this, "TiltMotorFFEffort", -1, 1);
-		nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
-		nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
-				kMinAngleDegrees, kMaxAngleDegrees);
-		nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
-		nte_coast = DashboardManager.addTabBooleanBox(this, "tilt coast");
-		nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
+		// DashboardManager.addTab(this);
 	}
 
 	// TODO:fix

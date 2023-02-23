@@ -36,9 +36,18 @@ public class WristSubsystem extends SubsystemBase {
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
 
   // FFEffort = feedforward; PDEffort = proportional-derivative
-  private final GenericEntry nte_motorFFEffort, nte_motorPDEffort,
-      nte_totalEffort, nte_targetAngle, nte_rawAbsEncoder,
-      nte_actualAngle, nte_motorTemp, nte_coast, nte_bottomLimit, nte_topLimit;
+  private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "WristFFEffort", -1, 1);
+  private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "WristPDEffort", -1, 1);
+  private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "WristTotalEffort", -1, 1);
+  private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "WristTargetAngle",
+      WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
+  private final GenericEntry nte_rawAbsEncoder = DashboardManager.addTabDial(this, "RawAbsEnc", 0, 1);
+  private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "WristActualAngle",
+      WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
+  private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Wrist Coast");
+  private final GenericEntry nte_motorTemp = DashboardManager.addTabNumberBar(this, "WristMotorTemp", 0, 100);
+  private final GenericEntry nte_bottomLimit = DashboardManager.addTabBooleanBox(this, "BotLimit");
+  private final GenericEntry nte_topLimit = DashboardManager.addTabBooleanBox(this, "TopLimit");
 
   /** Creates a new Intake. */
   public WristSubsystem() {
@@ -46,21 +55,7 @@ public class WristSubsystem extends SubsystemBase {
     //ANTI-DROOPY
     m_motor.setIdleMode(IdleMode.kBrake);
     m_motor.setSmartCurrentLimit(kWristCurrLimit);
-    DashboardManager.addTab(this);
-  
-
-    nte_motorFFEffort = DashboardManager.addTabDial(this, "WristFFEffort", -1, 1);
-    nte_motorPDEffort = DashboardManager.addTabDial(this, "WristPDEffort", -1, 1);
-    nte_totalEffort = DashboardManager.addTabDial(this, "WristTotalEffort", -1, 1);
-    nte_targetAngle = DashboardManager.addTabNumberBar(this, "WristTargetAngle",
-        WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
-    nte_rawAbsEncoder = DashboardManager.addTabDial(this, "RawAbsEnc", 0, 1);
-    nte_actualAngle = DashboardManager.addTabNumberBar(this, "WristActualAngle",
-        WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
-    nte_coast = DashboardManager.addTabBooleanToggle(this, "Wrist Coast");
-    nte_motorTemp = DashboardManager.addTabNumberBar(this, "WristMotorTemp", 0, 100);
-    nte_bottomLimit = DashboardManager.addTabBooleanBox(this, "BotLimit");
-    nte_topLimit = DashboardManager.addTabBooleanBox(this, "TopLimit");
+    // DashboardManager.addTab(this);
   }
 
   // public boolean isIntakeOpen() {
