@@ -8,11 +8,14 @@ import static frc.robot.Constants.ElevatorK.kRightElevatorCANID;
 import static frc.robot.Constants.ElevatorK.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableInstance.NetworkMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -48,15 +51,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 		DashboardManager.addTab(this);
 
 		m_elevatorLeft.configFactoryDefault();
-        m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+        m_elevatorLeft.configAllSettings(CTREConfigs.Get().elevatorLeftConfig);
 
 		m_elevatorRight.configFactoryDefault();
-        m_elevatorRight.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+        m_elevatorRight.configAllSettings(CTREConfigs.Get().elevatorRightConfig);
 
-		m_elevatorRight.getSensorCollection().setIntegratedSensorPosition(0, 0);
-		m_elevatorLeft.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		m_elevatorRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+		m_elevatorRight.setSelectedSensorPosition(0);
+
+		m_elevatorRight.setNeutralMode(NeutralMode.Brake);
+		m_elevatorLeft.setNeutralMode(NeutralMode.Brake);
 
 		m_elevatorLeft.follow(m_elevatorRight);
+		m_elevatorLeft.setInverted(TalonFXInvertType.OpposeMaster);
 
 		nte_liftMotorFFEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
 		nte_liftMotorPDEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
@@ -66,6 +73,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_liftActualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
 			kMinHeightMeters, kMaxHeightMeters);
 		nte_coast = DashboardManager.addTabBooleanBox(this, "lift coast");
+		nte_coast.setBoolean(false);
 		nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 		DashboardManager.addTab(this);
 	}
@@ -88,10 +96,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public CommandBase teleOpElevatorCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			double dampener = 1;
-			m_elevatorRight.set(ControlMode.PercentOutput, powerVal*dampener);
+			m_elevatorRight.set(ControlMode.PercentOutput, powerVal);
 		});
 	}
+
+
 
 	private void i_setLiftTarget(double meters) {
 		// don't allow impossible heights
@@ -109,13 +118,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	private void setCoast(boolean coast) {
-		if (coast) {
-			m_elevatorLeft.setNeutralMode(NeutralMode.Coast);
-			m_elevatorRight.setNeutralMode(NeutralMode.Coast);
-		} else {
-			m_elevatorLeft.setNeutralMode(NeutralMode.Brake);
-			m_elevatorRight.setNeutralMode(NeutralMode.Brake);
-		}
+		m_elevatorLeft.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+		m_elevatorRight.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 	}
 
 	public CommandBase setLiftTarget(double meters) {
@@ -133,12 +137,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return run(() -> {
 			if (joystick == 0) {
 				while (getLiftActualHeight() > kMinHeightMeters) { 
-					m_elevatorLeft.set(ControlMode.Velocity, -0.2);
-					m_elevatorRight.follow(m_elevatorLeft);
+					m_elevatorRight.set(ControlMode.Velocity, -0.2);
 				}
 			}
-			m_elevatorLeft.set(ControlMode.Velocity, kMaxVelocity * joystick);
-			m_elevatorRight.follow(m_elevatorLeft);
+			m_elevatorRight.set(ControlMode.Velocity, kMaxVelocity * joystick);
 		});
 	}
 
@@ -192,6 +194,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		if(!m_lowerLimit.get()) {
+			m_elevatorRight.setSelectedSensorPosition(0);
+		}
 		updateShuffleBoard();
 		setCoast(nte_coast.get().getBoolean());
 	}

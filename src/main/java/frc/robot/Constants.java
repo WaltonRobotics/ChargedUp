@@ -201,10 +201,10 @@ public final class Constants {
          public static final int kElevatorPeakCurrentLimit = 10;
          public static final double kElevatorePeakCurrentDuration = 0.1;
          public static final boolean kElevatorEnableCurrentLimit = true;
-         public static final int kElevatorForwardLimit = 0;
+         public static final int kElevatorForwardLimit = 130000;
          public static final int kElevatorReverseLimit = 0;
-         public static final boolean kElevatorEnableForwardLimit = false;
-         public static final boolean kElevatorEnableReverseLimit = false;
+         public static final boolean kElevatorEnableForwardLimit = true;
+         public static final boolean kElevatorEnableReverseLimit = true;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
@@ -216,7 +216,7 @@ public final class Constants {
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kCarriageMassKg = Units.lbsToKilograms(50);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
-        public static final double kMaxHeightMeters = 130580;   //assuming 0 @ lowest
+        public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
 
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
