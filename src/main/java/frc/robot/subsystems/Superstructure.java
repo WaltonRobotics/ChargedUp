@@ -43,7 +43,7 @@ public class Superstructure extends SubsystemBase{
         double dynamicLimit = kMinAngleDegrees;
         if(m_elevator.getElevatorHeight() >= kSafeHeight){
         }
-        m_wrist.setWristMaxDegrees(dynamicLimit);
+        m_wrist.setWristMinDegrees(dynamicLimit);
 
     }
 }
