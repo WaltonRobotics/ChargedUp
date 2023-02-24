@@ -75,6 +75,7 @@ public class RobotContainer {
 
         manipulator.leftTrigger().onTrue(claw.release());
         initShuffleBoard();
+        manipulator.a().whileTrue(wrist.toFlat());
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
     }

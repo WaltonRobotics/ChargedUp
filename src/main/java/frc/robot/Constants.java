@@ -5,6 +5,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -284,8 +285,8 @@ public final class Constants {
         public static final double kP = 0.25;
         public static final double kD = 0.01;
         public static final double kS = 1.2;    // change values later
-        public static final double kMaxVelocity = 1.0;
-        public static final double kMaxAcceleration = 1.0; // change later
+        public static final double kMaxVelocity = 0.01;
+        public static final double kMaxAcceleration = 0.01; // change later
         public static final TrapezoidProfile.Constraints kConstraints =
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
         public static final double kZeroDegOffset = 5.5;
@@ -293,13 +294,14 @@ public final class Constants {
         public static final double kMaxAnglePosition = 0.2903;
         public static final double kMinAngleDegrees = (kMinAnglePosition * 360) + kZeroDegOffset;
         public static final double kMaxAngleDegrees = (kMaxAnglePosition * 360) + kZeroDegOffset;
-        public static final double kGearRatio = (80.0/1) * (16.0/22.0); // change later
+        public static final double kGearRatio = (80.0/1) / (16.0/22.0); // change later
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
+        public static final double KvRadPerSecPerVolt = (DCMotor.getNEO(1).KvRadPerSecPerVolt / kGearRatio) + 0; // 0 for later fudge factor
+        public static final double KvDegPerSecPerVolt = Units.radiansToDegrees(KvRadPerSecPerVolt);
 
 
-
-        // public static final ArmFeedforward kFeedforward = new ArmFeedforward(0.5);
+        public static final ArmFeedforward kFeedforward = new ArmFeedforward(0.2, 0.2, KvDegPerSecPerVolt);
         // public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(0.5, DCMotor.getNEO(1).KvRadPerSecPerVolt * kGearRatio);
     }
 

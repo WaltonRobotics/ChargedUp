@@ -8,6 +8,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -54,7 +55,7 @@ public class WristSubsystem extends SubsystemBase {
   public WristSubsystem() {
 
     //ANTI-DROOPY
-    m_motor.setIdleMode(IdleMode.kCoast);
+    m_motor.setIdleMode(IdleMode.kBrake);
     m_motor.setSmartCurrentLimit(kWristCurrLimit);
     // DashboardManager.addTab(this);
   }
@@ -129,6 +130,17 @@ public class WristSubsystem extends SubsystemBase {
     }
   }
 
+  private double getEffortForAngle(double angle) {
+    var zeroOffsetAngle = getDegrees() - 90;
+    var adjustedGoalAngle = angle - 90;
+
+    m_pdEffort = m_controller.calculate(Units.degreesToRadians(zeroOffsetAngle), Units.degreesToRadians(adjustedGoalAngle));
+    m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(zeroOffsetAngle), m_controller.getGoal().velocity);
+    m_totalEffort = m_ffEffort + m_pdEffort;
+
+    return m_pdEffort;
+  }
+
   public CommandBase teleopWristCmd(DoubleSupplier power){
     return run(() ->{
       var volts = power.getAsDouble() * m_motor.getBusVoltage();
@@ -152,8 +164,8 @@ public class WristSubsystem extends SubsystemBase {
 
   public CommandBase toFlat(){
     return run(()->{
-      m_controller.calculate(getDegrees(), 90);
-    });
+      setWristPower(getEffortForAngle(0), true);
+    }).finallyDo((intr) -> setWristPower(0, false));
   }
   public CommandBase toPosition(double speed, WristStates position) {
     switch (position) {
