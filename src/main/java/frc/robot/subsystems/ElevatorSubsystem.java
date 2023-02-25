@@ -17,7 +17,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
@@ -109,8 +111,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	private void setCoast(boolean coast) {
-		m_elevatorLeft.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
-		m_elevatorRight.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+		// m_elevatorLeft.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+		// m_elevatorRight.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 	}
 
 	public CommandBase setLiftTarget(double meters) {
@@ -124,47 +126,59 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	//TODO: Redo setmotot & gototarget methods
-	public CommandBase setMotors(double joystick) {
-		return run(() -> {
-			if (joystick == 0) {
-				while (getLiftActualHeight() > kMinHeightMeters) { 
-					m_elevatorRight.set(ControlMode.Velocity, -0.2);
-				}
-			}
-			m_elevatorRight.set(ControlMode.Velocity, kMaxVelocity * joystick);
+	// public CommandBase setMotors(double joystick) {
+	// 	return run(() -> {
+	// 		if (joystick == 0) {
+	// 			while (getLiftActualHeight() > kMinHeightMeters) { 
+	// 				m_elevatorRight.set(ControlMode.Velocity, -0.2);
+	// 			}
+	// 		}
+	// 		m_elevatorRight.set(ControlMode.Velocity, kMaxVelocity * joystick);
+	// 	});
+	// }
+
+	private double getEffortForTarget(double heightMeters) {
+		double pdEffort = m_elevatorController.calculate(falconToMeters(), heightMeters);
+
+		double ffEffort = 0;
+
+		if (m_elevatorController.getSetpoint().velocity != 0) {
+			ffEffort = kFeedforward.calculate(m_elevatorController.getSetpoint().velocity);
+		}
+
+		double totalEffort = ffEffort + pdEffort;
+
+		//setMotors(liftTotalEffort);
+
+		nte_liftMotorFFEffort.setDouble(ffEffort);
+		nte_liftMotorPDEffort.setDouble(pdEffort);
+		nte_liftMotorTotalEffort.setDouble(totalEffort);
+
+		return totalEffort;
+	}
+
+	public CommandBase toHeight(double heightMeters) {
+		return run(()-> {
+			m_elevatorRight.set(getEffortForTarget(heightMeters));
+		}).until(() -> m_elevatorController.atGoal())
+		.finallyDo((intr)-> {
+			m_elevatorRight.set(ControlMode.PercentOutput, 0);
 		});
 	}
 
-	private void goToTarget() {
-		double liftPDEffort = m_elevatorController.calculate(falconToMeters());
-
-		double liftFFEffort = 0;
-
-		if (m_elevatorController.getSetpoint().velocity != 0) {
-			liftFFEffort = kFeedforward.calculate(m_elevatorController.getSetpoint().velocity);
-		}
-
-		double liftTotalEffort = liftFFEffort + liftPDEffort;
-
-		setMotors(liftTotalEffort);
-
-		nte_liftMotorFFEffort.setDouble(liftFFEffort);
-		nte_liftMotorPDEffort.setDouble(liftPDEffort);
-		nte_liftMotorTotalEffort.setDouble(liftTotalEffort);
-	}
-
 	public CommandBase setState(ElevatorStates state) {
-		switch (state) {
-			case MAX:
-				setLiftTarget(kMaxHeightMeters);
-				return runOnce(() -> goToTarget());
-			case MID:
-				setLiftTarget(kMaxHeightMeters / 2);
-				return runOnce(() -> goToTarget());
-			default:
-				setLiftTarget(kMinHeightMeters);
-				return runOnce(() -> goToTarget());
-		}
+		// switch (state) {
+		// 	case MAX:
+		// 		setLiftTarget(kMaxHeightMeters);
+		// 		return runOnce(() -> getEffortForTarget());
+		// 	case MID:
+		// 		setLiftTarget(kMaxHeightMeters / 2);
+		// 		return runOnce(() -> getEffortForTarget());
+		// 	default:
+		// 		setLiftTarget(kMinHeightMeters);
+		// 		return runOnce(() -> getEffortForTarget());
+		// }
+		return Commands.none();
 	}
 
 	// public ElevatorState getState(double value) {

@@ -156,7 +156,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(39.375) ;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(41.375) ;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -217,11 +217,11 @@ public final class Constants {
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kElevatorP = 0.25;
         public static final double kElevatorD = 0.01;
-        public static final double kElevatorS = 1.2;
-        public static final double kElevatorV = kMotor.KvRadPerSecPerVolt / kGearRatio;
+        public static final double kS = 0.3;
+        public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final double kDrumRadiusMeters = Units.inchesToMeters(1.8);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
-        public static final double kCarriageMassKg = Units.lbsToKilograms(50);
+        public static final double kCarriageMassKg = Units.lbsToKilograms(40);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
         public static final double kSafeHeight = Units.inchesToMeters(0);   //where wrist is free to move
@@ -229,7 +229,7 @@ public final class Constants {
         public static final double kMaxVelocity = 1.0; // Meters Per Second
         public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
 
-        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kElevatorS, kCarriageMassKg, kElevatorV);
+        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kS, kV);
         public static final TrapezoidProfile.Constraints kConstraints =
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     }

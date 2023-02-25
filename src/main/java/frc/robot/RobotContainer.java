@@ -67,8 +67,8 @@ public class RobotContainer {
                         () -> true // openLoop
                 ));
         elevator.setDefaultCommand(elevator.teleOpElevatorCmd(() -> -manipulator.getLeftY()));
-        // tilt.setDefaultCommand(tilt.teleopTiltCmd(() -> manipulator.getRightY()));
-        wrist.setDefaultCommand(wrist.teleopWristCmd(()-> -manipulator.getRightY()));
+        tilt.setDefaultCommand(tilt.teleopTiltCmd(() -> manipulator.getRightY()));
+        wrist.setDefaultCommand(wrist.teleopWristCmd(()-> -manipulator.getLeftX()));
         
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
@@ -76,6 +76,7 @@ public class RobotContainer {
         manipulator.leftTrigger().onTrue(claw.release());
         initShuffleBoard();
         manipulator.a().whileTrue(wrist.toFlat());
+        manipulator.b().whileTrue(elevator.toHeight(0.3));
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
     }
