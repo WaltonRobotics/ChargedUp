@@ -40,12 +40,16 @@ public class Superstructure extends SubsystemBase{
         }
     }
 
+    /*
+     * Dynamically change the max (downwards) angle of the wrist
+     * in degrees based on height and tilt of the elevator
+     */
     public void limitWristDynamic(){
         double dynamicLimit = kMinAngleDegrees;
         if(m_elevator.getActualHeightRaw() >= kSafeHeight){
             dynamicLimit = kMaxAngleDegrees;
         }
-        m_wrist.setMinDegrees(dynamicLimit);
+        m_wrist.setMaxDegrees(dynamicLimit);
     }
 
     // aka autoScore

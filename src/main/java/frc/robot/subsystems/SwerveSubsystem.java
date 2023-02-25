@@ -593,6 +593,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPt));
 	}
 
+	/*
+	 * @return Cmd to drive to chosen, pre-specified pathpoint
+	 * @endPt The last pathpoint to end up at
+	 */
 	private CommandBase goToChosenPoint(PathPoint endPt) {
 		return run(() -> {
 			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(endPt);
@@ -605,10 +609,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	/*
 	 * Create a complete autonomous command group. This will reset the robot pose at
-	 * the begininng of
-	 * the first path, follow paths, trigger events during path following, and run
-	 * commands between
-	 * paths with stop events
+	 * the begininng of the first path, follow paths, trigger events during path following,
+	 *  and run commands between paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
 		// resetPose(getPose());
@@ -619,6 +621,12 @@ public class SwerveSubsystem extends SubsystemBase {
 		return autoBuilder.fullAuto(trajectoryList);
 	}
 
+	/*
+	 * @return Swerve trajectory cmd for auton pathing that sets
+	 * the initial pose and trajectory to the correct alliance color
+	 * before running the trajectory
+	 * @param trajectory The blue-side original trajectory to run
+	 */
 	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
 		var resetCmd = runOnce(() -> {
 			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
@@ -643,33 +651,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * Returns a double 0-1 based on angle from minimum balance degrees
-	 */
-	public double getInclinationRatio() {
-		double pitch = m_pigeon.getPitch();
-		double roll = m_pigeon.getRoll();
-		double yaw = getGyroYaw();
-		// inclination = atan(pitch/s(qrt(tan^2(roll)+tan^2(yaw))))
-		// rho = sqrt(pitch^2 + yaw^2))/roll
-		double inclination = Math.atan((Math.sqrt(Math.pow(Math.tan(pitch), 2) + Math.pow(Math.tan(yaw), 2))) / roll);
-
-		// double inclination2 = Math.toDegrees(pitch);
-		SmartDashboard.putNumber("ROBOTPITCH", pitch);
-		SmartDashboard.putNumber("ROBOTROLL", roll);
-		SmartDashboard.putNumber("ROBOTYAW", yaw);
-
-		// ratio of inclination to minimum degrees
-		if (inclination > kMinimumBalanceDegrees) {
-			return 0;
-			// return inclination/(34.55 - kMinimumBalanceDegrees); //34.55 is max angle
-			// possible (10.45 when down)
-		}
-		// else no rumble bc inclination within limits
-		return 0;
-	}
-
-	/*
-	 * Rotate to a robot-oriented degrees
+	 * @return Cmd to rotate to a robot-oriented degrees
+	 * @param degrees to rotate to
 	 */
 	public CommandBase rotateAboutPoint(double degrees) {
 		return run(() -> {
@@ -712,6 +695,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
+	/*
+	 * Autobalance the robot on charge station using gyro
+	 */
 	public CommandBase autoBalance() {
 		return run(() -> { 
 			// Uncomment the line below this to simulate the gyroscope axis with a controller joystick

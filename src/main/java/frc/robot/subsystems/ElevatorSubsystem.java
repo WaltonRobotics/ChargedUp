@@ -163,6 +163,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return totalEffort;
 	}
 
+	/*
+	 * @return Cmd to move the elevator to specified height w/ pd & ff
+	 * @param heightMeters The height to move to
+	 */
 	public CommandBase toHeight(double heightMeters) {
 		return run(()-> {
 			m_right.set(getEffortForTarget(heightMeters));
@@ -212,6 +216,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		setCoast(m_isCoast);
 	}
 
+	/*
+	 * Updates nte values
+	 */
 	public void updateShuffleBoard(){
 		nte_actualHeightRaw.setDouble(getActualHeightRaw());
 		nte_actualHeight.setDouble(getActualHeightMeters());
