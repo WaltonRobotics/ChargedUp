@@ -15,7 +15,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -36,7 +35,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
 
-	//TODO: Actually set these values
 	private double m_targetHeight = 0;
 	private double m_pdEffort = 0;
 	private double m_ffEffort = 0;
@@ -53,8 +51,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 
 	public ElevatorSubsystem() {
-		// DashboardManager.addTab(this);
-		
 		m_left.configFactoryDefault();
         m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 
@@ -62,7 +58,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-		// m_elevatorRight.setSelectedSensorPosition(0);
 
 		m_right.setNeutralMode(NeutralMode.Brake);
 		m_left.setNeutralMode(NeutralMode.Brake);
@@ -123,18 +118,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private double getTargetHeight() {
 		return Conversions.MetersToFalcon(m_targetHeight, kDrumCircumferenceMeters, kGearRatio);
 	}
-
-	//TODO: Redo setmotot & gototarget methods
-	// public CommandBase setMotors(double joystick) {
-	// 	return run(() -> {
-	// 		if (joystick == 0) {
-	// 			while (getLiftActualHeight() > kMinHeightMeters) { 
-	// 				m_elevatorRight.set(ControlMode.Velocity, -0.2);
-	// 			}
-	// 		}
-	// 		m_elevatorRight.set(ControlMode.Velocity, kMaxVelocity * joystick);
-	// 	});
-	// }
 
 	private double getEffortForTarget(double heightMeters) {
 		double pdEffort = m_controller.calculate(falconToMeters(), heightMeters);

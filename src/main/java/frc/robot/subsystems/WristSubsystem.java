@@ -13,7 +13,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.CTREModuleState;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
 
