@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagCamera;
@@ -270,10 +271,14 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_pigeon.setYaw(0);
 	}
 
+	private double getGyroYaw() {
+		return m_pigeon.getYaw() - 180;
+	}
+
 	// Side to side
 	public Rotation2d getHeading() {
-		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - m_pigeon.getYaw())
-				: Rotation2d.fromDegrees(m_pigeon.getYaw());
+		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - getGyroYaw())
+				: Rotation2d.fromDegrees(getGyroYaw());
 	}
 
 	public void resetPose(Pose2d pose) {
@@ -396,6 +401,150 @@ public class SwerveSubsystem extends SubsystemBase {
 		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
 	}
 
+	public Paths.ScoringOptions.ScoringOptionRed optimalScoringOptionRed() {
+		double roboPoseY = getPose().getY();
+		
+		if(roboPoseY < Paths.ReferencePoints.redCone1.getY()) {
+			return Paths.ScoringOptions.ScoringOptionRed.CONE_1;
+		}
+		else if(roboPoseY < Paths.ReferencePoints.redCube1.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCone1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.CUBE_1;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.CONE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.redCone2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCube1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.CONE_2;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.CUBE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.redCoopCone1.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCoopCone1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCone2.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_1;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.CONE_2;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.redCoopCube1.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCoopCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCoopCone1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.COOP_CUBE_1;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.redCoopCone2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCoopCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCoopCube1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_2;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.COOP_CUBE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.redCone3.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCoopCone2.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.CONE_3;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_2;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.redCube2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCone3.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.CUBE_2;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.CONE_3;
+			}
+		}
+		else {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.redCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.redCube2.getY())) {
+				return Paths.ScoringOptions.ScoringOptionRed.CONE_4;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionRed.CUBE_2;
+			}
+		}
+	}
+
+	public Paths.ScoringOptions.ScoringOptionBlue optimalScoringOptionBlue() {
+		double roboPoseY = getPose().getY();
+		
+		if(roboPoseY < Paths.ReferencePoints.blueCone1.getY()) {
+			return Paths.ScoringOptions.ScoringOptionBlue.CONE_1;
+		}
+		else if(roboPoseY < Paths.ReferencePoints.blueCube1.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCone1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_1;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.CONE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.blueCone2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCube1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.CONE_2;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.blueCoopCone1.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCoopCone1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCone2.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_1;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.CONE_2;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.blueCoopCube1.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCoopCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCoopCone1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CUBE_1;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.blueCoopCone2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCoopCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCoopCube1.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_2;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CUBE_1;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.blueCone3.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCoopCone2.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.CONE_3;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_2;
+			}
+		}
+		else if(roboPoseY < Paths.ReferencePoints.blueCube2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCone3.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_2;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.CONE_3;
+			}
+		}
+		else {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.blueCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.blueCube2.getY())) {
+				return Paths.ScoringOptions.ScoringOptionBlue.CONE_4;
+			}
+			else {
+				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_2;
+			}
+		}
+	}
+
 	private CommandBase goToChosenTag() {
 		return run(() -> {
 			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(AprilTagChooser.GetChosenAprilTag());
@@ -451,7 +600,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	public double getInclinationRatio() {
 		double pitch = m_pigeon.getPitch();
 		double roll = m_pigeon.getRoll();
-		double yaw = m_pigeon.getYaw();
+		double yaw = getGyroYaw();
 		// inclination = atan(pitch/s(qrt(tan^2(roll)+tan^2(yaw))))
 		// rho = sqrt(pitch^2 + yaw^2))/roll
 		double inclination = Math.atan((Math.sqrt(Math.pow(Math.tan(pitch), 2) + Math.pow(Math.tan(yaw), 2))) / roll);

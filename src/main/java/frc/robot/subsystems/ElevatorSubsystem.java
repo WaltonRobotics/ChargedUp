@@ -8,7 +8,9 @@ import static frc.robot.Constants.ElevatorK.kRightCANID;
 import static frc.robot.Constants.ElevatorK.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -16,6 +18,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
@@ -33,37 +36,39 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
 
+	//TODO: Actually set these values
 	private double m_targetHeight = 0;
+	private double m_pdEffort = 0;
+	private double m_ffEffort = 0;
 	private double m_totalEffort = 0;
 
-	private final GenericEntry nte_motorFFEffort, nte_motorPDEffort, 
-                             nte_motorTotalEffort, nte_targetHeight,
-														 nte_actualHeight, 
-														 nte_coast, nte_atLowerLimit;
+	private final GenericEntry nte_ffEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
+	private final GenericEntry nte_pdEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
+	private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "LiftMotorTotalEffort", -1, 1);
+	private final GenericEntry nte_targetHeight = DashboardManager.addTabNumberBar(this, "LiftTargetHeight",
+			kMinHeightMeters, kMaxHeightMeters);
+	private final GenericEntry nte_actualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
+		kMinHeightMeters, kMaxHeightMeters);
+	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "lift coast");
+	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 
 	public ElevatorSubsystem() {
-		DashboardManager.addTab(this);
-
+		// DashboardManager.addTab(this);
+		
 		m_left.configFactoryDefault();
-        m_left.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+        m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 
 		m_right.configFactoryDefault();
-        m_right.configAllSettings(CTREConfigs.Get().elevatorFXConfig);
+        m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
-		m_right.getSensorCollection().setIntegratedSensorPosition(0, 0);
-		m_left.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+		// m_elevatorRight.setSelectedSensorPosition(0);
+
+		m_right.setNeutralMode(NeutralMode.Brake);
+		m_left.setNeutralMode(NeutralMode.Brake);
 
 		m_left.follow(m_right);
-
-		nte_motorFFEffort = DashboardManager.addTabDial(this, "LiftMotorFFEffort", -1, 1);
-		nte_motorPDEffort = DashboardManager.addTabDial(this, "LiftMotorPDEffort", -1, 1);
-		nte_motorTotalEffort = DashboardManager.addTabDial(this, "LiftMotorTotalEffort", -1, 1);
-		nte_targetHeight = DashboardManager.addTabNumberBar(this, "LiftTargetHeight",
-				kMinHeightMeters, kMaxHeightMeters);
-		nte_actualHeight = DashboardManager.addTabNumberBar(this, "LiftActualHeight",
-			kMinHeightMeters, kMaxHeightMeters);
-		nte_coast = DashboardManager.addTabBooleanBox(this, "lift coast");
-		nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
+		m_left.setInverted(TalonFXInvertType.OpposeMaster);
 	}
 
 	public double getHeight() {
@@ -84,34 +89,29 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public CommandBase teleOpCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			double dampener = .5;
-			m_right.set(ControlMode.PercentOutput, powerVal*dampener);
+			m_right.set(ControlMode.PercentOutput, powerVal);
 		});
 	}
+
+
 
 	private void i_setTarget(double meters) {
 		// don't allow impossible heights
 		m_targetHeight = MathUtil.clamp(meters, kMinHeightMeters, kMaxHeightMeters);
 	}
 
-	//TODO: Convert to height
 	private double getActualHeight() {
-		// return falconToMeters();
-		return m_right.getSelectedSensorPosition();
+		return falconToMeters() + 0.019;
+		// return m_elevatorRight.getSelectedSensorPosition();
 	}
 
-	public double getTargetHeight(){
+	public double getTargetHeightRaw(){
 		return m_targetHeight;
 	}
 
 	private void setCoast(boolean coast) {
-		if (coast) {
-			m_left.setNeutralMode(NeutralMode.Coast);
-			m_right.setNeutralMode(NeutralMode.Coast);
-		} else {
-			m_left.setNeutralMode(NeutralMode.Brake);
-			m_right.setNeutralMode(NeutralMode.Brake);
-		}
+		// m_elevatorLeft.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+		// m_elevatorRight.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 	}
 
 	public CommandBase setTarget(double meters) {
@@ -120,78 +120,64 @@ public class ElevatorSubsystem extends SubsystemBase {
 		});
 	}
 
-	private double getTarget() {
+	private double getTargetHeight() {
 		return Conversions.MetersToFalcon(m_targetHeight, kDrumCircumferenceMeters, kGearRatio);
 	}
 
-	public CommandBase setMotors(double joystick) {
-		return run(() -> {
-			if (joystick == 0) {
-				while (getActualHeight() > kMinHeightMeters) { 
-					m_left.set(ControlMode.Velocity, -0.2);
-					m_right.follow(m_left);
-				}
-			}
-			m_left.set(ControlMode.Velocity, kMaxVelocity * joystick);
-			m_right.follow(m_left);
+	//TODO: Redo setmotot & gototarget methods
+	// public CommandBase setMotors(double joystick) {
+	// 	return run(() -> {
+	// 		if (joystick == 0) {
+	// 			while (getLiftActualHeight() > kMinHeightMeters) { 
+	// 				m_elevatorRight.set(ControlMode.Velocity, -0.2);
+	// 			}
+	// 		}
+	// 		m_elevatorRight.set(ControlMode.Velocity, kMaxVelocity * joystick);
+	// 	});
+	// }
+
+	private double getEffortForTarget(double heightMeters) {
+		double pdEffort = m_controller.calculate(falconToMeters(), heightMeters);
+
+		double ffEffort = 0;
+
+		if (m_controller.getSetpoint().velocity != 0) {
+			ffEffort = kFeedforward.calculate(m_controller.getSetpoint().velocity);
+		}
+
+		double totalEffort = ffEffort + pdEffort;
+
+		//setMotors(liftTotalEffort);
+
+		nte_ffEffort.setDouble(ffEffort);
+		nte_pdEffort.setDouble(pdEffort);
+		nte_totalEffort.setDouble(totalEffort);
+
+		return totalEffort;
+	}
+
+	public CommandBase toHeight(double heightMeters) {
+		return run(()-> {
+			m_right.set(getEffortForTarget(heightMeters));
+		}).until(() -> m_controller.atGoal())
+		.finallyDo((intr)-> {
+			m_right.set(ControlMode.PercentOutput, 0);
 		});
 	}
 
-	private void goToTarget() {
-		double PDEffort = m_controller.calculate(falconToMeters());
-
-		double FFEffort = 0;
-
-		if (m_controller.getSetpoint().velocity != 0) {
-			FFEffort = kFeedforward.calculate(m_controller.getSetpoint().velocity);
-		}
-
-		double totalEffort = FFEffort + PDEffort;
-
-		setMotors(totalEffort);
-
-		nte_motorFFEffort.setDouble(FFEffort);
-		nte_motorPDEffort.setDouble(PDEffort);
-		nte_motorTotalEffort.setDouble(totalEffort);
-	}
-
-	// private void zero() {
-	// 	zeroing = true;
-	// 	while (!atLowerPosition()) {
-	// 		setMotors(-0.2);
-	// 	}
-	// 	zeroed = true;
-	// 	zeroing = false;
-	// }
-
-	private boolean atLowerPosition() {
-		double height = getActualHeight();
-		return height <= kMinHeightMeters;
-	}
-
-	private boolean atUpperPosition() {
-		double height = getActualHeight();
-		return height >= kMaxHeightMeters;
-	}
-
-	// private void startZero() {
-	// 	if (!zeroed) {
-	// 		zero();
-	// 	}
-	// }
-
 	public CommandBase setState(ElevatorStates state) {
-		switch (state) {
-			case MAX:
-				setTarget(kMaxHeightMeters);
-				return runOnce(() -> goToTarget());
-			case MID:
-				setTarget(kMaxHeightMeters / 2);
-				return runOnce(() -> goToTarget());
-			default:
-				setTarget(kMinHeightMeters);
-				return runOnce(() -> goToTarget());
-		}
+		// switch (state) {
+		// 	case MAX:
+		// 		setLiftTarget(kMaxHeightMeters);
+		// 		return runOnce(() -> getEffortForTarget());
+		// 	case MID:
+		// 		setLiftTarget(kMaxHeightMeters / 2);
+		// 		return runOnce(() -> getEffortForTarget());
+		// 	default:
+		// 		setLiftTarget(kMinHeightMeters);
+		// 		return runOnce(() -> getEffortForTarget());
+		// }
+		return Commands.none();
 	}
 
 	// public ElevatorState getState(double value) {
@@ -212,19 +198,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		if(!m_lowerLimit.get()) {
+			m_right.setSelectedSensorPosition(0);
+		}
 		updateShuffleBoard();
 		setCoast(nte_coast.get().getBoolean());
 	}
 
 	public void updateShuffleBoard(){
-		SmartDashboard.putNumber("Elevator Ticks", getHeight());
 		nte_actualHeight.setDouble(getActualHeight());
-		//TODO: print out these values fr
-		nte_motorFFEffort.setDouble(0);
-		nte_motorPDEffort.setDouble(0);
-		nte_motorTotalEffort.setDouble(0);
-		nte_targetHeight.setDouble(getTargetHeight());
+		nte_ffEffort.setDouble(m_ffEffort);
+		nte_pdEffort.setDouble(m_pdEffort);
+		nte_totalEffort.setDouble(m_totalEffort);
+		nte_targetHeight.setDouble(getTargetHeightRaw());
 		nte_atLowerLimit.setBoolean(isAtLowerLimit());
-		SmartDashboard.putBoolean("elevator lift idle mode", nte_coast.get().getBoolean());
 	}
 }

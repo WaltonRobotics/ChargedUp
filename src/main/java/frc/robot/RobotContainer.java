@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
+import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.PathChooser;
 import frc.robot.vision.AprilTagChooser.AprilTagOption;
@@ -36,8 +37,16 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController manipulator = new CommandXboxController(1);
 
+    public final AprilTagCamera vision = new AprilTagCamera();
+    public final SwerveSubsystem swerve = new SwerveSubsystem(autonEventMap, vision);
+    public final TiltSubsystem tilt = new TiltSubsystem();
+    public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    public final WristSubsystem wrist = new WristSubsystem();
+    public final TheClaw claw = new TheClaw();
+    public final LEDSubsystem leds = new LEDSubsystem();
+
     /* Subsystems */
-    public final Superstructure godSubsystem = new Superstructure();
+    public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, claw);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -49,18 +58,18 @@ public class RobotContainer {
         mapAprilTagPoints();
         // addPathChoices();
         // addAprilTagChoices();
-        godSubsystem.getSwerve().setDefaultCommand(
-                godSubsystem.getSwerve().teleopDriveCmd(
+        swerve.setDefaultCommand(
+                swerve.teleopDriveCmd(
                         () -> -driver.getLeftY(),
                         () -> -driver.getLeftX(),
-                        () -> -driver.getRightX(),
+                        () -> driver.getRightX(),
                         driver.leftBumper()::getAsBoolean,
                         () -> true // openLoop
                 ));
-        godSubsystem.getElevator()
-                .setDefaultCommand(godSubsystem.getElevator().teleOpCmd(() -> manipulator.getLeftY()));
-        godSubsystem.getTilt().setDefaultCommand(godSubsystem.getTilt().teleopCmd(() -> manipulator.getRightY()));
-        initShuffleBoard();
+        elevator.setDefaultCommand(elevator.teleOpCmd(() -> -manipulator.getLeftY()));
+        tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
+        wrist.setDefaultCommand(wrist.teleopCmd(() -> -manipulator.getLeftX()));
+
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
     }
@@ -75,18 +84,26 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        driver.y().onTrue(new InstantCommand(() -> godSubsystem.getSwerve().zeroGyro()));
-        driver.a().whileTrue(new RunCommand(() -> godSubsystem.getSwerve().followAprilTag(2, 0, true)));
-        driver.rightBumper().onTrue(new InstantCommand(() -> godSubsystem.getSwerve().handleAutoBalance()));
+        driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        driver.a().whileTrue(new RunCommand(() -> swerve.followAprilTag(2, 0, true)));
+        driver.rightBumper().onTrue(new InstantCommand(() -> swerve.handleAutoBalance()));
         driver.leftTrigger()
-                .whileTrue(new InstantCommand(() -> godSubsystem.getSwerve().drive(-0.5, 0, 0, true, true)));
-        driver.x().onTrue(godSubsystem.getSwerve().rotateAboutPoint(90));
-        driver.b().onTrue(new InstantCommand(() -> godSubsystem.getSwerve().resetOdometryPose()));
-        driver.leftBumper().whileTrue(godSubsystem.getSwerve().autoScore());
+                .whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
+        driver.x().onTrue(swerve.rotateAboutPoint(90));
+        driver.b().onTrue(new InstantCommand(() -> swerve.resetOdometryPose()));
+        driver.leftBumper().whileTrue(swerve.autoScore());
 
-        manipulator.rightTrigger().onTrue(new InstantCommand(() -> godSubsystem.getClaw().toggle()));
-        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(0))); // cone
-        manipulator.povLeft().onTrue(new InstantCommand(() -> godSubsystem.getLEDs().handleLED(1))); // cube
+        // manipulator.rightTrigger().onTrue(new InstantCommand(() ->
+        // claw.toggleClaw()));
+        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); // cone
+        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
+        manipulator.rightTrigger()
+                .whileTrue(claw.autoGrab(true));
+
+        manipulator.leftTrigger().onTrue(claw.release());
+        initShuffleBoard();
+        manipulator.a().whileTrue(wrist.toFlat());
+        manipulator.b().whileTrue(elevator.toHeight(0.3));
     }
 
     public void initShuffleBoard() {
@@ -99,17 +116,17 @@ public class RobotContainer {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
         AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD,
-                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), oneMeter));
+                AutonFactory.WaltonPPAuto(swerve, oneMeter));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2,
-                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), threePiece2));
+                AutonFactory.WaltonPPAuto(swerve, threePiece2));
         AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE,
-                godSubsystem.getSwerve().getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
+                swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
         AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3,
-                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), threePiece3));
+                AutonFactory.WaltonPPAuto(swerve, threePiece3));
         AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE,
-                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), twoPieceBalance));
+                AutonFactory.WaltonPPAuto(swerve, twoPieceBalance));
         AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE,
-                AutonFactory.WaltonPPAuto(godSubsystem.getSwerve(), onePiece));
+                AutonFactory.WaltonPPAuto(swerve, onePiece));
     }
 
     public void mapTrajectories() {
@@ -131,12 +148,12 @@ public class RobotContainer {
     }
 
     public void mapAutonEvents() {
-        autonEventMap.put("testEvent", AutonFactory.TestEvent(godSubsystem.getSwerve()));
+        autonEventMap.put("testEvent", AutonFactory.TestEvent(swerve));
         // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
 
     public void manageBalanceRumble() {
-        driver.getHID().setRumble(RumbleType.kBothRumble, godSubsystem.getSwerve().getInclinationRatio());
+        driver.getHID().setRumble(RumbleType.kBothRumble, swerve.getInclinationRatio());
     }
 
     public void turnOffRumble() {

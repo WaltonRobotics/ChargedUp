@@ -15,17 +15,13 @@ public final class CTREConfigs {
 
     public static CTREConfigs Get() { return Container.INSTANCE; }
 
-    public final TalonFXConfiguration swerveAngleFXConfig;
-    public final TalonFXConfiguration swerveDriveFXConfig;
-    public final CANCoderConfiguration swerveCanCoderConfig;
-    public final TalonFXConfiguration elevatorFXConfig;
+    public final TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
+    public final TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
+    public final CANCoderConfiguration swerveCanCoderConfig = new CANCoderConfiguration();
+    public final TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+    public final TalonFXConfiguration leftConfig = new TalonFXConfiguration();
 
-    private CTREConfigs(){
-        swerveAngleFXConfig = new TalonFXConfiguration();
-        swerveDriveFXConfig = new TalonFXConfiguration();
-        swerveCanCoderConfig = new CANCoderConfiguration();
-        elevatorFXConfig = new TalonFXConfiguration();
-
+    private CTREConfigs() {
         /* Swerve Angle Motor Configurations */
         SupplyCurrentLimitConfiguration angleSupplyLimit = new SupplyCurrentLimitConfiguration(
             Constants.SwerveK.kAngleEnableCurrentLimit, 
@@ -67,14 +63,15 @@ public final class CTREConfigs {
             kPeakCurrentLimit,
             kPeakCurrentDuration);
 
-        elevatorFXConfig.slot0.kP = kP;
-        elevatorFXConfig.slot0.kD = kD;
-        elevatorFXConfig.reverseSoftLimitThreshold = kForwardLimit;
-        elevatorFXConfig.forwardSoftLimitThreshold = kReverseLimit;
-        elevatorFXConfig.forwardSoftLimitEnable = kEnableForwardLimit;
-        elevatorFXConfig.reverseSoftLimitEnable = kEnableReverseLimit;
+        rightConfig.slot0.kP = kP;
+        rightConfig.slot0.kD = kD;
+        rightConfig.reverseSoftLimitThreshold = kReverseLimit;
+        rightConfig.forwardSoftLimitThreshold = kForwardLimit;
+        rightConfig.forwardSoftLimitEnable = kEnableForwardLimit;
+        rightConfig.reverseSoftLimitEnable = kEnableReverseLimit;
 
         
-        elevatorFXConfig.supplyCurrLimit = elevatorSupplyLimit;
+        rightConfig.supplyCurrLimit = elevatorSupplyLimit;
+        leftConfig.supplyCurrLimit = elevatorSupplyLimit;
     }
 }

@@ -1,70 +1,49 @@
 package frc.robot.subsystems;
 
-import static frc.robot.auton.AutonFactory.autonEventMap;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
-import frc.robot.subsystems.TiltSubsystem.States;
-import frc.robot.vision.AprilTagCamera;
+import frc.robot.subsystems.TiltSubsystem.TiltStates;
+import frc.robot.subsystems.WristSubsystem.WristStates;
+import static frc.robot.Constants.WristK.*;
+import static frc.robot.Constants.ElevatorK.*;
 
 public class Superstructure extends SubsystemBase{
-    private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
-    private final AprilTagCamera m_apriltagCamera = new AprilTagCamera();
-    private final SwerveSubsystem m_swerve = new SwerveSubsystem(autonEventMap, m_apriltagCamera);
-    private final TheClaw m_claw = new TheClaw();
-    private final TiltSubsystem m_tilt = new TiltSubsystem();
-    private final WristSubsystem m_wrist = new WristSubsystem();
-    private final LEDSubsystem m_leds = new LEDSubsystem();
+    private final TiltSubsystem m_tilt;
+    private final ElevatorSubsystem m_elevator;
+    private final WristSubsystem m_wrist;
+    private final TheClaw m_claw;
 
-    public Superstructure(){
-    }   
+
+    public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
+        m_tilt = tilt;
+        m_elevator = elevator;
+        m_wrist = wrist;
+        m_claw = claw;
+    }
+
     
-    public SwerveSubsystem getSwerve(){
-        return m_swerve;
-    }
-    
 
-    public ElevatorSubsystem getElevator(){
-        return m_elevator;
-    }
-
-    public TiltSubsystem getTilt(){
-        return m_tilt;
-    }
-
-    public AprilTagCamera getCamera(){
-        return m_apriltagCamera;
-    }
-
-    public TheClaw getClaw(){
-        return m_claw;
-    }
-
-    public WristSubsystem getWrist(){
-        return m_wrist;
-    }
-
-    public LEDSubsystem getLEDs(){
-        return m_leds;
-    }
-
-    // public CommandBase AutoScore(){
-
-
-    // }
-    
     public enum ScoringStates {
-        MAX(ElevatorStates.MAX, States.MAX, States.MAX),
-        MID(ElevatorStates.MID, States.MID, States.MID),
-        MIN(ElevatorStates.MIN, States.MIN, States.MIN);
+        MAX(ElevatorStates.MAX, TiltStates.MAX, WristStates.MAX),
+        MID(ElevatorStates.MID, TiltStates.MID, WristStates.MID),
+        MIN(ElevatorStates.MIN, TiltStates.MIN, WristStates.MIN);
         
         public ElevatorStates elevatorHeight;
-        public States elevatorTilt;
-        public States wristTilt;
+        public TiltStates elevatorTilt;
+        public WristStates wristTilt;
 
-        private ScoringStates(ElevatorStates elevatorHeight, States elevatorTilt, States wristTilt) {
+        private ScoringStates(ElevatorStates elevatorHeight, TiltStates elevatorTilt, WristStates wristTilt) {
             this.elevatorHeight = elevatorHeight;
             this.elevatorTilt = elevatorTilt;
             this.wristTilt = wristTilt;
         }
+    }
+
+    public void limitWristDynamic(){
+        double dynamicLimit = kMinAngleDegrees;
+        if(m_elevator.getHeight() >= kSafeHeight){
+        }
+        m_wrist.setMinDegrees(dynamicLimit);
+
     }
 }

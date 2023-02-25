@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import static frc.robot.Constants.IndicatorLightsK.*;
 
 public class LEDSubsystem {
-    private final AddressableLED led = new AddressableLED(kLedPort);
+    private final AddressableLED led = new AddressableLED(kPort);
     private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(kNumLEDs);
 
     public LEDSubsystem() {
@@ -23,7 +23,7 @@ public class LEDSubsystem {
         return buffer;
     }
 
-    public AddressableLED getLED() {
+    public AddressableLED get() {
         return led;
     }
 
@@ -70,7 +70,7 @@ public class LEDSubsystem {
     }
 
     // cone is 0, cube is 1
-    public void handleLED(int gamePiece) {
+    public void handle(int gamePiece) {
         GamePieceMode piece = GamePieceMode.values()[gamePiece];
         switch (piece) {
             case CONE:

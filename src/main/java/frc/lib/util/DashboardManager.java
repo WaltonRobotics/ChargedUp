@@ -93,6 +93,14 @@ public class DashboardManager {
 		return addTabBooleanBox(subsystemBase.getName(), itemName);
 	}
 
+	public static GenericEntry addTabBooleanToggle(SubsystemBase subsystemBase, String itemName) {
+		return addTabBooleanToggle(subsystemBase.getName(), itemName);
+	}
+
+	private static GenericEntry addTabBooleanToggle(String tabName, String itemName) {
+		return addTabItem(tabName, itemName, false, BuiltInWidgets.kToggleButton);
+	}
+
 	public static GenericEntry addTabDial(SubsystemBase subsystemBase, String itemName, double min, double max) {
 		return addTabDial(subsystemBase.getName(), itemName, min, max);
 	}
