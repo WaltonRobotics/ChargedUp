@@ -186,8 +186,9 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public enum TiltStates {
 		MAX(kMaxAngleDegrees),
-		HIGH(30),
-		MID(kMaxAngleDegrees / 2),
+		TOP(kTopAngleDegrees),
+		MID(kMidAngleDegrees),
+		BOT(kBotAngleDegrees),
 		MIN(kMinAngleDegrees);
 
 		public final double angle;

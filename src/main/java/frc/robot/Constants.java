@@ -178,6 +178,9 @@ public final class Constants {
         public static final double kAbsMaxDegree = 30; //max possible from offset
 
         public static final double kMaxAngleDegrees = 30;
+        public static final double kTopAngleDegrees = 15; // TODO: CHANGE >:(
+        public static final double kMidAngleDegrees = 30; // TODO: CHANGE T-T
+        public static final double kBotAngleDegrees = 45; // TODO: CHANGE >:D
         public static final double kMinAngleDegrees = 0;
         public static final double kMaxVelocity = 20; //degrees per sec
         public static final double kMaxAcceleration = 40.0; //degrees per sec squared
@@ -234,6 +237,9 @@ public final class Constants {
         public static final double kMinHeightMeters = Units.inchesToMeters(0) + kElevatorHeightOffset;
         public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
         public static final double kSafeHeight = Units.inchesToMeters(0);   //where wrist is free to move
+        public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
+        public static final double kMidHeightMeters = Units.inchesToMeters(30); //TODO: change later :DDD
+        public static final double kBotHeightMeters = Units.inchesToMeters(0); // TODO: change later :DDD
 
         public static final double kMaxVelocity = 3; // Meters Per Second
         public static final double kMaxAcceleration = 3; // Meters Per Second Squared
@@ -302,6 +308,9 @@ public final class Constants {
         public static final double kMinAnglePosition = 0.01;
         public static final double kMaxAnglePosition = 0.2903;
         public static final double kMinAngleDegrees = -37.5;
+        public static final double kBotAngleDegrees = 90 - TiltK.kBotAngleDegrees; // TODO: CHECK IF RIGHT
+        public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
+        public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
         public static final double kMaxAngleDegrees = 82;
         public static final double kGearRatio = (80.0/1) / (16.0/22.0); // change later
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later

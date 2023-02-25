@@ -222,7 +222,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	public enum ElevatorStates {
 		MAX(kMaxHeightMeters),
-		MID(kMaxHeightMeters / 2),
+		TOP(kTopHeightMeters),
+		MID(kMidHeightMeters),
+		BOT(kBotHeightMeters),
 		MIN(kMinHeightMeters);
 
 		public double height;
