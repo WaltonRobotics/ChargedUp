@@ -42,7 +42,8 @@ public class Superstructure extends SubsystemBase{
 
     public void limitWristDynamic(){
         double dynamicLimit = kMinAngleDegrees;
-        if(m_elevator.getHeight() >= kSafeHeight){
+        if(m_elevator.getActualHeightRaw() >= kSafeHeight){
+            dynamicLimit = kMaxAngleDegrees;
         }
         m_wrist.setMinDegrees(dynamicLimit);
     }
@@ -56,7 +57,6 @@ public class Superstructure extends SubsystemBase{
      * @return command to autoscore
      */
     // public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces place, boolean isBumpy) {
-    //     // System.out.println("YAYAYAYAY :DDD");
     //     var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
     //     var autoScore = runOnce(() -> {
     //         if(isBumpy) {

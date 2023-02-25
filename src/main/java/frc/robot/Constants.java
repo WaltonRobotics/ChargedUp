@@ -225,6 +225,7 @@ public final class Constants {
         public static final double kCarriageMassKg = Units.lbsToKilograms(40);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
+        public static final double kElevatorHeightOffset =  0.019; //offset in meters
         public static final double kSafeHeight = Units.inchesToMeters(0);   //where wrist is free to move
 
         public static final double kMaxVelocity = 1.0; // Meters Per Second
