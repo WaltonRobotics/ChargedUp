@@ -153,7 +153,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// }
 		// // Combine for total effort
 		m_totalEffort = FFEffort + m_pdEffort;
-		setCoast(nte_coast.get().getBoolean());
+		setCoast(nte_coast.getBoolean(false));
 		updateShuffleBoard();
 	}
 

@@ -225,7 +225,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			m_right.setSelectedSensorPosition(0);
 		}
 		updateShuffleBoard();
-		setCoast(nte_coast.get().getBoolean());
+		setCoast(nte_coast.getBoolean(false));
 	}
 
 	/*
