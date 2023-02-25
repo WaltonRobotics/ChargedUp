@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.auton.Paths.ScoringPoints;
@@ -21,6 +22,29 @@ public class Superstructure extends SubsystemBase{
         m_elevator = elevator;
         m_wrist = wrist;
         m_claw = claw;
+    }
+
+        /*
+     * Dynamically change the max (downwards) angle of the wrist
+     * in degrees based on height and tilt of the elevator
+     */
+    public void limitWristDynamic(){
+        double dynamicLimit = kMinAngleDegrees;
+        if(m_elevator.getActualHeightRaw() >= kSafeHeight){
+            dynamicLimit = kMaxAngleDegrees;
+        }
+        m_wrist.setMaxDegrees(dynamicLimit);
+    }
+
+
+    /*
+     * As soon as elevator is tilted,
+     * change lower limit of elevator
+     */
+    public void limitElevatorDynamic(){
+        if(!m_tilt.atReverseLimit()){
+            m_elevator.setDynamicLimit(kMinHeightMeters + Units.inchesToMeters(2));
+        }
     }
 
     public CommandBase toState(ElevatorStates elevatorState, TiltStates tiltState, WristStates wristState) {
@@ -51,17 +75,7 @@ public class Superstructure extends SubsystemBase{
         }
     }
 
-    /*
-     * Dynamically change the max (downwards) angle of the wrist
-     * in degrees based on height and tilt of the elevator
-     */
-    public void limitWristDynamic(){
-        double dynamicLimit = kMinAngleDegrees;
-        if(m_elevator.getActualHeightRaw() >= kSafeHeight){
-            dynamicLimit = kMaxAngleDegrees;
-        }
-        m_wrist.setMaxDegrees(dynamicLimit);
-    }
+
 
     // aka autoScore
     // TODO: pass in swerve subsystem, it's not included in this class

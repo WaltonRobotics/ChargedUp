@@ -57,7 +57,7 @@ public class TiltSubsystem extends SubsystemBase {
 	/*
 	 * Return true if hitting max degree
 	 */
-	private boolean atForwardLimit() {
+	public boolean atForwardLimit() {
 		if (getDegrees() >= kAbsMaxDegree) {
 			return true;
 		}
@@ -67,7 +67,7 @@ public class TiltSubsystem extends SubsystemBase {
 	/*
 	 * Return true if at zero
 	 */
-	private boolean atReverseLimit() {
+	public boolean atReverseLimit() {
 		return !m_homeSwitch.get();
 	}
 

@@ -66,7 +66,7 @@ public class RobotContainer {
                 ));
         elevator.setDefaultCommand(elevator.teleOpCmd(() -> -manipulator.getLeftY()));
         tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
-        wrist.setDefaultCommand(wrist.toAngle(() -> manipulator.getHID().getPOV()));
+        wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
 
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
@@ -90,11 +90,11 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(swerve.autoScore());
         
         manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); // cone
-        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
+        manipulator.povRight().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
         manipulator.rightTrigger().onFalse(claw.release());
-        manipulator.a().whileTrue(wrist.toFlat());
+        // manipulator.a().whileTrue(wrist.toFlat());
         manipulator.b().whileTrue(elevator.toHeight(0.3));
     }
     public void mapAutonCommands() {

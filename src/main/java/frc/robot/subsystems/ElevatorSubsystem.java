@@ -36,6 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			kP, 0, kD, kConstraints);
 
 	private double m_targetHeight = 0;
+	private double m_dynamicLowLimit = kMinHeightMeters;
 	private double m_pdEffort = 0;
 	private double m_ffEffort = 0;
 	private double m_totalEffort = 0;
@@ -51,6 +52,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_actualHeightRaw = DashboardManager.addTabNumberBar(this, "Actual Height Raw",0,10000);
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
 	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
+	private final GenericEntry nte_pdVelo = DashboardManager.addTabDial(this, "PD Velo", -100, 100);
+
 
 	public ElevatorSubsystem() {
 		m_left.configFactoryDefault();
@@ -60,6 +63,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
+		m_right.enableVoltageCompensation(true);
 
 		m_right.setNeutralMode(NeutralMode.Brake);
 		m_left.setNeutralMode(NeutralMode.Brake);
@@ -76,9 +81,23 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 * @return Whether or not elevator is fully retracted
+	 *@return Whether or not elevator is at dynamic lower limit
 	 */
-	public boolean isAtLowerLimit() {
+	public boolean isAtDynamicLimit() {
+		return getActualHeightMeters() <= m_dynamicLowLimit;
+	}
+
+	/*
+	 * Set the new dynamic lower limit of elevator
+	 * @param heightLimit The new limit in meters
+	 */
+	public void setDynamicLimit(double heightLimit){
+		m_dynamicLowLimit = heightLimit;
+	}
+	/*
+	 * @return Whether or not elevator is fully retracted to sensor
+	 */
+	public boolean isFullyRetracted(){
 		return !m_lowerLimit.get();
 	}
 
@@ -150,8 +169,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		double ffEffort = 0;
 
-		if (m_controller.getSetpoint().velocity != 0) {
-			ffEffort = kFeedforward.calculate(m_controller.getSetpoint().velocity);
+		var pdSetpoint = m_controller.getSetpoint();
+		if (pdSetpoint.velocity != 0) {
+			ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
 		}
 
 		double totalEffort = ffEffort + pdEffort;
@@ -159,6 +179,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_ffEffort.setDouble(ffEffort);
 		nte_pdEffort.setDouble(pdEffort);
 		nte_totalEffort.setDouble(totalEffort);
+		nte_pdVelo.setDouble(pdSetpoint.velocity);
 
 		return totalEffort;
 	}
@@ -168,9 +189,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @param heightMeters The height to move to
 	 */
 	public CommandBase toHeight(double heightMeters) {
-		return run(()-> {
-			m_right.set(getEffortForTarget(heightMeters));
-		}).until(() -> m_controller.atGoal())
+		return runOnce(() -> {
+			m_controller.reset(getActualHeightMeters());
+		})
+		.andThen(run(()-> {
+			var height = MathUtil.clamp(heightMeters, m_dynamicLowLimit, kMaxHeightMeters);
+			var effort = MathUtil.clamp(getEffortForTarget(height), -4, 4);
+			m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
+		}))
+		.until(() -> m_controller.atGoal())
 		.finallyDo((intr)-> {
 			m_right.set(ControlMode.PercentOutput, 0);
 		});
@@ -211,6 +238,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_pdEffort.setDouble(m_pdEffort);
 		nte_totalEffort.setDouble(m_totalEffort);
 		nte_targetHeight.setDouble(getTargetHeightMeters());
-		nte_atLowerLimit.setBoolean(isAtLowerLimit());
+		nte_atLowerLimit.setBoolean(isAtDynamicLimit());
+		nte_coast.setBoolean(m_isCoast);
 	}
 }

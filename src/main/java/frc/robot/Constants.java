@@ -184,7 +184,7 @@ public final class Constants {
         public static final double kP = 0.25;
         public static final double kD = 0.01;
         public static final double kS = 1.2;
-        public static final double kGearRatio = 25.0 / 1.0;
+        public static final double kGearRatio = ((49.0 / 1.0) * (30.0/29.0));
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
@@ -203,6 +203,7 @@ public final class Constants {
         public static final int kLowerLimitSwitchPort = 5;
 
          /* Elevator Current Limiting */
+         public static final double kVoltageCompSaturationVolts = 12.0;
          public static final int kContinuousCurrentLimit = 10;
          public static final int kPeakCurrentLimit = 10;
          public static final double kPeakCurrentDuration = 0.1;
@@ -217,21 +218,21 @@ public final class Constants {
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kP = 0.25;
-        public static final double kD = 0.01;
+        public static final double kD = 0.0;
         public static final double kS = 0.3;
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final double kDrumRadiusMeters = Units.inchesToMeters(1.8);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
-        public static final double kCarriageMassKg = Units.lbsToKilograms(40);
-        public static final double kMinHeightMeters = Units.inchesToMeters(0);
-        public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
         public static final double kElevatorHeightOffset =  0.019; //offset in meters
+        public static final double kCarriageMassKg = Units.lbsToKilograms(40);
+        public static final double kMinHeightMeters = Units.inchesToMeters(0) + kElevatorHeightOffset;
+        public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
         public static final double kSafeHeight = Units.inchesToMeters(0);   //where wrist is free to move
 
-        public static final double kMaxVelocity = 1.0; // Meters Per Second
-        public static final double kMaxAcceleration = 1.0; // Meters Per Second Squared
+        public static final double kMaxVelocity = 0.3; // Radians(?) Per Second
+        public static final double kMaxAcceleration = 0.5; // Radians(?) Per Second Squared
 
-        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kS, kV);
+        public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kS, kV * kDrumRadiusMeters);
         public static final TrapezoidProfile.Constraints kConstraints =
             new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     }
