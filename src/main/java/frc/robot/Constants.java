@@ -203,16 +203,16 @@ public final class Constants {
         public static final int kLowerLimitSwitchPort = 5;
 
          /* Elevator Current Limiting */
-         public static final int kElevatorContinuousCurrentLimit = 10;
-         public static final int kElevatorPeakCurrentLimit = 10;
-         public static final double kElevatorePeakCurrentDuration = 0.1;
-         public static final boolean kElevatorEnableCurrentLimit = true;
-         public static final int kElevatorForwardLimit = 130000;
-         public static final int kElevatorReverseLimit = 0;
+         public static final int kContinuousCurrentLimit = 10;
+         public static final int kPeakCurrentLimit = 10;
+         public static final double kPeakCurrentDuration = 0.1;
+         public static final boolean kEnableCurrentLimit = true;
+         public static final int kForwardLimit = 130000;
+         public static final int kReverseLimit = 0;
          public static final double kMaxTiltMinTicks = 12259.0;
          public static final double kMaxTiltMinHeight = 0; //TODO: Convert above to height
-         public static final boolean kElevatorEnableForwardLimit = true;
-         public static final boolean kElevatorEnableReverseLimit = true;
+         public static final boolean kEnableForwardLimit = true;
+         public static final boolean kEnableReverseLimit = true;
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
@@ -317,7 +317,7 @@ public final class Constants {
     public static final class IndicatorLightsK{
         public static final String DB_TAB_NAME = "LEDSubsys";
 
-        public static final int kNum = 20; //TODO: change this
+        public static final int kNumLEDs = 20; //TODO: change this
         public static final int kPort = 0; //TODO: change this
     }
 }

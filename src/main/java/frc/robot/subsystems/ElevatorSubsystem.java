@@ -53,8 +53,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 
 	public ElevatorSubsystem() {
-		// DashboardManager.addTab(this);
-		
 		m_left.configFactoryDefault();
         m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 

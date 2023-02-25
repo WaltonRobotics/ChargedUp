@@ -712,6 +712,34 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
+	public CommandBase autoBalance() {
+		return run(() -> { 
+			// Uncomment the line below this to simulate the gyroscope axis with a controller joystick
+			// Double currentAngle = -1 * Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
+			double currentAngle = m_pigeon.getPitch();
+		
+			double error = 0 - currentAngle;
+			double power = -Math.min(Constants.SwerveK.kDriveKP * error, 1);
+		
+			// // Our robot needed an extra push to drive up in reverse, probably due to weight imbalances
+			// if (power < 0) {
+			//   power *= Constants.BACKWARDS_BALANCING_EXTRA_POWER_MULTIPLIER;
+			// }
+		
+			// Limit the max power
+			if (Math.abs(power) > 0.4) {
+			  power = Math.copySign(0.4, power);
+			}
+		
+			drive(power, 0, new Rotation2d(0), true);
+			
+			// Debugging Print Statments
+			System.out.println("Current Angle: " + currentAngle);
+			System.out.println("Error " + error);
+			System.out.println("Drive Power: " + power);
+		});
+	}
+
 	@Override
 	public void periodic() {
 		for (var module : m_modules) {

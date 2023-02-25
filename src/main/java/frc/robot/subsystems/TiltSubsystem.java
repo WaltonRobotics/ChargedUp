@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
@@ -157,7 +156,7 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_coast.setBoolean(m_isCoast);
 	}
 
-	public enum States {
+	public enum TiltStates {
 		MAX(kMaxAngleDegrees),
 		HIGH(30),
 		MID(kMaxAngleDegrees / 2),
@@ -165,7 +164,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 		public final double angle;
 
-		private States(double angle) {
+		private TiltStates(double angle) {
 			this.angle = angle;
 		}
 	}

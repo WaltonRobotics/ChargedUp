@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
-import frc.robot.subsystems.TiltSubsystem.States;
+import frc.robot.subsystems.TiltSubsystem.TiltStates;
 import frc.robot.subsystems.WristSubsystem.WristStates;
 import static frc.robot.Constants.WristK.*;
 import static frc.robot.Constants.ElevatorK.*;
@@ -25,15 +25,15 @@ public class Superstructure extends SubsystemBase{
     
 
     public enum ScoringStates {
-        MAX(ElevatorStates.MAX, States.MAX, WristStates.MAX),
-        MID(ElevatorStates.MID, States.MID, WristStates.MID),
-        MIN(ElevatorStates.MIN, States.MIN, WristStates.MIN);
+        MAX(ElevatorStates.MAX, TiltStates.MAX, WristStates.MAX),
+        MID(ElevatorStates.MID, TiltStates.MID, WristStates.MID),
+        MIN(ElevatorStates.MIN, TiltStates.MIN, WristStates.MIN);
         
         public ElevatorStates elevatorHeight;
-        public States elevatorTilt;
+        public TiltStates elevatorTilt;
         public WristStates wristTilt;
 
-        private ScoringStates(ElevatorStates elevatorHeight, States elevatorTilt, WristStates wristTilt) {
+        private ScoringStates(ElevatorStates elevatorHeight, TiltStates elevatorTilt, WristStates wristTilt) {
             this.elevatorHeight = elevatorHeight;
             this.elevatorTilt = elevatorTilt;
             this.wristTilt = wristTilt;

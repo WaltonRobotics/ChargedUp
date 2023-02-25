@@ -6,10 +6,10 @@ import static frc.robot.Constants.IndicatorLightsK.*;
 
 public class LEDSubsystem {
     private final AddressableLED led = new AddressableLED(kPort);
-    private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(kNum);
+    private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(kNumLEDs);
 
     public LEDSubsystem() {
-        led.setLength(kNum);
+        led.setLength(kNumLEDs);
         led.setData(buffer);
         led.start();
     }

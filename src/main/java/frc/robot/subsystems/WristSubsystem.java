@@ -13,7 +13,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.CTREModuleState;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
 
@@ -53,9 +52,7 @@ public class WristSubsystem extends SubsystemBase {
 
   /** Creates a new Intake. */
   public WristSubsystem() {
-
-    //ANTI-DROOPY
-    m_motor.setIdleMode(IdleMode.kBrake);
+    m_motor.setIdleMode(IdleMode.kBrake); //ANTI-DROOPY
     m_motor.setInverted(true);
     m_motor.setSmartCurrentLimit(kCurrLimit);
     m_absEncoder.setInverted(false);
