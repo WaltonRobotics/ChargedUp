@@ -24,9 +24,9 @@ import static frc.robot.Constants.*;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
-  private final CANSparkMax m_motor = new CANSparkMax(kWristCANID, MotorType.kBrushless); // change device number
+  private final CANSparkMax m_motor = new CANSparkMax(kCANID, MotorType.kBrushless); // change device number
                                                                                                // later
-  private final SparkMaxAbsoluteEncoder m_absoluteEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
+  private final SparkMaxAbsoluteEncoder m_absEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
   private double m_targetAngle = 0;
   private double m_ffEffort = 0;
   private double m_pdEffort = 0;
@@ -51,16 +51,15 @@ public class WristSubsystem extends SubsystemBase {
   private final GenericEntry nte_topLimit = DashboardManager.addTabBooleanBox(this, "TopLimit");
   private final GenericEntry nte_stickVoltage = DashboardManager.addTabDial(this, "Stick Voltage", -15, 15);
 
-
   /** Creates a new Intake. */
   public WristSubsystem() {
 
     //ANTI-DROOPY
     m_motor.setIdleMode(IdleMode.kBrake);
     m_motor.setInverted(true);
-    m_motor.setSmartCurrentLimit(kWristCurrLimit);
-    m_absoluteEncoder.setInverted(false);
-    m_absoluteEncoder.setPositionConversionFactor(360);
+    m_motor.setSmartCurrentLimit(kCurrLimit);
+    m_absEncoder.setInverted(false);
+    m_absEncoder.setPositionConversionFactor(360);
     m_motor.burnFlash();
     // DashboardManager.addTab(this);
   }
@@ -82,7 +81,7 @@ public class WristSubsystem extends SubsystemBase {
 	}
 
   private double getDegrees() {
-    var rawRads = Units.degreesToRadians(m_absoluteEncoder.getPosition());
+    var rawRads = Units.degreesToRadians(m_absEncoder.getPosition());
     return Units.radiansToDegrees(MathUtil.angleModulus(rawRads));
   }
 
@@ -99,11 +98,11 @@ public class WristSubsystem extends SubsystemBase {
   //   }
   // }
 
-  public double getWristMinDegrees(){
+  public double getMinDegrees(){
     return m_minDegrees;
   }
 
-  public void setWristMinDegrees(double degrees){
+  public void setMinDegrees(double degrees){
     m_minDegrees = MathUtil.clamp(degrees, kMaxAngleDegrees, kMinAngleDegrees);
   } 
   private boolean atBottomLimit() {
@@ -114,16 +113,16 @@ public class WristSubsystem extends SubsystemBase {
     return getDegrees() >= kMaxAngleDegrees;
   }
 
-  private void setWristPower(double power, boolean voltage) {
+  private void setPower(double power, boolean voltage) {
     double output = power;
     double dir = Math.signum(power);
 
     if(atBottomLimit() && dir == -1) {
       output = 0;
-      System.out.println("Wrist - BotLimit!!!");
+      System.out.println("BotLimit!!!");
     } else if(atTopLimit() && dir == 1) {
       output = 0;
-      System.out.println("Wrist - TopLimit!!!");
+      System.out.println("TopLimit!!!");
     }
     if (voltage) {
       m_motor.setVoltage(output * 12);
@@ -141,12 +140,12 @@ public class WristSubsystem extends SubsystemBase {
     return m_pdEffort;
   }
 
-  public CommandBase teleopWristCmd(DoubleSupplier power){
+  public CommandBase teleopCmd(DoubleSupplier power){
     return run(() ->{
       var volts = power.getAsDouble() * m_motor.getBusVoltage();
       nte_stickVoltage.setDouble(volts);
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-      setWristPower(powerVal, true);
+      setPower(powerVal, true);
     });
   }
 
@@ -164,8 +163,8 @@ public class WristSubsystem extends SubsystemBase {
 
   public CommandBase toFlat(){
     return run(()->{
-      setWristPower(getEffortForAngle(0), true);
-    }).finallyDo((intr) -> setWristPower(0, false));
+      setPower(getEffortForAngle(0), true);
+    }).finallyDo((intr) -> setPower(0, false));
   }
   public CommandBase toPosition(double speed, WristStates position) {
     switch (position) {
@@ -199,7 +198,7 @@ public class WristSubsystem extends SubsystemBase {
     nte_motorFFEffort.setDouble(m_ffEffort);
     nte_motorPDEffort.setDouble(m_pdEffort);
     nte_actualAngle.setDouble(getDegrees());
-    nte_rawAbsEncoder.setDouble(m_absoluteEncoder.getPosition());
+    nte_rawAbsEncoder.setDouble(m_absEncoder.getPosition());
     nte_targetAngle.setDouble(m_targetAngle);
     nte_motorTemp.setDouble(m_motor.getMotorTemperature());
     nte_bottomLimit.setBoolean(atBottomLimit());

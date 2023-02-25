@@ -62,21 +62,14 @@ public class RobotContainer {
                 swerve.teleopDriveCmd(
                         () -> -driver.getLeftY(),
                         () -> -driver.getLeftX(),
-                        () ->  driver.getRightX(),
+                        () -> driver.getRightX(),
                         driver.leftBumper()::getAsBoolean,
                         () -> true // openLoop
                 ));
-        elevator.setDefaultCommand(elevator.teleOpElevatorCmd(() -> -manipulator.getLeftY()));
-        tilt.setDefaultCommand(tilt.teleopTiltCmd(() -> manipulator.getRightY()));
-        wrist.setDefaultCommand(wrist.teleopWristCmd(()-> -manipulator.getLeftX()));
-        
-        manipulator.rightTrigger()
-                .whileTrue(claw.autoGrab(true));
+        elevator.setDefaultCommand(elevator.teleOpCmd(() -> -manipulator.getLeftY()));
+        tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
+        wrist.setDefaultCommand(wrist.teleopCmd(() -> -manipulator.getLeftX()));
 
-        manipulator.leftTrigger().onTrue(claw.release());
-        initShuffleBoard();
-        manipulator.a().whileTrue(wrist.toFlat());
-        manipulator.b().whileTrue(elevator.toHeight(0.3));
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
     }
@@ -100,9 +93,17 @@ public class RobotContainer {
         driver.b().onTrue(new InstantCommand(() -> swerve.resetOdometryPose()));
         driver.leftBumper().whileTrue(swerve.autoScore());
 
-        // manipulator.rightTrigger().onTrue(new InstantCommand(() -> claw.toggleClaw()));
-        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handleLED(0))); // cone
-        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handleLED(1))); // cube
+        // manipulator.rightTrigger().onTrue(new InstantCommand(() ->
+        // claw.toggleClaw()));
+        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); // cone
+        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
+        manipulator.rightTrigger()
+                .whileTrue(claw.autoGrab(true));
+
+        manipulator.leftTrigger().onTrue(claw.release());
+        initShuffleBoard();
+        manipulator.a().whileTrue(wrist.toFlat());
+        manipulator.b().whileTrue(elevator.toHeight(0.3));
     }
 
     public void initShuffleBoard() {

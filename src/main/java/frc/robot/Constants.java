@@ -167,11 +167,12 @@ public final class Constants {
         public static final String DB_TAB_NAME = "TiltSubsys";
         //199.83 start tilt
         
-        public static final int kTiltMotorCANID = 13;
-        public static final int kTiltQuadratureEncoderA = 6;
-        public static final int kTiltQuadratureEncoderB = 7;
-        public static final int kTiltAbsoluteEncoderPort = 8;
-        public static final int kTiltMotorCurrLimit = 20;
+        public static final int kMotorCANID = 13;
+        public static final int kQuadEncoderA = 6;
+        public static final int kQuadEncoderB = 7;
+        public static final int kAbsoluteEncoderPort = 8;
+        public static final int kMotorCurrLimit = 20;
+        public static final int kHomeSwitchPort = 9;
 
         public static final double kAbsZeroDegreeOffset = 199.8;    //where zero is at
         public static final double kAbsMaxDegree = 33; //max possible from offset
@@ -195,8 +196,8 @@ public final class Constants {
         public static final String DB_TAB_NAME = "LiftSubsys";
 
         // max height 130580
-        public static final int kLeftElevatorCANID = 11;
-        public static final int kRightElevatorCANID = 12;
+        public static final int kLeftCANID = 11;
+        public static final int kRightCANID = 12;
         public static final int kLowerLimitSwitch = 5;
 
         public static final int kLowerLimitSwitchPort = 5;
@@ -215,8 +216,8 @@ public final class Constants {
 
         public static final double kGearRatio = 25.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
-        public static final double kElevatorP = 0.25;
-        public static final double kElevatorD = 0.01;
+        public static final double kP = 0.25;
+        public static final double kD = 0.01;
         public static final double kS = 0.3;
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final double kDrumRadiusMeters = Units.inchesToMeters(1.8);
@@ -278,9 +279,9 @@ public final class Constants {
         public static final String DB_TAB_NAME = "WristSubsys";
 
         //lower: .527
-        public static final int kWristCANID = 21;
+        public static final int kCANID = 21;
 
-        public static final int kWristCurrLimit = 35;
+        public static final int kCurrLimit = 35;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later
         public static final double kP = 0.6;
         public static final double kD = 0.05;
@@ -307,7 +308,7 @@ public final class Constants {
     public static final class TheClawK{
         public static final String DB_TAB_NAME = "ClawSubsys";
 
-        public static final int kTheClawID = 0; 
+        public static final int kTheID = 0; 
         public static final int kLeftEyeID = 0;
         public static final int kRightEyeID = 1;
     }
@@ -315,7 +316,7 @@ public final class Constants {
     public static final class IndicatorLightsK{
         public static final String DB_TAB_NAME = "LEDSubsys";
 
-        public static final int kNumLEDs = 20; //TODO: change this
-        public static final int kLedPort = 0; //TODO: change this
+        public static final int kNum = 20; //TODO: change this
+        public static final int kPort = 0; //TODO: change this
     }
 }

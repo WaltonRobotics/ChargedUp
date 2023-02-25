@@ -18,8 +18,8 @@ public final class CTREConfigs {
     public final TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
     public final TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
     public final CANCoderConfiguration swerveCanCoderConfig = new CANCoderConfiguration();
-    public final TalonFXConfiguration elevatorRightConfig = new TalonFXConfiguration();
-    public final TalonFXConfiguration elevatorLeftConfig = new TalonFXConfiguration();
+    public final TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+    public final TalonFXConfiguration leftConfig = new TalonFXConfiguration();
 
     private CTREConfigs() {
         /* Swerve Angle Motor Configurations */
@@ -63,15 +63,15 @@ public final class CTREConfigs {
             kElevatorPeakCurrentLimit,
             kElevatorePeakCurrentDuration);
 
-        elevatorRightConfig.slot0.kP = kElevatorP;
-        elevatorRightConfig.slot0.kD = kElevatorD;
-        elevatorRightConfig.reverseSoftLimitThreshold = kElevatorReverseLimit;
-        elevatorRightConfig.forwardSoftLimitThreshold = kElevatorForwardLimit;
-        elevatorRightConfig.forwardSoftLimitEnable = kElevatorEnableForwardLimit;
-        elevatorRightConfig.reverseSoftLimitEnable = kElevatorEnableReverseLimit;
+        rightConfig.slot0.kP = kP;
+        rightConfig.slot0.kD = kD;
+        rightConfig.reverseSoftLimitThreshold = kElevatorReverseLimit;
+        rightConfig.forwardSoftLimitThreshold = kElevatorForwardLimit;
+        rightConfig.forwardSoftLimitEnable = kElevatorEnableForwardLimit;
+        rightConfig.reverseSoftLimitEnable = kElevatorEnableReverseLimit;
 
         
-        elevatorRightConfig.supplyCurrLimit = elevatorSupplyLimit;
-        elevatorLeftConfig.supplyCurrLimit = elevatorSupplyLimit;
+        rightConfig.supplyCurrLimit = elevatorSupplyLimit;
+        leftConfig.supplyCurrLimit = elevatorSupplyLimit;
     }
 }

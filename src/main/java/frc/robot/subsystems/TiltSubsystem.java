@@ -14,45 +14,45 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
-import static frc.robot.Constants.TiltK.kTiltMotorCANID;
+import static frc.robot.Constants.TiltK.kMotorCANID;
 import static frc.robot.Constants.*;
 import java.util.function.DoubleSupplier;
 
 //TODO: Fix forwardlimit, fix coast,
 public class TiltSubsystem extends SubsystemBase {
-	private final CANSparkMax m_tiltMotor = new CANSparkMax(kTiltMotorCANID, MotorType.kBrushless);
-	private final DutyCycleEncoder m_tiltAbsoluteEncoder = new DutyCycleEncoder(kTiltAbsoluteEncoderPort);
-	private final Encoder m_tiltQuadratureEncoder = new Encoder(6, 7);
-	private final DigitalInput m_homeSwitch = new DigitalInput(9);
+	private final CANSparkMax m_motor = new CANSparkMax(kMotorCANID, MotorType.kBrushless);
+	private final DutyCycleEncoder m_absoluteEncoder = new DutyCycleEncoder(kAbsoluteEncoderPort);
+	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
+	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
 
-	private final PIDController m_tiltController = new PIDController(kP, 0, kD);
+	private final PIDController m_controller = new PIDController(kP, 0, kD);
 	private double m_targetAngle = 0;
 	private double m_ffEffort = 0;
 	private double m_pdEffort = 0;
 	private double m_totalEffort = 0;
 	private boolean m_isCoast = false;
 
-	private final GenericEntry nte_tiltMotorPDEffort = DashboardManager.addTabDial(this, "TiltMotorPDEffort", -1, 1);
-	private final GenericEntry nte_tiltMotorFFEffort = DashboardManager.addTabDial(this, "TiltMotorFFEffort", -1, 1);
-	private final GenericEntry nte_tiltMotorTotalEffort = DashboardManager.addTabDial(this, "TiltMotorTotalEffort", -1, 1);
-	private final GenericEntry nte_tiltTargetAngle = DashboardManager.addTabNumberBar(this, "TiltTargetAngle",
+	private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "MotorPDEffort", -1, 1);
+	private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "TMotorFFEffort", -1, 1);
+	private final GenericEntry nte_motorTotalEffort = DashboardManager.addTabDial(this, "MotorTotalEffort", -1, 1);
+	private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "TargetAngle",
 			kMinAngleDegrees, kMaxAngleDegrees);
-	private final GenericEntry nte_tiltActualAngle = DashboardManager.addTabNumberBar(this, "TiltActualAngle", 0, 45);
-	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "tilt coast");
+	private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 45);
+	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
 	private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	public TiltSubsystem() {
-		m_tiltAbsoluteEncoder.reset();
-		m_tiltMotor.setIdleMode(IdleMode.kBrake);
-		m_tiltMotor.setSmartCurrentLimit(kTiltMotorCurrLimit);
+		m_absoluteEncoder.reset();
+		m_motor.setIdleMode(IdleMode.kBrake);
+		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
 
 		// reset relative encoder on switch activation
-		m_tiltQuadratureEncoder.setIndexSource(m_homeSwitch);
+		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 	}
 
-	public CommandBase setTiltTarget(double degrees) {
-		return runOnce(() -> i_setTiltTarget(degrees));
+	public CommandBase setTarget(double degrees) {
+		return runOnce(() -> i_setTarget(degrees));
 	}
 
 	/*
@@ -72,23 +72,23 @@ public class TiltSubsystem extends SubsystemBase {
 		return !m_homeSwitch.get();
 	}
 
-	private void i_setTiltTarget(double degrees) {
+	private void i_setTarget(double degrees) {
 		m_targetAngle = MathUtil.clamp(degrees, 0, 45);
 	}
 
 	private double getDegrees() {
-		var rawDeg = (m_tiltAbsoluteEncoder.get() * 360) - kAbsZeroDegreeOffset;
+		var rawDeg = (m_absoluteEncoder.get() * 360) - kAbsZeroDegreeOffset;
 		return MathUtil.clamp(rawDeg, 0, 45); // get returns rotations, so rotations * (360 degrees / 1 rotation)
 	}
 
-	public CommandBase teleopTiltCmd(DoubleSupplier power) {
+	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			setTiltPower(powerVal);
+			setPower(powerVal);
 		});
 	}
 
-	public void setTiltPower(double power) {
+	public void setPower(double power) {
 		double output;
 		double dir = Math.signum(power);
 		double powerVal = MathUtil.applyDeadband(power, stickDeadband);
@@ -97,7 +97,7 @@ public class TiltSubsystem extends SubsystemBase {
 		} else {
 			output = powerVal;
 		}
-		m_tiltMotor.set(output);
+		m_motor.set(output);
 	}
 
 	public CommandBase toAngle(DoubleSupplier angle) {
@@ -107,19 +107,19 @@ public class TiltSubsystem extends SubsystemBase {
 			// m_wristTargetAngle);
 			m_totalEffort = m_ffEffort + m_pdEffort;
 
-			setTiltPower(m_totalEffort);
+			setPower(m_totalEffort);
 		})
-				.until(m_tiltController::atSetpoint)
+				.until(m_controller::atSetpoint)
 				.withName("ToAngle");
 	}
 
 	private void setCoast(boolean coast) {
 		if (coast) {
 			m_isCoast = true;
-			m_tiltMotor.setIdleMode(IdleMode.kCoast);
+			m_motor.setIdleMode(IdleMode.kCoast);
 		} else {
 			m_isCoast = false;
-			m_tiltMotor.setIdleMode(IdleMode.kBrake);
+			m_motor.setIdleMode(IdleMode.kBrake);
 		}
 	}
 
@@ -132,35 +132,32 @@ public class TiltSubsystem extends SubsystemBase {
 		// m_tiltController.setSetpoint(m_tiltTargetAngle);
 
 		// // Calculate profile setpoint and effort
-		m_pdEffort = m_tiltController.calculate(0);// TODO: conversion
+		m_pdEffort = m_controller.calculate(0);// TODO: conversion
 
 		// // Calculate FF effort from profile setpoint
-		double tiltFFEffort = 0; // TODO:Add FF
+		double FFEffort = 0; // TODO:Add FF
 		// if (m_tiltController.getSetpoint() != 0) {
-		tiltFFEffort = kFeedforward.calculate(m_tiltController.getSetpoint());
+		FFEffort = kFeedforward.calculate(m_controller.getSetpoint());
 		// }
 		// // Combine for total effort
-		m_totalEffort = tiltFFEffort + m_pdEffort;
+		m_totalEffort = FFEffort + m_pdEffort;
 		setCoast(nte_coast.get().getBoolean());
 		updateShuffleBoard();
 	}
 
 	public void updateShuffleBoard() {
 		// Push telemetry
-		nte_tiltActualAngle.setDouble(getDegrees());
-		nte_tiltMotorFFEffort.setDouble(m_ffEffort);
-		nte_tiltMotorPDEffort.setDouble(m_pdEffort);
-		nte_tiltMotorTotalEffort.setDouble(m_totalEffort);
-		nte_tiltTargetAngle.setDouble(m_targetAngle);
+		nte_actualAngle.setDouble(getDegrees());
+		nte_motorFFEffort.setDouble(m_ffEffort);
+		nte_motorPDEffort.setDouble(m_pdEffort);
+		nte_motorTotalEffort.setDouble(m_totalEffort);
+		nte_targetAngle.setDouble(m_targetAngle);
 		nte_homeSwitch.setBoolean(atReverseLimit());
 		nte_forwardLimit.setBoolean(atForwardLimit());
 		nte_coast.setBoolean(m_isCoast);
-
-		SmartDashboard.putNumber("Tilt absolute position", m_tiltAbsoluteEncoder.get());
-		SmartDashboard.putNumber("Tilt Quad Encoder position", m_tiltQuadratureEncoder.getRaw());
 	}
 
-	public enum TiltStates {
+	public enum States {
 		MAX(kMaxAngleDegrees),
 		HIGH(30),
 		MID(kMaxAngleDegrees / 2),
@@ -168,7 +165,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 		public final double angle;
 
-		private TiltStates(double angle) {
+		private States(double angle) {
 			this.angle = angle;
 		}
 	}
