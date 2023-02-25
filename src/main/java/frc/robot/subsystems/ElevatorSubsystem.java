@@ -173,18 +173,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase setState(ElevatorStates state) {
-		// switch (state) {
-		// 	case MAX:
-		// 		setLiftTarget(kMaxHeightMeters);
-		// 		return runOnce(() -> getEffortForTarget());
-		// 	case MID:
-		// 		setLiftTarget(kMaxHeightMeters / 2);
-		// 		return runOnce(() -> getEffortForTarget());
-		// 	default:
-		// 		setLiftTarget(kMinHeightMeters);
-		// 		return runOnce(() -> getEffortForTarget());
-		// }
-		return Commands.none();
+		return toHeight(state.height);
 	}
 
 	// public ElevatorState getState(double value) {
@@ -198,9 +187,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 	// }
 
 	public enum ElevatorStates {
-		MAX,
-		MID,
-		MIN;
+		MAX(kMaxHeightMeters),
+		MID(kMaxHeightMeters / 2),
+		MIN(kMinHeightMeters);
+
+		public double height;
+
+		ElevatorStates(double height) {
+			this.height = height;
+		}
 	}
 
 	@Override

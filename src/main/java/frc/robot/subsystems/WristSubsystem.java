@@ -11,7 +11,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
@@ -23,8 +22,7 @@ import static frc.robot.Constants.*;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
-  private final CANSparkMax m_motor = new CANSparkMax(kCANID, MotorType.kBrushless); // change device number
-                                                                                               // later
+  private final CANSparkMax m_motor = new CANSparkMax(kCANID, MotorType.kBrushless); // change device number later
   private final SparkMaxAbsoluteEncoder m_absEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
   private double m_targetAngle = 0;
   private double m_ffEffort = 0;
@@ -158,34 +156,30 @@ public class WristSubsystem extends SubsystemBase {
     .withName("ToAngle");
   }
 
+  public CommandBase toAngle(double angle) {
+    return run(()-> {
+      m_targetAngle = angle;
+      m_pdEffort = m_controller.calculate(getDegrees(), m_targetAngle);
+      m_totalEffort = m_ffEffort + m_pdEffort;
+
+      setPower(m_totalEffort, true);
+    })
+    .until(m_controller::atSetpoint)
+    .withName("ToAngle");
+  }
+
   public CommandBase toFlat(){
     return run(()->{
       setPower(getEffortForAngle(0), true);
     }).finallyDo((intr) -> setPower(0, false));
   }
-  public CommandBase toPosition(double speed, WristStates position) {
-    switch (position) {
-      case MAX:
-        // setWristToAngle(speed, MathUtil.clamp(WristStates.MAX.degrees, 0, minValue));
-        break;
-      case HIGH:
-        // setWristToAngle(speed, MathUtil.clamp(WristStates.HIGH.degrees, 0, minValue));
-        break;
-      case MID:
-        // setWristToAngle(speed, MathUtil.clamp(WristStates.MID.degrees, 0, minValue));
-        break;
-      case MIN:
-        // setWristToAngle(speed, MathUtil.clamp(WristStates.MIN.degrees, 0, minValue));
-        break;
-    }
 
-    // TODO: command-ify
-    return Commands.none();
+  public CommandBase toState(WristStates state) {
+    return toAngle(state.degrees);
   }
 
   @Override
   public void periodic() {
-    
     // setCoast(nte_coast.get().getBoolean());
     updateShuffleBoard();
   }
@@ -205,7 +199,7 @@ public class WristSubsystem extends SubsystemBase {
     // m_motor.setIdleMode(shouldCoast ? IdleMode.kCoast : IdleMode.kBrake);
   }
 
-  public enum WristStates { // change degrees later
+  public static enum WristStates { // change degrees later
     MAX(0),
     HIGH(30),
     MID(60),

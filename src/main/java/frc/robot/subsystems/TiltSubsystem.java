@@ -112,6 +112,19 @@ public class TiltSubsystem extends SubsystemBase {
 				.withName("ToAngle");
 	}
 
+	public CommandBase toAngle(double angle) {
+		return run(() -> {
+			m_targetAngle = angle;
+			m_pdEffort = m_controller.calculate(getDegrees(),
+			m_targetAngle);
+			m_totalEffort = m_ffEffort + m_pdEffort;
+
+			setPower(m_totalEffort);
+		})
+				.until(m_controller::atSetpoint)
+				.withName("ToAngle");
+	}
+
 	private void setCoast(boolean coast) {
 		if (coast) {
 			m_isCoast = true;
@@ -154,6 +167,10 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_homeSwitch.setBoolean(atReverseLimit());
 		nte_forwardLimit.setBoolean(atForwardLimit());
 		nte_coast.setBoolean(m_isCoast);
+	}
+
+	public CommandBase toState(TiltStates state) {
+		return toAngle(state.angle); 
 	}
 
 	public enum TiltStates {

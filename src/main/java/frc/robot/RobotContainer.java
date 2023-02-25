@@ -68,7 +68,7 @@ public class RobotContainer {
                 ));
         elevator.setDefaultCommand(elevator.teleOpCmd(() -> -manipulator.getLeftY()));
         tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
-        wrist.setDefaultCommand(wrist.teleopCmd(() -> -manipulator.getLeftX()));
+        wrist.setDefaultCommand(wrist.toAngle(() -> manipulator.getHID().getPOV()));
 
         DashboardManager.addTab("TeleSwerve");
         configureButtonBindings();
