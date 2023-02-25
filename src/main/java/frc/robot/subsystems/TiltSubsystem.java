@@ -103,8 +103,8 @@ public class TiltSubsystem extends SubsystemBase {
 	public CommandBase toAngle(DoubleSupplier angle) {
 		return run(() -> {
 			m_targetAngle = angle.getAsDouble();
-			// m_wristPDEffort = m_wristController.calculate(getDegrees(),
-			// m_wristTargetAngle);
+			m_pdEffort = m_controller.calculate(getDegrees(),
+			m_targetAngle);
 			m_totalEffort = m_ffEffort + m_pdEffort;
 
 			setPower(m_totalEffort);

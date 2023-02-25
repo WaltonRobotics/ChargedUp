@@ -149,17 +149,17 @@ public class WristSubsystem extends SubsystemBase {
     });
   }
 
-  // public CommandBase toAngle(DoubleSupplier angle) {
-  //   return run(()-> {
-  //     m_targetAngle = angle.getAsDouble();
-  //     // m_wristPDEffort = m_wristController.calculate(getDegrees(), m_wristTargetAngle);
-  //     m_totalEffort = m_ffEffort + m_pdEffort;
+  public CommandBase toAngle(DoubleSupplier angle) {
+    return run(()-> {
+      m_targetAngle = angle.getAsDouble();
+      m_pdEffort = m_controller.calculate(getDegrees(), m_targetAngle);
+      m_totalEffort = m_ffEffort + m_pdEffort;
 
-  //     setWristPower(m_totalEffort, true);
-  //   })
-  //   .until(m_controller::atSetpoint)
-  //   .withName("ToAngle");
-  // }
+      setPower(m_totalEffort, true);
+    })
+    .until(m_controller::atSetpoint)
+    .withName("ToAngle");
+  }
 
   public CommandBase toFlat(){
     return run(()->{
