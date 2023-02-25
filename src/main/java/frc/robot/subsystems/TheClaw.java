@@ -27,6 +27,9 @@ public class TheClaw extends SubsystemBase {
         // DashboardManager.addTab(this);
     }
 
+    /*
+     * @return Cmd to automatically close claw on eye sight
+     */
     public CommandBase autoGrab(boolean autoRelease) {
 
         return runOnce(() -> claw.set(true)) // open claw
@@ -36,6 +39,9 @@ public class TheClaw extends SubsystemBase {
             );
     }
 
+    /*
+     * @return Cmd to release claw
+     */
     public CommandBase release() {
         return runOnce(() -> claw.set(true));
     }
