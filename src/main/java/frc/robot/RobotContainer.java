@@ -84,34 +84,21 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-        driver.a().whileTrue(new RunCommand(() -> swerve.followAprilTag(2, 0, true)));
-        driver.rightBumper().onTrue(new InstantCommand(() -> swerve.handleAutoBalance()));
+        driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
         driver.leftTrigger()
                 .whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
         driver.x().onTrue(swerve.rotateAboutPoint(90));
         driver.b().onTrue(new InstantCommand(() -> swerve.resetOdometryPose()));
         driver.leftBumper().whileTrue(swerve.autoScore());
-
-        // manipulator.rightTrigger().onTrue(new InstantCommand(() ->
-        // claw.toggleClaw()));
+        
         manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); // cone
         manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
-
-        manipulator.leftTrigger().onTrue(claw.release());
-        initShuffleBoard();
+        manipulator.rightTrigger().onFalse(claw.release());
         manipulator.a().whileTrue(wrist.toFlat());
         manipulator.b().whileTrue(elevator.toHeight(0.3));
     }
-
-    public void initShuffleBoard() {
-        SmartDashboard.putNumber("PX Controller", Constants.AutoConstants.kPXController);
-        SmartDashboard.putNumber("PY Controller", Constants.AutoConstants.kPYController);
-        SmartDashboard.putNumber("PTheta Controller", Constants.AutoConstants.kPThetaController);
-    }
-
     public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
