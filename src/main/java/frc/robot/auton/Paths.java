@@ -81,28 +81,6 @@ public class Paths {
 		public static final PathPoint tag7 = new PathPoint(tag7Pose.getTranslation(), Rotation2d.fromDegrees(-90),tag7Pose.getRotation());
 		public static final PathPoint tag8 = new PathPoint(tag8Pose.getTranslation(), Rotation2d.fromDegrees(-90),tag8Pose.getRotation());
 
-		// red scoring
-		public static final Pose2d redCone1 = new Pose2d(new Translation2d(14.76, 0.50), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCube1 = new Pose2d(new Translation2d(14.76, 1.06), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCone2 = new Pose2d(new Translation2d(14.76, 1.62), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCoopCone1 = new Pose2d(new Translation2d(14.76, 2.18), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCoopCube1 = new Pose2d(new Translation2d(14.76, 2.74), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCoopCone2 = new Pose2d(new Translation2d(14.76, 3.29), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCone3 = new Pose2d(new Translation2d(14.76, 3.85), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCube2 = new Pose2d(new Translation2d(14.76, 4.42), Rotation2d.fromDegrees(0));
-		public static final Pose2d redCone4 = new Pose2d(new Translation2d(14.76, 4.98), Rotation2d.fromDegrees(0));
-
-		// blue scoring
-		public static final Pose2d blueCone1 = new Pose2d(new Translation2d(1.77, 0.50), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCube1 = new Pose2d(new Translation2d(1.77, 1.06), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCone2 = new Pose2d(new Translation2d(1.77, 1.62), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCoopCone1 = new Pose2d(new Translation2d(1.77, 2.18), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCoopCube1 = new Pose2d(new Translation2d(1.77, 2.74), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCoopCone2 = new Pose2d(new Translation2d(1.77, 3.29), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCone3 = new Pose2d(new Translation2d(1.77, 3.85), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCube2 = new Pose2d(new Translation2d(1.77, 4.42), Rotation2d.fromDegrees(180));
-		public static final Pose2d blueCone4 = new Pose2d(new Translation2d(1.77, 4.98), Rotation2d.fromDegrees(180));
-
 		// poses of pathpoints to get to community
 		public static final Pose2d redRight1Pose = new Pose2d(new Translation2d(10.25, 4.65), Rotation2d.fromDegrees(0));
 		public static final Pose2d redRight2Pose = new Pose2d(new Translation2d(13.28, 4.65), Rotation2d.fromDegrees(0));
@@ -126,19 +104,70 @@ public class Paths {
 		public static final PathPoint blueRight1 = new PathPoint(blueRight1Pose.getTranslation(), Rotation2d.fromDegrees(180),blueRight1Pose.getRotation(), 2);
 		public static final PathPoint blueRight2 = new PathPoint(blueRight2Pose.getTranslation(), Rotation2d.fromDegrees(175), blueRight2Pose.getRotation());
 		// public static final PathPoint blueRight3 = new PathPoint(new Translation2d(2.45, 0.75), Rotation2d.fromDegrees(180),Rotation2d.fromDegrees(180));
+		public static PathPoint toPathPoint(Pose2d point) {
+			return new PathPoint(point.getTranslation(), Rotation2d.fromDegrees(0), point.getRotation());
+		}
+
+		public static class ScoringPoints {
+			
+		// red scoring
+		public static final Pose2d redCone1 = new Pose2d(new Translation2d(14.76, 0.50), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCube1 = new Pose2d(new Translation2d(14.76, 1.06), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCone2 = new Pose2d(new Translation2d(14.76, 1.62), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCoopCone1 = new Pose2d(new Translation2d(14.76, 2.18), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCoopCube1 = new Pose2d(new Translation2d(14.76, 2.74), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCoopCone2 = new Pose2d(new Translation2d(14.76, 3.29), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCone3 = new Pose2d(new Translation2d(14.76, 3.85), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCube2 = new Pose2d(new Translation2d(14.76, 4.42), Rotation2d.fromDegrees(0));
+		public static final Pose2d redCone4 = new Pose2d(new Translation2d(14.76, 4.98), Rotation2d.fromDegrees(0));
+
+		// blue scoring
+		public static final Pose2d blueCone1 = new Pose2d(new Translation2d(1.77, 0.50), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCube1 = new Pose2d(new Translation2d(1.77, 1.06), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCone2 = new Pose2d(new Translation2d(1.77, 1.62), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCoopCone1 = new Pose2d(new Translation2d(1.77, 2.18), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCoopCube1 = new Pose2d(new Translation2d(1.77, 2.74), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCoopCone2 = new Pose2d(new Translation2d(1.77, 3.29), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCone3 = new Pose2d(new Translation2d(1.77, 3.85), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCube2 = new Pose2d(new Translation2d(1.77, 4.42), Rotation2d.fromDegrees(180));
+		public static final Pose2d blueCone4 = new Pose2d(new Translation2d(1.77, 4.98), Rotation2d.fromDegrees(180));
+
+		}
+
+		public enum ScoringPlaces {
+			CONE_1(ScoringPoints.redCone1, ScoringPoints.blueCone1, 0),
+			CUBE_1(ScoringPoints.redCube1, ScoringPoints.blueCube1, 1),
+			CONE_2(ScoringPoints.redCone2, ScoringPoints.blueCone2, 0),
+			COOP_CONE_1(ScoringPoints.redCoopCone1, ScoringPoints.blueCoopCone1, 0),
+			COOP_CUBE_1(ScoringPoints.redCoopCube1, ScoringPoints.blueCoopCube1, 1),
+			COOP_CONE_2(ScoringPoints.redCoopCone2, ScoringPoints.blueCoopCone2, 0),
+			CONE_3(ScoringPoints.redCone3, ScoringPoints.blueCone3, 0),
+			CUBE_2(ScoringPoints.redCube2, ScoringPoints.blueCube2, 1),
+			CONE_4(ScoringPoints.redCone4, ScoringPoints.blueCone4, 0);
+
+			public Pose2d redPt;
+			public Pose2d bluePt;
+			public int coneOrCube; // 0 is cone, 1 is cube
+
+			private ScoringPlaces(Pose2d redPt, Pose2d bluePt, int coneOrCube) {
+				this.redPt = redPt;
+				this.bluePt = bluePt;
+				this.coneOrCube = coneOrCube;
+			}
+		}
 	}
 
 	public static class ScoringOptions {
 		public enum ScoringOptionRed {
-			CONE_1(ReferencePoints.redCone1, true),
-			CUBE_1(ReferencePoints.redCube1, false),
-			CONE_2(ReferencePoints.redCone2, true),
-			COOP_CONE_1(ReferencePoints.redCoopCone1, true),
-			COOP_CUBE_1(ReferencePoints.redCoopCube1, false),
-			COOP_CONE_2(ReferencePoints.redCoopCone2, true),
-			CONE_3(ReferencePoints.redCone3, true),
-			CUBE_2(ReferencePoints.redCube2, false),
-			CONE_4(ReferencePoints.redCone4, true);
+			CONE_1(ReferencePoints.ScoringPoints.redCone1, true),
+			CUBE_1(ReferencePoints.ScoringPoints.redCube1, false),
+			CONE_2(ReferencePoints.ScoringPoints.redCone2, true),
+			COOP_CONE_1(ReferencePoints.ScoringPoints.redCoopCone1, true),
+			COOP_CUBE_1(ReferencePoints.ScoringPoints.redCoopCube1, false),
+			COOP_CONE_2(ReferencePoints.ScoringPoints.redCoopCone2, true),
+			CONE_3(ReferencePoints.ScoringPoints.redCone3, true),
+			CUBE_2(ReferencePoints.ScoringPoints.redCube2, false),
+			CONE_4(ReferencePoints.ScoringPoints.redCone4, true);
 	
 			public final Pose2d m_scoringPlace; 
 			public final boolean m_cone;
@@ -149,15 +178,15 @@ public class Paths {
 		}
 	
 		public enum ScoringOptionBlue {
-			CONE_1(ReferencePoints.blueCone1, true),
-			CUBE_1(ReferencePoints.blueCube1, false),
-			CONE_2(ReferencePoints.blueCone2, true),
-			COOP_CONE_1(ReferencePoints.blueCoopCone1, true),
-			COOP_CUBE_1(ReferencePoints.blueCoopCube1, false),
-			COOP_CONE_2(ReferencePoints.blueCoopCone2, true),
-			CONE_3(ReferencePoints.blueCone3, true),
-			CUBE_2(ReferencePoints.blueCube2, false),
-			CONE_4(ReferencePoints.blueCone4, true);
+			CONE_1(ReferencePoints.ScoringPoints.blueCone1, true),
+			CUBE_1(ReferencePoints.ScoringPoints.blueCube1, false),
+			CONE_2(ReferencePoints.ScoringPoints.blueCone2, true),
+			COOP_CONE_1(ReferencePoints.ScoringPoints.blueCoopCone1, true),
+			COOP_CUBE_1(ReferencePoints.ScoringPoints.blueCoopCube1, false),
+			COOP_CONE_2(ReferencePoints.ScoringPoints.blueCoopCone2, true),
+			CONE_3(ReferencePoints.ScoringPoints.blueCone3, true),
+			CUBE_2(ReferencePoints.ScoringPoints.blueCube2, false),
+			CONE_4(ReferencePoints.ScoringPoints.blueCone4, true);
 	
 			public final Pose2d m_scoringPlace; 
 			public final boolean m_cone;
@@ -167,5 +196,6 @@ public class Paths {
 			}
 		}
 	}
+
 
 }

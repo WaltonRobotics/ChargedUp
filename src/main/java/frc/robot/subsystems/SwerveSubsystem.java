@@ -359,7 +359,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		System.out.println("NO TARGET DETECTED");
 	}
-
 	public CommandBase autoScore() {
 		// runOnce(curPos = thing; ppt = generate(thing))
 
@@ -548,6 +547,57 @@ public class SwerveSubsystem extends SubsystemBase {
 	private CommandBase goToChosenTag() {
 		return run(() -> {
 			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(AprilTagChooser.GetChosenAprilTag());
+			var botPose = getPose();
+			double xRate = xController.calculate(botPose.getX(), tagPPPose.getX());
+			double yRate = yController.calculate(botPose.getY(), tagPPPose.getY());
+			drive(xRate, yRate, new Rotation2d(0), true);
+		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
+	}
+
+	public CommandBase autoScore(List<PathPoint> path, PathPoint endPt) {
+		// runOnce(curPos = thing; ppt = generate(thing))
+
+		var pathCmd = runOnce(() -> {
+			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
+					getPose(),
+					getChassisSpeeds());
+			// ReferencePoints.currentPoint = currentPathPoint;
+			List<PathPoint> allPoints = new ArrayList<>();
+			allPoints.add(ReferencePoints.currentPoint);
+			List<PathPoint> chosenPathPoints = path;
+			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+
+			for (PathPoint addedPP : chosenPathPoints) {
+
+				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+				if (onRed && currentX < addedX) {
+					allPoints.add(addedPP);
+				} else if (!onRed && currentX > addedX) {
+					allPoints.add(addedPP);
+				}
+				// else {
+				// break;
+				// }
+			}
+
+			allPoints.add(endPt);
+
+			currentTrajectory = PathPlanner.generatePath(
+					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
+					allPoints);
+		});
+
+		var followCmd = autoBuilder.followPath(() -> {
+			return currentTrajectory;
+		});
+
+		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPt));
+	}
+
+	private CommandBase goToChosenPoint(PathPoint endPt) {
+		return run(() -> {
+			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(endPt);
 			var botPose = getPose();
 			double xRate = xController.calculate(botPose.getX(), tagPPPose.getX());
 			double yRate = yController.calculate(botPose.getY(), tagPPPose.getY());

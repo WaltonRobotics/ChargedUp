@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
 import frc.robot.subsystems.TiltSubsystem.States;
 import frc.robot.subsystems.WristSubsystem.WristStates;
@@ -44,6 +45,44 @@ public class Superstructure extends SubsystemBase{
         if(m_elevator.getHeight() >= kSafeHeight){
         }
         m_wrist.setMinDegrees(dynamicLimit);
-
     }
+
+    // aka autoScore
+    // TODO: pass in swerve subsystem, it's not included in this class
+    /**
+     * @param state high, mid, or low
+     * @param place where to score :D (also includes cone/cube mode)
+     * @param isBumpy if it is bumpy or not
+     * @return command to autoscore
+     */
+    // public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces place, boolean isBumpy) {
+    //     // System.out.println("YAYAYAYAY :DDD");
+    //     var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
+    //     var autoScore = runOnce(() -> {
+    //         if(isBumpy) {
+    //             if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    //                 m_swerve.autoScore(PPAutoscoreClass.redBumpy, ScoringPoints.toPathPoint(place.redPt));
+    //             }
+    //             else {
+    //                 m_swerve.autoScore(PPAutoscoreClass.blueBumpy, ScoringPoints.toPathPoint(place.redPt));
+    //             }
+    //         }
+    //         else {
+    //             if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    //                 m_swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.toPathPoint(place.redPt));
+    //             }
+    //             else {
+    //                 m_swerve.autoScore(PPAutoscoreClass.blueNotBumpy, ScoringPoints.toPathPoint(place.redPt));
+    //             }
+    //         }
+    //     });
+    //     var elevatorHeight = runOnce(() -> {
+    //         m_elevator.setState(state.elevatorHeight);
+    //     });
+    //     var finalPos = runOnce(() -> {
+    //         m_tilt.setTiltTarget(state.elevatorTilt.angle); // finish later maybe?
+    //         m_wrist.toPosition(.5, state.wristTilt);
+    //     });
+    //     return leds.andThen(autoScore).andThen(elevatorHeight).andThen(finalPos);
+    // }
 }
