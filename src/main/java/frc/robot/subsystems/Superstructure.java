@@ -60,9 +60,11 @@ public class Superstructure extends SubsystemBase{
     }
 
     public enum ScoringStates {
-        MAX(ElevatorStates.MAX, TiltStates.MAX, WristStates.MAX),
+        GROUND_PICK_UP(ElevatorStates.MIN, TiltStates.MAX, WristStates.MAX),
+        SUBSTATION_PICK_UP(ElevatorStates.MAX, TiltStates.MID, WristStates.MID),
+        TOP(ElevatorStates.TOP, TiltStates.TOP, WristStates.TOP),
         MID(ElevatorStates.MID, TiltStates.MID, WristStates.MID),
-        MIN(ElevatorStates.MIN, TiltStates.MIN, WristStates.MIN);
+        BOT(ElevatorStates.BOT, TiltStates.BOT, WristStates.BOT);
         
         public ElevatorStates elevatorHeight;
         public TiltStates elevatorTilt;

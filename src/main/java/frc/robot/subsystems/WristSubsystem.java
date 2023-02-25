@@ -220,8 +220,9 @@ public class WristSubsystem extends SubsystemBase {
 
   public static enum WristStates { // change degrees later
     MAX(0),
-    HIGH(30),
-    MID(60),
+    TOP(kTopAngleDegrees),
+    MID(kMidAngleDegrees),
+    BOT(kBotAngleDegrees),
     MIN(115);
 
     public final double degrees;
