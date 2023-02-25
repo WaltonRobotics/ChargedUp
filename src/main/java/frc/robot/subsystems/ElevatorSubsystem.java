@@ -172,19 +172,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		});
 	}
 
-	public CommandBase setState(ElevatorStates state) {
+	public CommandBase toState(ElevatorStates state) {
 		return toHeight(state.height);
 	}
-
-	// public ElevatorState getState(double value) {
-	// 	if (value <= 0.25) {
-	// 		return ElevatorState.MIN;
-	// 	} else if (value <= 0.75) {
-	// 		return ElevatorState.MID;
-	// 	}
-
-	// 	return ElevatorState.MAX;
-	// }
 
 	public enum ElevatorStates {
 		MAX(kMaxHeightMeters),

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
@@ -22,7 +23,17 @@ public class Superstructure extends SubsystemBase{
         m_claw = claw;
     }
 
-    
+    public CommandBase toState(ElevatorStates elevatorState, TiltStates tiltState, WristStates wristState) {
+        return runOnce(() -> {
+            m_elevator.toState(elevatorState);
+            m_tilt.toState(tiltState);
+            m_wrist.toState(wristState);
+;        });
+    }
+
+    public CommandBase toState(ScoringStates state) {
+        return toState(state.elevatorHeight, state.elevatorTilt, state.wristTilt);
+    }
 
     public enum ScoringStates {
         MAX(ElevatorStates.MAX, TiltStates.MAX, WristStates.MAX),

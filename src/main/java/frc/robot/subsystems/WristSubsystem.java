@@ -80,19 +80,6 @@ public class WristSubsystem extends SubsystemBase {
     return Units.radiansToDegrees(MathUtil.angleModulus(rawRads));
   }
 
-  //  TODO: review with grace why this is bad - 3 reasons
-  // public void setWristToAngle(double speed, double targetAngle) {
-
-  //   while (getWristAngle() != targetAngle) {
-  //     if (getWristAngle() - targetAngle < 0) {
-  //       m_wristMotor.setInverted(true);
-  //       m_wristMotor.set(speed);
-  //     } else if (getWristAngle() - targetAngle > 0) {
-  //       m_wristMotor.set(speed);
-  //     }
-  //   }
-  // }
-
   public double getMinDegrees(){
     return m_minDegrees;
   }
