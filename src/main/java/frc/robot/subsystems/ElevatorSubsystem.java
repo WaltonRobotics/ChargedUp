@@ -239,6 +239,5 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_totalEffort.setDouble(m_totalEffort);
 		nte_targetHeight.setDouble(getTargetHeightMeters());
 		nte_atLowerLimit.setBoolean(isAtDynamicLimit());
-		nte_coast.setBoolean(m_isCoast);
 	}
 }
