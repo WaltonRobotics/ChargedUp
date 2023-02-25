@@ -96,6 +96,8 @@ public class RobotContainer {
         manipulator.rightTrigger().onFalse(claw.release());
         // manipulator.a().whileTrue(wrist.toFlat());
         manipulator.b().whileTrue(elevator.toHeight(0.3));
+        manipulator.a().whileTrue(tilt.toAngle(15));
+        manipulator.y().whileTrue(tilt.toAngle(0));
     }
     public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);

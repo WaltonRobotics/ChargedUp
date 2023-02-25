@@ -176,24 +176,24 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 */
 	private double getEffortForTarget(double heightMeters) {
 		
-		double pdEffort = m_controller.calculate(getActualHeightMeters(), heightMeters);
+		m_pdEffort = m_controller.calculate(getActualHeightMeters(), heightMeters);
 
-		double ffEffort = 0;
+		m_ffEffort = 0;
 
 		var pdSetpoint = m_controller.getSetpoint();
 		if (pdSetpoint.velocity != 0) {
-			ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
+			m_ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
 		}
 
-		double totalEffort = ffEffort + pdEffort;
+		double totalEffort = m_ffEffort + m_pdEffort;
 
-		nte_ffEffort.setDouble(ffEffort);
-		nte_pdEffort.setDouble(pdEffort);
+		nte_ffEffort.setDouble(m_ffEffort);
+		nte_pdEffort.setDouble(m_pdEffort);
 		nte_totalEffort.setDouble(totalEffort);
 		nte_pdVelo.setDouble(pdSetpoint.velocity);
 		nte_actualVelo.setDouble(getActualVelocityMps());
 
-		return ffEffort + pdEffort;
+		return totalEffort;
 	}
 
 	/*

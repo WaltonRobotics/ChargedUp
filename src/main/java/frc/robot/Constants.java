@@ -175,19 +175,22 @@ public final class Constants {
         public static final int kHomeSwitchPort = 9;
 
         public static final double kAbsZeroDegreeOffset = 199.8;    //where zero is at
-        public static final double kAbsMaxDegree = 33; //max possible from offset
+        public static final double kAbsMaxDegree = 30; //max possible from offset
 
-        public static final double kMaxAngleDegrees = 45;
+        public static final double kMaxAngleDegrees = 30;
         public static final double kMinAngleDegrees = 0;
-        public static final double kMaxVelocity = 1.0; //meters per sec
-        public static final double kMaxAcceleration = 1.0; //meters per sec squared
-        public static final double kP = 0.25;
-        public static final double kD = 0.01;
-        public static final double kS = 1.2;
+        public static final double kMaxVelocity = 20; //degrees per sec
+        public static final double kMaxAcceleration = 40.0; //degrees per sec squared
+        public static final double kP = 1.0;
+        public static final double kD = 0.0;
+        public static final double kS = 1.5;
         public static final double kGearRatio = ((49.0 / 1.0) * (30.0/29.0));
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
-        public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, kV);
+        public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS, Units.radiansToDegrees(kV));
+
+        public static final TrapezoidProfile.Constraints kConstraints =
+            new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
 
     }
 
