@@ -200,7 +200,7 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateShuffleBoard();
-    setCoast(m_isCoast);
+    setCoast(nte_coast.get().getBoolean());
   }
 
   /*
@@ -216,7 +216,6 @@ public class WristSubsystem extends SubsystemBase {
     nte_motorTemp.setDouble(m_motor.getMotorTemperature());
     nte_minLimit.setBoolean(atMinLimit());
     nte_maxLimit.setBoolean(atMaxLimit());
-    nte_coast.setBoolean(m_isCoast);
   }
 
   public static enum WristStates { // change degrees later

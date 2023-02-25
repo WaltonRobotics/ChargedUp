@@ -166,7 +166,6 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_targetAngle.setDouble(m_targetAngle);
 		nte_homeSwitch.setBoolean(atReverseLimit());
 		nte_forwardLimit.setBoolean(atForwardLimit());
-		nte_coast.setBoolean(m_isCoast);
 	}
 
 	public CommandBase toState(TiltStates state) {

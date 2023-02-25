@@ -114,12 +114,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * Sets both elevator motors to coast/brake
 	 */
 	private void setCoast(boolean coast) {
-		if(coast){
+		if (coast) {
 			m_left.setNeutralMode(NeutralMode.Coast);
 			m_right.setNeutralMode(NeutralMode.Coast);
 			m_isCoast = true;
 		}
-		else{
+		else {
 			m_left.setNeutralMode(NeutralMode.Brake);
 			m_right.setNeutralMode(NeutralMode.Brake);
 			m_isCoast = false;
@@ -198,7 +198,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			m_right.setSelectedSensorPosition(0);
 		}
 		updateShuffleBoard();
-		setCoast(m_isCoast);
+		setCoast(nte_coast.get().getBoolean());
 	}
 
 	/*
@@ -212,6 +212,5 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_totalEffort.setDouble(m_totalEffort);
 		nte_targetHeight.setDouble(getTargetHeightMeters());
 		nte_atLowerLimit.setBoolean(isAtLowerLimit());
-		nte_coast.setBoolean(m_isCoast);
 	}
 }
