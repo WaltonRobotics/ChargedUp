@@ -53,9 +53,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
 	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 	private final GenericEntry nte_pdVelo = DashboardManager.addTabDial(this, "PD Velo", -100, 100);
+	private final GenericEntry nte_actualVelo = DashboardManager.addTabNumberBar(this, "ActualVelo Mps",
+		-10, 10);
 
 
 	public ElevatorSubsystem() {
+		DashboardManager.addTab(this);
 		m_left.configFactoryDefault();
         m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 
@@ -108,7 +111,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 		var falconPos = m_right.getSelectedSensorPosition();
 		var meters = Conversions.falconToMeters(
 				falconPos, kDrumCircumferenceMeters, kGearRatio);
-		return meters + kElevatorHeightOffset;
+		return meters;// + kElevatorHeightOffset;
+	}
+
+	private double getActualVelocityMps() {
+		var falconVelo = m_right.getSelectedSensorVelocity();
+		var mps = Conversions.falconToMPS(falconVelo, kDrumCircumferenceMeters, kGearRatio);
+		return mps;
 	}
 
 	/*
@@ -118,7 +127,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			m_right.set(ControlMode.PercentOutput, powerVal);
-		});
+		})
+		.withName("TeleManual");
 	}
 
 	/*
@@ -126,7 +136,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * Does not allow impossible heights
 	 */
 	private void i_setTarget(double meters) {
-		m_targetHeight = MathUtil.clamp(meters, kMinHeightMeters, kMaxHeightMeters);
+		m_targetHeight = MathUtil.clamp(meters, m_dynamicLowLimit, kMaxHeightMeters);
 	}
 
 	/*
@@ -158,13 +168,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @return target height in meters
 	 */
 	private double getTargetHeightMeters() {
-		return Conversions.MetersToFalcon(m_targetHeight, kDrumCircumferenceMeters, kGearRatio);
+		return m_targetHeight;
 	}
 
 	/* @param heightMeters The target height to reach in meters
 	 * @return The total effort (ff & pd) required to reach target height
 	 */
 	private double getEffortForTarget(double heightMeters) {
+		
 		double pdEffort = m_controller.calculate(getActualHeightMeters(), heightMeters);
 
 		double ffEffort = 0;
@@ -180,8 +191,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_pdEffort.setDouble(pdEffort);
 		nte_totalEffort.setDouble(totalEffort);
 		nte_pdVelo.setDouble(pdSetpoint.velocity);
+		nte_actualVelo.setDouble(getActualVelocityMps());
 
-		return totalEffort;
+		return ffEffort + pdEffort;
 	}
 
 	/*
@@ -191,16 +203,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public CommandBase toHeight(double heightMeters) {
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
+			i_setTarget(heightMeters);
 		})
 		.andThen(run(()-> {
-			var height = MathUtil.clamp(heightMeters, m_dynamicLowLimit, kMaxHeightMeters);
-			var effort = MathUtil.clamp(getEffortForTarget(height), -4, 4);
+			var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts, kVoltageCompSaturationVolts);
 			m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 		}))
-		.until(() -> m_controller.atGoal())
+		// .until(() -> m_controller.atSetpoint())
 		.finallyDo((intr)-> {
 			m_right.set(ControlMode.PercentOutput, 0);
-		});
+		})
+		.withName("AutoToHeight");
 	}
 
 	public CommandBase toState(ElevatorStates state) {
