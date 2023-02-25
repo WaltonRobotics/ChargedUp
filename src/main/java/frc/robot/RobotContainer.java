@@ -86,7 +86,7 @@ public class RobotContainer {
         /* Driver Buttons */
         driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
         driver.a().whileTrue(new RunCommand(() -> swerve.followAprilTag(2, 0, true)));
-        driver.rightBumper().onTrue(new InstantCommand(() -> swerve.handleAutoBalance()));
+        driver.rightBumper().onTrue(new InstantCommand(() -> swerve.autoBalance()));
         driver.leftTrigger()
                 .whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
         driver.x().onTrue(swerve.rotateAboutPoint(90));
