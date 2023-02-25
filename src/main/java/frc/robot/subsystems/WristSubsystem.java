@@ -200,7 +200,7 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateShuffleBoard();
-    setCoast(nte_coast.get().getBoolean());
+    setCoast(nte_coast.getBoolean(false));
   }
 
   /*
