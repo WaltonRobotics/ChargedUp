@@ -10,7 +10,10 @@ import frc.robot.Constants.WristK;
 import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
 import frc.robot.subsystems.Superstructure.ScoringStates;
+import frc.robot.subsystems.TiltSubsystem.TiltStates;
+import frc.robot.subsystems.WristSubsystem.WristStates;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.PathChooser;
@@ -96,9 +99,10 @@ public class RobotContainer {
         manipulator.povRight().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
-        manipulator.rightTrigger().onFalse(claw.release());
-        manipulator.leftTrigger().onTrue(claw.release());
-        manipulator.leftBumper().whileTrue(superstructure.toState(TOPCUBE));
+        manipulator.leftTrigger().whileTrue((tilt.toAngle(30))
+                .andThen(elevator.toHeight(0.577731))
+                .andThen(wrist.toAngle(7.010672)));
+        manipulator.leftTrigger().onFalse(claw.release());
         // manipulator.a().whileTrue(wrist.toFlat());
         manipulator.x().whileTrue(wrist.toAngle(0));
         manipulator.b().whileTrue(elevator.toHeight(0.3));
