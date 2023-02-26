@@ -184,16 +184,20 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	public enum TiltStates {
-		MAX(kMaxAngleDegrees),
-		TOP(kTopAngleDegrees),
-		MID(kMidAngleDegrees),
-		BOT(kBotAngleDegrees),
-		MIN(kMinAngleDegrees);
+		MAX(kMaxAngleDegrees, 0),
+		TOPCONE(kTopConeAngleDegrees, 0),
+		TOPCUBE(kTopCubeAngleDegrees, 1),
+		MIDCONE(kMidConeAngleDegrees, 0),
+		MIDCUBE(kMidCubeAngleDegrees, 1),
+		BOT(kBotAngleDegrees, 0),
+		MIN(kMinAngleDegrees, 0);
 
 		public final double angle;
+		public final int isCube;
 
-		private TiltStates(double angle) {
+		private TiltStates(double angle, int isCube) {
 			this.angle = angle;
+			this.isCube = isCube;
 		}
 	}
 }

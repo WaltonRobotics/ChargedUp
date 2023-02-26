@@ -29,7 +29,7 @@ public class Superstructure extends SubsystemBase{
      * in degrees based on height and tilt of the elevator
      */
     public void limitWristDynamic(){
-        double dynamicLimit = kMinAngleDegrees;
+        double dynamicLimit = 0;
         if(m_elevator.getActualHeightRaw() >= kSafeHeight){
             dynamicLimit = kMaxAngleDegrees;
         }
@@ -59,11 +59,17 @@ public class Superstructure extends SubsystemBase{
         return toState(state.elevatorHeight, state.elevatorTilt, state.wristTilt);
     }
 
+    public CommandBase toTopCube() {
+        return toState(ScoringStates.TOPCONE);
+    }
+
     public enum ScoringStates {
         GROUND_PICK_UP(ElevatorStates.MIN, TiltStates.MAX, WristStates.MAX),
-        SUBSTATION_PICK_UP(ElevatorStates.MAX, TiltStates.MID, WristStates.MID),
-        TOP(ElevatorStates.TOP, TiltStates.TOP, WristStates.TOP),
-        MID(ElevatorStates.MID, TiltStates.MID, WristStates.MID),
+        SUBSTATION_PICK_UP(ElevatorStates.MAX, TiltStates.MIN, WristStates.MIN), // TODO: fix
+        TOPCONE(ElevatorStates.TOPCONE, TiltStates.TOPCONE, WristStates.TOPCONE),
+        TOPCUBE(ElevatorStates.TOPCUBE, TiltStates.TOPCUBE, WristStates.TOPCUBE),
+        MIDCONE(ElevatorStates.MIDCONE, TiltStates.MIDCONE, WristStates.MIDCONE),
+        MIDCUBE(ElevatorStates.MIDCUBE, TiltStates.MIDCUBE, WristStates.MIDCUBE),
         BOT(ElevatorStates.BOT, TiltStates.BOT, WristStates.BOT);
         
         public ElevatorStates elevatorHeight;

@@ -216,16 +216,20 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	public enum ElevatorStates {
-		MAX(kMaxHeightMeters),
-		TOP(kTopHeightMeters),
-		MID(kMidHeightMeters),
-		BOT(kBotHeightMeters),
-		MIN(kMinHeightMeters);
+		MAX(kMaxHeightMeters, 0),
+		TOPCONE(kTopConeHeightM, 0),
+		TOPCUBE(kTopCubeHeightM, 1),
+		MIDCONE(kMidConeHeightM, 0),
+		MIDCUBE(kMidCubeHeightM, 1),
+		BOT(kBotHeightMeters, 0),
+		MIN(kMinHeightMeters, 0);
 
 		public double height;
+		public int isCone; // 0 is cone, 1 is cube
 
-		ElevatorStates(double height) {
+		ElevatorStates(double height, int isCube) {
 			this.height = height;
+			this.isCone = isCube;
 		}
 	}
 
