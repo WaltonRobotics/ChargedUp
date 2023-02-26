@@ -58,9 +58,9 @@ public class Superstructure extends SubsystemBase{
     }
 
     public void toState(ElevatorStates elevatorState, TiltStates tiltState, WristStates wristState) {
-        m_elevator.toState(elevatorState);
-        m_tilt.toState(tiltState);
-        m_wrist.toState(wristState);
+        m_elevator.toHeight(elevatorState.height);
+        m_tilt.toAngle(tiltState.angle);
+        m_wrist.toAngle(wristState.angle);
     }
 
     public void toState(ScoringStates state) {
