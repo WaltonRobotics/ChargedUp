@@ -47,6 +47,7 @@ import static frc.robot.Constants.SwerveK.*;
 import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 
+import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -629,9 +630,13 @@ public class SwerveSubsystem extends SubsystemBase {
 	 */
 	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
 		var resetCmd = runOnce(() -> {
+			boolean isRed = DriverStation.getAlliance() == Alliance.Red;
+			trajectoryUsed = trajectory;
 			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
-			initialState = PathPlannerUtil.transformStateForAlliance(initialState, DriverStation.getAlliance());
-			trajectoryUsed = PathPlannerUtil.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+			if(isRed){
+				trajectoryUsed = PathPlannerUtil.transformTrajectoryForAlliance(trajectory, Alliance.Red);
+				initialState = PathPlannerUtil.transformStateForAlliance(initialState, Alliance.Red);
+			}
 			resetPose(initialState.poseMeters);
 		});
 
