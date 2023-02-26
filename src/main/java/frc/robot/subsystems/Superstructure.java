@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.auton.Paths.ScoringPoints;
@@ -8,6 +9,9 @@ import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
 import frc.robot.subsystems.TiltSubsystem.TiltStates;
 import frc.robot.subsystems.WristSubsystem.WristStates;
 import static frc.robot.Constants.WristK.*;
+
+import java.util.HashMap;
+
 import static frc.robot.Constants.ElevatorK.*;
 
 public class Superstructure extends SubsystemBase{
@@ -15,6 +19,7 @@ public class Superstructure extends SubsystemBase{
     private final ElevatorSubsystem m_elevator;
     private final WristSubsystem m_wrist;
     private final TheClaw m_claw;
+    HashMap<String, Command> eventMap = new HashMap<>();
 
 
     public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
@@ -22,6 +27,10 @@ public class Superstructure extends SubsystemBase{
         m_elevator = elevator;
         m_wrist = wrist;
         m_claw = claw;
+
+        eventMap.put("score cone", toState(ScoringStates.TOPCONE).andThen(m_claw.release()));
+        eventMap.put("score cube", toState(ScoringStates.TOPCUBE).andThen(m_claw.release()));
+        eventMap.put("pick up", toState(ScoringStates.GROUND_PICK_UP).andThen(m_claw.autoGrab(false)));
     }
 
         /*
@@ -57,10 +66,6 @@ public class Superstructure extends SubsystemBase{
 
     public CommandBase toState(ScoringStates state) {
         return toState(state.elevatorHeight, state.elevatorTilt, state.wristTilt);
-    }
-
-    public CommandBase toTopCube() {
-        return toState(ScoringStates.TOPCONE);
     }
 
     public enum ScoringStates {

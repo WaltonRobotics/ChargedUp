@@ -153,33 +153,21 @@
       ]
     },
     {
-      "position": 0.0,
-      "names": [
-        "event"
-      ]
-    },
-    {
       "position": 2.0681818181818183,
       "names": [
-        "event"
-      ]
-    },
-    {
-      "position": 0.0,
-      "names": [
-        "event"
+        "pick up"
       ]
     },
     {
       "position": 3.0909090909090837,
       "names": [
-        "event"
+        "score cube"
       ]
     },
     {
       "position": 4.045454545454533,
       "names": [
-        "event"
+        "pick up"
       ]
     },
     {
