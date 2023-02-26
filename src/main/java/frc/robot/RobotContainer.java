@@ -94,6 +94,8 @@ public class RobotContainer {
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
         manipulator.rightTrigger().onFalse(claw.release());
+        manipulator.leftTrigger().onTrue(superstructure.toTopCube());
+        manipulator.leftTrigger().onFalse(claw.release());
         // manipulator.a().whileTrue(wrist.toFlat());
         manipulator.b().whileTrue(elevator.toHeight(0.3));
         manipulator.a().whileTrue(tilt.toAngle(15));

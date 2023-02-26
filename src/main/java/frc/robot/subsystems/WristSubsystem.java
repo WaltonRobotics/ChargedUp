@@ -65,10 +65,8 @@ public class WristSubsystem extends SubsystemBase {
   private void setCoast(boolean coast) {
     if (coast) {
       m_motor.setIdleMode(IdleMode.kCoast);
-      // m_isCoast = true;
     } else {
       m_motor.setIdleMode(IdleMode.kBrake);
-      // m_isCoast = false;
     }
   }
 
@@ -219,16 +217,20 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public static enum WristStates { // change degrees later
-    MAX(0),
-    TOP(kTopAngleDegrees),
-    MID(kMidAngleDegrees),
-    BOT(kBotAngleDegrees),
-    MIN(115);
+    MAX(0, 0),
+    TOPCONE(kTopConeAngleDegrees, 0),
+    TOPCUBE(kTopCubeAngleDegrees, 1),
+    MIDCONE(kMidConeAngleDegrees, 0),
+    MIDCUBE(kMidCubeAngleDegrees, 1),
+    BOT(kBotAngleDegrees, 0),
+    MIN(115, 0);
 
     public final double degrees;
+    public final int isCube;
 
-    private WristStates(double degrees) {
+    private WristStates(double degrees, int isCube) {
       this.degrees = degrees;
+      this.isCube = isCube;
     }
   }
 }

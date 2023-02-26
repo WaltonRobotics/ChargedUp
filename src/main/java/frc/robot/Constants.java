@@ -179,8 +179,12 @@ public final class Constants {
 
         public static final double kMaxAngleDegrees = 30;
         public static final double kTopAngleDegrees = 15; // TODO: CHANGE >:(
+        public static final double kTopConeAngleDegrees = 30;
+        public static final double kTopCubeAngleDegrees = 30;
+        public static final double kMidConeAngleDegrees = 23.169;
+        public static final double kMidCubeAngleDegrees = 29.131210;
         public static final double kMidAngleDegrees = 30; // TODO: CHANGE T-T
-        public static final double kBotAngleDegrees = 45; // TODO: CHANGE >:D
+        public static final double kBotAngleDegrees = 0; // TODO: CHANGE >:D
         public static final double kMinAngleDegrees = 0;
         public static final double kMaxVelocity = 20; //degrees per sec
         public static final double kMaxAcceleration = 40.0; //degrees per sec squared
@@ -238,8 +242,12 @@ public final class Constants {
         public static final double kMaxHeightMeters = Units.inchesToMeters(50);   //assuming 0 @ lowest
         public static final double kSafeHeight = Units.inchesToMeters(0);   //where wrist is free to move
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
+        public static final double kTopCubeHeightM = 0.577731;
+        public static final double kTopConeHeightM = 0.552073;
+        public static final double kMidConeHeightM = 0.297262;
+        public static final double kMidCubeHeightM = 0.351891;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); //TODO: change later :DDD
-        public static final double kBotHeightMeters = Units.inchesToMeters(0); // TODO: change later :DDD
+        public static final double kBotHeightMeters = 0; // TODO: change later :DDD
 
         public static final double kMaxVelocity = 3; // Meters Per Second
         public static final double kMaxAcceleration = 3; // Meters Per Second Squared
@@ -308,9 +316,13 @@ public final class Constants {
         public static final double kMinAnglePosition = 0.01;
         public static final double kMaxAnglePosition = 0.2903;
         public static final double kMinAngleDegrees = -37.5;
-        public static final double kBotAngleDegrees = 90 - TiltK.kBotAngleDegrees; // TODO: CHECK IF RIGHT
+        public static final double kBotAngleDegrees = -23;
         public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
         public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
+        public static final double kTopConeAngleDegrees = 30.897095;
+        public static final double kTopCubeAngleDegrees = 7.010672;
+        public static final double kMidConeAngleDegrees = 21.788074;
+        public static final double kMidCubeAngleDegrees = -10.847931;
         public static final double kMaxAngleDegrees = 82;
         public static final double kGearRatio = (80.0/1) / (16.0/22.0); // change later
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
