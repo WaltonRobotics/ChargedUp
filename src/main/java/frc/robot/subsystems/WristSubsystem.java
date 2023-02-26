@@ -22,7 +22,7 @@ import static frc.robot.Constants.*;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
-  private final CANSparkMax m_motor = new CANSparkMax(kCANID, MotorType.kBrushless); 
+  private final CANSparkMax m_motor = new CANSparkMax(kCANID, MotorType.kBrushless);
   private final SparkMaxAbsoluteEncoder m_absEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
   private double m_targetAngle = 0;
   private double m_ffEffort = 0;
@@ -110,10 +110,17 @@ public class WristSubsystem extends SubsystemBase {
     return getDegrees() >= m_maxDegrees;
   }
 
+  private void i_setTarget(double targetAngle) {
+    m_targetAngle = MathUtil.clamp(targetAngle, kMinAngleDegrees, m_maxDegrees);
+  }
+
   /*
    * Sets the power in velocity or voltage of the wrist motor with soft limits
+   * 
    * @param power The velocity/power to set the wrist to
-   * @param voltage Whether or not power should be in velocity (false) or voltage (true)
+   * 
+   * @param voltage Whether or not power should be in velocity (false) or voltage
+   * (true)
    */
   private void setPower(double power, boolean voltage) {
     double output = power;
@@ -127,7 +134,7 @@ public class WristSubsystem extends SubsystemBase {
       System.out.println("TopLimit!!!");
     }
     if (voltage) {
-      m_motor.setVoltage(output * 12);
+      m_motor.setVoltage(output);
     } else {
       m_motor.set(output);
     }
@@ -135,20 +142,23 @@ public class WristSubsystem extends SubsystemBase {
 
   /*
    * @return The total effort to reach the setpointAngle
+   * 
    * @param setpointAngle The angle to go to
    */
-  private double getEffortForAngle(double setpointAngle) {
-    var setpointAngleRads = Units.degreesToRadians(setpointAngle);
-
-    m_pdEffort = m_controller.calculate(Units.degreesToRadians(getDegrees()), setpointAngleRads);
-    // m_ffEffort = kFeedforward.calculate(setpointAngleRads,
-    // m_controller.getGoal().velocity);
+  private double getEffortForTarget(double setpointAngle) {
+    m_pdEffort = m_controller.calculate(getDegrees(), setpointAngle);
+    var pdSetpoint = m_controller.getSetpoint();
+		if (pdSetpoint.velocity != 0) {
+			m_ffEffort = kS * Math.signum(m_pdEffort);
+			// m_ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
+		}
     m_totalEffort = m_ffEffort + m_pdEffort;
     return m_pdEffort;
   }
 
   /*
    * @return Cmd to move the wrist with stick
+   * 
    * @param power to apply to wrist motor
    */
   public CommandBase teleopCmd(DoubleSupplier power) {
@@ -162,6 +172,7 @@ public class WristSubsystem extends SubsystemBase {
 
   /*
    * @return Cmd to move wrist to a specified angle
+   * 
    * @param angle The angle to move to
    */
   public CommandBase toAngle(DoubleSupplier angle) {
@@ -176,21 +187,17 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public CommandBase toAngle(double angle) {
-    return run(()-> {
-      m_targetAngle = angle;
-      m_pdEffort = m_controller.calculate(getDegrees(), m_targetAngle);
-      m_totalEffort = m_ffEffort + m_pdEffort;
-
-      setPower(m_totalEffort, true);
-    })
-    .until(m_controller::atSetpoint)
-    .withName("ToAngle");
-  }
-
-  public CommandBase toFlat(){
-    return run(()->{
-      setPower(getEffortForAngle(0), true);
-    }).finallyDo((intr) -> setPower(0, false));
+    return runOnce(() -> {
+			m_controller.reset(getDegrees());
+			i_setTarget(angle);
+		}).andThen(run(() -> {
+			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -10, 10);
+			setPower(effort,true);
+		}))
+		.finallyDo((intr) -> {
+			m_motor.set(0);
+		})
+				.withName("ToAngle");
   }
 
   public CommandBase toState(WristStates state) {

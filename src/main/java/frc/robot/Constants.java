@@ -124,7 +124,7 @@ public final class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 1;
             public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(3.4) ;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(3.603) ;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -134,7 +134,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(147.65);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(146.953);
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -144,7 +144,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(73.38);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(74.091);
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -156,7 +156,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(41.375) ;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(42.919) ;
             public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -295,15 +295,14 @@ public final class Constants {
         //lower: .527
         public static final int kCANID = 21;
 
-        public static final int kCurrLimit = 35;
+        public static final int kCurrLimit = 20;
         public static final double kAbsEncoderTicksPerRotation = 1024; // change later
-        public static final double kP = 0.6;
-        public static final double kD = 0.05;
-        public static final double kS = 1.2;    // change values later
-        public static final double kMaxVelocity = 0.5;
-        public static final double kMaxAcceleration = 1; // change later
-        public static final TrapezoidProfile.Constraints kConstraints =
-            new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
+        public static final double kP = .096;
+        public static final double kD = 0.00;
+        public static final double kS = 1.5;    // change values later
+        public static final double kMaxVelocity = 8000;  //deg/sec
+        public static final double kMaxAcceleration = 8800; // deg/sec^2
+        
         public static final double kZeroDegOffset = 5.5;
         public static final double kMinAnglePosition = 0.01;
         public static final double kMaxAnglePosition = 0.2903;
@@ -312,12 +311,14 @@ public final class Constants {
         public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
         public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
         public static final double kMaxAngleDegrees = 82;
-        public static final double kGearRatio = (80.0/1) / (16.0/22.0); // change later
-        public static final double kDrumRadiusMeters = Units.inchesToMeters(2); // change later
+        public static final double kGearRatio = (80.0/1) / (16.0/22.0); 
+        public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double KvRadPerSecPerVolt = (DCMotor.getNEO(1).KvRadPerSecPerVolt / kGearRatio) + 0; // 0 for later fudge factor
 
 
+        public static final TrapezoidProfile.Constraints kConstraints =
+            new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
         public static final ArmFeedforward kFeedforward = new ArmFeedforward(0.1, 0, KvRadPerSecPerVolt);
         // public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(0.5, DCMotor.getNEO(1).KvRadPerSecPerVolt * kGearRatio);
     }
