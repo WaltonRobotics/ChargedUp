@@ -70,7 +70,7 @@ public class Superstructure extends SubsystemBase{
 
     public enum ScoringStates {
         GROUND_PICK_UP(ElevatorStates.MIN, TiltStates.MAX, WristStates.MAX),
-        SUBSTATION_PICK_UP(ElevatorStates.MAX, TiltStates.MIN, WristStates.MIN), // TODO: fix
+        SUBSTATION_PICK_UP(ElevatorStates.SUBSTATION, TiltStates.SUBSTATION, WristStates.SUBSTATION), // TODO: fix
         TOPCONE(ElevatorStates.TOPCONE, TiltStates.TOPCONE, WristStates.TOPCONE),
         TOPCUBE(ElevatorStates.TOPCUBE, TiltStates.TOPCUBE, WristStates.TOPCUBE),
         MIDCONE(ElevatorStates.MIDCONE, TiltStates.MIDCONE, WristStates.MIDCONE),

@@ -185,6 +185,7 @@ public final class Constants {
         public static final double kMidCubeAngleDegrees = 29.131210;
         public static final double kMidAngleDegrees = 30; // TODO: CHANGE T-T
         public static final double kBotAngleDegrees = 0; // TODO: CHANGE >:D
+        public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
         public static final double kMaxVelocity = 20; //degrees per sec
         public static final double kMaxAcceleration = 40.0; //degrees per sec squared
@@ -248,6 +249,7 @@ public final class Constants {
         public static final double kMidCubeHeightM = 0.351891;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); //TODO: change later :DDD
         public static final double kBotHeightMeters = 0; // TODO: change later :DDD
+        public static final double kSubstationHeightM = 0.256722;
 
         public static final double kMaxVelocity = 3; // Meters Per Second
         public static final double kMaxAcceleration = 3; // Meters Per Second Squared
@@ -322,6 +324,7 @@ public final class Constants {
         public static final double kTopCubeAngleDegrees = 7.010672;
         public static final double kMidConeAngleDegrees = 21.788074;
         public static final double kMidCubeAngleDegrees = -10.847931;
+        public static final double kSubstationAngleDegrees = -8.274536;
         public static final double kMaxAngleDegrees = 82;
         public static final double kGearRatio = (80.0/1) / (16.0/22.0); 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);

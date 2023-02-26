@@ -217,6 +217,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	public enum ElevatorStates {
 		MAX(kMaxHeightMeters, 0),
+		SUBSTATION(kSubstationHeightM, 0),
 		TOPCONE(kTopConeHeightM, 0),
 		TOPCUBE(kTopCubeHeightM, 1),
 		MIDCONE(kMidConeHeightM, 0),

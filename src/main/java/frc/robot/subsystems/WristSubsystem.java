@@ -225,6 +225,7 @@ public class WristSubsystem extends SubsystemBase {
 
   public static enum WristStates { // change degrees later
     MAX(0, 0),
+    SUBSTATION(kSubstationAngleDegrees, 0),
     TOPCONE(kTopConeAngleDegrees, 0),
     TOPCUBE(kTopCubeAngleDegrees, 1),
     MIDCONE(kMidConeAngleDegrees, 0),

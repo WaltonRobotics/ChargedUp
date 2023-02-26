@@ -185,6 +185,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public enum TiltStates {
 		MAX(kMaxAngleDegrees, 0),
+		SUBSTATION(kSubstationAngleDegrees, 0),
 		TOPCONE(kTopConeAngleDegrees, 0),
 		TOPCUBE(kTopCubeAngleDegrees, 1),
 		MIDCONE(kMidConeAngleDegrees, 0),
