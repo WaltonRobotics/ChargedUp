@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -84,7 +83,7 @@ public class TiltSubsystem extends SubsystemBase {
 			m_ffEffort = kS * Math.signum(m_pdEffort);
 			// m_ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
 		}
-		double totalEffort = m_ffEffort + m_pdEffort;
+		m_totalEffort = m_ffEffort + m_pdEffort;
 		return m_pdEffort;
 	}
 

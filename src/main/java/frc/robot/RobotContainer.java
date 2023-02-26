@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.WristK;
 import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
@@ -97,9 +98,11 @@ public class RobotContainer {
         manipulator.leftTrigger().onTrue(superstructure.toTopCube());
         manipulator.leftTrigger().onFalse(claw.release());
         // manipulator.a().whileTrue(wrist.toFlat());
+        manipulator.x().whileTrue(wrist.toAngle(0));
         manipulator.b().whileTrue(elevator.toHeight(0.3));
         manipulator.a().whileTrue(tilt.toAngle(15));
         manipulator.y().whileTrue(tilt.toAngle(0));
+        manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
     }
     public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
