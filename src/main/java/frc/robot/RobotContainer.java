@@ -96,7 +96,7 @@ public class RobotContainer {
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
         manipulator.rightTrigger().onFalse(claw.release());
-        manipulator.leftTrigger().onTrue(superstructure.toState(ScoringStates.TOPCUBE));
+        manipulator.leftTrigger().onTrue(new InstantCommand(() -> superstructure.toState(ScoringStates.TOPCUBE)));
         manipulator.leftTrigger().onFalse(claw.release());
         // manipulator.a().whileTrue(wrist.toFlat());
         manipulator.x().whileTrue(wrist.toAngle(0));
