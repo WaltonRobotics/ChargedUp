@@ -58,13 +58,13 @@ public class Superstructure extends SubsystemBase{
     }
 
     public void toState(ElevatorStates elevatorState, TiltStates tiltState, WristStates wristState) {
-        m_elevator.toState(elevatorState);
-        m_tilt.toState(tiltState);
-        m_wrist.toState(wristState);
+        m_elevator.toHeight(elevatorState.height);
+        m_tilt.toAngle(tiltState.angle);
+        m_wrist.toAngle(wristState.angle);
     }
 
-    public void toState(ScoringStates state) {
-        toState(state.elevatorHeight, state.elevatorTilt, state.wristTilt);
+    public CommandBase toState(ScoringStates state) {
+        return runOnce(()-> toState(state.elevatorHeight, state.elevatorTilt, state.wristAngle));
     }
 
     public enum ScoringStates {
@@ -78,12 +78,12 @@ public class Superstructure extends SubsystemBase{
         
         public ElevatorStates elevatorHeight;
         public TiltStates elevatorTilt;
-        public WristStates wristTilt;
+        public WristStates wristAngle;
 
         private ScoringStates(ElevatorStates elevatorHeight, TiltStates elevatorTilt, WristStates wristTilt) {
             this.elevatorHeight = elevatorHeight;
             this.elevatorTilt = elevatorTilt;
-            this.wristTilt = wristTilt;
+            this.wristAngle = wristTilt;
         }
     }
 

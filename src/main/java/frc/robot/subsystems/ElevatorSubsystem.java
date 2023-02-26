@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
@@ -211,9 +210,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		.withName("AutoToHeight");
 	}
 
-	public CommandBase toState(ElevatorStates state) {
-		return toHeight(state.height);
-	}
+	// public CommandBase toState(ElevatorStates state) {
+	// 	return toHeight(state.height);
+	// }
 
 	public enum ElevatorStates {
 		MAX(kMaxHeightMeters, 0),

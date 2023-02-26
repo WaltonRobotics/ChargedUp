@@ -22,6 +22,7 @@ import frc.robot.auton.Paths.ReferencePoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
+import static frc.robot.subsystems.Superstructure.ScoringStates.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -96,8 +97,8 @@ public class RobotContainer {
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
         manipulator.rightTrigger().onFalse(claw.release());
-        manipulator.leftTrigger().onTrue(new InstantCommand(() -> superstructure.toState(ScoringStates.TOPCUBE)));
-        manipulator.leftTrigger().onFalse(claw.release());
+        manipulator.leftTrigger().onTrue(claw.release());
+        manipulator.leftBumper().whileTrue(superstructure.toState(TOPCUBE));
         // manipulator.a().whileTrue(wrist.toFlat());
         manipulator.x().whileTrue(wrist.toAngle(0));
         manipulator.b().whileTrue(elevator.toHeight(0.3));

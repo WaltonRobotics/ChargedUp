@@ -199,7 +199,7 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public CommandBase toState(WristStates state) {
-    return toAngle(state.degrees);
+    return toAngle(state.angle);
   }
 
   @Override
@@ -233,11 +233,11 @@ public class WristSubsystem extends SubsystemBase {
     BOT(kBotAngleDegrees, 0),
     MIN(115, 0);
 
-    public final double degrees;
+    public final double angle;
     public final int isCube;
 
-    private WristStates(double degrees, int isCube) {
-      this.degrees = degrees;
+    private WristStates(double angle, int isCube) {
+      this.angle = angle;
       this.isCube = isCube;
     }
   }
