@@ -192,6 +192,7 @@ public class WristSubsystem extends SubsystemBase {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -10, 10);
 			setPower(effort,true);
 		}))
+    .withTimeout(2)
 		.finallyDo((intr) -> {
 			m_motor.set(0);
 		})

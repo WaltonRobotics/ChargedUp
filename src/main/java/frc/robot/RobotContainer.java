@@ -99,8 +99,8 @@ public class RobotContainer {
         manipulator.povRight().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
         manipulator.rightTrigger()
                 .whileTrue(claw.autoGrab(true));
-        manipulator.leftTrigger().whileTrue((tilt.toAngle(30))
-                .andThen(elevator.toHeight(0.577731))
+        manipulator.leftTrigger().whileTrue((tilt.toAngle(29))
+                .alongWith(elevator.toHeight(0.577731))
                 .andThen(wrist.toAngle(7.010672)));
         manipulator.leftTrigger().onFalse(claw.release());
         // manipulator.a().whileTrue(wrist.toFlat());

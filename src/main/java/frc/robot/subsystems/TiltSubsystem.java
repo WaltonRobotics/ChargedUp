@@ -143,7 +143,7 @@ public class TiltSubsystem extends SubsystemBase {
 		}).andThen(run(() -> {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
 			setVoltage(effort);
-		}))
+		})).withTimeout(2)
 		.finallyDo((intr) -> {
 			m_motor.set(0);
 		})
