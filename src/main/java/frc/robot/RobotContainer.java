@@ -110,6 +110,7 @@ public class RobotContainer {
         manipulator.y().whileTrue(tilt.toAngle(0));
         manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
     }
+
     public void mapAutonCommands() {
         AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
         AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
@@ -147,6 +148,12 @@ public class RobotContainer {
 
     public void mapAutonEvents() {
         autonEventMap.put("testEvent", AutonFactory.TestEvent(swerve));
+        autonEventMap.put("score cone", new InstantCommand(() -> superstructure.toState(ScoringStates.TOPCONE))
+                .andThen(claw.release()));
+        autonEventMap.put("score cube", new InstantCommand(() -> superstructure.toState(ScoringStates.TOPCUBE))
+                .andThen(claw.release()));
+        autonEventMap.put("pick up", new InstantCommand(() -> superstructure.toState(ScoringStates.GROUND_PICK_UP))
+                .andThen(claw.autoGrab(false)));
         // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
 

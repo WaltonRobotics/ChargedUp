@@ -20,7 +20,6 @@ public class Superstructure extends SubsystemBase{
     private final ElevatorSubsystem m_elevator;
     private final WristSubsystem m_wrist;
     private final TheClaw m_claw;
-    HashMap<String, Command> eventMap = new HashMap<>();
 
 
     public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
@@ -28,17 +27,13 @@ public class Superstructure extends SubsystemBase{
         m_elevator = elevator;
         m_wrist = wrist;
         m_claw = claw;
-
-        eventMap.put("score cone", new InstantCommand(() -> toState(ScoringStates.TOPCONE)).andThen(m_claw.release()));
-        eventMap.put("score cube", new InstantCommand(() -> toState(ScoringStates.TOPCUBE)).andThen(m_claw.release()));
-        eventMap.put("pick up", new InstantCommand(() -> toState(ScoringStates.GROUND_PICK_UP)).andThen(m_claw.autoGrab(false)));
     }
 
-        /*
+    /*
      * Dynamically change the max (downwards) angle of the wrist
      * in degrees based on height and tilt of the elevator
      */
-    public void limitWristDynamic(){
+    public void limitWristDynamic() {
         double dynamicLimit = 0;
         if(m_elevator.getActualHeightRaw() >= kSafeHeight){
             dynamicLimit = kMaxAngleDegrees;
@@ -46,6 +41,16 @@ public class Superstructure extends SubsystemBase{
         m_wrist.setMaxDegrees(dynamicLimit);
     }
 
+    // public void limitWristDynamic() {
+    //     double theta = m_tilt.getDegrees();
+    //     double height = m_elevator.getActualHeightRaw(); // TODO: find claw height
+    //     // idk how else to do it but idt this is right
+    //     double dynamicLimit = 180 - theta - Math.acos(height * (Math.cos(theta) - 7) / 20);
+    //     if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
+    //         dynamicLimit = kMaxAngleDegrees;
+    //     }
+    //     m_wrist.setMaxDegrees(dynamicLimit);
+    // }
 
     /*
      * As soon as elevator is tilted,
@@ -69,7 +74,7 @@ public class Superstructure extends SubsystemBase{
 
     public enum ScoringStates {
         GROUND_PICK_UP(ElevatorStates.MIN, TiltStates.MAX, WristStates.MAX),
-        SUBSTATION_PICK_UP(ElevatorStates.SUBSTATION, TiltStates.SUBSTATION, WristStates.SUBSTATION), // TODO: fix
+        SUBSTATION_PICK_UP(ElevatorStates.SUBSTATION, TiltStates.SUBSTATION, WristStates.SUBSTATION),
         TOPCONE(ElevatorStates.TOPCONE, TiltStates.TOPCONE, WristStates.TOPCONE),
         TOPCUBE(ElevatorStates.TOPCUBE, TiltStates.TOPCUBE, WristStates.TOPCUBE),
         MIDCONE(ElevatorStates.MIDCONE, TiltStates.MIDCONE, WristStates.MIDCONE),
