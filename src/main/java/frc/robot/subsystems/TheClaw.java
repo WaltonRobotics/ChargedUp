@@ -46,6 +46,10 @@ public class TheClaw extends SubsystemBase {
         return runOnce(() -> claw.set(true));
     }
 
+    public CommandBase grab(){
+        return runOnce(() -> claw.set(false));
+    }
+
     @Override
     public void periodic(){
        nte_isClosed.setBoolean(isClosed);

@@ -75,41 +75,77 @@ public class RobotContainer {
                 configureButtonBindings();
         }
 
-    /**
-     * Use this method to define your button->command mappings. Buttons can be
-     * created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-     * it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
-    private void configureButtonBindings() {
-        /* Driver Buttons */
-        driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-        driver.leftTrigger()
-                .whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
-        // driver.x().onTrue(swerve.rotateAboutPoint(90));
-        // driver.b().onTrue(new InstantCommand(() -> swerve.resetOdometryPose()));
-        driver.leftBumper().whileTrue(swerve.autoScore());
-        driver.x().whileTrue(new InstantCommand(() -> swerve.autoScore(PPAutoscoreClass.redNotBumpy, ReferencePoints.tag1)));
-        driver.y().whileTrue(new InstantCommand(() -> swerve.autoScore(PPAutoscoreClass.redNotBumpy, ReferencePoints.tag2)));
-        driver.b().whileTrue(new InstantCommand(() -> swerve.autoScore(PPAutoscoreClass.redNotBumpy, ReferencePoints.tag3)));
-        
-        manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); // cone
-        manipulator.povRight().onTrue(new InstantCommand(() -> leds.handle(1))); // cube
-        manipulator.rightTrigger()
-                .whileTrue(claw.autoGrab(true));
-        manipulator.leftTrigger().whileTrue((tilt.toAngle(29))
-                .alongWith(elevator.toHeight(0.577731))
-                .andThen(wrist.toAngle(7.010672)));
-        manipulator.leftTrigger().onFalse(claw.release());
-        // manipulator.a().whileTrue(wrist.toFlat());
-        manipulator.x().whileTrue(wrist.toAngle(0));
-        manipulator.b().whileTrue(elevator.toHeight(0.3));
-        manipulator.a().whileTrue(tilt.toAngle(15));
-        manipulator.y().whileTrue(tilt.toAngle(0));
-        manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
-    }
+        /**
+         * Use this method to define your button->command mappings. Buttons can be
+         * created by
+         * instantiating a {@link GenericHID} or one of its subclasses ({@link
+         * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+         * it to a {@link
+         * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+         */
+        private void configureButtonBindings() {
+                /* Driver Buttons */
+                driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+                driver.leftTrigger()
+                                .whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
+                driver.x().onTrue(swerve.rotateAboutPoint(90));
+                driver.b().onTrue(new InstantCommand(() -> swerve.resetOdometryPose()));
+                driver.leftBumper().whileTrue(swerve.autoScore());
+
+                // manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); //
+                // cone
+                // manipulator.povRight().onTrue(new InstantCommand(() -> leds.handle(1))); //
+                // cube
+                manipulator.rightTrigger()
+                                .whileTrue(claw.autoGrab(true));
+                manipulator.leftTrigger().onTrue(claw.release());
+                manipulator.rightBumper().onTrue(claw.)
+
+                manipulator.povUp().whileTrue((tilt.toAngle(29)) // top cube
+                                .alongWith(elevator.toHeight(0.577731))
+                                .alongWith(wrist.toAngle(7.010672))
+                                .andThen(claw.release()));
+
+                manipulator.povLeft().whileTrue((tilt.toAngle(TiltK.kMidCubeAngleDegrees)) // mid cube
+                                .alongWith(elevator.toHeight(ElevatorK.kMidCubeHeightM))
+                                .alongWith(wrist.toAngle(WristK.kMidCubeAngleDegrees))
+                                .andThen(claw.release()));
+
+                manipulator.y().whileTrue((elevator.toHeight(0.723719)) // top cone
+                                .alongWith(tilt.toAngle(27.7))
+                                .alongWith(wrist.toAngle(-10))
+                                .andThen(claw.release()));
+
+                manipulator.x().whileTrue((tilt.toAngle(TiltK.kMidConeAngleDegrees)) // mid cone
+                                .alongWith(elevator.toHeight(ElevatorK.kMidConeHeightM))
+                                .alongWith(wrist.toAngle(WristK.kMidConeAngleDegrees))
+                                .andThen(claw.release()));
+
+                manipulator.povDown().whileTrue((tilt.toAngle(TiltK.kBotAngleDegrees)) // bottom
+                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters))
+                                .alongWith(wrist.toAngle(WristK.kBotAngleDegrees))
+                                .andThen(claw.release()));
+                manipulator.a().whileTrue((tilt.toAngle(TiltK.kBotAngleDegrees)) // bottom
+                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters))
+                                .alongWith(wrist.toAngle(WristK.kBotAngleDegrees))
+                                .andThen(claw.release()));
+
+                manipulator.povRight().whileTrue((tilt.toAngle(TiltK.kSubstationAngleDegrees)) // substation
+                                .alongWith(elevator.toHeight(ElevatorK.kSubstationHeightM))
+                                .alongWith(wrist.toAngle(0))
+                                .alongWith(claw.autoGrab(false)));
+
+                manipulator.leftBumper().whileTrue((wrist.toAngle(-18)) // to zero
+                                .alongWith(elevator.toHeight(ElevatorK.kMinHeightMeters)
+                                                .andThen(tilt.toAngle(0))));
+
+                // manipulator.a().whileTrue(wrist.toFlat());
+                // manipulator.x().whileTrue(wrist.toAngle(0));
+                // manipulator.b().whileTrue(elevator.toHeight(0.3));
+                // manipulator.a().whileTrue(tilt.toAngle(15));
+                // manipulator.y().whileTrue(tilt.toAngle(0));
+                manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
+        }
 
         public void mapAutonCommands() {
                 AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
