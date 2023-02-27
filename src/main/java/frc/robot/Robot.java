@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
     Constants.AutoConstants.kPXController = SmartDashboard.getNumber("PX Controller", Constants.AutoConstants.kPXController);
     Constants.AutoConstants.kPYController = SmartDashboard.getNumber("PY Controller", Constants.AutoConstants.kPYController);
     Constants.AutoConstants.kPThetaController = SmartDashboard.getNumber("PTheta Controller", Constants.AutoConstants.kPThetaController);
+    // m_robotContainer.superstructure.limitWristDynamic();
     CommandScheduler.getInstance().run();
   }
 

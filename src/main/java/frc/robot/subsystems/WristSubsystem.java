@@ -224,7 +224,7 @@ public class WristSubsystem extends SubsystemBase {
     nte_maxLimit.setBoolean(atMaxLimit());
   }
 
-  public static enum WristStates { // change degrees later
+  public static enum WristStates {
     MAX(0, 0),
     SUBSTATION(kSubstationAngleDegrees, 0),
     TOPCONE(kTopConeAngleDegrees, 0),

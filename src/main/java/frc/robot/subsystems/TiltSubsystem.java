@@ -87,7 +87,7 @@ public class TiltSubsystem extends SubsystemBase {
 		return m_pdEffort;
 	}
 
-	private double getDegrees() {
+	public double getDegrees() {
 		var rawDeg = (m_absoluteEncoder.get() * 360);
 		return MathUtil.clamp(rawDeg, 0, kMaxAngleDegrees); // get returns rotations, so rotations * (360 degrees / 1 rotation)
 	}
