@@ -157,7 +157,7 @@ public class Paths {
 		}
 	}
 
-	public static class ScoringOptions {
+	public static class ScoringOptionsRed {
 		public enum ScoringOptionRed {
 			CONE_1(ReferencePoints.ScoringPoints.redCone1, true),
 			CUBE_1(ReferencePoints.ScoringPoints.redCube1, false),
