@@ -203,7 +203,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts, kVoltageCompSaturationVolts);
 			m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 		}))
-		.withTimeout(1.25)
+		.withTimeout(2)
 		// .until(() -> m_controller.atSetpoint())
 		.finallyDo((intr)-> {
 			m_right.set(ControlMode.PercentOutput, 0);
