@@ -62,9 +62,12 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    Constants.AutoConstants.kPXController = SmartDashboard.getNumber("PX Controller", Constants.AutoConstants.kPXController);
-    Constants.AutoConstants.kPYController = SmartDashboard.getNumber("PY Controller", Constants.AutoConstants.kPYController);
-    Constants.AutoConstants.kPThetaController = SmartDashboard.getNumber("PTheta Controller", Constants.AutoConstants.kPThetaController);
+    Constants.AutoConstants.kPXController = SmartDashboard.getNumber("PX Controller",
+        Constants.AutoConstants.kPXController);
+    Constants.AutoConstants.kPYController = SmartDashboard.getNumber("PY Controller",
+        Constants.AutoConstants.kPYController);
+    Constants.AutoConstants.kPThetaController = SmartDashboard.getNumber("PTheta Controller",
+        Constants.AutoConstants.kPThetaController);
     // m_robotContainer.superstructure.limitWristDynamic();
     CommandScheduler.getInstance().run();
   }
@@ -72,7 +75,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    //m_swerve.resetDriveEncoders();;
+    // m_swerve.resetDriveEncoders();;
     m_robotContainer.turnOffRumble();
 
   }

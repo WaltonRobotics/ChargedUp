@@ -11,12 +11,11 @@ import static frc.robot.Constants.WristK.*;
 
 import static frc.robot.Constants.ElevatorK.*;
 
-public class Superstructure extends SubsystemBase{
+public class Superstructure extends SubsystemBase {
     private final TiltSubsystem m_tilt;
     private final ElevatorSubsystem m_elevator;
     private final WristSubsystem m_wrist;
     private final TheClaw m_claw;
-
 
     public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
         m_tilt = tilt;
@@ -31,29 +30,30 @@ public class Superstructure extends SubsystemBase{
      */
     public void limitWristDynamic() {
         double dynamicLimit = 0;
-        if(m_elevator.getActualHeightRaw() >= kSafeHeight){
+        if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
             dynamicLimit = kMaxAngleDegrees;
         }
         m_wrist.setMaxDegrees(dynamicLimit);
     }
 
     // public void limitWristDynamic() {
-    //     double theta = m_tilt.getDegrees();
-    //     double height = m_elevator.getActualHeightRaw(); // TODO: find claw height
-    //     // idk how else to do it but idt this is right
-    //     double dynamicLimit = 180 - theta - Math.acos(height * (Math.cos(theta) - 7) / 20);
-    //     if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
-    //         dynamicLimit = kMaxAngleDegrees;
-    //     }
-    //     m_wrist.setMaxDegrees(dynamicLimit);
+    // double theta = m_tilt.getDegrees();
+    // double height = m_elevator.getActualHeightRaw(); // TODO: find claw height
+    // // idk how else to do it but idt this is right
+    // double dynamicLimit = 180 - theta - Math.acos(height * (Math.cos(theta) - 7)
+    // / 20);
+    // if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
+    // dynamicLimit = kMaxAngleDegrees;
+    // }
+    // m_wrist.setMaxDegrees(dynamicLimit);
     // }
 
     /*
      * As soon as elevator is tilted,
      * change lower limit of elevator
      */
-    public void limitElevatorDynamic(){
-        if(!m_tilt.atReverseLimit()){
+    public void limitElevatorDynamic() {
+        if (!m_tilt.atReverseLimit()) {
             m_elevator.setDynamicLimit(kMinHeightMeters + Units.inchesToMeters(2));
         }
     }
@@ -72,7 +72,7 @@ public class Superstructure extends SubsystemBase{
         MIDCONE(ElevatorStates.MIDCONE, TiltStates.MIDCONE, WristStates.MIDCONE),
         MIDCUBE(ElevatorStates.MIDCUBE, TiltStates.MIDCUBE, WristStates.MIDCUBE),
         BOT(ElevatorStates.BOT, TiltStates.BOT, WristStates.BOT);
-        
+
         public ElevatorStates elevatorHeight;
         public TiltStates elevatorTilt;
         public WristStates wristAngle;
@@ -84,43 +84,46 @@ public class Superstructure extends SubsystemBase{
         }
     }
 
-
-
     // aka autoScore
     // TODO: pass in swerve subsystem, it's not included in this class
     /**
-     * @param state high, mid, or low
-     * @param place where to score :D (also includes cone/cube mode)
+     * @param state   high, mid, or low
+     * @param place   where to score :D (also includes cone/cube mode)
      * @param isBumpy if it is bumpy or not
      * @return command to autoscore
      */
-    // public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces place, boolean isBumpy) {
-    //     var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
-    //     var autoScore = runOnce(() -> {
-    //         if(isBumpy) {
-    //             if(DriverStation.getAlliance().equals(Alliance.Red)) {
-    //                 m_swerve.autoScore(PPAutoscoreClass.redBumpy, ScoringPoints.toPathPoint(place.redPt));
-    //             }
-    //             else {
-    //                 m_swerve.autoScore(PPAutoscoreClass.blueBumpy, ScoringPoints.toPathPoint(place.redPt));
-    //             }
-    //         }
-    //         else {
-    //             if(DriverStation.getAlliance().equals(Alliance.Red)) {
-    //                 m_swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.toPathPoint(place.redPt));
-    //             }
-    //             else {
-    //                 m_swerve.autoScore(PPAutoscoreClass.blueNotBumpy, ScoringPoints.toPathPoint(place.redPt));
-    //             }
-    //         }
-    //     });
-    //     var elevatorHeight = runOnce(() -> {
-    //         m_elevator.setState(state.elevatorHeight);
-    //     });
-    //     var finalPos = runOnce(() -> {
-    //         m_tilt.setTiltTarget(state.elevatorTilt.angle); // finish later maybe?
-    //         m_wrist.toPosition(.5, state.wristTilt);
-    //     });
-    //     return leds.andThen(autoScore).andThen(elevatorHeight).andThen(finalPos);
+    // public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces
+    // place, boolean isBumpy) {
+    // var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
+    // var autoScore = runOnce(() -> {
+    // if(isBumpy) {
+    // if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    // m_swerve.autoScore(PPAutoscoreClass.redBumpy,
+    // ScoringPoints.toPathPoint(place.redPt));
+    // }
+    // else {
+    // m_swerve.autoScore(PPAutoscoreClass.blueBumpy,
+    // ScoringPoints.toPathPoint(place.redPt));
+    // }
+    // }
+    // else {
+    // if(DriverStation.getAlliance().equals(Alliance.Red)) {
+    // m_swerve.autoScore(PPAutoscoreClass.redNotBumpy,
+    // ScoringPoints.toPathPoint(place.redPt));
+    // }
+    // else {
+    // m_swerve.autoScore(PPAutoscoreClass.blueNotBumpy,
+    // ScoringPoints.toPathPoint(place.redPt));
+    // }
+    // }
+    // });
+    // var elevatorHeight = runOnce(() -> {
+    // m_elevator.setState(state.elevatorHeight);
+    // });
+    // var finalPos = runOnce(() -> {
+    // m_tilt.setTiltTarget(state.elevatorTilt.angle); // finish later maybe?
+    // m_wrist.toPosition(.5, state.wristTilt);
+    // });
+    // return leds.andThen(autoScore).andThen(elevatorHeight).andThen(finalPos);
     // }
 }
