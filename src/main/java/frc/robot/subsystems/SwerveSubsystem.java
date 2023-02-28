@@ -405,55 +405,55 @@ public class SwerveSubsystem extends SubsystemBase {
 		if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone1.getY()) {
 			return Paths.ScoringOptionsRed.ScoringOptionRed.CONE_1;
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCube2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone1.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CUBE_1;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CONE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone3.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube2.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CONE_2;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CUBE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCone1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone2.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCone4.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone3.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.COOP_CONE_1;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CONE_2;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCube5.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCube5.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone4.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.COOP_CUBE_1;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.COOP_CONE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCube1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCone6.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone6.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCube5.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.COOP_CONE_2;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.COOP_CUBE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone3.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone2.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone7.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone6.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CONE_3;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.COOP_CONE_2;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCube2.getY()) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCube8.getY()) {
 			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone3.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CUBE_2;
 			}
@@ -462,7 +462,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			}
 		}
 		else {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube2.getY())) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone9.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube2.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionRed.CONE_4;
 			}
 			else {
@@ -477,56 +477,56 @@ public class SwerveSubsystem extends SubsystemBase {
 		if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone1.getY()) {
 			return Paths.ScoringOptionsRed.ScoringOptionBlue.CONE_1;
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCube2.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone1.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CUBE_1;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CONE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone3.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube2.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CONE_2;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CUBE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCone1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone2.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCone4.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone3.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.COOP_CONE_1;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CONE_2;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCube5.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCube5.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone4.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.COOP_CUBE_1;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.COOP_CONE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCube1.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCone6.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone6.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCube5.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.COOP_CONE_2;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.COOP_CUBE_1;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone3.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone2.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone7.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone7.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone6.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CONE_3;
 			}
 			else {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.COOP_CONE_2;
 			}
 		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCube2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone3.getY())) {
+		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCube8.getY()) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube8.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone7.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CUBE_2;
 			}
 			else {
@@ -534,7 +534,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			}
 		}
 		else {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube2.getY())) {
+			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone9.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube8.getY())) {
 				return Paths.ScoringOptionsRed.ScoringOptionBlue.CONE_4;
 			}
 			else {
@@ -553,14 +553,14 @@ public class SwerveSubsystem extends SubsystemBase {
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
 
-	public CommandBase autoScore(List<PathPoint> path, PathPoint endPt) {
+	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
 		// runOnce(curPos = thing; ppt = generate(thing))
 
-		var pathCmd = runOnce(() -> {
-			// delete later! 
+		PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
+		var pathCmd = runOnce(() -> { 
 			Pose2d firstPt = new Pose2d(12.94, 4.68, new Rotation2d(0));
 			resetOdometryPose(firstPt);
-
+			
 			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
 					getPose(),
 					getChassisSpeeds());

@@ -20,6 +20,8 @@ import frc.robot.vision.PathChooser.PathOption;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
+import frc.robot.auton.Paths.ReferencePoints.ScoringPlaces;
+import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
@@ -88,8 +90,9 @@ public class RobotContainer {
                 driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
                 driver.leftTrigger()
                                 .whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
-                driver.x().onTrue(swerve.rotateAboutPoint(90));
-                driver.b().onTrue(new InstantCommand(() -> swerve.resetOdometryPose()));
+                driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2));
+                driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
+                driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
                 driver.leftBumper().whileTrue(swerve.autoScore());
 
                 // manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); //
@@ -99,7 +102,7 @@ public class RobotContainer {
                 manipulator.rightTrigger()
                                 .whileTrue(claw.autoGrab(true));
                 manipulator.leftTrigger().onTrue(claw.release());
-                manipulator.rightBumper().onTrue(claw.)
+                manipulator.rightBumper().onTrue(claw.grab());
 
                 manipulator.povUp().whileTrue((tilt.toAngle(29)) // top cube
                                 .alongWith(elevator.toHeight(0.577731))
