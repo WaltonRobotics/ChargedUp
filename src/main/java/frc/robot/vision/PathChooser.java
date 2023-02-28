@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class PathChooser {
     public enum PathOption {
 
-       NOT_A_PATH("choose a different path smh"),
-       RED_BUMPY("red left"),
-       BLUE_BUMPY("blue right"),
-       RED_NON_BUMPY("red right"),
-       BLUE_NON_BUMPY("blue left");
+        NOT_A_PATH("choose a different path smh"),
+        RED_BUMPY("red left"),
+        BLUE_BUMPY("blue right"),
+        RED_NON_BUMPY("red right"),
+        BLUE_NON_BUMPY("blue left");
 
         public final String description;
 
@@ -36,9 +36,9 @@ public class PathChooser {
     }
 
     // private static EnumMap<PathOption, CommandBase> pathChooserMap =
-    //     new EnumMap<PathOption, CommandBase>(PathOption.class);
-    private static EnumMap<PathOption, List<PathPoint>> pathChooserMap =
-        new EnumMap<PathOption, List<PathPoint>>(PathOption.class);
+    // new EnumMap<PathOption, CommandBase>(PathOption.class);
+    private static EnumMap<PathOption, List<PathPoint>> pathChooserMap = new EnumMap<PathOption, List<PathPoint>>(
+            PathOption.class);
     private static final SendableChooser<PathOption> PathNTChooser = new SendableChooser<PathOption>();
 
     static {

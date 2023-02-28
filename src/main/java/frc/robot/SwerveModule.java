@@ -60,8 +60,9 @@ public class SwerveModule {
         nte_steerTemp = DashboardManager.addTabDial(SwerveK.DB_TAB_NAME, moduleName + "/SteerTemp", 0, 100);
         nte_cancoderAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/CancoderAngle", 0);
         nte_modVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ModuleVelocity", 0);
-        nte_cancoderIntegratedAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/CancoderIntegratedAngle", 0);
-        
+        nte_cancoderIntegratedAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME,
+                moduleName + "/CancoderIntegratedAngle", 0);
+
         /* Angle Encoder Config */
         m_angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
         configAngleEncoder();
@@ -106,7 +107,8 @@ public class SwerveModule {
         }
 
         double difference = steerAngle - oldAngle.getDegrees();
-        // Change the target angle so the difference is in the range [-360, 360) instead of [0, 360)
+        // Change the target angle so the difference is in the range [-360, 360) instead
+        // of [0, 360)
         if (difference >= 360) {
             steerAngle -= 360;
         } else if (difference < -360) {
@@ -114,10 +116,12 @@ public class SwerveModule {
         }
         difference = steerAngle - oldAngle.getDegrees(); // Recalculate difference
 
-        // If the difference is > 90 deg < -90 deg the drive can be inverted so the total
+        // If the difference is > 90 deg < -90 deg the drive can be inverted so the
+        // total
         // movement of the module is < 90 deg
-        if (difference >90 || difference < -90) {
-            // Only need to add 180 deg here because the target angle will be put back into the range [0, 2pi)
+        if (difference > 90 || difference < -90) {
+            // Only need to add 180 deg here because the target angle will be put back into
+            // the range [0, 2pi)
             steerAngle += 180;
         }
 
@@ -132,8 +136,11 @@ public class SwerveModule {
      *                     velocity is 0
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean steerInPlace) {
-    /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
-        desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
+        /*
+         * This is a custom optimize function, since default WPILib optimize assumes
+         * continuous controller which CTRE and Rev onboard is not
+         */
+        desiredState = CTREModuleState.optimize(desiredState, getState().angle);
         setAngle(desiredState, steerInPlace);
         setSpeed(desiredState, isOpenLoop);
     }

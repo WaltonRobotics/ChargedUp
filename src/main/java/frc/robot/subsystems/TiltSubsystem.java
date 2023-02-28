@@ -89,7 +89,8 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public double getDegrees() {
 		var rawDeg = (m_absoluteEncoder.get() * 360);
-		return MathUtil.clamp(rawDeg, 0, kMaxAngleDegrees); // get returns rotations, so rotations * (360 degrees / 1 rotation)
+		return MathUtil.clamp(rawDeg, 0, kMaxAngleDegrees); // get returns rotations, so rotations * (360 degrees / 1
+															// rotation)
 	}
 
 	public CommandBase teleopCmd(DoubleSupplier power) {
@@ -144,9 +145,9 @@ public class TiltSubsystem extends SubsystemBase {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
 			setVoltage(effort);
 		})).withTimeout(2)
-		.finallyDo((intr) -> {
-			m_motor.set(0);
-		})
+				.finallyDo((intr) -> {
+					m_motor.set(0);
+				})
 				.withName("ToAngle");
 	}
 

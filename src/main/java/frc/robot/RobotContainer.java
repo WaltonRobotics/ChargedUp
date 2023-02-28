@@ -142,12 +142,13 @@ public class RobotContainer {
                                 .alongWith(elevator.toHeight(ElevatorK.kMinHeightMeters)
                                                 .andThen(tilt.toAngle(0))));
 
+                                                /*Tuning buttons */
                 // manipulator.a().whileTrue(wrist.toFlat());
                 // manipulator.x().whileTrue(wrist.toAngle(0));
                 // manipulator.b().whileTrue(elevator.toHeight(0.3));
                 // manipulator.a().whileTrue(tilt.toAngle(15));
                 // manipulator.y().whileTrue(tilt.toAngle(0));
-                manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
+                // manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
         }
 
         public void mapAutonCommands() {

@@ -33,10 +33,10 @@ public class TheClaw extends SubsystemBase {
     public CommandBase autoGrab(boolean autoRelease) {
 
         return runOnce(() -> claw.set(true)) // open claw
-            .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.3) // wait 0.3sec before sensor
-            .andThen(
-                startEnd(()->{}, ()-> claw.set(false)).until(leftEyeTrig.and(rightEyeTrig))
-            );
+                .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.3) // wait 0.3sec before sensor
+                .andThen(
+                        startEnd(() -> {
+                        }, () -> claw.set(false)).until(leftEyeTrig.and(rightEyeTrig)));
     }
 
     /*
@@ -46,14 +46,14 @@ public class TheClaw extends SubsystemBase {
         return runOnce(() -> claw.set(true));
     }
 
-    public CommandBase grab(){
+    public CommandBase grab() {
         return runOnce(() -> claw.set(false));
     }
 
     @Override
-    public void periodic(){
-       nte_isClosed.setBoolean(isClosed);
-       nte_leftEye.setBoolean(leftEye.get());
-       nte_rightEye.setBoolean(rightEye.get());
-    }   
+    public void periodic() {
+        nte_isClosed.setBoolean(isClosed);
+        nte_leftEye.setBoolean(leftEye.get());
+        nte_rightEye.setBoolean(rightEye.get());
+    }
 }

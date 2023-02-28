@@ -9,14 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AprilTagChooser {
     public enum AprilTagOption {
-    
-       
-       TAG_1("tag 1"),
-       TAG_2("tag 2"),
-       TAG_3("tag 3"),
-       TAG_6("tag 6"),
-       TAG_7("tag 7"),
-       TAG_8("tag 8");     
+
+        TAG_1("tag 1"),
+        TAG_2("tag 2"),
+        TAG_3("tag 3"),
+        TAG_6("tag 6"),
+        TAG_7("tag 7"),
+        TAG_8("tag 8");
 
         public final String description;
 
@@ -35,9 +34,9 @@ public class AprilTagChooser {
     }
 
     // private static EnumMap<AprilTagOption, CommandBase> AprilTagChooserMap =
-    //     new EnumMap<AprilTagOption, CommandBase>(AprilTagOption.class);
-    private static EnumMap<AprilTagOption, PathPoint> AprilTagChooserMap =
-        new EnumMap<AprilTagOption, PathPoint>(AprilTagOption.class);
+    // new EnumMap<AprilTagOption, CommandBase>(AprilTagOption.class);
+    private static EnumMap<AprilTagOption, PathPoint> AprilTagChooserMap = new EnumMap<AprilTagOption, PathPoint>(
+            AprilTagOption.class);
     private static final SendableChooser<AprilTagOption> AprilTagNTChooser = new SendableChooser<AprilTagOption>();
 
     static {

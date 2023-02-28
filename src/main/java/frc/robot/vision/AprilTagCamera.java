@@ -45,7 +45,7 @@ public class AprilTagCamera {
         for (int i = 1; i <= 8; i++) {
             poseList.add(aprilTagFieldLayout.getTagPose(i).get().toPose2d());
         }
-        
+
         field.getObject("April Tags").setPoses(poseList);
     }
 
@@ -65,9 +65,9 @@ public class AprilTagCamera {
      * 
      * @param prevEstimatedRobotPose
      * @return an EstimatedRobotPose which includes a Pose3d of the latest estimated
-     *         pose (using the selected strategy) along with a double of the 
+     *         pose (using the selected strategy) along with a double of the
      *         timestamp when the robot pose was estimated
-     * Use this to update drivetrain pose estimator
+     *         Use this to update drivetrain pose estimator
      */
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         poseEstimator.setReferencePose(prevEstimatedRobotPose);

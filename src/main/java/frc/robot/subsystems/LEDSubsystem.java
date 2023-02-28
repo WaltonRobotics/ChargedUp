@@ -63,7 +63,7 @@ public class LEDSubsystem {
         }
     }
 
-    public void setWhite(){
+    public void setWhite() {
         for (int i = 0; i < buffer.getLength(); i++) {
             buffer.setRGB(i, 255, 255, 255);
         }

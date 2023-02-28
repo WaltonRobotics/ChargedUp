@@ -146,10 +146,10 @@ public class WristSubsystem extends SubsystemBase {
   private double getEffortForTarget(double setpointAngle) {
     m_pdEffort = m_controller.calculate(getDegrees(), setpointAngle);
     var pdSetpoint = m_controller.getSetpoint();
-		if (pdSetpoint.velocity != 0) {
-			m_ffEffort = kS * Math.signum(m_pdEffort);
-			// m_ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
-		}
+    if (pdSetpoint.velocity != 0) {
+      m_ffEffort = kS * Math.signum(m_pdEffort);
+      // m_ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
+    }
     m_totalEffort = m_ffEffort + m_pdEffort;
     return m_pdEffort;
   }
@@ -186,17 +186,17 @@ public class WristSubsystem extends SubsystemBase {
 
   public CommandBase toAngle(double angle) {
     return runOnce(() -> {
-			m_controller.reset(getDegrees());
-			i_setTarget(angle);
-		}).andThen(run(() -> {
-			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -10, 10);
-			setPower(effort,true);
-		}))
-    .withTimeout(2)
-		.finallyDo((intr) -> {
-			m_motor.set(0);
-		})
-				.withName("ToAngle");
+      m_controller.reset(getDegrees());
+      i_setTarget(angle);
+    }).andThen(run(() -> {
+      var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -10, 10);
+      setPower(effort, true);
+    }))
+        .withTimeout(2)
+        .finallyDo((intr) -> {
+          m_motor.set(0);
+        })
+        .withName("ToAngle");
   }
 
   public CommandBase toState(WristStates state) {
