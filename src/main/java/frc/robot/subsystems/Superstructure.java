@@ -39,18 +39,6 @@ public class Superstructure extends SubsystemBase {
         m_wrist.setMaxDegrees(dynamicLimit);
     }
 
-    // public void limitWristDynamic() {
-    // double theta = m_tilt.getDegrees();
-    // double height = m_elevator.getActualHeightRaw(); // TODO: find claw height
-    // // idk how else to do it but idt this is right
-    // double dynamicLimit = 180 - theta - Math.acos(height * (Math.cos(theta) - 7)
-    // / 20);
-    // if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
-    // dynamicLimit = kMaxAngleDegrees;
-    // }
-    // m_wrist.setMaxDegrees(dynamicLimit);
-    // }
-
     /*
      * As soon as elevator is tilted,
      * change lower limit of elevator
