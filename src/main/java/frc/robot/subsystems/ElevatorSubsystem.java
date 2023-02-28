@@ -25,7 +25,7 @@ import frc.robot.CTREConfigs;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.*;
-//Use Sensor to lowerlimit
+//TODO: Use Sensor to lowerlimit
 public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_left = new WPI_TalonFX(kLeftCANID, canbus);
 	private final WPI_TalonFX m_right = new WPI_TalonFX(kRightCANID, canbus);
@@ -123,6 +123,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	/*
 	 * @return A cmd to move the elevator via stick
+	 * sets elevator to target height if no input
 	 */
 	public CommandBase teleOpCmd(DoubleSupplier power) {
 		return run(() -> {
@@ -185,7 +186,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @return The total effort (ff & pd) required to reach target height
 	 */
 	private double getEffortForTarget(double heightMeters) {
-
 		m_pdEffort = m_controller.calculate(getActualHeightMeters(), heightMeters);
 		m_ffEffort = 0;
 		var pdSetpoint = m_controller.getSetpoint();
@@ -203,7 +203,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	/*
 	 * @return Cmd to move the elevator to specified height w/ pd & ff
-	 * 
 	 * @param heightMeters The height to move to
 	 */
 	public CommandBase toHeight(double heightMeters) {
@@ -229,21 +228,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 	// }
 
 	public enum ElevatorStates {
-		MAX(kMaxHeightMeters, 0),
-		SUBSTATION(kSubstationHeightM, 0),
-		TOPCONE(kTopConeHeightM, 0),
-		TOPCUBE(kTopCubeHeightM, 1),
-		MIDCONE(kMidConeHeightM, 0),
-		MIDCUBE(kMidCubeHeightM, 1),
-		BOT(kBotHeightMeters, 0),
-		MIN(kMinHeightMeters, 0);
+		MAX(kMaxHeightMeters),
+		SUBSTATION(kSubstationHeightM),
+		TOPCONE(kTopConeHeightM),
+		TOPCUBE(kTopCubeHeightM),
+		MIDCONE(kMidConeHeightM),
+		MIDCUBE(kMidCubeHeightM),
+		BOT(kBotHeightMeters),
+		MIN(kMinHeightMeters);
 
 		public double height;
-		public int isCone; // 0 is cone, 1 is cube
 
-		ElevatorStates(double height, int isCube) {
+		ElevatorStates(double height) {
 			this.height = height;
-			this.isCone = isCube;
 		}
 	}
 
@@ -266,6 +263,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		nte_pdEffort.setDouble(m_pdEffort);
 		nte_totalEffort.setDouble(m_totalEffort);
 		nte_targetHeight.setDouble(getTargetHeightMeters());
-		nte_atLowerLimit.setBoolean(isAtDynamicLimit());
+		nte_atLowerLimit.setBoolean(isFullyRetracted());
 	}
 }

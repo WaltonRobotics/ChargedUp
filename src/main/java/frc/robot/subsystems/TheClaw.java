@@ -33,7 +33,7 @@ public class TheClaw extends SubsystemBase {
     public CommandBase autoGrab(boolean autoRelease) {
 
         return runOnce(() -> claw.set(true)) // open claw
-                .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.3) // wait 0.3sec before sensor
+                .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.4) // wait 0.4sec before sensor
                 .andThen(
                         startEnd(() -> {
                         }, () -> claw.set(false)).until(leftEyeTrig.and(rightEyeTrig)));

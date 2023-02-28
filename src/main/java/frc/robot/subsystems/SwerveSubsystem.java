@@ -155,7 +155,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return run(() -> {
 			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), Constants.stickDeadband);
-			double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), Constants.stickDeadband);
+			double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), Constants.stickDeadband) * .80;
 
 			boolean openLoopVal = openLoop.getAsBoolean();
 			// if (!openLoopVal) {
@@ -649,7 +649,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * every 10 seconds if idle for 1 second
 	 */
 	private void resetAbsOnIdle(){
-		
+
 	}
 
 	@Override

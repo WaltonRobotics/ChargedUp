@@ -55,7 +55,6 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
-                // Set up autons
                 mapAutonCommands();
                 mapTrajectories();
                 mapAprilTagPoints();
@@ -121,10 +120,11 @@ public class RobotContainer {
 
                 manipulator.start().onTrue(new InstantCommand(() -> leds.handle(0))); //cone
                 manipulator.back().onTrue(new InstantCommand(() -> leds.handle(1))); //cube
-                manipulator.rightTrigger()
+
+                manipulator.rightBumper()
                                 .whileTrue(claw.autoGrab(true));
                 manipulator.leftTrigger().onTrue(claw.release());
-                manipulator.rightBumper().onTrue(claw.grab());
+                manipulator.rightTrigger().onTrue(claw.grab());
 
                 // manipulator.povUp().whileTrue(superstructure.toState(ScoringStates.TOPCUBE).andThen(claw.release()));
                 // manipulator.povLeft().whileTrue(superstructure.toState(ScoringStates.MIDCUBE).andThen(claw.release()));
@@ -140,7 +140,7 @@ public class RobotContainer {
                                 .andThen(claw.release()));
 
                 manipulator.povLeft().whileTrue((tilt.toAngle(TiltK.kMidCubeAngleDegrees)) // mid cube
-                                .alongWith(elevator.toHeight(ElevatorK.kMidCubeHeightM-.019))
+                                .alongWith(elevator.toHeight(ElevatorK.kMidCubeHeightM -.019))
                                 .alongWith(wrist.toAngle(WristK.kMidCubeAngleDegrees))
                                 .andThen(claw.release()));
 
@@ -150,27 +150,29 @@ public class RobotContainer {
                                 .andThen(claw.release()));
 
                 manipulator.x().whileTrue((tilt.toAngle(TiltK.kMidConeAngleDegrees)) // mid cone
-                                .alongWith(elevator.toHeight(ElevatorK.kMidConeHeightM-.019))
+                                .alongWith(elevator.toHeight(ElevatorK.kMidConeHeightM -.019))
                                 .alongWith(wrist.toAngle(WristK.kMidConeAngleDegrees))
                                 .andThen(claw.release()));
 
                 manipulator.povDown().whileTrue((tilt.toAngle(TiltK.kBotAngleDegrees)) // bottom
-                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters-.019))
+                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters -.019))
                                 .alongWith(wrist.toAngle(WristK.kBotAngleDegrees))
                                 .andThen(claw.release()));
                 manipulator.a().whileTrue((tilt.toAngle(TiltK.kBotAngleDegrees)) // bottom
-                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters-.019))
+                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters -.019))
                                 .alongWith(wrist.toAngle(WristK.kBotAngleDegrees))
                                 .andThen(claw.release()));
 
                 manipulator.povRight().whileTrue((tilt.toAngle(TiltK.kSubstationAngleDegrees)) // substation
-                                .alongWith(elevator.toHeight(ElevatorK.kSubstationHeightM-.019))
-                                .alongWith(wrist.toAngle(0))
-                                .alongWith(claw.grab()));
+                                .alongWith(elevator.toHeight(ElevatorK.kSubstationHeightM -.019))
+                                .alongWith(wrist.toAngle(3))
+                                .alongWith(claw.autoGrab(false)));
+                                
+                manipulator.povRight().onFalse(claw.grab());
 
-                manipulator.leftBumper().whileTrue((wrist.toAngle(70)) // to zero
-                                .alongWith(elevator.toHeight(ElevatorK.kMinHeightMeters-.019)
-                                                .andThen(tilt.toAngle(0))));
+                manipulator.leftBumper().whileTrue((wrist.toAngle(71.8)).withTimeout(1) // to zero
+                                .andThen(elevator.toHeight(ElevatorK.kMinHeightMeters -.019)
+                                                .alongWith(tilt.toAngle(0))));
 
                                                 /*Tuning buttons */
                 // manipulator.a().whileTrue(wrist.toFlat());

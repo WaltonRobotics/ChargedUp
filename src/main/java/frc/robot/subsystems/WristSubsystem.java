@@ -127,7 +127,7 @@ public class WristSubsystem extends SubsystemBase {
     if (atMinLimit() && dir == -1) {
       output = 0;
       System.out.println("BotLimit!!!");
-    } else if (atMinLimit() && dir == 1) {
+    } else if (atMaxLimit() && dir == 1) {
       output = 0;
       System.out.println("TopLimit!!!");
     }
@@ -189,7 +189,7 @@ public class WristSubsystem extends SubsystemBase {
       m_controller.reset(getDegrees());
       i_setTarget(angle);
     }).andThen(run(() -> {
-      var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -10, 10);
+      var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
       setPower(effort, true);
     }))
         .withTimeout(2)

@@ -117,7 +117,7 @@ public final class Constants {
         /* Swerve Profiling Values */
         public static final double kMaxVelocityMps = 4.5; // TODO: This must be tuned to specific robot
         /* Radians per Second */
-        public static final double kMaxAngularVelocityRadps = 11.5; // TODO: This must be tuned to specific robot
+        public static final double kMaxAngularVelocityRadps = 11.5; // TODO: This must be tuned to specific robot    //11.5
 
         /* Neutral Modes */
         public static final NeutralMode kAngleNeutralMode = NeutralMode.Coast;
@@ -211,7 +211,7 @@ public final class Constants {
         public static final int kHomeSwitchPort = 9;
 
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
-        public static final double kAbsMaxDegree = 30; // max possible from offset
+        public static final double kAbsMaxDegree = 29; // max possible from offset
 
         
         public static final double kTopAngleDegrees = 15; // TODO: CHANGE >:(
@@ -288,7 +288,7 @@ public final class Constants {
         public static final double kMidCubeHeightM = 0.351891;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; // TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.412;
+        public static final double kSubstationHeightM = 0.42;
         public static final double kSubstationConeHeightM = 0;
 
         public static final double kMaxVelocity = 3; // Meters Per Second
