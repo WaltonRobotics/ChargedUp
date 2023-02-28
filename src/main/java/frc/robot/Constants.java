@@ -1,5 +1,4 @@
 package frc.robot;
-//TODO: reset swerve based on alliance
 //TODO: reset swerve to abs every 10 sec, after 1 sec of nonmovement
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.PIDConstants;
@@ -167,6 +166,38 @@ public final class Constants {
         }
     }
 
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = 2;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 8;
+        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+
+        // weight for trusting vision over odometry (higher value = less trust)
+        // currently unused
+        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 0.9);
+        public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
+
+        public static double kPXController = 8;
+        public static double kPYController = 8;
+        public static double kPThetaController = 6.75;
+        public static final double kDThetaController = 0.1;
+        public static final double kFThetaController = 1;
+
+        public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
+        public static final double kOnBalanceAngleThresholdDegrees = Math.toRadians(5);
+        public static final double kMinimumBalanceDegrees = 2;
+
+        public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
+
+        // Constraint for the motion profiled robt angle controller
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+        // used for PPSwerve Auto Builder
+        public static final PIDConstants kTranslationPID = new PIDConstants(kPXController, 0, 0); // x & y
+        public static final PIDConstants kRotationPID = new PIDConstants(kPThetaController, 0, kDThetaController);
+    }
+
     // Elevator tilting motor
     public static final class TiltK {
         public static final String DB_TAB_NAME = "TiltSubsys";
@@ -182,7 +213,7 @@ public final class Constants {
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
         public static final double kAbsMaxDegree = 30; // max possible from offset
 
-        public static final double kMaxAngleDegrees = 30;
+        
         public static final double kTopAngleDegrees = 15; // TODO: CHANGE >:(
         public static final double kTopConeAngleDegrees = 30;
         public static final double kTopCubeAngleDegrees = 30;
@@ -192,6 +223,8 @@ public final class Constants {
         public static final double kBotAngleDegrees = 0; // TODO: CHANGE >:D
         public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
+
+        public static final double kMaxAngleDegrees = 30;
         public static final double kMaxVelocity = 20; // degrees per sec
         public static final double kMaxAcceleration = 40.0; // degrees per sec squared
         public static final double kP = 1.0;
@@ -266,64 +299,22 @@ public final class Constants {
                 kMaxAcceleration);
     }
 
-    public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 2;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 8;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-
-        // weight for trusting vision over odometry (higher value = less trust)
-        // currently unused
-        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 0.9);
-        public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
-
-        public static double kPXController = 8;
-        public static double kPYController = 8;
-        public static double kPThetaController = 6.75;
-        public static final double kDThetaController = 0.1;
-        public static final double kFThetaController = 1;
-
-        public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
-        public static final double kOnBalanceAngleThresholdDegrees = Math.toRadians(5);
-        public static final double kMinimumBalanceDegrees = 2;
-
-        public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
-
-        // Constraint for the motion profiled robt angle controller
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-
-        // used for PPSwerve Auto Builder
-        public static final PIDConstants kTranslationPID = new PIDConstants(kPXController, 0, 0); // x & y
-        public static final PIDConstants kRotationPID = new PIDConstants(kPThetaController, 0, kDThetaController);
-    }
-
-    // in meters
-    public static final class VisionConstants {
-        public static final double kCameraHeight = 0.88265;
-        public static final double kCameraX = 0;
-        public static final double kCameraY = 0.1524;
-        public static final double kTargetHeight = 1; // TODO: update value
-    }
-
     public static final class WristK {
         public static final String DB_TAB_NAME = "WristSubsys";
-
-        // lower: .527
         public static final int kCANID = 21;
 
         public static final int kCurrLimit = 20;
-        public static final double kAbsEncoderTicksPerRotation = 1024; // change later
+        public static final double kAbsEncoderTicksPerRotation = 1024;
         public static final double kP = .096;
         public static final double kD = 0.00;
-        public static final double kS = 1.5; // change values later
+        public static final double kS = 1.5; 
         public static final double kMaxVelocity = 8000; // deg/sec
         public static final double kMaxAcceleration = 8800; // deg/sec^2
 
         public static final double kZeroDegOffset = 5.5;
-        public static final double kMinAnglePosition = 0.01;
-        public static final double kMaxAnglePosition = 0.2903;
         public static final double kMinAngleDegrees = -37.5;
+        public static final double kMaxAngleDegrees = 75;
+
         public static final double kBotAngleDegrees = -23;
         public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
         public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
@@ -332,7 +323,7 @@ public final class Constants {
         public static final double kMidConeAngleDegrees = 21.788074;
         public static final double kMidCubeAngleDegrees = -10.847931;
         public static final double kSubstationAngleDegrees = -8.274536;
-        public static final double kMaxAngleDegrees = 75;
+        
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
@@ -345,9 +336,6 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
                 kMaxAcceleration);
         public static final ArmFeedforward kFeedforward = new ArmFeedforward(0.1, 0, KvRadPerSecPerVolt);
-        // public static final SimpleMotorFeedforward kFeedforward = new
-        // SimpleMotorFeedforward(0.5, DCMotor.getNEO(1).KvRadPerSecPerVolt *
-        // kGearRatio);
     }
 
     public static final class TheClawK {
@@ -358,10 +346,19 @@ public final class Constants {
         public static final int kRightEyeID = 1;
     }
 
+       // in meters
+       public static final class VisionConstants {
+        //TODO: update these values once we get them
+        public static final double kCameraHeight = 0.88265;
+        public static final double kCameraX = 0;
+        public static final double kCameraY = 0.1524;
+        public static final double kTargetHeight = 1; // TODO: update value
+    }
+
     public static final class IndicatorLightsK {
         public static final String DB_TAB_NAME = "LEDSubsys";
 
-        public static final int kNumLEDs = 20; // TODO: change this
-        public static final int kPort = 0; // TODO: change this
+        public static final int kNumLEDs = 20; // TODO: update these when we get them
+        public static final int kPort = 0; 
     }
 }

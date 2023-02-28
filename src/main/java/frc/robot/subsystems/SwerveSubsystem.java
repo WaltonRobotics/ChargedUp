@@ -32,6 +32,7 @@ import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 import static frc.robot.Constants.SwerveK.kModuleTranslations;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +110,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final AprilTagCamera m_apriltagHelper;
 
 	private double m_simYaw = 0;
+	private double m_absResetTimer = 0;
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
@@ -283,6 +285,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void zeroGyro() {
 		m_pigeon.setYaw(0);
+		
 	}
 
 	public void resetModsToAbs(){
@@ -642,6 +645,14 @@ public class SwerveSubsystem extends SubsystemBase {
 					closest.getRotation());
 		}
 		return finalDestination;
+	}
+
+	/*
+	 * Resets the swerve modules to absolute encoders
+	 * every 10 seconds if idle for 1 second
+	 */
+	private void resetAbsOnIdle(){
+		
 	}
 
 	@Override

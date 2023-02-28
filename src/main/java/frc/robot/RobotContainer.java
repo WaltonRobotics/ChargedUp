@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorK;
-import frc.robot.Constants.SwerveK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
 import frc.robot.auton.*;
@@ -22,14 +21,10 @@ import frc.robot.vision.PathChooser.PathOption;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
-import frc.robot.auton.Paths.ReferencePoints.ScoringPlaces;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
-
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

@@ -17,7 +17,6 @@ import static frc.robot.Constants.TiltK.kMotorCANID;
 import static frc.robot.Constants.*;
 import java.util.function.DoubleSupplier;
 
-//TODO: Fix forwardlimit, fix coast,
 public class TiltSubsystem extends SubsystemBase {
 	private final CANSparkMax m_motor = new CANSparkMax(kMotorCANID, MotorType.kBrushless);
 	private final DutyCycleEncoder m_absoluteEncoder = new DutyCycleEncoder(kAbsoluteEncoderPort);
