@@ -160,7 +160,7 @@ public class RobotContainer {
         }
 
         public void mapAutonCommands() {
-               AutonChooser.AssignAutonCommand(AutonOption.SUBSTATION, AutonFactory.WaltonPPAuto(swerve, backOut));
+               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.WaltonPPAuto(swerve, backOut));
                AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.WaltonPPAuto(swerve, cubeConeNonBumper));
                AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.WaltonPPAuto(swerve, cubeConeBumper));
         }
