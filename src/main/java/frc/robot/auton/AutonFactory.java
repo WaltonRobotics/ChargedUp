@@ -7,7 +7,6 @@ import frc.robot.subsystems.SwerveSubsystem;
 import java.util.HashMap;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-
 public final class AutonFactory {
     public static HashMap<String, Command> autonEventMap = new HashMap<>();
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");

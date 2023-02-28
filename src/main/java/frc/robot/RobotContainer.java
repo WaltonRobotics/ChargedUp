@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorK;
+import frc.robot.Constants.SwerveK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
 import frc.robot.auton.*;
@@ -26,6 +27,9 @@ import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
+
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -94,7 +98,7 @@ public class RobotContainer {
                 driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2));
                 driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
                 driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
-                driver.leftBumper().whileTrue(swerve.autoScore());
+                // driver.leftBumper().whileTrue(swerve.autoScore());
                 driver.rightBumper().whileTrue(swerve.autoBalance());
 
                 manipulator.start().onTrue(new InstantCommand(() -> leds.handle(0))); //cone
@@ -113,9 +117,9 @@ public class RobotContainer {
                 // manipulator.povRight().whileTrue(superstructure.toState(ScoringStates.SUBSTATION_PICK_UP).andThen(claw.release()));
                 
                 manipulator.povUp().whileTrue((tilt.toAngle(29)) // top cube
-                .alongWith(elevator.toHeight(0.577731))
-                .alongWith(wrist.toAngle(7.010672))
-                .andThen(claw.release()));
+                                .alongWith(elevator.toHeight(0.577731))
+                                .alongWith(wrist.toAngle(7.010672))
+                                .andThen(claw.release()));
 
                 manipulator.povLeft().whileTrue((tilt.toAngle(TiltK.kMidCubeAngleDegrees)) // mid cube
                                 .alongWith(elevator.toHeight(ElevatorK.kMidCubeHeightM))
