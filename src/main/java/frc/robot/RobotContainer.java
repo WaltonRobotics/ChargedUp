@@ -95,6 +95,7 @@ public class RobotContainer {
                 driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
                 driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
                 driver.leftBumper().whileTrue(swerve.autoScore());
+                driver.rightBumper().whileTrue(swerve.autoBalance());
 
                 // manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); //
                 // cone
