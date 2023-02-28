@@ -12,6 +12,7 @@ import frc.robot.Constants.WristK;
 import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Superstructure.ScoringStates;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.PathChooser;
@@ -104,10 +105,18 @@ public class RobotContainer {
                 manipulator.leftTrigger().onTrue(claw.release());
                 manipulator.rightBumper().onTrue(claw.grab());
 
+                // manipulator.povUp().whileTrue(superstructure.toState(ScoringStates.TOPCUBE).andThen(claw.release()));
+                // manipulator.povLeft().whileTrue(superstructure.toState(ScoringStates.MIDCUBE).andThen(claw.release()));
+                // manipulator.y().whileTrue(superstructure.toState(ScoringStates.TOPCONE).andThen(claw.release()));
+                // manipulator.x().whileTrue(superstructure.toState(ScoringStates.MIDCONE).andThen(claw.release()));
+                // manipulator.povDown().whileTrue(superstructure.toState(ScoringStates.BOT).andThen(claw.release()));
+                // manipulator.a().whileTrue(superstructure.toState(ScoringStates.BOT).andThen(claw.release()));
+                // manipulator.povRight().whileTrue(superstructure.toState(ScoringStates.SUBSTATION_PICK_UP).andThen(claw.release()));
+                
                 manipulator.povUp().whileTrue((tilt.toAngle(29)) // top cube
-                                .alongWith(elevator.toHeight(0.577731))
-                                .alongWith(wrist.toAngle(7.010672))
-                                .andThen(claw.release()));
+                .alongWith(elevator.toHeight(0.577731))
+                .alongWith(wrist.toAngle(7.010672))
+                .andThen(claw.release()));
 
                 manipulator.povLeft().whileTrue((tilt.toAngle(TiltK.kMidCubeAngleDegrees)) // mid cube
                                 .alongWith(elevator.toHeight(ElevatorK.kMidCubeHeightM))
@@ -152,20 +161,9 @@ public class RobotContainer {
         }
 
         public void mapAutonCommands() {
-                AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
-                AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, AutonFactory.DoNothingAuto);
-                AutonChooser.AssignAutonCommand(AutonOption.MOVE_FORWARD,
-                                AutonFactory.WaltonPPAuto(swerve, oneMeter));
-                AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE2,
-                                AutonFactory.WaltonPPAuto(swerve, threePiece2));
-                AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_PAUSE,
-                                swerve.getFullAuto(twoPiece).withName("TwoPiecePauseAuto"));
-                AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE3,
-                                AutonFactory.WaltonPPAuto(swerve, threePiece3));
-                AutonChooser.AssignAutonCommand(AutonOption.TWO_PIECE_BALANCE,
-                                AutonFactory.WaltonPPAuto(swerve, twoPieceBalance));
-                AutonChooser.AssignAutonCommand(AutonOption.ONE_PIECE,
-                                AutonFactory.WaltonPPAuto(swerve, onePiece));
+               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.WaltonPPAuto(swerve, backOut));
+               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.WaltonPPAuto(swerve, cubeConeNonBumper));
+               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.WaltonPPAuto(swerve, cubeConeBumper));
         }
 
         public void mapTrajectories() {
@@ -188,6 +186,11 @@ public class RobotContainer {
 
         public void mapAutonEvents() {
                 autonEventMap.put("testEvent", AutonFactory.TestEvent(swerve));
+                autonEventMap.put("score cube", superstructure.toState(ScoringStates.TOPCUBE).andThen(claw.release()));
+                autonEventMap.put("score cone", superstructure.toState(ScoringStates.TOPCONE).andThen(claw.release()));
+                autonEventMap.put("ground pickup", superstructure.toState(ScoringStates.GROUND_PICK_UP)
+                                .andThen(claw.autoGrab(false)));
+                autonEventMap.put("autobalance", swerve.autoBalance());
                 // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         }
 
