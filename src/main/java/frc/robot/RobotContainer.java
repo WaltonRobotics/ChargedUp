@@ -89,12 +89,13 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 /* Driver Buttons */
                 driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+                driver.rightTrigger().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
                 driver.leftTrigger()
                                 .whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
                 driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2));
                 driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
                 driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
-                driver.leftBumper().whileTrue(swerve.autoScore());
+                //driver.leftBumper().whileTrue(swerve.autoScore());
                 driver.rightBumper().whileTrue(swerve.autoBalance());
 
                 manipulator.start().onTrue(new InstantCommand(() -> leds.handle(0))); //cone
@@ -118,7 +119,7 @@ public class RobotContainer {
                 .andThen(claw.release()));
 
                 manipulator.povLeft().whileTrue((tilt.toAngle(TiltK.kMidCubeAngleDegrees)) // mid cube
-                                .alongWith(elevator.toHeight(ElevatorK.kMidCubeHeightM))
+                                .alongWith(elevator.toHeight(ElevatorK.kMidCubeHeightM-.019))
                                 .alongWith(wrist.toAngle(WristK.kMidCubeAngleDegrees))
                                 .andThen(claw.release()));
 
@@ -128,26 +129,26 @@ public class RobotContainer {
                                 .andThen(claw.release()));
 
                 manipulator.x().whileTrue((tilt.toAngle(TiltK.kMidConeAngleDegrees)) // mid cone
-                                .alongWith(elevator.toHeight(ElevatorK.kMidConeHeightM))
+                                .alongWith(elevator.toHeight(ElevatorK.kMidConeHeightM-.019))
                                 .alongWith(wrist.toAngle(WristK.kMidConeAngleDegrees))
                                 .andThen(claw.release()));
 
                 manipulator.povDown().whileTrue((tilt.toAngle(TiltK.kBotAngleDegrees)) // bottom
-                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters))
+                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters-.019))
                                 .alongWith(wrist.toAngle(WristK.kBotAngleDegrees))
                                 .andThen(claw.release()));
                 manipulator.a().whileTrue((tilt.toAngle(TiltK.kBotAngleDegrees)) // bottom
-                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters))
+                                .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters-.019))
                                 .alongWith(wrist.toAngle(WristK.kBotAngleDegrees))
                                 .andThen(claw.release()));
 
                 manipulator.povRight().whileTrue((tilt.toAngle(TiltK.kSubstationAngleDegrees)) // substation
-                                .alongWith(elevator.toHeight(ElevatorK.kSubstationHeightM))
+                                .alongWith(elevator.toHeight(ElevatorK.kSubstationHeightM-.019))
                                 .alongWith(wrist.toAngle(0))
-                                .alongWith(claw.autoGrab(false)));
+                                .alongWith(claw.grab()));
 
-                manipulator.leftBumper().whileTrue((wrist.toAngle(-18)) // to zero
-                                .alongWith(elevator.toHeight(ElevatorK.kMinHeightMeters)
+                manipulator.leftBumper().whileTrue((wrist.toAngle(70)) // to zero
+                                .alongWith(elevator.toHeight(ElevatorK.kMinHeightMeters-.019)
                                                 .andThen(tilt.toAngle(0))));
 
                                                 /*Tuning buttons */
@@ -160,9 +161,9 @@ public class RobotContainer {
         }
 
         public void mapAutonCommands() {
-               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.fullAuto(swerve, backOut));
-               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.fullAuto(swerve, cubeConeNonBumper));
-               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.fullAuto(swerve, cubeConeBumper));
+               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.WaltonPPAuto(swerve, backOut));
+               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.WaltonPPAuto(swerve, cubeConeNonBumper));
+               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.WaltonPPAuto(swerve, cubeConeBumper));
         }
 
         public void mapTrajectories() {

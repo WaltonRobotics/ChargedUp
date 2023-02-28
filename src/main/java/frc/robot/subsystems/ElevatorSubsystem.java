@@ -25,7 +25,7 @@ import frc.robot.CTREConfigs;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.*;
-
+//Use Sensor to lowerlimit
 public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_left = new WPI_TalonFX(kLeftCANID, canbus);
 	private final WPI_TalonFX m_right = new WPI_TalonFX(kRightCANID, canbus);
@@ -126,8 +126,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 */
 	public CommandBase teleOpCmd(DoubleSupplier power) {
 		return run(() -> {
-			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			m_right.set(ControlMode.PercentOutput, powerVal);
+			double dir = Math.signum(power.getAsDouble());
+			double output = 0;
+			if(isFullyRetracted() && dir == -1){
+				output = 0;
+			}
+			else{
+				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
+			}
+			
+			m_right.set(ControlMode.PercentOutput, output);
 		})
 				.withName("TeleManual");
 	}

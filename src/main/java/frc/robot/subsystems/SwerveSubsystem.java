@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.ReferencePoints;
-import frc.robot.auton.Paths.ReferencePoints.ScoringPlaces;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagCamera;
@@ -17,6 +15,30 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import static frc.robot.Constants.AutoConstants.kAlignAngleThresholdRadians;
+import static frc.robot.Constants.AutoConstants.kDThetaController;
+import static frc.robot.Constants.AutoConstants.kFThetaController;
+import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared;
+import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
+import static frc.robot.Constants.AutoConstants.kPThetaController;
+import static frc.robot.Constants.AutoConstants.kPXController;
+import static frc.robot.Constants.AutoConstants.kPYController;
+import static frc.robot.Constants.AutoConstants.kRotationPID;
+import static frc.robot.Constants.AutoConstants.kThetaControllerConstraints;
+import static frc.robot.Constants.AutoConstants.kTranslationPID;
+import static frc.robot.Constants.SwerveK.kInvertGyro;
+import static frc.robot.Constants.SwerveK.kKinematics;
+import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
+import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
+import static frc.robot.Constants.SwerveK.kModuleTranslations;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathConstraints;
@@ -37,26 +59,17 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.AutoConstants.*;
-import static frc.robot.Constants.SwerveK.*;
-import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
-import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import frc.lib.vision.EstimatedRobotPose;
+import frc.robot.Constants.SwerveK.Mod0;
+import frc.robot.Constants.SwerveK.Mod1;
+import frc.robot.Constants.SwerveK.Mod2;
+import frc.robot.Constants.SwerveK.Mod3;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
@@ -272,6 +285,11 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_pigeon.setYaw(0);
 	}
 
+	public void resetModsToAbs(){
+		for (var mod : m_modules) {
+			mod.resetToAbsolute();
+		}
+	}
 	private double getGyroYaw() {
 		return m_pigeon.getYaw() - 180;
 	}
@@ -438,20 +456,13 @@ public class SwerveSubsystem extends SubsystemBase {
 				} else if (!onRed && currentX > addedX) {
 					allPoints.add(addedPP);
 				}
-				// else {
-				// break;
-				// }
 			}
-
 			allPoints.add(endPt);
-
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
 					allPoints);
 		});
-
 		var followCmd = run(() -> autoBuilder.followPath(currentTrajectory));
-
 		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPt));
 	}
 

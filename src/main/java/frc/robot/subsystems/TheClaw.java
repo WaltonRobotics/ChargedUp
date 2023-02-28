@@ -15,7 +15,7 @@ public class TheClaw extends SubsystemBase {
     private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
     private final DigitalInput leftEye = new DigitalInput(kLeftEyeID);
     private final DigitalInput rightEye = new DigitalInput(kRightEyeID);
-    private boolean isClosed = false;
+    private boolean m_isClosed = false;
     private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
     private final GenericEntry nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
     private final GenericEntry nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
@@ -43,16 +43,23 @@ public class TheClaw extends SubsystemBase {
      * @return Cmd to release claw
      */
     public CommandBase release() {
-        return runOnce(() -> claw.set(true));
+        return runOnce(() -> {
+            m_isClosed = true;
+            claw.set(true);
+        } );
+        
     }
 
     public CommandBase grab() {
-        return runOnce(() -> claw.set(false));
+        return runOnce(() -> {
+            m_isClosed = true;
+            claw.set(false);
+        });
     }
 
     @Override
     public void periodic() {
-        nte_isClosed.setBoolean(isClosed);
+        nte_isClosed.setBoolean(m_isClosed);
         nte_leftEye.setBoolean(leftEye.get());
         nte_rightEye.setBoolean(rightEye.get());
     }

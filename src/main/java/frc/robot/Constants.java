@@ -1,5 +1,6 @@
 package frc.robot;
-
+//TODO: reset swerve based on alliance
+//TODO: reset swerve to abs every 10 sec, after 1 sec of nonmovement
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.PIDConstants;
 
@@ -242,7 +243,7 @@ public final class Constants {
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
-        public static final double kElevatorHeightOffset = 0.019; // offset in meters
+        public static final double kElevatorHeightOffset = 0; // offset in meters
         public static final double kCarriageMassKg = Units.lbsToKilograms(40);
         public static final double kMinHeightMeters = Units.inchesToMeters(0) + kElevatorHeightOffset;
         public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
@@ -331,7 +332,7 @@ public final class Constants {
         public static final double kMidConeAngleDegrees = 21.788074;
         public static final double kMidCubeAngleDegrees = -10.847931;
         public static final double kSubstationAngleDegrees = -8.274536;
-        public static final double kMaxAngleDegrees = 82;
+        public static final double kMaxAngleDegrees = 75;
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
