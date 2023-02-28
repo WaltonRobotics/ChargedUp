@@ -30,7 +30,7 @@ public class Paths {
 		public static final PathPlannerTrajectory backOut = PathPlanner.loadPath("backOut",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory cubeConeNonBumper = PathPlanner.loadPath("cubeConeNonBumper",
+		public static final PathPlannerTrajectory cubeConeNonBumper = PathPlanner.loadPath("cubeConeNoBumper",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory cubeConeBumper = PathPlanner.loadPath("cubeConeBumper",

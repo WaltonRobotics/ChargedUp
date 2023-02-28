@@ -47,22 +47,22 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_targetHeight = DashboardManager.addTabNumberBar(this, "Target Height Meters",
 			kMinHeightMeters, kMaxHeightMeters);
 	private final GenericEntry nte_actualHeight = DashboardManager.addTabNumberBar(this, "Actual Height Meters",
-		kMinHeightMeters, kMaxHeightMeters);
-	private final GenericEntry nte_actualHeightRaw = DashboardManager.addTabNumberBar(this, "Actual Height Raw",0,10000);
+			kMinHeightMeters, kMaxHeightMeters);
+	private final GenericEntry nte_actualHeightRaw = DashboardManager.addTabNumberBar(this, "Actual Height Raw", 0,
+			10000);
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
 	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
 	private final GenericEntry nte_pdVelo = DashboardManager.addTabDial(this, "PD Velo", -100, 100);
 	private final GenericEntry nte_actualVelo = DashboardManager.addTabNumberBar(this, "ActualVelo Mps",
-		-10, 10);
-
+			-10, 10);
 
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
 		m_left.configFactoryDefault();
-        m_left.configAllSettings(CTREConfigs.Get().leftConfig);
+		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 
 		m_right.configFactoryDefault();
-        m_right.configAllSettings(CTREConfigs.Get().rightConfig);
+		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
@@ -83,7 +83,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	}
 
 	/*
-	 *@return Whether or not elevator is at dynamic lower limit
+	 * @return Whether or not elevator is at dynamic lower limit
 	 */
 	public boolean isAtDynamicLimit() {
 		return getActualHeightMeters() <= m_dynamicLowLimit;
@@ -91,15 +91,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	/*
 	 * Set the new dynamic lower limit of elevator
+	 * 
 	 * @param heightLimit The new limit in meters
 	 */
-	public void setDynamicLimit(double heightLimit){
+	public void setDynamicLimit(double heightLimit) {
 		m_dynamicLowLimit = heightLimit;
 	}
+
 	/*
 	 * @return Whether or not elevator is fully retracted to sensor
 	 */
-	public boolean isFullyRetracted(){
+	public boolean isFullyRetracted() {
 		return !m_lowerLimit.get();
 	}
 
@@ -127,7 +129,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			m_right.set(ControlMode.PercentOutput, powerVal);
 		})
-		.withName("TeleManual");
+				.withName("TeleManual");
 	}
 
 	/*
@@ -146,8 +148,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			m_left.setNeutralMode(NeutralMode.Coast);
 			m_right.setNeutralMode(NeutralMode.Coast);
 			m_isCoast = true;
-		}
-		else {
+		} else {
 			m_left.setNeutralMode(NeutralMode.Brake);
 			m_right.setNeutralMode(NeutralMode.Brake);
 			m_isCoast = false;
@@ -170,11 +171,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return m_targetHeight;
 	}
 
-	/* @param heightMeters The target height to reach in meters
+	/*
+	 * @param heightMeters The target height to reach in meters
+	 * 
 	 * @return The total effort (ff & pd) required to reach target height
 	 */
 	private double getEffortForTarget(double heightMeters) {
-		
+
 		m_pdEffort = m_controller.calculate(getActualHeightMeters(), heightMeters);
 		m_ffEffort = 0;
 		var pdSetpoint = m_controller.getSetpoint();
@@ -192,6 +195,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	/*
 	 * @return Cmd to move the elevator to specified height w/ pd & ff
+	 * 
 	 * @param heightMeters The height to move to
 	 */
 	public CommandBase toHeight(double heightMeters) {
@@ -199,20 +203,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 			m_controller.reset(getActualHeightMeters());
 			i_setTarget(heightMeters);
 		})
-		.andThen(run(()-> {
-			var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts, kVoltageCompSaturationVolts);
-			m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
-		}))
-		.withTimeout(2)
-		// .until(() -> m_controller.atSetpoint())
-		.finallyDo((intr)-> {
-			m_right.set(ControlMode.PercentOutput, 0);
-		})
-		.withName("AutoToHeight");
+				.andThen(run(() -> {
+					var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
+							kVoltageCompSaturationVolts);
+					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
+				}))
+				.withTimeout(2)
+				// .until(() -> m_controller.atSetpoint())
+				.finallyDo((intr) -> {
+					m_right.set(ControlMode.PercentOutput, 0);
+				})
+				.withName("AutoToHeight");
 	}
 
 	// public CommandBase toState(ElevatorStates state) {
-	// 	return toHeight(state.height);
+	// return toHeight(state.height);
 	// }
 
 	public enum ElevatorStates {
@@ -236,7 +241,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		if(!m_lowerLimit.get()) {
+		if (!m_lowerLimit.get()) {
 			m_right.setSelectedSensorPosition(0);
 		}
 		updateShuffleBoard();
@@ -246,7 +251,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	/*
 	 * Updates nte values
 	 */
-	public void updateShuffleBoard(){
+	public void updateShuffleBoard() {
 		nte_actualHeightRaw.setDouble(getActualHeightRaw());
 		nte_actualHeight.setDouble(getActualHeightMeters());
 		nte_ffEffort.setDouble(m_ffEffort);
