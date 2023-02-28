@@ -431,15 +431,12 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
-		// runOnce(curPos = thing; ppt = generate(thing))
-
+		// runOnce(curPos = thing; ppt = generate(thing));
 		PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
 		var pathCmd = runOnce(() -> {
-			Pose2d firstPt = new Pose2d(12.94, 4.68, new Rotation2d(0));
-			resetOdometryPose(firstPt);
 
 			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-					getPose(),
+				new Pose2d(12.94, 4.68, new Rotation2d(0)), // TODO: change later. Only use while we don't have a camera to find the pose. Is the pose of the middle of the non-bumpy entrance of the red community.
 					getChassisSpeeds());
 			// ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
