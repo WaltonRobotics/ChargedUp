@@ -97,10 +97,8 @@ public class RobotContainer {
                 driver.leftBumper().whileTrue(swerve.autoScore());
                 driver.rightBumper().whileTrue(swerve.autoBalance());
 
-                // manipulator.povLeft().onTrue(new InstantCommand(() -> leds.handle(0))); //
-                // cone
-                // manipulator.povRight().onTrue(new InstantCommand(() -> leds.handle(1))); //
-                // cube
+                manipulator.start().onTrue(new InstantCommand(() -> leds.handle(0))); //cone
+                manipulator.back().onTrue(new InstantCommand(() -> leds.handle(1))); //cube
                 manipulator.rightTrigger()
                                 .whileTrue(claw.autoGrab(true));
                 manipulator.leftTrigger().onTrue(claw.release());
@@ -243,4 +241,9 @@ public class RobotContainer {
         // AprilTagOption.TAG_8);
         // }
         // }
+
+        public enum GamePieceMode {
+                CONE,
+                CUBE
+            }
 }
