@@ -27,22 +27,14 @@ public class Paths {
 			kMaxAccelerationMetersPerSecondSquared);
 
 	public static final class PPPaths {
-		public static final PathPlannerTrajectory oneMeter = PathPlanner.loadPath("oneMeter",
+		public static final PathPlannerTrajectory backOut = PathPlanner.loadPath("backOut",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory threePiece2 = PathPlanner.loadPath("threePiece2",
+		public static final PathPlannerTrajectory cubeConeNonBumper = PathPlanner.loadPath("cubeConeNonBumper",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory threePiece3 = PathPlanner.loadPath("threePiece3",
+		public static final PathPlannerTrajectory cubeConeBumper = PathPlanner.loadPath("cubeConeBumper",
 				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
-		public static final List<PathPlannerTrajectory> twoPiece = PathPlanner.loadPathGroup("banks3", false,
-				kPPConstraints);
-		public static final PathPlannerTrajectory twoPieceBalance = PathPlanner.loadPath("twoPieceBalance", 
-				kMaxSpeedMetersPerSecond, 
-				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory onePiece = PathPlanner.loadPath("onePiece", 
-				kMaxSpeedMetersPerSecond, 
 				kMaxAccelerationMetersPerSecondSquared);
 	}
 

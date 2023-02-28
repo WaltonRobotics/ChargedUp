@@ -1,17 +1,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
 import frc.robot.subsystems.TiltSubsystem.TiltStates;
 import frc.robot.subsystems.WristSubsystem.WristStates;
 import static frc.robot.Constants.WristK.*;
-
-import java.util.HashMap;
 
 import static frc.robot.Constants.ElevatorK.*;
 
@@ -62,14 +58,10 @@ public class Superstructure extends SubsystemBase{
         }
     }
 
-    public void toState(ElevatorStates elevatorState, TiltStates tiltState, WristStates wristState) {
-        m_elevator.toHeight(elevatorState.height);
-        m_tilt.toAngle(tiltState.angle);
-        m_wrist.toAngle(wristState.angle);
-    }
-
     public CommandBase toState(ScoringStates state) {
-        return runOnce(()-> toState(state.elevatorHeight, state.elevatorTilt, state.wristAngle));
+        return m_elevator.toHeight(state.elevatorHeight.height)
+                .alongWith(m_tilt.toAngle(state.elevatorTilt.angle))
+                .andThen(m_wrist.toAngle(state.wristAngle.angle));
     }
 
     public enum ScoringStates {
