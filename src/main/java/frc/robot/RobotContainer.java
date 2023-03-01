@@ -213,9 +213,10 @@ public class RobotContainer {
 
         public void mapAutonCommands() {
                AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.fullAuto(swerve, backOut));
-               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.fullAuto(swerve, oneCone));
+               AutonChooser.AssignAutonCommand(AutonOption.CONE, AutonFactory.fullAuto(swerve, oneCone));
                AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.fullAuto(swerve, cubeConeNonBumper));
                AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.fullAuto(swerve, cubeConeBumper));
+               AutonChooser.AssignAutonCommand(AutonOption.CONE_RED, AutonFactory.fullAuto(swerve, oneConeRed));
         }
 
         public void mapTrajectories() {

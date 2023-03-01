@@ -145,7 +145,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the
 																	// subsystem
 				autoEventMap,
-				true,
+				false,
 				this);
 	}
 
