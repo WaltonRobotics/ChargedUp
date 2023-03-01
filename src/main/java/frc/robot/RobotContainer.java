@@ -209,16 +209,8 @@ public class RobotContainer {
 
         public void mapAutonEvents() {
                 autonEventMap.put("testEvent", AutonFactory.TestEvent(swerve));
-                // autonEventMap.put("score cube", superstructure.toState(ScoringStates.TOPCUBE).andThen(claw.release()));
-                autonEventMap.put("score cube", tilt.toAngle(29)
-                                                .alongWith(elevator.toHeight(0.577731))
-                                                .alongWith(wrist.toAngle(7.010672))
-                                                .andThen(claw.release()));
-                // autonEventMap.put("score cone", superstructure.toState(ScoringStates.TOPCONE).andThen(claw.release()));
-                autonEventMap.put("score cone", elevator.toHeight(0.723719) // top cone
-                                                .alongWith(tilt.toAngle(27.7))
-                                                .alongWith(wrist.toAngle(-10))
-                                                .andThen(claw.release()));
+                autonEventMap.put("score cube", superstructure.toState(ScoringStates.TOPCUBE).andThen(claw.release()));
+                autonEventMap.put("score cone", superstructure.toState(ScoringStates.TOPCONE).andThen(claw.release()));
                 autonEventMap.put("ground pickup", superstructure.toState(ScoringStates.GROUND_PICK_UP)
                                 .andThen(claw.autoGrab(false)));
                 autonEventMap.put("autobalance", swerve.autoBalance());
