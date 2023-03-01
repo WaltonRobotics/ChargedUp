@@ -135,7 +135,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
-			m_targetHeight += output;
+			m_targetHeight += output*.05;
 			double effort = getEffortForTarget(m_targetHeight);
 			m_right.setVoltage(effort);
 		})

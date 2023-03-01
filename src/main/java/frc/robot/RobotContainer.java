@@ -138,21 +138,39 @@ public class RobotContainer {
 
                 // wrist first then wait 0.5 s and then everything else
 
+                // manipulator.povUp().whileTrue(
+                //         new ParallelCommandGroup(
+                //                 wrist.toAngle(WristK.kTopCubeAngleDegrees), // top cube
+                //                 new WaitCommand(0.5)
+                //                 .andThen(elevator.toHeight(ElevatorK.kTopCubeHeightM))
+                //                 .alongWith(tilt.toAngle(TiltK.kTopCubeAngleDegrees))))
+                //         .onFalse(claw.release());
+
                 manipulator.povUp().whileTrue(
                         new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kTopCubeAngleDegrees), // top cube
+                                elevator.toHeight(ElevatorK.kTopCubeHeightM)
+                                .alongWith(tilt.toAngle(TiltK.kTopCubeAngleDegrees), // top cube
                                 new WaitCommand(0.5)
-                                .andThen(elevator.toHeight(ElevatorK.kTopCubeHeightM))
-                                .alongWith(tilt.toAngle(TiltK.kTopCubeAngleDegrees))))
+                                .andThen(wrist.toAngle(WristK.kTopCubeAngleDegrees))
+                                )))
                         .onFalse(claw.release());
+
+                // manipulator.povLeft().whileTrue(
+                //         new ParallelCommandGroup(
+                //                 wrist.toAngle(WristK.kMidCubeAngleDegrees), // mid cube
+                //                 new WaitCommand(0.5)
+                //                 .andThen(elevator.toHeight(ElevatorK.kMidCubeHeightM))
+                //                 .alongWith(tilt.toAngle(TiltK.kMidCubeAngleDegrees))))
+                //         .onFalse(claw.release());
 
                 manipulator.povLeft().whileTrue(
                         new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kMidCubeAngleDegrees), // mid cube
+                                elevator.toHeight(ElevatorK.kMidCubeHeightM)
+                                .alongWith(tilt.toAngle(TiltK.kMidCubeAngleDegrees), // top cube
                                 new WaitCommand(0.5)
-                                .andThen(elevator.toHeight(ElevatorK.kMidCubeHeightM))
-                                .alongWith(tilt.toAngle(TiltK.kMidCubeAngleDegrees))))
-                        .onFalse(claw.release());
+                                .andThen(wrist.toAngle(WristK.kMidCubeAngleDegrees))
+                                )))
+                .onFalse(claw.release());
 
                 manipulator.y().whileTrue(
                         new ParallelCommandGroup(

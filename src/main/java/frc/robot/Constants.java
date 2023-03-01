@@ -285,16 +285,16 @@ public final class Constants {
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.685;
+        public static final double kTopConeHeightM = 0.7;
         public static final double kMidConeHeightM = 0.432;
         public static final double kMidCubeHeightM = 0.391;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.42;
+        public static final double kSubstationHeightM = 0.44;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 3; // Meters Per Second
-        public static final double kMaxAcceleration = 3; // Meters Per Second Squared
+        public static final double kMaxVelocity = 1; // Meters Per Second
+        public static final double kMaxAcceleration = 1; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
