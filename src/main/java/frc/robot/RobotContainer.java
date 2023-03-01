@@ -52,6 +52,8 @@ public class RobotContainer {
         public final TheClaw claw = new TheClaw();
         public final LEDSubsystem leds = new LEDSubsystem();
 
+        private final double waitTimeSeconds = .4;
+
         /* Subsystems */
         public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, claw);
 
@@ -141,7 +143,7 @@ public class RobotContainer {
                 manipulator.povUp().whileTrue(
                         new ParallelCommandGroup(
                                 wrist.toAngle(WristK.kTopCubeAngleDegrees), // top cube
-                                new WaitCommand(0.5)
+                                new WaitCommand(waitTimeSeconds)
                                 .andThen(elevator.toHeight(ElevatorK.kTopCubeHeightM))
                                 .alongWith(tilt.toAngle(TiltK.kTopCubeAngleDegrees))))
                         .onFalse(claw.release());
@@ -149,7 +151,7 @@ public class RobotContainer {
                 manipulator.povLeft().whileTrue(
                         new ParallelCommandGroup(
                                 wrist.toAngle(WristK.kMidCubeAngleDegrees), // mid cube
-                                new WaitCommand(0.5)
+                                new WaitCommand(waitTimeSeconds)
                                 .andThen(elevator.toHeight(ElevatorK.kMidCubeHeightM))
                                 .alongWith(tilt.toAngle(TiltK.kMidCubeAngleDegrees))))
                         .onFalse(claw.release());
@@ -157,7 +159,7 @@ public class RobotContainer {
                 manipulator.y().whileTrue(
                         new ParallelCommandGroup(
                                 wrist.toAngle(WristK.kTopConeAngleDegrees), // top cone
-                                new WaitCommand(0.5)
+                                new WaitCommand(waitTimeSeconds)
                                 .andThen(elevator.toHeight(ElevatorK.kTopConeHeightM))
                                 .alongWith(tilt.toAngle(TiltK.kTopConeAngleDegrees))))
                         .onFalse(claw.release());
@@ -166,7 +168,7 @@ public class RobotContainer {
                 manipulator.x().whileTrue(
                         new ParallelCommandGroup(
                                 wrist.toAngle(WristK.kTopConeAngleDegrees), // mid cone
-                                new WaitCommand(0.5)
+                                new WaitCommand(waitTimeSeconds)
                                 .andThen(elevator.toHeight(ElevatorK.kTopConeHeightM))
                                 .alongWith(tilt.toAngle(TiltK.kTopConeAngleDegrees))))
                         .onFalse(claw.release());
@@ -174,7 +176,7 @@ public class RobotContainer {
                 manipulator.povDown().whileTrue(
                         new ParallelCommandGroup(
                                 wrist.toAngle(WristK.kBotAngleDegrees), // bottom
-                                new WaitCommand(0.5)
+                                new WaitCommand(waitTimeSeconds)
                                 .andThen(elevator.toHeight(ElevatorK.kBotHeightMeters))
                                 .alongWith(tilt.toAngle(TiltK.kBotAngleDegrees))))
                         .onFalse(claw.release());
@@ -182,7 +184,7 @@ public class RobotContainer {
                 manipulator.a().whileTrue(
                         new ParallelCommandGroup(
                                 wrist.toAngle(WristK.kBotAngleDegrees), // bottom
-                                new WaitCommand(0.5)
+                                new WaitCommand(waitTimeSeconds)
                                 .andThen(elevator.toHeight(ElevatorK.kBotHeightMeters))
                                 .alongWith(tilt.toAngle(TiltK.kBotAngleDegrees))))
                         .onFalse(claw.release());
@@ -190,7 +192,7 @@ public class RobotContainer {
                 manipulator.povRight().whileTrue(
                         new ParallelCommandGroup(
                                 wrist.toAngle(WristK.kSubstationAngleDegrees), // substation
-                                new WaitCommand(0.5)
+                                new WaitCommand(waitTimeSeconds)
                                 .andThen(elevator.toHeight(ElevatorK.kSubstationHeightM))
                                 .alongWith(tilt.toAngle(TiltK.kSubstationAngleDegrees))))
                         .onFalse(claw.grab());
