@@ -8,7 +8,6 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -62,16 +61,13 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    Constants.AutoConstants.kPXController = SmartDashboard.getNumber("PX Controller", Constants.AutoConstants.kPXController);
-    Constants.AutoConstants.kPYController = SmartDashboard.getNumber("PY Controller", Constants.AutoConstants.kPYController);
-    Constants.AutoConstants.kPThetaController = SmartDashboard.getNumber("PTheta Controller", Constants.AutoConstants.kPThetaController);
     CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    //m_swerve.resetDriveEncoders();;
+    // m_swerve.resetDriveEncoders();;
     m_robotContainer.turnOffRumble();
 
   }
@@ -86,6 +82,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_robotContainer.swerve.resetModsToAbs();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -107,12 +104,14 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.swerve.resetModsToAbs();
+    m_robotContainer.superstructure.setTargetsToZero();   
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.manageBalanceRumble();
   }
 
   @Override

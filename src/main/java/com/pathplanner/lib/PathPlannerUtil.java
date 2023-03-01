@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class PathPlannerUtil {
     public static final double FIELD_WIDTH_METERS = 8.02;
@@ -77,6 +78,25 @@ public class PathPlannerUtil {
         
       } else {
         return trajectory;
+      }
+    }
+    public static class Reflections {
+      public static Translation2d reflectIfRed(Translation2d old) {
+        if (DriverStation.getAlliance() == Alliance.Red) {
+          return new Translation2d(FIELD_HEIGHT_METERS - old.getX(), old.getY());
+        }
+        return old;
+      }
+  
+      public static double reflectIfRed(double x) {
+        return reflectIfRed(new Translation2d(x, 0)).getX();
+      }
+  
+      public static Rotation2d reflectIfRed(Rotation2d old) {
+        if (DriverStation.getAlliance() == Alliance.Red) {
+          return old.minus(Rotation2d.fromDegrees(180));
+        }
+        return old;
       }
     }
 }

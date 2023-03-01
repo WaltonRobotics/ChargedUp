@@ -14,7 +14,6 @@ public class PathPointAccessor extends PathPoint {
         Rotation2d holonomicRotation,
         double velocityOverride) {
         super(position, heading, holonomicRotation, velocityOverride);
-        //TODO Auto-generated constructor stub
     }
 
     public PathPointAccessor(

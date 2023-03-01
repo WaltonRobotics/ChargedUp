@@ -8,14 +8,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AutonChooser {
     public enum AutonOption {
-
-        DO_NOTHING("Do Nothing"),
-        MOVE_FORWARD("Move forward 1 meter"),
-        THREE_PIECE2("THREE PIECE AUTON 2"),
-        TWO_PIECE_PAUSE("Two Piece then Pause"),
-        THREE_PIECE3("THREE PIECE AUTON 3"),
-        TWO_PIECE_BALANCE("two piece and park"),
-        ONE_PIECE("one piece and park");
+        BACK_OUT("back out of community"),
+        CONE("score one cone (non-bumper side)"),
+        CUBE_CONE_1("score one cube and one cone (non-bumper side)"),
+        CUBE_CONE_2("score one cube and one cone (bumper side)"),
+        CONE_RED("scone one cone (non-bumper side, red)");
 
         public final String description;
 

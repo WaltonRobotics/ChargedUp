@@ -2,21 +2,19 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.RobotContainer;
+
 import static frc.robot.Constants.IndicatorLightsK.*;
 
 public class LEDSubsystem {
     private final AddressableLED led = new AddressableLED(kPort);
     private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(kNumLEDs);
+    private static boolean isCone;
 
     public LEDSubsystem() {
         led.setLength(kNumLEDs);
         led.setData(buffer);
         led.start();
-    }
-
-    public enum GamePieceMode {
-        CONE,
-        CUBE
     }
 
     public AddressableLEDBuffer getBuffer() {
@@ -37,6 +35,7 @@ public class LEDSubsystem {
         for (int i = 0; i < buffer.getLength(); i++) {
             buffer.setRGB(i, 255, 255, 0);
         }
+        isCone = true;
     }
 
     public void setRed() {
@@ -49,6 +48,7 @@ public class LEDSubsystem {
         for (int i = 0; i < buffer.getLength(); i++) {
             buffer.setRGB(i, 128, 0, 128);
         }
+        isCone = false;
     }
 
     public void setGreen() {
@@ -63,15 +63,19 @@ public class LEDSubsystem {
         }
     }
 
-    public void setWhite(){
+    public void setWhite() {
         for (int i = 0; i < buffer.getLength(); i++) {
             buffer.setRGB(i, 255, 255, 255);
         }
     }
 
+    public static boolean getHasCone() {
+        return isCone;
+    }
+
     // cone is 0, cube is 1
     public void handle(int gamePiece) {
-        GamePieceMode piece = GamePieceMode.values()[gamePiece];
+        RobotContainer.GamePieceMode piece = RobotContainer.GamePieceMode.values()[gamePiece];
         switch (piece) {
             case CONE:
                 setYellow();

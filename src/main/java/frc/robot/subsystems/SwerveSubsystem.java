@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.auton.Paths;
+import frc.robot.auton.AutonFactory;
 import frc.robot.auton.Paths.ReferencePoints;
+import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.PathChooser;
@@ -15,6 +16,31 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import static frc.robot.Constants.AutoConstants.kAlignAngleThresholdRadians;
+import static frc.robot.Constants.AutoConstants.kDThetaController;
+import static frc.robot.Constants.AutoConstants.kFThetaController;
+import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared;
+import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
+import static frc.robot.Constants.AutoConstants.kPThetaController;
+import static frc.robot.Constants.AutoConstants.kPXController;
+import static frc.robot.Constants.AutoConstants.kPYController;
+import static frc.robot.Constants.AutoConstants.kRotationPID;
+import static frc.robot.Constants.AutoConstants.kThetaControllerConstraints;
+import static frc.robot.Constants.AutoConstants.kTranslationPID;
+import static frc.robot.Constants.SwerveK.kInvertGyro;
+import static frc.robot.Constants.SwerveK.kKinematics;
+import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
+import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
+import static frc.robot.Constants.SwerveK.kModuleTranslations;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathConstraints;
@@ -23,6 +49,9 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerUtil;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
+import com.pathplanner.lib.ReflectedTransform;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -34,28 +63,20 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.AutoConstants.*;
-import static frc.robot.Constants.SwerveK.*;
-import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
-import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import frc.lib.vision.EstimatedRobotPose;
+import frc.robot.Constants.SwerveK.Mod0;
+import frc.robot.Constants.SwerveK.Mod1;
+import frc.robot.Constants.SwerveK.Mod2;
+import frc.robot.Constants.SwerveK.Mod3;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
@@ -82,6 +103,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
 			kKinematics, getHeading(), getModulePositions());
 
+
 	// private PathPoint currentPathPoint;
 	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
 	private PathPlannerTrajectory trajectoryUsed = new PathPlannerTrajectory();
@@ -95,7 +117,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final AprilTagCamera m_apriltagHelper;
 
 	private double m_simYaw = 0;
-	
+	private double m_absResetTimer = 0;
+
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
@@ -124,7 +147,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the
 																	// subsystem
 				autoEventMap,
-				true,
+				false,
 				this);
 	}
 
@@ -139,7 +162,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return run(() -> {
 			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), Constants.stickDeadband);
-			double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), Constants.stickDeadband);
+			double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), Constants.stickDeadband) * .80;
 
 			boolean openLoopVal = openLoop.getAsBoolean();
 			// if (!openLoopVal) {
@@ -269,6 +292,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void zeroGyro() {
 		m_pigeon.setYaw(0);
+
+	}
+
+	public void resetModsToAbs() {
+		for (var mod : m_modules) {
+			mod.resetToAbsolute();
+		}
 	}
 
 	private double getGyroYaw() {
@@ -359,6 +389,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		System.out.println("NO TARGET DETECTED");
 	}
+
 	public CommandBase autoScore() {
 		// runOnce(curPos = thing; ppt = generate(thing))
 
@@ -400,150 +431,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
 	}
 
-	public Paths.ScoringOptions.ScoringOptionRed optimalScoringOptionRed() {
-		double roboPoseY = getPose().getY();
-		
-		if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone1.getY()) {
-			return Paths.ScoringOptions.ScoringOptionRed.CONE_1;
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.CUBE_1;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.CONE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.CONE_2;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.CUBE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCone1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone2.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_1;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.CONE_2;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.COOP_CUBE_1;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCoopCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCube1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_2;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.COOP_CUBE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCone3.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCoopCone2.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.CONE_3;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.COOP_CONE_2;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.redCube2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone3.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.CUBE_2;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.CONE_3;
-			}
-		}
-		else {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.redCube2.getY())) {
-				return Paths.ScoringOptions.ScoringOptionRed.CONE_4;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionRed.CUBE_2;
-			}
-		}
-	}
-
-	public Paths.ScoringOptions.ScoringOptionBlue optimalScoringOptionBlue() {
-		double roboPoseY = getPose().getY();
-		
-		if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone1.getY()) {
-			return Paths.ScoringOptions.ScoringOptionBlue.CONE_1;
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_1;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.CONE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.CONE_2;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCone1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone2.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_1;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.CONE_2;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCube1.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCube1.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CUBE_1;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCoopCone2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCube1.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_2;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CUBE_1;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCone3.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone3.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCoopCone2.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.CONE_3;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.COOP_CONE_2;
-			}
-		}
-		else if(roboPoseY < Paths.ReferencePoints.ScoringPoints.blueCube2.getY()) {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube2.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone3.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_2;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.CONE_3;
-			}
-		}
-		else {
-			if(Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCone4.getY()) < Math.abs(roboPoseY - Paths.ReferencePoints.ScoringPoints.blueCube2.getY())) {
-				return Paths.ScoringOptions.ScoringOptionBlue.CONE_4;
-			}
-			else {
-				return Paths.ScoringOptions.ScoringOptionBlue.CUBE_2;
-			}
-		}
-	}
-
 	private CommandBase goToChosenTag() {
 		return run(() -> {
 			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(AprilTagChooser.GetChosenAprilTag());
@@ -554,14 +441,13 @@ public class SwerveSubsystem extends SubsystemBase {
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
 
-	public CommandBase autoScore(List<PathPoint> path, PathPoint endPt) {
-		// runOnce(curPos = thing; ppt = generate(thing))
-
+	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
+		PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
 		var pathCmd = runOnce(() -> {
 			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-					getPose(),
+					new Pose2d(12.94, 4.68, new Rotation2d(0)), // TODO: change later; use while we don't have a camera
+					/* getPose(), */
 					getChassisSpeeds());
-			// ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(ReferencePoints.currentPoint);
 			List<PathPoint> chosenPathPoints = path;
@@ -569,16 +455,12 @@ public class SwerveSubsystem extends SubsystemBase {
 			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
 			for (PathPoint addedPP : chosenPathPoints) {
-
 				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
 				if (onRed && currentX < addedX) {
 					allPoints.add(addedPP);
 				} else if (!onRed && currentX > addedX) {
 					allPoints.add(addedPP);
 				}
-				// else {
-				// break;
-				// }
 			}
 
 			allPoints.add(endPt);
@@ -588,27 +470,32 @@ public class SwerveSubsystem extends SubsystemBase {
 					allPoints);
 		});
 
-		var followCmd = run(() -> autoBuilder.followPath(currentTrajectory));
+		var followCmd = run(() -> autoBuilder.followPath(() -> {
+			return Optional.ofNullable(currentTrajectory);
+		}));
 
-		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPt));
+		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPose));
 	}
 
-	private CommandBase goToChosenPoint(PathPoint endPt) {
+	/**
+	 * @return Cmd to drive to chosen, pre-specified pathpoint
+	 * 
+	 * @endPt The last pathpoint to end up at
+	 */
+	private CommandBase goToChosenPoint(Pose2d endPose) {
 		return run(() -> {
-			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(endPt);
 			var botPose = getPose();
-			double xRate = xController.calculate(botPose.getX(), tagPPPose.getX());
-			double yRate = yController.calculate(botPose.getY(), tagPPPose.getY());
+			double xRate = xController.calculate(botPose.getX(), endPose.getX());
+			double yRate = yController.calculate(botPose.getY(), endPose.getY());
 			drive(xRate, yRate, new Rotation2d(0), true);
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
 
 	/*
 	 * Create a complete autonomous command group. This will reset the robot pose at
-	 * the begininng of
-	 * the first path, follow paths, trigger events during path following, and run
-	 * commands between
-	 * paths with stop events
+	 * the begininng of the first path, follow paths, trigger events during path
+	 * following,
+	 * and run commands between paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
 		// resetPose(getPose());
@@ -619,57 +506,67 @@ public class SwerveSubsystem extends SubsystemBase {
 		return autoBuilder.fullAuto(trajectoryList);
 	}
 
+	/**
+	 * @return Swerve trajectory cmd for auton pathing that sets
+	 * the initial pose and trajectory to the correct alliance color
+	 * before running the trajectory
+	 * 
+	 * @param trajectory The blue-side original trajectory to run
+	 */
 	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
 		var resetCmd = runOnce(() -> {
-			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
-			initialState = PathPlannerUtil.transformStateForAlliance(initialState, DriverStation.getAlliance());
-			trajectoryUsed = PathPlannerUtil.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
-			resetPose(initialState.poseMeters);
+			trajectoryUsed = trajectory;
+			PathPlannerState initialState = trajectory.getInitialState();
+			if(DriverStation.getAlliance() == Alliance.Red){
+				initialState = ReflectedTransform.reflectiveTransformState(trajectory.getInitialState());
+			}
+			Pose2d initialPose = initialState.poseMeters;
+			resetPose(initialPose);
 		});
-
 		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
-
 		var pathCmd = new WaltonPPSwerveControllerCommand(
-			trajSupplier,
-			this::getPose,
-			kKinematics,
-			xController,
-			yController,
-			autoThetaController,
-			this::setModuleStates,
-			true,
-			this);
+				trajSupplier,
+				this::getPose,
+				kKinematics,
+				xController,
+				yController,
+				autoThetaController,
+				this::setModuleStates,
+				true,
+				this);
 		return resetCmd.andThen(pathCmd);
 	}
 
-	/*
-	 * Returns a double 0-1 based on angle from minimum balance degrees
-	 */
-	public double getInclinationRatio() {
-		double pitch = m_pigeon.getPitch();
-		double roll = m_pigeon.getRoll();
-		double yaw = getGyroYaw();
-		// inclination = atan(pitch/s(qrt(tan^2(roll)+tan^2(yaw))))
-		// rho = sqrt(pitch^2 + yaw^2))/roll
-		double inclination = Math.atan((Math.sqrt(Math.pow(Math.tan(pitch), 2) + Math.pow(Math.tan(yaw), 2))) / roll);
+	public CommandBase getSwerveAutoBuilder(PathPlannerTrajectory traj) {
+		var resetCmd = runOnce(() -> {
+			trajectoryUsed = traj;
+			Pose2d initPose = traj.getInitialHolonomicPose();
+			resetPose(initPose);
+		});
+		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
+		SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+			this::getPose, 
+			this::resetOdometryPose, 
+			kTranslationPID, 
+			kRotationPID, 
+			(Consumer<ChassisSpeeds>) getChassisSpeeds(), 
+			AutonFactory.autonEventMap,
+			true,
+			this);
 
-		// double inclination2 = Math.toDegrees(pitch);
-		SmartDashboard.putNumber("ROBOTPITCH", pitch);
-		SmartDashboard.putNumber("ROBOTROLL", roll);
-		SmartDashboard.putNumber("ROBOTYAW", yaw);
+		var pathCmd = autoBuilder.followPath(traj);
 
-		// ratio of inclination to minimum degrees
-		if (inclination > kMinimumBalanceDegrees) {
-			return 0;
-			// return inclination/(34.55 - kMinimumBalanceDegrees); //34.55 is max angle
-			// possible (10.45 when down)
-		}
-		// else no rumble bc inclination within limits
-		return 0;
+		return resetCmd.andThen(pathCmd);
 	}
 
-	/*
-	 * Rotate to a robot-oriented degrees
+	public CommandBase getWaltonNewSwerveAutonCmd(PathPlannerTrajectory trajectory) {
+		return null;
+	}
+
+	/**
+	 * @return Cmd to rotate to a robot-oriented degrees
+	 * 
+	 * @param degrees to rotate to
 	 */
 	public CommandBase rotateAboutPoint(double degrees) {
 		return run(() -> {
@@ -712,12 +609,81 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
+	/*
+	 * Autobalance the robot on charge station using gyro
+	 */
+	public CommandBase autoBalance() {
+		return run(() -> {
+			// Uncomment the line below this to simulate the gyroscope axis with a
+			// controller joystick
+			// Double currentAngle = -1 *
+			// Robot.controller.getRawAxis(Constants.LEFT_VERTICAL_JOYSTICK_AXIS) * 45;
+			double currentAngle = m_pigeon.getPitch();
+
+			double error = 0 - currentAngle;
+			double power = -Math.min(Constants.SwerveK.kDriveKP * error, 1);
+
+			// // Our robot needed an extra push to drive up in reverse, probably due to
+			// weight imbalances
+			// if (power < 0) {
+			// power *= Constants.BACKWARDS_BALANCING_EXTRA_POWER_MULTIPLIER;
+			// }
+
+			// Limit the max power
+			if (Math.abs(power) > 0.4) {
+				power = Math.copySign(0.4, power);
+			}
+
+			drive(power, 0, new Rotation2d(0), true);
+
+			// Debugging Print Statments
+			System.out.println("Current Angle: " + currentAngle);
+			System.out.println("Error " + error);
+			System.out.println("Drive Power: " + power);
+		});
+	}
+
+	public CommandBase alignToScoreCubeCmd() {
+		return goToChosenPoint(alignToScoreCube());
+	}
+
+	private Pose2d alignToScoreCube() {
+		double yValue = getPose().getY();
+		Pose2d closest;
+		Pose2d finalDestination;
+
+		if (DriverStation.getAlliance().equals(Alliance.Red)) {
+			closest = ScoringPoints.redScoringPoints[0];
+			for (int i = 1; i <= 8; i++) {
+				if (Math.abs(yValue - closest.getTranslation().getY()) > Math
+						.abs(yValue - ScoringPoints.redScoringPoints[i].getTranslation().getY())) {
+					closest = ScoringPoints.redScoringPoints[i];
+				}
+			}
+			finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
+		} else {
+			closest = ScoringPoints.blueScoringPoints[0];
+			for (int i = 1; i <= 8; i++) {
+				if (Math.abs(yValue - closest.getTranslation().getY()) > Math
+						.abs(yValue - ScoringPoints.blueScoringPoints[i].getTranslation().getY())) {
+					closest = ScoringPoints.redScoringPoints[i];
+				}
+			}
+			finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
+		}
+		return finalDestination;
+	}
+
 	@Override
 	public void periodic() {
 		for (var module : m_modules) {
 			module.periodic();
 		}
 		updateRobotPose();
+		SmartDashboard.putNumber("Swerve Mod 1 Velocity", m_modules[0].getState().speedMetersPerSecond);
+		SmartDashboard.putNumber("Swerve Mod 2 Velocity", m_modules[1].getState().speedMetersPerSecond);
+		SmartDashboard.putNumber("Swerve Mod 3 Velocity", m_modules[2].getState().speedMetersPerSecond);
+		SmartDashboard.putNumber("Swerve Mod 4 Velocity", m_modules[3].getState().speedMetersPerSecond);
 	}
 
 	@Override

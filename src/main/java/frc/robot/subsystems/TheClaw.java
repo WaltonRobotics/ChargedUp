@@ -15,7 +15,7 @@ public class TheClaw extends SubsystemBase {
     private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
     private final DigitalInput leftEye = new DigitalInput(kLeftEyeID);
     private final DigitalInput rightEye = new DigitalInput(kRightEyeID);
-    private boolean isClosed = false;
+    private boolean m_isClosed = false;
     private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
     private final GenericEntry nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
     private final GenericEntry nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
@@ -27,23 +27,47 @@ public class TheClaw extends SubsystemBase {
         // DashboardManager.addTab(this);
     }
 
+    /*
+     * @return Cmd to automatically close claw on eye sight
+     */
     public CommandBase autoGrab(boolean autoRelease) {
 
-        return runOnce(() -> claw.set(true)) // open claw
-            .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.3) // wait 0.3sec before sensor
-            .andThen(
-                startEnd(()->{}, ()-> claw.set(false)).until(leftEyeTrig.and(rightEyeTrig))
-            );
+        return runOnce(() ->  {
+                    m_isClosed = false;  // open claw
+                    claw.set(true); 
+                })
+                .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.4) // wait 0.4sec before sensor
+                .andThen(
+                        startEnd(() -> {}, 
+                            () -> {
+                                m_isClosed = true;
+                                claw.set(false); 
+                            })
+                            .until(leftEyeTrig.and(rightEyeTrig)));
     }
 
+    /*
+     * @return Cmd to release claw
+     */
     public CommandBase release() {
-        return runOnce(() -> claw.set(true));
+        return runOnce(() -> {
+            m_isClosed = false;
+            claw.set(true);
+        } );
+        
+    }
+
+    public CommandBase grab() {
+        return runOnce(() -> {
+            m_isClosed = true;
+            claw.set(false);
+        });
     }
 
     @Override
-    public void periodic(){
-       nte_isClosed.setBoolean(isClosed);
-       nte_leftEye.setBoolean(leftEye.get());
-       nte_rightEye.setBoolean(rightEye.get());
-    }   
+    public void periodic() {
+        nte_isClosed.setBoolean(m_isClosed);
+        nte_leftEye.setBoolean(leftEye.get());
+        nte_rightEye.setBoolean(rightEye.get());
+    }
 }
