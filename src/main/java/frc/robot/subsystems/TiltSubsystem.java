@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 //TODO: redo tilt limits (possible moving the wrong way)
 //TODO: have the teleop command use toAngle (same for other subsystems) and stick inputs add or subtract from that
 import com.revrobotics.CANSparkMax;
@@ -96,13 +97,8 @@ public class TiltSubsystem extends SubsystemBase {
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			if (Math.abs(powerVal) > 0) {
-				var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
-				setVoltage(effort);
-			}
-			else{
-				setSpeed(powerVal);
-			}
+			m_targetAngle += powerVal;
+			toAngle(m_targetAngle);
 		});
 	}
 
@@ -145,7 +141,7 @@ public class TiltSubsystem extends SubsystemBase {
 		}).andThen(run(() -> {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
 			setVoltage(effort);
-		})).withTimeout(2)
+		}))
 				.finallyDo((intr) -> {
 					m_motor.set(0);
 				})

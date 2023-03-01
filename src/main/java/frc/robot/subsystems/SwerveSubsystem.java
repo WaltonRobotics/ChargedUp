@@ -284,14 +284,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void zeroGyro() {
 		m_pigeon.setYaw(0);
-		
+
 	}
 
-	public void resetModsToAbs(){
+	public void resetModsToAbs() {
 		for (var mod : m_modules) {
 			mod.resetToAbsolute();
 		}
 	}
+
 	private double getGyroYaw() {
 		return m_pigeon.getYaw() - 180;
 	}
@@ -438,7 +439,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		var pathCmd = runOnce(() -> {
 
 			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-				new Pose2d(12.94, 4.68, new Rotation2d(0)), // TODO: change later. Only use while we don't have a camera to find the pose. Is the pose of the middle of the non-bumpy entrance of the red community.
+					new Pose2d(12.94, 4.68, new Rotation2d(0)), // TODO: change later. Only use while we don't have a
+																// camera to find the pose. Is the pose of the middle of
+																// the non-bumpy entrance of the red community.
 					getChassisSpeeds());
 			// ReferencePoints.currentPoint = currentPathPoint;
 			List<PathPoint> allPoints = new ArrayList<>();
@@ -526,6 +529,10 @@ public class SwerveSubsystem extends SubsystemBase {
 				true,
 				this);
 		return resetCmd.andThen(pathCmd);
+	}
+
+	public CommandBase getWaltonNewSwerveAutonCmd(PathPlannerTrajectory trajectory) {
+		return null;
 	}
 
 	/*
@@ -620,9 +627,8 @@ public class SwerveSubsystem extends SubsystemBase {
 		if (DriverStation.getAlliance().equals(Alliance.Red)) {
 			closest = ScoringPoints.redScoringPoints[0];
 			for (int i = 1; i <= 8; i++) {
-				if (Math.abs(yValue - closest.getTranslation().getY()) >
-					Math.abs(yValue - ScoringPoints.redScoringPoints[i].getTranslation().getY())
-				) {
+				if (Math.abs(yValue - closest.getTranslation().getY()) > Math
+						.abs(yValue - ScoringPoints.redScoringPoints[i].getTranslation().getY())) {
 					closest = ScoringPoints.redScoringPoints[i];
 				}
 			}
@@ -631,9 +637,8 @@ public class SwerveSubsystem extends SubsystemBase {
 		} else {
 			closest = ScoringPoints.blueScoringPoints[0];
 			for (int i = 1; i <= 8; i++) {
-				if (Math.abs(yValue - closest.getTranslation().getY()) > 
-					Math.abs(yValue - ScoringPoints.blueScoringPoints[i].getTranslation().getY())
-				) {
+				if (Math.abs(yValue - closest.getTranslation().getY()) > Math
+						.abs(yValue - ScoringPoints.blueScoringPoints[i].getTranslation().getY())) {
 					closest = ScoringPoints.redScoringPoints[i];
 				}
 			}

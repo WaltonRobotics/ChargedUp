@@ -135,7 +135,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 			else{
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
-			
 			m_right.set(ControlMode.PercentOutput, output);
 		})
 				.withName("TeleManual");

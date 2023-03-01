@@ -96,7 +96,7 @@ public class PathPlannerUtil {
         if (DriverStation.getAlliance() == Alliance.Red) {
           return old.minus(Rotation2d.fromDegrees(180));
         }
-        return old;x  
+        return old;
       }
     }
 }
