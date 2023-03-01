@@ -226,9 +226,9 @@ public final class Constants {
         public static final double kMinAngleDegrees = 0;
 
         public static final double kMaxAngleDegrees = 30;
-        public static final double kMaxVelocity = 20; // degrees per sec
-        public static final double kMaxAcceleration = 40.0; // degrees per sec squared
-        public static final double kP = 1.0;
+        public static final double kMaxVelocity = 80; // degrees per sec
+        public static final double kMaxAcceleration = 100.0; // degrees per sec squared
+        public static final double kP = .9;
         public static final double kD = 0.0;
         public static final double kS = 1.5;
         public static final double kGearRatio = ((49.0 / 1.0) * (37.0 / 21.0));
@@ -307,11 +307,11 @@ public final class Constants {
 
         public static final int kCurrLimit = 20;
         public static final double kAbsEncoderTicksPerRotation = 1024;
-        public static final double kP = .096;
+        public static final double kP = .10;
         public static final double kD = 0.00;
         public static final double kS = 1.5; 
-        public static final double kMaxVelocity = 8000; // deg/sec
-        public static final double kMaxAcceleration = 8800; // deg/sec^2
+        public static final double kMaxVelocity = 10000; // deg/sec
+        public static final double kMaxAcceleration = 12000; // deg/sec^2
 
         public static final double kZeroDegOffset = 5.5;
         public static final double kMinAngleDegrees = -35;

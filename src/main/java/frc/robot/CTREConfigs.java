@@ -69,7 +69,7 @@ public final class CTREConfigs {
         rightConfig.slot0.kD = kD;
         rightConfig.reverseSoftLimitThreshold = kReverseLimit;
         rightConfig.forwardSoftLimitThreshold = kForwardLimit;
-        //rightConfig.forwardSoftLimitEnable = kEnableForwardLimit;
+        rightConfig.forwardSoftLimitEnable = kEnableForwardLimit;
         //rightConfig.reverseSoftLimitEnable = kEnableReverseLimit;
 
         rightConfig.supplyCurrLimit = elevatorSupplyLimit;

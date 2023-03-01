@@ -149,10 +149,10 @@ public class RobotContainer {
                 //                 .alongWith(wrist.toAngle(-10))
                 //                 .andThen(claw.release()));
 
-                manipulator.x().whileTrue((tilt.toAngle(TiltK.kMidConeAngleDegrees)) // mid cone
-                                .alongWith(elevator.toHeight(ElevatorK.kMidConeHeightM -.019))
-                                .alongWith(wrist.toAngle(WristK.kMidConeAngleDegrees))
-                                .andThen(claw.release()));
+                // manipulator.x().whileTrue((tilt.toAngle(TiltK.kMidConeAngleDegrees)) // mid cone
+                //                 .alongWith(elevator.toHeight(ElevatorK.kMidConeHeightM -.019))
+                //                 .alongWith(wrist.toAngle(WristK.kMidConeAngleDegrees))
+                //                 .andThen(claw.release()));
 
                 manipulator.povDown().whileTrue((tilt.toAngle(TiltK.kBotAngleDegrees)) // bottom
                                 .alongWith(elevator.toHeight(ElevatorK.kBotHeightMeters -.019))
@@ -175,8 +175,8 @@ public class RobotContainer {
                                                 .alongWith(tilt.toAngle(0))));
 
                                                 /*Tuning buttons */
-                // manipulator.a().whileTrue(wrist.toFlat());
-                // manipulator.x().whileTrue(wrist.toAngle(0));
+                manipulator.b().whileTrue(wrist.toAngle(70));
+                manipulator.x().whileTrue(wrist.toAngle(0));
                 // manipulator.b().whileTrue(elevator.toHeight(0.3));
                 manipulator.a().whileTrue(tilt.toAngle(15));
                 manipulator.y().whileTrue(tilt.toAngle(0));
