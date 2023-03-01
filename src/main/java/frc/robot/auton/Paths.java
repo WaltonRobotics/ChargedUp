@@ -41,6 +41,9 @@ public class Paths {
 		public static final PathPlannerTrajectory cubeConeBumper = PathPlanner.loadPath("cubeConeBumper",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory oneConeRed = PathPlanner.loadPath("oneConeRed",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
 	}
 
 	public static final class PPAutoscoreClass {

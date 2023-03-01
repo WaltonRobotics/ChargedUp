@@ -11,7 +11,8 @@ public class AutonChooser {
         BACK_OUT("back out of community"),
         CONE("score one cone (non-bumper side)"),
         CUBE_CONE_1("score one cube and one cone (non-bumper side)"),
-        CUBE_CONE_2("score one cube and one cone (bumper side)");
+        CUBE_CONE_2("score one cube and one cone (bumper side)"),
+        CONE_RED("scone one cone (non-bumper side, red)");
 
         public final String description;
 
