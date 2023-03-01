@@ -507,14 +507,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	 */
 	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
 		var resetCmd = runOnce(() -> {
-			boolean isRed = DriverStation.getAlliance() == Alliance.Red;
 			trajectoryUsed = trajectory;
-			PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
-			if (isRed) {
-				trajectoryUsed = PathPlannerUtil.transformTrajectoryForAlliance(trajectory, Alliance.Red);
-				initialState = PathPlannerUtil.transformStateForAlliance(initialState, Alliance.Red);
-			}
-			resetPose(initialState.poseMeters);
+			// PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
+			Pose2d initialPose = trajectory.getInitialHolonomicPose();
+			resetPose(initialPose);
 
 		});
 		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
