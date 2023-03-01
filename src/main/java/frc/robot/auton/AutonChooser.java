@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class AutonChooser {
     public enum AutonOption {
         BACK_OUT("back out of community"),
+        CONE("score one cone (non-bumper side)"),
         CUBE_CONE_1("score one cube and one cone (non-bumper side)"),
         CUBE_CONE_2("score one cube and one cone (bumper side)");
 

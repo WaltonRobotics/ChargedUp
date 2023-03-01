@@ -32,6 +32,9 @@ public class Paths {
 		public static final PathPlannerTrajectory backOut = PathPlanner.loadPath("backOut",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory oneCone = PathPlanner.loadPath("oneCone",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory cubeConeNonBumper = PathPlanner.loadPath("cubeConeNoBumper",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
