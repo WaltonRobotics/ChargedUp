@@ -105,7 +105,7 @@ public class WristSubsystem extends SubsystemBase {
    * @return Whether or not wrist is as low as possible
    */
   private boolean atMaxLimit() {
-    return getDegrees() >= m_maxDegrees;
+    return getDegrees() >= kMaxAngleDegrees;
   }
 
   private void i_setTarget(double targetAngle) {
@@ -164,8 +164,7 @@ public class WristSubsystem extends SubsystemBase {
       var volts = power.getAsDouble() * m_motor.getBusVoltage();
       nte_stickVoltage.setDouble(volts);
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-      m_targetAngle += powerVal;
-      toAngle(m_targetAngle);
+      setPower(powerVal * 10, true);
     });
   }
 

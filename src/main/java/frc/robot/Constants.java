@@ -314,8 +314,9 @@ public final class Constants {
         public static final double kMaxAcceleration = 8800; // deg/sec^2
 
         public static final double kZeroDegOffset = 5.5;
-        public static final double kMinAngleDegrees = -37.5;
+        public static final double kMinAngleDegrees = -35;
         public static final double kMaxAngleDegrees = 75;
+
 
         public static final double kBotAngleDegrees = -23;
         public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
