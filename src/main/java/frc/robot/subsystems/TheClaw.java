@@ -32,11 +32,18 @@ public class TheClaw extends SubsystemBase {
      */
     public CommandBase autoGrab(boolean autoRelease) {
 
-        return runOnce(() -> claw.set(true)) // open claw
+        return runOnce(() ->  {
+                    m_isClosed = false;  // open claw
+                    claw.set(true); 
+                })
                 .withTimeout(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.4) // wait 0.4sec before sensor
                 .andThen(
-                        startEnd(() -> {
-                        }, () -> claw.set(false)).until(leftEyeTrig.and(rightEyeTrig)));
+                        startEnd(() -> {}, 
+                            () -> {
+                                m_isClosed = true;
+                                claw.set(false); 
+                            })
+                            .until(leftEyeTrig.and(rightEyeTrig)));
     }
 
     /*
@@ -44,7 +51,7 @@ public class TheClaw extends SubsystemBase {
      */
     public CommandBase release() {
         return runOnce(() -> {
-            m_isClosed = true;
+            m_isClosed = false;
             claw.set(true);
         } );
         
