@@ -97,7 +97,7 @@ public class TiltSubsystem extends SubsystemBase {
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			m_targetAngle += powerVal;
+			m_targetAngle += powerVal * 2;
 			double effort = getEffortForTarget(m_targetAngle);
 			setVoltage(effort);
 		});
