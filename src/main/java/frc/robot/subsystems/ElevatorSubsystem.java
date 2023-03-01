@@ -214,7 +214,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 							kVoltageCompSaturationVolts);
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 				}))
-				.withTimeout(2)
+				.withTimeout(1.2)
 				// .until(() -> m_controller.atSetpoint())
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);

@@ -107,7 +107,6 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.swerve.resetModsToAbs();
-    // m_robotContainer.superstructure.zeroSuperstructure(); 
     m_robotContainer.superstructure.setTargetsToZero();   
   }
 

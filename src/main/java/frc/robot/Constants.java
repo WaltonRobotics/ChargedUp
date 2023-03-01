@@ -115,9 +115,9 @@ public final class Constants {
         );
 
         /* Swerve Profiling Values */
-        public static final double kMaxVelocityMps = 4.5; // TODO: This must be tuned to specific robot
+        public static final double kMaxVelocityMps = 8; // TODO: This must be tuned to specific robot //4.5
         /* Radians per Second */
-        public static final double kMaxAngularVelocityRadps = 11.5; // TODO: This must be tuned to specific robot    //11.5
+        public static final double kMaxAngularVelocityRadps = 14; // TODO: This must be tuned to specific robot    //11.5
 
         /* Neutral Modes */
         public static final NeutralMode kAngleNeutralMode = NeutralMode.Coast;
@@ -218,17 +218,17 @@ public final class Constants {
         public static final double kTopAngleDegrees = 15; // TODO: CHANGE >:(
         public static final double kTopConeAngleDegrees = 30;
         public static final double kTopCubeAngleDegrees = 30;
-        public static final double kMidConeAngleDegrees = 23.169;
-        public static final double kMidCubeAngleDegrees = 29.131210;
+        public static final double kMidConeAngleDegrees = 23.418;
+        public static final double kMidCubeAngleDegrees = 22.041;
         public static final double kMidAngleDegrees = 30; // TODO: CHANGE T-T
         public static final double kBotAngleDegrees = 0; // TODO: CHANGE >:D
         public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
 
         public static final double kMaxAngleDegrees = 30;
-        public static final double kMaxVelocity = 80; // degrees per sec
-        public static final double kMaxAcceleration = 100.0; // degrees per sec squared
-        public static final double kP = .9;
+        public static final double kMaxVelocity = 20; // degrees per sec
+        public static final double kMaxAcceleration = 40.0; // degrees per sec squared
+        public static final double kP = .75;
         public static final double kD = 0.0;
         public static final double kS = 1.5;
         public static final double kGearRatio = ((49.0 / 1.0) * (37.0 / 21.0));
@@ -284,12 +284,12 @@ public final class Constants {
         public static final double kSafeHeight = Units.inchesToMeters(0); // where wrist is free to move
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
-        public static final double kTopCubeHeightM = 0.577731;
-        public static final double kTopConeHeightM = 0.552073;
-        public static final double kMidConeHeightM = 0.297262;
-        public static final double kMidCubeHeightM = 0.351891;
+        public static final double kTopCubeHeightM = 0.615;
+        public static final double kTopConeHeightM = 0.685;
+        public static final double kMidConeHeightM = 0.432;
+        public static final double kMidCubeHeightM = 0.391;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
-        public static final double kBotHeightMeters = 0; // TODO: change later :DDD
+        public static final double kBotHeightMeters = 0; //TODO: change later :DDD
         public static final double kSubstationHeightM = 0.42;
         public static final double kSubstationConeHeightM = 0;
 
@@ -310,8 +310,8 @@ public final class Constants {
         public static final double kP = .10;
         public static final double kD = 0.00;
         public static final double kS = 1.5; 
-        public static final double kMaxVelocity = 10000; // deg/sec
-        public static final double kMaxAcceleration = 12000; // deg/sec^2
+        public static final double kMaxVelocity = 12000; // deg/sec
+        public static final double kMaxAcceleration = 14000; // deg/sec^2
 
         public static final double kZeroDegOffset = 5.5;
         public static final double kMinAngleDegrees = -35;
@@ -321,10 +321,10 @@ public final class Constants {
         public static final double kBotAngleDegrees = -23;
         public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
         public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
-        public static final double kTopConeAngleDegrees = 30.897095;
-        public static final double kTopCubeAngleDegrees = 7.010672;
-        public static final double kMidConeAngleDegrees = 21.788074;
-        public static final double kMidCubeAngleDegrees = -10.847931;
+        public static final double kTopConeAngleDegrees = 34.367;
+        public static final double kTopCubeAngleDegrees = 29.888;
+        public static final double kMidConeAngleDegrees = 43.929;
+        public static final double kMidCubeAngleDegrees = 25.316;
         public static final double kSubstationAngleDegrees = -8.274536;
         
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);
