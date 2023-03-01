@@ -89,8 +89,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    
-    Commands.run(() -> m_robotContainer.superstructure.zeroSuperstructure());
   }
 
   /** This function is called periodically during autonomous. */
@@ -109,7 +107,8 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.swerve.resetModsToAbs();
-    Commands.run(() -> m_robotContainer.superstructure.zeroSuperstructure());
+    // m_robotContainer.superstructure.zeroSuperstructure(); 
+    m_robotContainer.superstructure.setTargetsToZero();   
   }
 
   /** This function is called periodically during operator control. */

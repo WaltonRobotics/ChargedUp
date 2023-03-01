@@ -112,6 +112,10 @@ public class WristSubsystem extends SubsystemBase {
     m_targetAngle = MathUtil.clamp(targetAngle, kMinAngleDegrees, m_maxDegrees);
   }
 
+  public void setTarget(double targetAngle) {
+    i_setTarget(targetAngle);
+  }
+
   /*
    * Sets the power in velocity or voltage of the wrist motor with soft limits
    * 

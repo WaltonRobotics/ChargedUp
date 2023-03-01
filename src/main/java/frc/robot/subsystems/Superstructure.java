@@ -55,10 +55,16 @@ public class Superstructure extends SubsystemBase {
                 .andThen(m_wrist.toAngle(state.wristAngle.angle));
     }
 
-    public CommandBase zeroSuperstructure() {
-        return m_wrist.toAngle(WristK.kMinAngleDegrees)
-                .andThen(m_elevator.toHeight(ElevatorK.kMinHeightMeters))
-                .andThen(m_tilt.toAngle(TiltK.kMinAngleDegrees));
+    // public CommandBase zeroSuperstructure() {
+    //     return m_wrist.toAngle(WristK.kMinAngleDegrees)
+    //             .andThen(m_elevator.toHeight(ElevatorK.kMinHeightMeters))
+    //             .andThen(m_tilt.toAngle(TiltK.kMinAngleDegrees));
+    // }
+
+    public void setTargetsToZero() {
+        m_wrist.setTarget(kMaxAngleDegrees);
+        m_tilt.setTarget(kMinAngleDegrees);
+        m_elevator.setTarget(kBotHeightMeters);
     }
 
     public enum ScoringStates {
