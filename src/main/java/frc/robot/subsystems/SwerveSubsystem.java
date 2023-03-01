@@ -49,6 +49,8 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerUtil;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
+import com.pathplanner.lib.ReflectedTransform;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
@@ -514,8 +516,11 @@ public class SwerveSubsystem extends SubsystemBase {
 	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
 		var resetCmd = runOnce(() -> {
 			trajectoryUsed = trajectory;
-			// PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
-			Pose2d initialPose = trajectory.getInitialHolonomicPose();
+			PathPlannerState initialState = trajectory.getInitialState();
+			if(DriverStation.getAlliance() == Alliance.Red){
+				initialState = ReflectedTransform.reflectiveTransformState(trajectory.getInitialState());
+			}
+			Pose2d initialPose = initialState.poseMeters;
 			resetPose(initialPose);
 		});
 		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);

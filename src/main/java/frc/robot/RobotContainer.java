@@ -28,8 +28,6 @@ import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
 
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -119,7 +117,6 @@ public class RobotContainer {
                         .and(driver.rightTrigger())
                         .whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone9));
 
-                //driver.rightTrigger().whileTrue(swerve.autoScore());
                 driver.rightBumper().whileTrue(swerve.autoBalance());
 
                 manipulator.start().onTrue(new InstantCommand(() -> leds.handle(0))); //cone
@@ -228,10 +225,10 @@ public class RobotContainer {
         }
 
         public void mapAutonCommands() {
-               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.fullAuto(swerve, backOut));
+               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.WaltonPPAuto(swerve, backOut));
                AutonChooser.AssignAutonCommand(AutonOption.CONE, AutonFactory.fullAuto(swerve, oneCone));
-               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.fullAuto(swerve, cubeConeNonBumper));
-               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.fullAuto(swerve, cubeConeBumper));
+               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.WaltonPPAuto(swerve, cubeConeNonBumper));
+               AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.WaltonPPAuto(swerve, cubeConeBumper));
                AutonChooser.AssignAutonCommand(AutonOption.CONE_RED, AutonFactory.fullAuto(swerve, oneConeRed));
         }
 
