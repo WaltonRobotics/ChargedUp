@@ -2,7 +2,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.WristK;
 // import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorStates;
 import frc.robot.subsystems.TiltSubsystem.TiltStates;
@@ -46,10 +49,13 @@ public class Superstructure extends SubsystemBase {
         }
     }
 
-    public CommandBase toState(ScoringStates state) {
-        return m_elevator.toHeight(state.elevatorHeight.height)
-                .alongWith(m_tilt.toAngle(state.elevatorTilt.angle))
-                .andThen(m_wrist.toAngle(state.wristAngle.angle));
+    public ParallelCommandGroup toState(ScoringStates state, double wristWait, double elevatorWait) {
+        return new ParallelCommandGroup(
+            m_wrist.toAngle(state.wristAngle.angle), // mid cone
+            new WaitCommand(wristWait)
+            .andThen(m_elevator.toHeight(state.elevatorHeight.height)),
+            new WaitCommand(wristWait)
+            .andThen(m_tilt.toAngle(state.elevatorTilt.angle)));
     }
 
     // public CommandBase zeroSuperstructure() {

@@ -147,12 +147,7 @@ public class RobotContainer {
                 //         .onFalse(claw.release());
 
                 manipulator.povUp().whileTrue(
-                        new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kTopCubeAngleDegrees), // top cube
-                                new WaitCommand(waitTimeSecondsWrist)
-                                .andThen(elevator.toHeight(ElevatorK.kTopCubeHeightM)),
-                                new WaitCommand(waitTimeSecondsEle)
-                                .andThen(tilt.toAngle(TiltK.kTopCubeAngleDegrees))))
+                                superstructure.toState(ScoringStates.TOPCUBE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 // manipulator.povLeft().whileTrue(
@@ -164,58 +159,27 @@ public class RobotContainer {
                 //         .onFalse(claw.release());
 
                 manipulator.povLeft().whileTrue(
-                        new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kMidCubeAngleDegrees), // mid cube
-                                new WaitCommand(waitTimeSecondsWrist)
-                                .andThen(elevator.toHeight(ElevatorK.kMidCubeHeightM)),
-                                new WaitCommand(waitTimeSecondsEle)
-                                .andThen(tilt.toAngle(TiltK.kMidCubeAngleDegrees))))
+                                superstructure.toState(ScoringStates.MIDCUBE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 manipulator.y().whileTrue(
-                        new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kTopConeAngleDegrees), // top cone
-                                new WaitCommand(waitTimeSecondsWrist)
-                                .andThen(elevator.toHeight(ElevatorK.kTopConeHeightM)),
-                                new WaitCommand(waitTimeSecondsEle)
-                                .andThen(tilt.toAngle(TiltK.kTopConeAngleDegrees))))
+                                superstructure.toState(ScoringStates.TOPCONE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
                         
-
                 manipulator.x().whileTrue(
-                        new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kTopConeAngleDegrees), // mid cone
-                                new WaitCommand(waitTimeSecondsWrist)
-                                .andThen(elevator.toHeight(ElevatorK.kTopConeHeightM)),
-                                new WaitCommand(waitTimeSecondsEle)
-                                .andThen(tilt.toAngle(TiltK.kTopConeAngleDegrees))))
+                                superstructure.toState(ScoringStates.MIDCONE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 manipulator.povDown().whileTrue(
-                        new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kBotAngleDegrees), // bottom
-                                new WaitCommand(waitTimeSecondsWrist)
-                                .andThen(elevator.toHeight(ElevatorK.kBotHeightMeters)),
-                                new WaitCommand(waitTimeSecondsEle)
-                                .andThen(tilt.toAngle(TiltK.kBotAngleDegrees))))
+                                superstructure.toState(ScoringStates.BOT, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
                                 
                 manipulator.a().whileTrue(
-                        new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kBotAngleDegrees), // bottom
-                                new WaitCommand(waitTimeSecondsWrist)
-                                .andThen(elevator.toHeight(ElevatorK.kBotHeightMeters)),
-                                new WaitCommand(waitTimeSecondsEle)
-                                .andThen(tilt.toAngle(TiltK.kBotAngleDegrees))))
+                                superstructure.toState(ScoringStates.BOT, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 manipulator.povRight().whileTrue(
-                        new ParallelCommandGroup(
-                                wrist.toAngle(WristK.kSubstationAngleDegrees), // substation
-                                new WaitCommand(waitTimeSecondsWrist)
-                                .andThen(elevator.toHeight(ElevatorK.kSubstationHeightM)),
-                                new WaitCommand(waitTimeSecondsEle)
-                                .andThen(tilt.toAngle(TiltK.kSubstationAngleDegrees))))
+                                superstructure.toState(ScoringStates.SUBSTATION_PICK_UP, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.grab());
 
                 manipulator.leftBumper().whileTrue((wrist.toAngle(72)) // to zero
@@ -260,9 +224,12 @@ public class RobotContainer {
 
         public void mapAutonEvents() {
                 autonEventMap.put("testEvent", AutonFactory.TestEvent(swerve));
-                autonEventMap.put("score cube", superstructure.toState(ScoringStates.TOPCUBE).andThen(claw.release()));
-                autonEventMap.put("score cone", superstructure.toState(ScoringStates.TOPCONE).andThen(claw.release()));
-                autonEventMap.put("ground pickup", superstructure.toState(ScoringStates.GROUND_PICK_UP)
+                autonEventMap.put("score cube", superstructure.toState(ScoringStates.TOPCUBE, waitTimeSecondsWrist, waitTimeSecondsEle)
+                                .andThen(claw.release()));
+                autonEventMap.put("score cone", superstructure.toState(ScoringStates.TOPCONE, waitTimeSecondsWrist, waitTimeSecondsEle)
+                                .andThen(claw.release()));
+                autonEventMap.put("ground pickup", superstructure.toState(
+                        ScoringStates.GROUND_PICK_UP, waitTimeSecondsWrist, waitTimeSecondsEle)
                                 .andThen(claw.autoGrab(false)));
                 autonEventMap.put("autobalance", swerve.autoBalance());
                 // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
