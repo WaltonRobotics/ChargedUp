@@ -209,6 +209,7 @@ public final class Constants {
         public static final int kAbsoluteEncoderPort = 8;
         public static final int kMotorCurrLimit = 20;
         public static final int kHomeSwitchPort = 9;
+        public static final int kDiskBrakePort = 15;
 
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
         public static final double kAbsMaxDegree = 29; // max possible from offset
@@ -230,7 +231,7 @@ public final class Constants {
         public static final double kP = 1.0;
         public static final double kD = 0.0;
         public static final double kS = 1.5;
-        public static final double kGearRatio = ((49.0 / 1.0) * (30.0 / 29.0));
+        public static final double kGearRatio = ((49.0 / 1.0) * (37.0 / 21.0));
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(kS,
@@ -281,6 +282,7 @@ public final class Constants {
         public static final double kMinHeightMeters = Units.inchesToMeters(0) + kElevatorHeightOffset;
         public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
         public static final double kSafeHeight = Units.inchesToMeters(0); // where wrist is free to move
+
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.577731;
         public static final double kTopConeHeightM = 0.552073;

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
-
+//TODO: redo tilt limits (possible moving the wrong way)
+//TODO: have the teleop command use toAngle (same for other subsystems) and stick inputs add or subtract from that
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;

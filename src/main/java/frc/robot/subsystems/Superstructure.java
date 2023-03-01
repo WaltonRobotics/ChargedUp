@@ -55,7 +55,7 @@ public class Superstructure extends SubsystemBase {
                 .andThen(m_wrist.toAngle(state.wristAngle.angle));
     }
 
-    public CommandBase zero() {
+    public CommandBase zeroSuperstructure() {
         return m_wrist.toAngle(WristK.kMinAngleDegrees)
                 .andThen(m_elevator.toHeight(ElevatorK.kMinHeightMeters))
                 .andThen(m_tilt.toAngle(TiltK.kMinAngleDegrees));

@@ -86,13 +86,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_robotContainer.swerve.resetModsToAbs();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
     
-    Commands.run(() -> m_robotContainer.superstructure.zero());
+    Commands.run(() -> m_robotContainer.superstructure.zeroSuperstructure());
   }
 
   /** This function is called periodically during autonomous. */
@@ -110,7 +111,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Commands.run(() -> m_robotContainer.superstructure.zero());
+    m_robotContainer.swerve.resetModsToAbs();
+    Commands.run(() -> m_robotContainer.superstructure.zeroSuperstructure());
   }
 
   /** This function is called periodically during operator control. */
