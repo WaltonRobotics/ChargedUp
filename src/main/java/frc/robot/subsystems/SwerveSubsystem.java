@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.auton.AutonFactory;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import frc.robot.vision.AprilTagChooser;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -47,6 +49,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerUtil;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -514,7 +517,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			// PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
 			Pose2d initialPose = trajectory.getInitialHolonomicPose();
 			resetPose(initialPose);
-
 		});
 		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
 		var pathCmd = new WaltonPPSwerveControllerCommand(
@@ -527,6 +529,28 @@ public class SwerveSubsystem extends SubsystemBase {
 				this::setModuleStates,
 				true,
 				this);
+		return resetCmd.andThen(pathCmd);
+	}
+
+	public CommandBase getSwerveAutoBuilder(PathPlannerTrajectory traj) {
+		var resetCmd = runOnce(() -> {
+			trajectoryUsed = traj;
+			Pose2d initPose = traj.getInitialHolonomicPose();
+			resetPose(initPose);
+		});
+		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
+		SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+			this::getPose, 
+			this::resetOdometryPose, 
+			kTranslationPID, 
+			kRotationPID, 
+			(Consumer<ChassisSpeeds>) getChassisSpeeds(), 
+			AutonFactory.autonEventMap,
+			true,
+			this);
+
+		var pathCmd = autoBuilder.followPath(traj);
+
 		return resetCmd.andThen(pathCmd);
 	}
 
