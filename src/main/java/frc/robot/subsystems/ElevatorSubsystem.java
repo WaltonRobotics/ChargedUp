@@ -132,10 +132,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 			if(isFullyRetracted() && dir == -1){
 				output = 0;
 			}
-			else{
+			else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
-			m_right.set(ControlMode.PercentOutput, output);
+			m_targetHeight += output;
+			double effort = getEffortForTarget(m_targetHeight)
+			m_right.setVoltage(effort);
 		})
 				.withName("TeleManual");
 	}
