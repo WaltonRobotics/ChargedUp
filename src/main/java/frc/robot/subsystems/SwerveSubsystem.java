@@ -361,7 +361,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove) {
-		var targetOpt = m_apriltagHelper.getBestTarget();
+		var targetOpt = m_apriltagHelper.getBestTarget1(); // TODO: check to see if we need to use both cameras for this
 		if (targetOpt.isPresent()) {
 			System.out.println("TARGET DETECTED");
 			var target = targetOpt.get();
@@ -552,26 +552,40 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * updates field
 	 */
 	public void updateRobotPose() {
+		EstimatedRobotPose camPose1;
+		EstimatedRobotPose camPose2;
+
+		List<Pose2d> poses = new ArrayList<>();
+
 		m_odometry.update(getHeading(), getModulePositions());
 		// m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
 
 		m_poseEstimator.update(getHeading(), getModulePositions());
 
 		// m_apriltagHelper.updateReferencePose(m_odometry.getPoseMeters());
-		Optional<EstimatedRobotPose> result = m_apriltagHelper
-				.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
+		Optional<EstimatedRobotPose> result1 = m_apriltagHelper
+				.getEstimatedGlobalPose1(m_poseEstimator.getEstimatedPosition());
+		
+		Optional<EstimatedRobotPose> result2 = m_apriltagHelper
+				.getEstimatedGlobalPose2(m_poseEstimator.getEstimatedPosition());
 
 		m_state.update(getPose(), getModuleStates(), m_field);
 
-		if (result.isPresent()) {
-			EstimatedRobotPose camPose = result.get();
-			// updates swervePoseEstimator w/ Apriltag
-			m_poseEstimator.addVisionMeasurement(
-					camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
-			m_field.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
-		} else {
-			// move it way off the screen to make it disappear
+		if (result1.isEmpty() && result2.isEmpty()) {
 			m_field.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
+		} else {
+			if(result1.isPresent()) {
+				camPose1 = result1.get();
+				poses.add(camPose1.estimatedPose.toPose2d());
+				m_poseEstimator.addVisionMeasurement(camPose1.estimatedPose.toPose2d(), camPose1.timestampSeconds);
+			}
+			if(result2.isPresent()) {
+				camPose2 = result2.get();
+				poses.add(camPose2.estimatedPose.toPose2d());
+				m_poseEstimator.addVisionMeasurement(camPose2.estimatedPose.toPose2d(), camPose2.timestampSeconds);
+			}
+
+			m_field.getObject("Cam Est Pos").setPoses(poses);
 		}
 	}
 
