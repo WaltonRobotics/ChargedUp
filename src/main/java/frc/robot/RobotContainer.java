@@ -28,6 +28,8 @@ import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
 
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -208,7 +210,7 @@ public class RobotContainer {
         }
 
         public void mapAutonCommands() {
-               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.WaltonPPAuto(swerve, backOut));
+               AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.fullAuto(swerve, backOut));
                AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.fullAuto(swerve, oneCone));
                AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.fullAuto(swerve, cubeConeNonBumper));
                AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.fullAuto(swerve, cubeConeBumper));
