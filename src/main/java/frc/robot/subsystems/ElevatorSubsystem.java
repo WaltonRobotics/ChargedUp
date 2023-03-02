@@ -34,7 +34,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
 
-	private final PIDController m_holdController = new PIDController(kLowerLimitSwitchPort, kLowerLimitSwitch, stickDeadband);
+	private final PIDController m_holdController = new PIDController(
+		kPHold, 0, kDHold);
 
 	private double m_targetHeight = 0;
 	private double m_dynamicLowLimit = kMinHeightMeters;
@@ -86,14 +87,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return m_right.getSelectedSensorPosition(0);
 	}
 
-	/*
+	/**
 	 * @return Whether or not elevator is at dynamic lower limit
 	 */
 	public boolean isAtDynamicLimit() {
 		return getActualHeightMeters() <= m_dynamicLowLimit;
 	}
 
-	/*
+	/**
 	 * Set the new dynamic lower limit of elevator
 	 * 
 	 * @param heightLimit The new limit in meters
@@ -102,7 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		m_dynamicLowLimit = heightLimit;
 	}
 
-	/*
+	/**
 	 * @return Whether or not elevator is fully retracted to sensor
 	 */
 	public boolean isFullyRetracted() {
@@ -125,7 +126,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return mps;
 	}
 
-	/*
+	/**
 	 * @return A cmd to move the elevator via stick
 	 * sets elevator to target height if no input
 	 */
@@ -146,7 +147,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 			}
 
 			m_targetHeight += output*.05;
-			double effort = getEffortForTarget(m_targetHeight);
+			double effort = output == 0 ? 
+				getEffortForTarget(m_targetHeight) :
+				getEffortToHold(m_targetHeight);
 			m_right.setVoltage(effort);
 		})
 				.withName("TeleManual");
@@ -184,14 +187,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 		});
 	}
 
-	/*
+	/**
 	 * @return target height in meters
 	 */
 	private double getTargetHeightMeters() {
 		return m_targetHeight;
 	}
 
-	/*
+	/**
 	 * @param heightMeters The target height to reach in meters
 	 * 
 	 * @return The total effort (ff & pd) required to reach target height
@@ -212,7 +215,23 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return totalEffort;
 	}
 
-	/*
+	private double getEffortToHold(double heightMeters) {
+		m_pdEffort = m_holdController.calculate(getActualHeightMeters(), heightMeters);
+		m_ffEffort = 0;
+		var pdSetpoint = m_holdController.getSetpoint();
+		if (pdSetpoint != 0) {
+			m_ffEffort = kFeedforward.calculate(pdSetpoint);
+		}
+		double totalEffort = m_ffEffort + m_pdEffort;
+		nte_ffEffort.setDouble(m_ffEffort);
+		nte_pdEffort.setDouble(m_pdEffort);
+		nte_totalEffort.setDouble(totalEffort);
+		nte_pdVelo.setDouble(pdSetpoint);
+		nte_actualVelo.setDouble(getActualVelocityMps());
+		return totalEffort;
+	}
+
+	/**
 	 * @return Cmd to move the elevator to specified height w/ pd & ff
 	 * @param heightMeters The height to move to
 	 */
