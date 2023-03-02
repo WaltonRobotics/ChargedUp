@@ -112,8 +112,8 @@ public class WristSubsystem extends SubsystemBase {
     m_targetAngle = MathUtil.clamp(targetAngle, kMinDeg, m_maxDegrees);
   }
 
-  public void setTarget(double targetAngle) {
-    i_setTarget(targetAngle);
+  public CommandBase setTarget(double targetAngle) {
+    return run (() -> i_setTarget(targetAngle));
   }
 
   /*

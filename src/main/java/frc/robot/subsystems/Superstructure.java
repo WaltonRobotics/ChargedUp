@@ -95,9 +95,9 @@ public class Superstructure extends SubsystemBase {
 			}
 		});
 
-		var wristCmd = new WaitUntilCommand(m_wristWait).andThen(m_wrist.toAngle(state.wrist.angle));
-		var elevCmd = new WaitUntilCommand(m_elevWait).andThen(m_elevator.toHeight(state.elev.height));
-		var tiltCmd = new WaitUntilCommand(m_tiltWait).andThen(m_tilt.toAngle(state.tilt.angle));
+		var wristCmd = new WaitUntilCommand(m_wristWait).andThen(m_wrist.setTarget(state.wrist.angle));
+		var elevCmd = new WaitUntilCommand(m_elevWait).andThen(m_elevator.setTarget(state.elev.height));
+		var tiltCmd = new WaitUntilCommand(m_tiltWait).andThen(m_tilt.setTarget(state.tilt.angle));
 		var clawCmd = m_claw.getCmdForState(state.claw);
 
 		if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP) {
