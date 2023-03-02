@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -129,6 +130,14 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public CommandBase toAngle(DoubleSupplier angle) {
 		return run(() -> {
+			if (angle.getAsDouble() > getDegrees()) {
+				double tempMaxVelocity = kMaxVelocity / 2;
+				double tempMaxAcceleration = kMaxAcceleration / 2;
+	
+				m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity, tempMaxAcceleration));
+			} else {
+				m_controller.setConstraints(kConstraints);
+			}
 			setSpeed(getEffortForTarget(angle.getAsDouble()));
 		})
 				.until(m_controller::atSetpoint)
@@ -137,6 +146,14 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public CommandBase toAngle(double angle) {
 		return runOnce(() -> {
+			if (angle > getDegrees()) {
+				double tempMaxVelocity = kMaxVelocity / 2;
+				double tempMaxAcceleration = kMaxAcceleration / 2;
+	
+				m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity, tempMaxAcceleration));
+			} else {
+				m_controller.setConstraints(kConstraints);
+			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
 		}).andThen(run(() -> {
