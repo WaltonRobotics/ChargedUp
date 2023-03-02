@@ -98,7 +98,7 @@ public class TiltSubsystem extends SubsystemBase {
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			m_targetAngle += powerVal * 2;
+			m_targetAngle += powerVal * 1.2;
 			double effort = getEffortForTarget(m_targetAngle);
 			setVoltage(effort);
 		});
@@ -160,7 +160,6 @@ public class TiltSubsystem extends SubsystemBase {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
 			setVoltage(effort);
 		}))
-				.withTimeout(1.2)
 				.finallyDo((intr) -> {
 					m_motor.set(0);
 				})
@@ -196,24 +195,23 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_forwardLimit.setBoolean(atForwardLimit());
 	}
 
-	public CommandBase toState(TiltStates state) {
+	public CommandBase toState(TiltState state) {
 		return toAngle(state.angle);
 	}
 
-	public enum TiltStates {
-		MAX(kMaxAngleDegrees, 0),
+	public enum TiltState {
+		UPMOST(kMaxAngleDegrees, 0),
 		SUBSTATION(kSubstationAngleDegrees, 0),
 		TOPCONE(kTopConeAngleDegrees, 0),
 		TOPCUBE(kTopCubeAngleDegrees, 1),
 		MIDCONE(kMidConeAngleDegrees, 0),
 		MIDCUBE(kMidCubeAngleDegrees, 1),
-		BOT(kBotAngleDegrees, 0),
-		MIN(kMinAngleDegrees, 0);
+		BOTTOMMOST(kMinAngleDegrees, 0);
 
 		public final double angle;
 		public final int isCube;
 
-		private TiltStates(double angle, int isCube) {
+		private TiltState(double angle, int isCube) {
 			this.angle = angle;
 			this.isCube = isCube;
 		}

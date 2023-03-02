@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,7 +26,6 @@ import frc.robot.CTREConfigs;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.*;
-//TODO: Use Sensor to lowerlimit
 public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_left = new WPI_TalonFX(kLeftCANID, canbus);
 	private final WPI_TalonFX m_right = new WPI_TalonFX(kRightCANID, canbus);
@@ -33,6 +33,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
+
+	private final PIDController m_holdController = new PIDController(kLowerLimitSwitchPort, kLowerLimitSwitch, stickDeadband);
 
 	private double m_targetHeight = 0;
 	private double m_dynamicLowLimit = kMinHeightMeters;
@@ -68,7 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
-		m_right.enableVoltageCompensation(true);
+		//m_right.enableVoltageCompensation(true);
 
 		m_right.setNeutralMode(NeutralMode.Brake);
 		m_left.setNeutralMode(NeutralMode.Brake);
@@ -110,7 +112,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	/*
 	 * @return The current height of elevator in meters
 	 */
-	private double getActualHeightMeters() {
+	public double getActualHeightMeters() {
 		var falconPos = m_right.getSelectedSensorPosition();
 		var meters = Conversions.falconToMeters(
 				falconPos, kDrumCircumferenceMeters, kGearRatio);
@@ -224,7 +226,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 							kVoltageCompSaturationVolts);
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 				}))
-				.withTimeout(1.2)
 				// .until(() -> m_controller.atSetpoint())
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);
@@ -232,23 +233,18 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.withName("AutoToHeight");
 	}
 
-	// public CommandBase toState(ElevatorStates state) {
-	// return toHeight(state.height);
-	// }
-
-	public enum ElevatorStates {
+	public enum ElevatorState {
 		MAX(kMaxHeightMeters),
 		SUBSTATION(kSubstationHeightM),
 		TOPCONE(kTopConeHeightM),
 		TOPCUBE(kTopCubeHeightM),
 		MIDCONE(kMidConeHeightM),
 		MIDCUBE(kMidCubeHeightM),
-		BOT(kBotHeightMeters),
 		MIN(kMinHeightMeters);
 
 		public double height;
 
-		ElevatorStates(double height) {
+		ElevatorState(double height) {
 			this.height = height;
 		}
 	}

@@ -293,8 +293,8 @@ public final class Constants {
         public static final double kSubstationHeightM = 0.44;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 1; // Meters Per Second
-        public static final double kMaxAcceleration = 1; // Meters Per Second Squared
+        public static final double kMaxVelocity = 3; // Meters Per Second
+        public static final double kMaxAcceleration = 3; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
@@ -314,18 +314,17 @@ public final class Constants {
         public static final double kMaxAcceleration = 14000; // deg/sec^2
 
         public static final double kZeroDegOffset = 5.5;
-        public static final double kMinAngleDegrees = -35;
-        public static final double kMaxAngleDegrees = 75;
+        public static final double kMinDeg = -35;
+        public static final double kMaxDeg = 72;
 
-
-        public static final double kBotAngleDegrees = -23;
         public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
         public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
-        public static final double kTopConeAngleDegrees = 34.367;
-        public static final double kTopCubeAngleDegrees = 29.888;
-        public static final double kMidConeAngleDegrees = 43.929;
-        public static final double kMidCubeAngleDegrees = 25.316;
-        public static final double kSubstationAngleDegrees = -8.274536;
+        public static final double kTopConeDeg = 34.367;
+        public static final double kTopCubeDeg = 29.888;
+        public static final double kMidConeDeg = 43.929;
+        public static final double kMidCubeDeg = 25.316;
+        public static final double kPickupDeg = 0;
+        public static final double kSubstationDeg = 0;
         
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);

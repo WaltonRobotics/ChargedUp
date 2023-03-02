@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.auton.AutonFactory;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import frc.robot.vision.AprilTagChooser;
@@ -38,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -46,13 +44,10 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerUtil;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
 import com.pathplanner.lib.ReflectedTransform;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -63,12 +58,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -140,6 +133,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_state.update(getPose(), getModuleStates(), m_field);
 		m_apriltagHelper.updateField2d(m_field);
 		DashboardManager.addTabSendable(this, "Field2d", m_field);
+
 		autoBuilder = new WaltonSwerveAutoBuilder(
 				this::getPose, // Pose2d supplier
 				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
@@ -538,36 +532,8 @@ public class SwerveSubsystem extends SubsystemBase {
 				this);
 		return resetCmd.andThen(pathCmd);
 	}
-
-	public CommandBase getSwerveAutoBuilder(PathPlannerTrajectory traj) {
-		var resetCmd = runOnce(() -> {
-			trajectoryUsed = traj;
-			Pose2d initPose = traj.getInitialHolonomicPose();
-			resetPose(initPose);
-		});
-		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
-		SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-			this::getPose, 
-			this::resetOdometryPose, 
-			kTranslationPID, 
-			kRotationPID, 
-			(Consumer<ChassisSpeeds>) getChassisSpeeds(), 
-			AutonFactory.autonEventMap,
-			true,
-			this);
-
-		var pathCmd = autoBuilder.followPath(traj);
-
-		return resetCmd.andThen(pathCmd);
-	}
-
-	public CommandBase getWaltonNewSwerveAutonCmd(PathPlannerTrajectory trajectory) {
-		return null;
-	}
-
 	/**
 	 * @return Cmd to rotate to a robot-oriented degrees
-	 * 
 	 * @param degrees to rotate to
 	 */
 	public CommandBase rotateAboutPoint(double degrees) {
@@ -686,12 +652,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
-		SmartDashboard.putNumber("Swerve Mod 1 Velocity", m_modules[0].getState().speedMetersPerSecond);
-		SmartDashboard.putNumber("Swerve Mod 2 Velocity", m_modules[1].getState().speedMetersPerSecond);
-		SmartDashboard.putNumber("Swerve Mod 3 Velocity", m_modules[2].getState().speedMetersPerSecond);
-		SmartDashboard.putNumber("Swerve Mod 4 Velocity", m_modules[3].getState().speedMetersPerSecond);
-		
-		
 	}
 
 	@Override
