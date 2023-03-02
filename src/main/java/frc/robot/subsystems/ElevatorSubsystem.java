@@ -56,6 +56,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_actualVelo = DashboardManager.addTabNumberBar(this, "ActualVelo Mps",
 			-10, 10);
 
+	private final double m_dampener = 0.7;
+
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
 		m_left.configFactoryDefault();
@@ -127,14 +129,20 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 */
 	public CommandBase teleOpCmd(DoubleSupplier power) {
 		return run(() -> {
+			double fromBottom = (getActualHeightMeters() - kMinHeightMeters) / kMaxHeightMeters;
+			double fromTop = (kMaxHeightMeters - getActualHeightMeters()) / kMaxHeightMeters;
 			double dir = Math.signum(power.getAsDouble());
 			double output = 0;
-			if(isFullyRetracted() && dir == -1){
+			
+			if (isFullyRetracted() && dir == -1) {
 				output = 0;
-			}
-			else {
+			} else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
+			if (fromBottom <= 0.1 || fromTop <= 0.1) {
+				output *= 1 - m_dampener;
+			}
+
 			m_targetHeight += output*.05;
 			double effort = getEffortForTarget(m_targetHeight);
 			m_right.setVoltage(effort);
