@@ -162,10 +162,10 @@ public class RobotContainer {
 
 	public void mapAutonCommands() {
 		AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.WaltonPPAuto(swerve, backOut));
-		AutonChooser.AssignAutonCommand(AutonOption.CONE, AutonFactory.fullAuto(swerve, oneCone));
+		AutonChooser.AssignAutonCommand(AutonOption.CONE, AutonFactory.WaltonPPAuto(swerve, oneCone));
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.WaltonPPAuto(swerve, cubeConeNonBumper));
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.WaltonPPAuto(swerve, cubeConeBumper));
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_RED, AutonFactory.fullAuto(swerve, oneConeRed));
+		AutonChooser.AssignAutonCommand(AutonOption.CONE_RED, AutonFactory.WaltonPPAuto(swerve, oneConeRed));
 	}
 
 	public void mapTrajectories() {
@@ -189,17 +189,17 @@ public class RobotContainer {
 	public void mapAutonEvents() {
 		autonEventMap.put("testEvent",
 			AutonFactory.TestEvent(swerve));
-		autonEventMap.put("score cube", 
-			superstructure.toState(SuperState.TOPCUBE)
-			.andThen(claw.release()));
-		autonEventMap.put("score cone",
-			superstructure.toState(SuperState.TOPCONE)
-			.andThen(claw.release()));
-		autonEventMap.put("ground pickup",
-			superstructure.toState(SuperState.GROUND_PICK_UP)
-			.andThen(claw.autoGrab(false)));
-		autonEventMap.put("autobalance",
-			swerve.autoBalance());
+		// autonEventMap.put("score cube", 
+		// 	superstructure.toState(SuperState.TOPCUBE)
+		// 	.andThen(claw.release()));
+		// autonEventMap.put("score cone",
+		// 	superstructure.toState(SuperState.TOPCONE)
+		// 	.andThen(claw.release()));
+		// autonEventMap.put("ground pickup",
+		// 	superstructure.toState(SuperState.GROUND_PICK_UP)
+		// 	.andThen(claw.autoGrab(false)));
+		// autonEventMap.put("autobalance",
+		// 	swerve.autoBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 	}
 

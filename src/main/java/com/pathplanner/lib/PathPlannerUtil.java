@@ -60,7 +60,7 @@ public class PathPlannerUtil {
         Constructor<PathPlannerTrajectory> ctor = null;
         try {
           ctor = PathPlannerTrajectory.class.getDeclaredConstructor(
-            List.class, List.class, StopEvent.class, StopEvent.class, Boolean.class
+            List.class, List.class, StopEvent.class, StopEvent.class, boolean.class
           );
           ctor.setAccessible(true);
 
