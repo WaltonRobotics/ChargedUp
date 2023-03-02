@@ -49,13 +49,22 @@ public class Superstructure extends SubsystemBase {
         }
     }
 
-    public ParallelCommandGroup toState(ScoringStates state, double wristWait, double elevatorWait) {
+    public ParallelCommandGroup toConeState(ScoringStates state, double wristWait, double elevatorWait) {
         return new ParallelCommandGroup(
             m_wrist.toAngle(state.wristAngle.angle), // mid cone
             new WaitCommand(wristWait)
             .andThen(m_elevator.toHeight(state.elevatorHeight.height)),
             new WaitCommand(wristWait)
             .andThen(m_tilt.toAngle(state.elevatorTilt.angle)));
+    }
+
+    public ParallelCommandGroup toCubeState(ScoringStates state, double wristWait, double elevatorWait) {
+        return new ParallelCommandGroup(
+            m_elevator.toHeight(state.elevatorHeight.height), // mid cone
+            new WaitCommand(elevatorWait)
+            .andThen(m_tilt.toAngle(state.elevatorTilt.angle)),
+            new WaitCommand(wristWait)
+            .andThen(m_wrist.toAngle(state.wristAngle.angle)));
     }
 
     // public CommandBase zeroSuperstructure() {

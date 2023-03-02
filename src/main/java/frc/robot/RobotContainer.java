@@ -147,7 +147,7 @@ public class RobotContainer {
                 //         .onFalse(claw.release());
 
                 manipulator.povUp().whileTrue(
-                                superstructure.toState(ScoringStates.TOPCUBE, waitTimeSecondsWrist, waitTimeSecondsEle))
+                                superstructure.toCubeState(ScoringStates.TOPCUBE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 // manipulator.povLeft().whileTrue(
@@ -159,27 +159,27 @@ public class RobotContainer {
                 //         .onFalse(claw.release());
 
                 manipulator.povLeft().whileTrue(
-                                superstructure.toState(ScoringStates.MIDCUBE, waitTimeSecondsWrist, waitTimeSecondsEle))
+                                superstructure.toCubeState(ScoringStates.MIDCUBE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 manipulator.y().whileTrue(
-                                superstructure.toState(ScoringStates.TOPCONE, waitTimeSecondsWrist, waitTimeSecondsEle))
+                                superstructure.toConeState(ScoringStates.TOPCONE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
                         
                 manipulator.x().whileTrue(
-                                superstructure.toState(ScoringStates.MIDCONE, waitTimeSecondsWrist, waitTimeSecondsEle))
+                                superstructure.toConeState(ScoringStates.MIDCONE, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 manipulator.povDown().whileTrue(
-                                superstructure.toState(ScoringStates.BOT, waitTimeSecondsWrist, waitTimeSecondsEle))
+                                superstructure.toConeState(ScoringStates.BOT, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
                                 
                 manipulator.a().whileTrue(
-                                superstructure.toState(ScoringStates.BOT, waitTimeSecondsWrist, waitTimeSecondsEle))
+                                superstructure.toConeState(ScoringStates.BOT, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.release());
 
                 manipulator.povRight().whileTrue(
-                                superstructure.toState(ScoringStates.SUBSTATION_PICK_UP, waitTimeSecondsWrist, waitTimeSecondsEle))
+                                superstructure.toConeState(ScoringStates.SUBSTATION_PICK_UP, waitTimeSecondsWrist, waitTimeSecondsEle))
                         .onFalse(claw.grab());
 
                 manipulator.leftBumper().whileTrue((wrist.toAngle(72)) // to zero
@@ -224,11 +224,11 @@ public class RobotContainer {
 
         public void mapAutonEvents() {
                 autonEventMap.put("testEvent", AutonFactory.TestEvent(swerve));
-                autonEventMap.put("score cube", superstructure.toState(ScoringStates.TOPCUBE, waitTimeSecondsWrist, waitTimeSecondsEle)
+                autonEventMap.put("score cube", superstructure.toConeState(ScoringStates.TOPCUBE, waitTimeSecondsWrist, waitTimeSecondsEle)
                                 .andThen(claw.release()));
-                autonEventMap.put("score cone", superstructure.toState(ScoringStates.TOPCONE, waitTimeSecondsWrist, waitTimeSecondsEle)
+                autonEventMap.put("score cone", superstructure.toConeState(ScoringStates.TOPCONE, waitTimeSecondsWrist, waitTimeSecondsEle)
                                 .andThen(claw.release()));
-                autonEventMap.put("ground pickup", superstructure.toState(
+                autonEventMap.put("ground pickup", superstructure.toConeState(
                         ScoringStates.GROUND_PICK_UP, waitTimeSecondsWrist, waitTimeSecondsEle)
                                 .andThen(claw.autoGrab(false)));
                 autonEventMap.put("autobalance", swerve.autoBalance());
