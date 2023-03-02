@@ -102,6 +102,10 @@ public class AprilTagCamera {
         return Optional.empty();
     }
 
+    public PhotonPoseEstimator getPhotonPoseEstimator(){
+        return poseEstimator;
+    }
+
     public void updateReferencePose(Pose2d poseMeters) {
         poseEstimator.setReferencePose(poseMeters);
     }

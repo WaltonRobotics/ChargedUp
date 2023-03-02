@@ -11,11 +11,6 @@ public final class AutonFactory {
     public static HashMap<String, Command> autonEventMap = new HashMap<>();
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
 
-    /* PATHING COMMANDS */
-    public static CommandBase WaltonPPAuto(SwerveSubsystem swerve, PathPlannerTrajectory traj) {
-        return swerve.getWaltonPPSwerveAutonCommand(traj);
-    }
-
     /* EVENT COMMANDS */
     public static CommandBase TestEvent(SwerveSubsystem swerve) {
         return Commands.print("*****************TEST EVENT**************")

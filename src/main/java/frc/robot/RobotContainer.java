@@ -93,27 +93,27 @@ public class RobotContainer {
 		driver.leftTrigger()
 				.whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
 
-		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone1));
-		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2));
-		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone3));
-		driver.x()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone4));
-		driver.y()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCube5));
-		driver.b()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
-		driver.x()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone7));
-		driver.y()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
-		driver.b()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone9));
+		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone1));
+		// driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2));
+		// driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone3));
+		// driver.x()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone4));
+		// driver.y()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCube5));
+		// driver.b()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
+		// driver.x()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone7));
+		// driver.y()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
+		// driver.b()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone9));
 
 		driver.rightBumper().whileTrue(swerve.autoBalance());
 
@@ -161,11 +161,11 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.WaltonPPAuto(swerve, backOut));
-		AutonChooser.AssignAutonCommand(AutonOption.CONE, AutonFactory.WaltonPPAuto(swerve, oneCone));
-		AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.WaltonPPAuto(swerve, cubeConeNonBumper));
-		AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.WaltonPPAuto(swerve, cubeConeBumper));
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_RED, AutonFactory.WaltonPPAuto(swerve, oneConeRed));
+		AutonChooser.AssignAutonCommand(AutonOption.BACK_OUT, AutonFactory.fullAuto(swerve, backOut));
+		AutonChooser.AssignAutonCommand(AutonOption.CONE, AutonFactory.fullAuto(swerve, oneCone));
+		AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_1, AutonFactory.fullAuto(swerve, cubeConeNonBumper));
+		AutonChooser.AssignAutonCommand(AutonOption.CUBE_CONE_2, AutonFactory.fullAuto(swerve, cubeConeBumper));
+		AutonChooser.AssignAutonCommand(AutonOption.CONE_RED, AutonFactory.fullAuto(swerve, oneConeRed));
 	}
 
 	public void mapTrajectories() {

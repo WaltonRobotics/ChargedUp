@@ -1,14 +1,11 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagCamera;
-import frc.robot.vision.PathChooser;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonPPSwerveControllerCommand;
-import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -18,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import static frc.robot.Constants.AutoConstants.kAlignAngleThresholdRadians;
 import static frc.robot.Constants.AutoConstants.kDThetaController;
 import static frc.robot.Constants.AutoConstants.kFThetaController;
-import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared;
 import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
 import static frc.robot.Constants.AutoConstants.kPThetaController;
 import static frc.robot.Constants.AutoConstants.kPXController;
@@ -32,7 +28,6 @@ import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 import static frc.robot.Constants.SwerveK.kModuleTranslations;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -41,13 +36,13 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
 import com.pathplanner.lib.ReflectedTransform;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -91,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
-	private final WaltonSwerveAutoBuilder autoBuilder;
+	private final SwerveAutoBuilder autoBuilder;
 
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
 			kKinematics, getHeading(), getModulePositions());
@@ -134,7 +129,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_apriltagHelper.updateField2d(m_field);
 		DashboardManager.addTabSendable(this, "Field2d", m_field);
 
-		autoBuilder = new WaltonSwerveAutoBuilder(
+		autoBuilder = new SwerveAutoBuilder(
 				this::getPose, // Pose2d supplier
 				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
 				kKinematics, // SwerveDriveKinematics
@@ -143,7 +138,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				(states) -> setModuleStates(states, false, false), // Module states consumer used to output to the
 																	// subsystem
 				autoEventMap,
-				false,
+				true,
 				this);
 	}
 
@@ -386,46 +381,46 @@ public class SwerveSubsystem extends SubsystemBase {
 		System.out.println("NO TARGET DETECTED");
 	}
 
-	public CommandBase autoScore() {
-		// runOnce(curPos = thing; ppt = generate(thing))
+	// public CommandBase autoScore() {
+	// 	// runOnce(curPos = thing; ppt = generate(thing))
 
-		var pathCmd = runOnce(() -> {
-			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-					getPose(),
-					getChassisSpeeds());
-			// ReferencePoints.currentPoint = currentPathPoint;
-			List<PathPoint> allPoints = new ArrayList<>();
-			allPoints.add(ReferencePoints.currentPoint);
-			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
-			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+	// 	var pathCmd = runOnce(() -> {
+	// 		ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
+	// 				getPose(),
+	// 				getChassisSpeeds());
+	// 		// ReferencePoints.currentPoint = currentPathPoint;
+	// 		List<PathPoint> allPoints = new ArrayList<>();
+	// 		allPoints.add(ReferencePoints.currentPoint);
+	// 		List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
+	// 		boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+	// 		double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-			for (PathPoint addedPP : chosenPathPoints) {
+	// 		for (PathPoint addedPP : chosenPathPoints) {
 
-				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-				if (onRed && currentX < addedX) {
-					allPoints.add(addedPP);
-				} else if (!onRed && currentX > addedX) {
-					allPoints.add(addedPP);
-				}
-				// else {
-				// break;
-				// }
-			}
+	// 			double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+	// 			if (onRed && currentX < addedX) {
+	// 				allPoints.add(addedPP);
+	// 			} else if (!onRed && currentX > addedX) {
+	// 				allPoints.add(addedPP);
+	// 			}
+	// 			// else {
+	// 			// break;
+	// 			// }
+	// 		}
 
-			allPoints.add(AprilTagChooser.GetChosenAprilTag());
+	// 		allPoints.add(AprilTagChooser.GetChosenAprilTag());
 
-			currentTrajectory = PathPlanner.generatePath(
-					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
-					allPoints);
-		});
+	// 		currentTrajectory = PathPlanner.generatePath(
+	// 				new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
+	// 				allPoints);
+	// 	});
 
-		var followCmd = autoBuilder.followPath(() -> {
-			return Optional.ofNullable(currentTrajectory);
-		});
+	// 	var followCmd = autoBuilder.followPath(() -> {
+	// 		return Optional.ofNullable(currentTrajectory);
+	// 	});
 
-		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
-	}
+	// 	return pathCmd.andThen(followCmd).andThen(goToChosenTag());
+	// }
 
 	private CommandBase goToChosenTag() {
 		return run(() -> {
@@ -437,39 +432,39 @@ public class SwerveSubsystem extends SubsystemBase {
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
 
-	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
-		// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
-		var pathCmd = runOnce(() -> {
-			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-					getPose(),
-					getChassisSpeeds());
-			List<PathPoint> allPoints = new ArrayList<>();
-			allPoints.add(ReferencePoints.currentPoint);
-			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+	// public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
+	// 	// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
+	// 	var pathCmd = runOnce(() -> {
+	// 		ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
+	// 				getPose(),
+	// 				getChassisSpeeds());
+	// 		List<PathPoint> allPoints = new ArrayList<>();
+	// 		allPoints.add(ReferencePoints.currentPoint);
+	// 		boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+	// 		double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-			for (PathPoint addedPP : path) {
-				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-				if (onRed && currentX < addedX) {
-					allPoints.add(addedPP);
-				} else if (!onRed && currentX > addedX) {
-					allPoints.add(addedPP);
-				}
-			}
+	// 		for (PathPoint addedPP : path) {
+	// 			double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+	// 			if (onRed && currentX < addedX) {
+	// 				allPoints.add(addedPP);
+	// 			} else if (!onRed && currentX > addedX) {
+	// 				allPoints.add(addedPP);
+	// 			}
+	// 		}
 
-			// allPoints.add(endPt);
+	// 		// allPoints.add(endPt);
 
-			currentTrajectory = PathPlanner.generatePath(
-					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
-					allPoints);
-		});
+	// 		currentTrajectory = PathPlanner.generatePath(
+	// 				new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
+	// 				allPoints);
+	// 	});
 
-		var followCmd = run(() -> autoBuilder.followPath(() -> {
-			return Optional.ofNullable(currentTrajectory);
-		}));
+	// 	var followCmd = run(() -> autoBuilder.followPath(() -> {
+	// 		return Optional.ofNullable(currentTrajectory);
+	// 	}));
 
-		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPose));
-	}
+	// 	return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPose));
+	// }
 
 	/**
 	 * @return Cmd to drive to chosen, pre-specified pathpoint
@@ -662,9 +657,13 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		updateRobotPose();
 
-		// if(DriverStation.getAlliance() == Alliance.Blue){
-		// 	m_apriltagHelper
-		// }
+		//reverses based on PathPlanner coordinates
+		if(DriverStation.getAlliance() == Alliance.Blue){
+			m_apriltagHelper.getPhotonPoseEstimator().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+		}
+		else{
+			m_apriltagHelper.getPhotonPoseEstimator().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+		}
 	}
 
 	@Override
