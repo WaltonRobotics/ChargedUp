@@ -108,7 +108,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	private PathPlannerTrajectory currentTrajectory = new PathPlannerTrajectory();
 	private PathPlannerTrajectory trajectoryUsed = new PathPlannerTrajectory();
 
-	private boolean hasStopped = false; // if robot has stopped for one sec
+	public Timer m_timer = new Timer();
+
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
 			kKinematics,
@@ -119,7 +120,6 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final AprilTagCamera m_apriltagHelper;
 
 	private double m_simYaw = 0;
-	private double m_absResetTimer = 10;
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
@@ -676,8 +676,19 @@ public class SwerveSubsystem extends SubsystemBase {
 		return finalDestination;
 	}
 
-	private void rezero() {
-		
+	public void autoReset() {
+		if (m_timer.get() > 10) {
+			m_timer.restart();
+		} else {
+			if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
+				Timer.delay(1);
+				if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
+					for (SwerveModule module : m_modules) {
+						module.resetToAbsolute();
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -691,7 +702,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Swerve Mod 3 Velocity", m_modules[2].getState().speedMetersPerSecond);
 		SmartDashboard.putNumber("Swerve Mod 4 Velocity", m_modules[3].getState().speedMetersPerSecond);
 		
-		
+		autoReset();
 	}
 
 	@Override
