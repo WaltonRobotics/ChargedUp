@@ -288,12 +288,12 @@ public final class Constants {
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.7;
-        public static final double kMidConeHeightM = 0.432;
-        public static final double kMidCubeHeightM = 0.391;
+        public static final double kTopConeHeightM = 0.74;
+        public static final double kMidConeHeightM = 0.44;
+        public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.44;
+        public static final double kSubstationHeightM = 0.43;
         public static final double kSubstationConeHeightM = 0;
 
         public static final double kMaxVelocity = 3; // Meters Per Second
@@ -322,11 +322,11 @@ public final class Constants {
 
         public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
         public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
-        public static final double kTopConeDeg = 34.367;
+        public static final double kTopConeDeg = 44.367;
         public static final double kTopCubeDeg = 29.888;
         public static final double kMidConeDeg = 43.929;
         public static final double kMidCubeDeg = 25.316;
-        public static final double kPickupDeg = 0;
+        public static final double kPickupDeg = -8.5;
         public static final double kSubstationDeg = 0;
         
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);

@@ -74,8 +74,8 @@ public class Superstructure extends SubsystemBase {
 			 */
 			
 			if (m_curState == SuperState.TOPCONE || m_curState == SuperState.TOPCUBE) {
-				m_elevWait = () -> (m_tilt.getDegrees() >= m_curState.tilt.angle / 2.0);
-				m_wristWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height / 2.0);
+				m_elevWait = () -> (m_tilt.getDegrees() >= m_curState.tilt.angle / 2);
+				m_wristWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height);
 			}
 
 			if (m_curState == SuperState.MIDCONE || m_curState == SuperState.MIDCUBE) {

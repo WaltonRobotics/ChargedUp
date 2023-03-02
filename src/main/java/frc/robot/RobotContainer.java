@@ -139,10 +139,10 @@ public class RobotContainer {
 		manipulator.x().onTrue(
 			superstructure.toState(SuperState.MIDCONE));
 
-		manipulator.povDown().onTrue(
+		manipulator.a().onTrue(
 			superstructure.toState(SuperState.GROUND_PICK_UP));
 				
-		manipulator.a().onTrue(
+		manipulator.povDown().onTrue(
 			superstructure.toState(SuperState.GROUND_SCORE));
 
 		manipulator.povRight().onTrue(
