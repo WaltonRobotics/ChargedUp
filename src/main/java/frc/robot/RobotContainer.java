@@ -11,6 +11,7 @@ import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.SuperState;
+import frc.robot.subsystems.SwerveSubsystem.AutoScoreState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.PathChooser;
@@ -93,27 +94,27 @@ public class RobotContainer {
 		driver.leftTrigger()
 				.whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
 
-		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone1));
-		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2));
-		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone3));
+		driver.x().whileTrue(swerve.autoScore(AutoScoreState.RED_CONE_1));
+		driver.y().whileTrue(swerve.autoScore(AutoScoreState.RED_CUBE_2));
+		driver.b().whileTrue(swerve.autoScore(AutoScoreState.RED_CONE_3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone4));
+			.whileTrue(swerve.autoScore(AutoScoreState.RED_COOP_CONE_4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCube5));
+			.whileTrue(swerve.autoScore(AutoScoreState.RED_COOP_CUBE_5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
+			.whileTrue(swerve.autoScore(AutoScoreState.RED_COOP_CONE_6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone7));
+			.whileTrue(swerve.autoScore(AutoScoreState.RED_CONE_7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
+			.whileTrue(swerve.autoScore(AutoScoreState.RED_CUBE_8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone9));
+			.whileTrue(swerve.autoScore(AutoScoreState.RED_CONE_9));
 
 		driver.rightBumper().whileTrue(swerve.autoBalance());
 
