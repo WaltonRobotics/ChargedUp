@@ -132,8 +132,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 */
 	public CommandBase teleOpCmd(DoubleSupplier power) {
 		return run(() -> {
-			double fromBottom = (getActualHeightMeters() - kMinHeightMeters) / kMaxHeightMeters;
-			double fromTop = (kMaxHeightMeters - getActualHeightMeters()) / kMaxHeightMeters;
+			// double fromBottom = (getActualHeightMeters() - kMinHeightMeters) / kMaxHeightMeters;
+			// double fromTop = (kMaxHeightMeters - getActualHeightMeters()) / kMaxHeightMeters;
 			double dir = Math.signum(power.getAsDouble());
 			double output = 0;
 			
@@ -142,14 +142,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 			} else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
-			if (fromBottom <= 0.1 || fromTop <= 0.1) {
-				output *= 1 - m_dampener;
-			}
+			// if (fromBottom <= 0.1 || fromTop <= 0.1) {
+			// 	output *= 1 - m_dampener;
+			// }
 
 			m_targetHeight += output*.05;
-			double effort = output == 0 ? 
-				getEffortForTarget(m_targetHeight) :
-				getEffortToHold(m_targetHeight);
+			double effort = getEffortForTarget(m_targetHeight);
+			// 	double effort = output == 0 ? 
+			// 		getEffortForTarget(m_targetHeight) :
+			// 		getEffortToHold(m_targetHeight);
 			m_right.setVoltage(effort);
 		})
 				.withName("TeleManual");
