@@ -386,46 +386,46 @@ public class SwerveSubsystem extends SubsystemBase {
 		System.out.println("NO TARGET DETECTED");
 	}
 
-	public CommandBase autoScore() {
-		// runOnce(curPos = thing; ppt = generate(thing))
+	// public CommandBase autoScore() {
+	// 	// runOnce(curPos = thing; ppt = generate(thing))
 
-		var pathCmd = runOnce(() -> {
-			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-					getPose(),
-					getChassisSpeeds());
-			// ReferencePoints.currentPoint = currentPathPoint;
-			List<PathPoint> allPoints = new ArrayList<>();
-			allPoints.add(ReferencePoints.currentPoint);
-			List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
-			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+	// 	var pathCmd = runOnce(() -> {
+	// 		ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
+	// 				getPose(),
+	// 				getChassisSpeeds());
+	// 		// ReferencePoints.currentPoint = currentPathPoint;
+	// 		List<PathPoint> allPoints = new ArrayList<>();
+	// 		allPoints.add(ReferencePoints.currentPoint);
+	// 		List<PathPoint> chosenPathPoints = PathChooser.GetChosenPath();
+	// 		boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+	// 		double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-			for (PathPoint addedPP : chosenPathPoints) {
+	// 		for (PathPoint addedPP : chosenPathPoints) {
 
-				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-				if (onRed && currentX < addedX) {
-					allPoints.add(addedPP);
-				} else if (!onRed && currentX > addedX) {
-					allPoints.add(addedPP);
-				}
-				// else {
-				// break;
-				// }
-			}
+	// 			double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+	// 			if (onRed && currentX < addedX) {
+	// 				allPoints.add(addedPP);
+	// 			} else if (!onRed && currentX > addedX) {
+	// 				allPoints.add(addedPP);
+	// 			}
+	// 			// else {
+	// 			// break;
+	// 			// }
+	// 		}
 
-			allPoints.add(AprilTagChooser.GetChosenAprilTag());
+	// 		allPoints.add(AprilTagChooser.GetChosenAprilTag());
 
-			currentTrajectory = PathPlanner.generatePath(
-					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
-					allPoints);
-		});
+	// 		currentTrajectory = PathPlanner.generatePath(
+	// 				new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
+	// 				allPoints);
+	// 	});
 
-		var followCmd = autoBuilder.followPath(() -> {
-			return Optional.ofNullable(currentTrajectory);
-		});
+	// 	var followCmd = autoBuilder.followPath(() -> {
+	// 		return Optional.ofNullable(currentTrajectory);
+	// 	});
 
-		return pathCmd.andThen(followCmd).andThen(goToChosenTag());
-	}
+	// 	return pathCmd.andThen(followCmd).andThen(goToChosenTag());
+	// }
 
 	private CommandBase goToChosenTag() {
 		return run(() -> {
@@ -438,7 +438,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
-		// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
+		PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
 		var pathCmd = runOnce(() -> {
 			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
 					getPose(),
@@ -457,7 +457,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				}
 			}
 
-			// allPoints.add(endPt);
+			allPoints.add(endPt);
 
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
