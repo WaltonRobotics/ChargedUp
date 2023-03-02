@@ -650,6 +650,26 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
+	// public enum AutoScoreState {
+	// 	RED_CONE_1(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone1),
+	// 	RED_CUBE_2(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2),
+	// 	RED_CONE_3(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone3),
+	// 	RED_COOP_CONE_4(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone4),
+	// 	RED_COOP_CUBE_5(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCube5),
+	// 	RED_COOP_CONE_6(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6),
+	// 	RED_CONE_7(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone7),
+	// 	RED_CUBE_8(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8),
+	// 	RED_CONE_9(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone9);
+
+	// 	public final List<PathPoint> path;
+	// 	public final Pose2d endPose;
+		
+	// 	private AutoScoreState(List<PathPoint> path, Pose2d endPose) {
+	// 		this.path = path;
+	// 		this.endPose = endPose;
+	// 	}
+	// }
+
 	@Override
 	public void periodic() {
 		for (var module : m_modules) {
