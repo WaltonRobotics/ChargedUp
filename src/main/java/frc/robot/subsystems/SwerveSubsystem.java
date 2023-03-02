@@ -438,19 +438,17 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
-		PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
+		// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
 		var pathCmd = runOnce(() -> {
 			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-					new Pose2d(12.94, 4.68, new Rotation2d(0)), // TODO: change later; use while we don't have a camera
-					/* getPose(), */
+					getPose(),
 					getChassisSpeeds());
 			List<PathPoint> allPoints = new ArrayList<>();
 			allPoints.add(ReferencePoints.currentPoint);
-			List<PathPoint> chosenPathPoints = path;
 			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
 			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-			for (PathPoint addedPP : chosenPathPoints) {
+			for (PathPoint addedPP : path) {
 				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
 				if (onRed && currentX < addedX) {
 					allPoints.add(addedPP);
@@ -459,7 +457,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				}
 			}
 
-			allPoints.add(endPt);
+			// allPoints.add(endPt);
 
 			currentTrajectory = PathPlanner.generatePath(
 					new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
