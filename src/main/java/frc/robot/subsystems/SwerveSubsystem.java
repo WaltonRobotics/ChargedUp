@@ -28,6 +28,7 @@ import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
 import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
 import static frc.robot.Constants.SwerveK.kModuleTranslations;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -683,10 +684,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		//reverses based on PathPlanner coordinates
 		if(DriverStation.getAlliance() == Alliance.Blue){
-			m_apriltagHelper.getPhotonPoseEstimator().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+			m_apriltagHelper.getPhotonPoseEstimator1().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 		}
 		else{
-			m_apriltagHelper.getPhotonPoseEstimator().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+			m_apriltagHelper.getPhotonPoseEstimator2().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 		}
 	}
 
