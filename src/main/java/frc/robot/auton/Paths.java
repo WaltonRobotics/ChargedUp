@@ -133,8 +133,12 @@ public class Paths {
 		public static final Pose2d blueCube8 = new Pose2d(new Translation2d(1.77, 4.42), rot2dDeg(180));
 		public static final Pose2d blueCone9 = new Pose2d(new Translation2d(1.77, 4.98), rot2dDeg(180));
 
+		public static final Pose2d blueSubstationPose = new Pose2d(new Translation2d(15.9, 6.68), rot2dDeg(0));
+		public static final Pose2d bluePortalPose = new Pose2d(new Translation2d(13.63, 7.62), rot2dDeg(90));
+
 		public static Pose2d[] blueScoringPoints = {
-			blueCone1, blueCube2, blueCone3, blueCoopCone4, blueCoopCube5, blueCoopCone6, blueCone7, blueCube8, blueCone9
+			blueCone1, blueCube2, blueCone3, blueCoopCone4, blueCoopCube5, blueCoopCone6, blueCone7, blueCube8, blueCone9, 
+			blueSubstationPose, bluePortalPose
 		};
 
 		}
