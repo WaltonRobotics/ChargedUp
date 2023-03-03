@@ -121,8 +121,8 @@ public class Superstructure extends SubsystemBase {
 	// }
 
 	public void setTargetsToZero() {
-		m_wrist.setTarget(kMaxDeg);
-		m_tilt.setTarget(kMinDeg);
+		m_wrist.setTarget(kMinDeg);
+		m_tilt.setTarget(0);
 		m_elevator.setTarget(kBotHeightMeters);
 	}
 
