@@ -487,12 +487,20 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * and run commands between paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
-		// resetPose(getPose());
 		return autoBuilder.fullAuto(trajectory);
 	}
 
 	public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
 		return autoBuilder.fullAuto(trajectoryList);
+	}
+
+	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory){
+		var resetCmd = runOnce(()->{
+			resetPose(trajectory.getInitialHolonomicPose());
+
+		});
+		return resetCmd;
+
 	}
 
 	/**
