@@ -169,9 +169,9 @@ public class RobotContainer {
 	}
 
 	public void mapTrajectories() {
-		PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
-		PathChooser.SetDefaultPath(PathOption.RED_NON_BUMPY);
-		PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
+		// PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
+		PathChooser.SetDefaultPath(PathOption.BLUE_NON_BUMPY);
+		// PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
 		PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.blueBumpy);
 		PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.blueNotBumpy);
 	}

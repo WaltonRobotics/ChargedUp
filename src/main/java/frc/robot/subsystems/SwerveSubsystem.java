@@ -613,25 +613,15 @@ public class SwerveSubsystem extends SubsystemBase {
 		Pose2d closest;
 		Pose2d finalDestination;
 
-		if (DriverStation.getAlliance().equals(Alliance.Red)) {
-			closest = ScoringPoints.redScoringPoints[0];
-			for (int i = 1; i <= 8; i++) {
-				if (Math.abs(yValue - closest.getTranslation().getY()) > Math
-						.abs(yValue - ScoringPoints.redScoringPoints[i].getTranslation().getY())) {
-					closest = ScoringPoints.redScoringPoints[i];
-				}
+		closest = ScoringPoints.blueScoringPoints[0];
+		for (int i = 1; i <= 8; i++) {
+			if (Math.abs(yValue - closest.getTranslation().getY()) > Math
+					.abs(yValue - ScoringPoints.blueScoringPoints[i].getTranslation().getY())) {
+				closest = ScoringPoints.blueScoringPoints[i];
 			}
-			finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
-		} else {
-			closest = ScoringPoints.blueScoringPoints[0];
-			for (int i = 1; i <= 8; i++) {
-				if (Math.abs(yValue - closest.getTranslation().getY()) > Math
-						.abs(yValue - ScoringPoints.blueScoringPoints[i].getTranslation().getY())) {
-					closest = ScoringPoints.redScoringPoints[i];
-				}
-			}
-			finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
 		}
+		finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
+		
 		return finalDestination;
 	}
 
