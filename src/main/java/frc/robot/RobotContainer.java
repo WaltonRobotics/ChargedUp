@@ -186,10 +186,10 @@ public class RobotContainer {
 	public void mapAutonEvents() {
 		autonEventMap.put("testEvent",
 			AutonFactory.TestEvent(swerve));
-		autonEventMap.put("scoreCube", 
+		autonEventMap.put("placeCube", 
 			superstructure.toState(SuperState.TOPCUBE)
 			.andThen(claw.release()));
-		autonEventMap.put("scoreCone",
+		autonEventMap.put("placeCone",
 			superstructure.toState(SuperState.TOPCONE)
 			.andThen(claw.release()));
 		autonEventMap.put("groundPickUp",
