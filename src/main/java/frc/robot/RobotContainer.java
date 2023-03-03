@@ -162,6 +162,7 @@ public class RobotContainer {
 
 	public void mapAutonCommands() {
 		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, AutonFactory.fullAuto(swerve, straightBack));
+                AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.fullAuto(swerve, oneConeOneCube));
 	}
 
 	public void mapTrajectories() {

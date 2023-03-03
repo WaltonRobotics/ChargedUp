@@ -42,6 +42,7 @@ import com.pathplanner.lib.PathPointAccessor;
 import com.pathplanner.lib.ReflectedTransform;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.MathUtil;
@@ -124,7 +125,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
-		autoThetaController.setTolerance(Rotation2d.fromDegrees(2.5).getRadians());
 
 		m_state.update(getPose(), getModuleStates(), m_field);
 		m_apriltagHelper.updateField2d(m_field);
@@ -498,9 +498,19 @@ public class SwerveSubsystem extends SubsystemBase {
 	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory){
 		var resetCmd = runOnce(()->{
 			resetPose(trajectory.getInitialHolonomicPose());
-
 		});
-		return resetCmd;
+		var pathCmd = new PPSwerveControllerCommand(
+            trajectory, 
+            this::getPose, // Pose supplier
+            kKinematics, // SwerveDriveKinematics
+            xController,
+			yController,
+			autoThetaController,
+            this::setModuleStates, // Module states consumer
+            true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            this // Requires this drive subsystem
+        );
+		return resetCmd.andThen(pathCmd);
 
 	}
 
@@ -689,14 +699,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
-
-		//reverses based on PathPlanner coordinates
-		if(DriverStation.getAlliance() == Alliance.Blue){
-			m_apriltagHelper.getPhotonPoseEstimator1().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-		}
-		else{
-			m_apriltagHelper.getPhotonPoseEstimator2().getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-		}
 	}
 
 	@Override

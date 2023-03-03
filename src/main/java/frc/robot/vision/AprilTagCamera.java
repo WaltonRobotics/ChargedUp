@@ -16,6 +16,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -23,24 +24,26 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
     public final PhotonCamera cam1 = new PhotonCamera("ov9281");
     public final PhotonCamera cam2 = new PhotonCamera(null); // TODO: name the camera (will do when we have the actual camera)
     // distance from robot to camera
-    Transform3d robotToCam1 = new Transform3d(
+    private final Transform3d robotToCam1 = new Transform3d(
             new Translation3d(Units.inchesToMeters(6), 0, Units.inchesToMeters(34.75)), // camera placement on robot
             new Rotation3d(0, Units.degreesToRadians(0), 0));
 
-    Transform3d robotToCam2 = new Transform3d(
+    private final Transform3d robotToCam2 = new Transform3d(
                 new Translation3d(Units.inchesToMeters(6), 0, Units.inchesToMeters(34.75)), // camera placement on robot
                 new Rotation3d(0, Units.degreesToRadians(0), 0));
 
     AprilTagFieldLayout aprilTagFieldLayout;
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
-    static PhotonPoseEstimator poseEstimator1;
-    static PhotonPoseEstimator poseEstimator2;
+    PhotonPoseEstimator poseEstimator1;
+    PhotonPoseEstimator poseEstimator2;
 
     public AprilTagCamera() {
         init();
@@ -68,8 +71,20 @@ public class AprilTagCamera {
                 robotToCam1);
 
         camList.add(new Pair<PhotonCamera, Transform3d>(cam2, robotToCam2));
-        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cam2,
+        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cam2,
                         robotToCam2);
+    }
+
+    public void periodic() {
+        //reverses based on PathPlanner coordinates
+		if(DriverStation.getAlliance() == Alliance.Blue){
+			poseEstimator1.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+            poseEstimator2.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+		}
+		else{
+			poseEstimator1.getFieldTags().setOrigin(OriginPosition.kRedAllianceWallRightSide);
+            poseEstimator2.getFieldTags().setOrigin(OriginPosition.kRedAllianceWallRightSide);
+		}
     }
 
     /**
@@ -148,15 +163,8 @@ public class AprilTagCamera {
         return Optional.empty();
     }
 
-    public PhotonPoseEstimator getPhotonPoseEstimator1(){
-        return poseEstimator1;
-    }
-
-    public PhotonPoseEstimator getPhotonPoseEstimator2() {
-        return poseEstimator2;
-    }
-
     public void updateReferencePose(Pose2d poseMeters) {
         poseEstimator1.setReferencePose(poseMeters);
+        poseEstimator2.setReferencePose(poseMeters);
     }
 }

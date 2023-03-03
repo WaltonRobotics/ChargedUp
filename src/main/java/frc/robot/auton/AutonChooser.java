@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AutonChooser {
     public enum AutonOption {
-        STRAIGHT_BACK("Straight Back");
+        STRAIGHT_BACK("Straight Back"),
+        ONE_CONE_ONE_CUBE("Drop Cone then Cube");
 
         public final String description;
 

@@ -179,8 +179,8 @@ public final class Constants {
 
         public static double kPXController = 8;
         public static double kPYController = 8;
-        public static double kPThetaController = 6.75;
-        public static final double kDThetaController = 0.1;
+        public static double kPThetaController = .0625;
+        public static final double kDThetaController = 0;
         public static final double kFThetaController = 1;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
