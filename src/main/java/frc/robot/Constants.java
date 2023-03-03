@@ -169,18 +169,19 @@ public final class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 2;
         public static final double kMaxAccelerationMetersPerSecondSquared = 8;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 3*Math.PI;
 
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
         public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 0.9);
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 8;
-        public static double kPYController = 8;
-        public static double kPThetaController = .0625;
+        public static double kPXController = 8; // 8
+        public static double kPYController = 8; // 8
+        public static double kPThetaController = 1; // 1
         public static final double kDThetaController = 0;
+        public static final double kFThetaControllerAuto = 0.5;
         public static final double kFThetaController = 1;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);

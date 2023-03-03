@@ -80,11 +80,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
+
 	private final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
-	private final HolonomicDriveController pathController = new HolonomicDriveController(xController, yController,
-			thetaController);
 
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
@@ -123,6 +122,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
+		autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 
@@ -141,6 +141,10 @@ public class SwerveSubsystem extends SubsystemBase {
 				autoEventMap,
 				true,
 				this);
+
+		DashboardManager.addTabSendable(this, "XCtrl", xController);
+		DashboardManager.addTabSendable(this, "YCtrl", yController);
+		DashboardManager.addTabSendable(this, "AutoThetaCtrl", autoThetaController);
 	}
 
 	public void setChassisSpeeds(ChassisSpeeds targetChassisSpeeds, boolean openLoop, boolean steerInPlace) {
@@ -215,26 +219,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		setChassisSpeeds(targetChassisSpeeds, openLoop, false);
 		return thetaController.atGoal();
-	}
-
-	/**
-	 * Drive control intended for path following utilizing the
-	 * {@link #pathController path controller}.
-	 * This method always uses closed-loop control on the modules.
-	 * 
-	 * @param targetState    Trajectory state containing target translation and
-	 *                       velocities
-	 * @param targetRotation Target rotation independent of trajectory motion
-	 */
-	public void drive(Trajectory.State targetState, Rotation2d targetRotation) {
-		// determine ChassisSpeeds from path state and positional feedback control from
-		// HolonomicDriveController
-		ChassisSpeeds targetChassisSpeeds = pathController.calculate(
-				getPose(),
-				targetState,
-				targetRotation);
-		// command robot to reach the target ChassisSpeeds
-		setChassisSpeeds(targetChassisSpeeds, false, false);
 	}
 
 	public ChassisSpeeds getChassisSpeeds() {
