@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ElevatorK;
 import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
@@ -19,8 +19,6 @@ import frc.robot.vision.PathChooser.PathOption;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
-import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
-
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
 
@@ -166,6 +164,7 @@ public class RobotContainer {
                 // AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, AutonFactory.fullAuto(swerve, testRot));
                 AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getPPSwerveAutonCmd(testRot));
                 AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE, AutonFactory.fullAuto(swerve, oneCone));
+				AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
 	}
 
 	public void mapTrajectories() {
@@ -189,15 +188,18 @@ public class RobotContainer {
 	public void mapAutonEvents() {
 		autonEventMap.put("testEvent",
 			AutonFactory.TestEvent(swerve));
-		autonEventMap.put("placeCube", 
+		autonEventMap.put("placeTopCube", 
 			superstructure.toState(SuperState.TOPCUBE)
-			.andThen(claw.release()));
-		autonEventMap.put("placeCone",
+			.andThen(new WaitCommand(1))
+			.andThen(claw.release()))
+			.andThen(superstructure.toState(SuperState.SAFE));
+		autonEventMap.put("placeTopCone",
 			superstructure.toState(SuperState.TOPCONE)
-			.andThen(claw.release()));
+			.andThen(new WaitCommand(1))
+			.andThen(claw.release()))
+			.andThen(superstructure.toState(SuperState.SAFE));
 		autonEventMap.put("groundPickUp",
-			superstructure.toState(SuperState.GROUND_PICK_UP)
-			.andThen(claw.autoGrab(false)));
+			superstructure.toState(SuperState.GROUND_PICK_UP));
 		autonEventMap.put("autoBalance",
 			swerve.autoBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
