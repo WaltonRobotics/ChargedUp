@@ -69,8 +69,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    // m_swerve.resetDriveEncoders();;
-    m_robotContainer.turnOffRumble();
+
 
   }
 
@@ -85,6 +84,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.swerve.resetModsToAbs();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -106,8 +106,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.swerve.resetModsToAbs();
-    m_robotContainer.superstructure.setTargetsToZero();   
+    // m_robotContainer.swerve.resetModsToAbs();
+    m_robotContainer.superstructure.zeroSuperstructure();
   }
 
   /** This function is called periodically during operator control. */

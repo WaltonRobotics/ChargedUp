@@ -41,10 +41,10 @@ public class Paths {
 		public static final PathPlannerTrajectory testRot = PathPlanner.loadPath("testRot",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory oneCone = PathPlanner.loadPath("oneCone",
+		public static final PathPlannerTrajectory oneConePark = PathPlanner.loadPath("oneConePark",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory oneConePark = PathPlanner.loadPath("oneConePark",
+		public static final PathPlannerTrajectory oneConeParkEvents = PathPlanner.loadPath("oneConeParkEvents",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
 	}

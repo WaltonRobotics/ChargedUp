@@ -44,9 +44,6 @@ public class RobotContainer {
 	public final TheClaw claw = new TheClaw();
 	public final LEDSubsystem leds = new LEDSubsystem();
 
-	private final double waitTimeSecondsWrist = .4;
-	private final double waitTimeSecondsEle = .1;
-
 	/* Subsystems */
 	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, claw);
 
@@ -61,9 +58,9 @@ public class RobotContainer {
 		// addAprilTagChoices();
 		swerve.setDefaultCommand(
 			swerve.teleopDriveCmd(
-				() -> -driver.getLeftY(),
-				() -> -driver.getLeftX(),
-				() -> driver.getRightX(),
+				() -> driver.getLeftY(),
+				() -> driver.getLeftX(),
+				() -> -driver.getRightX(),
 				driver.leftBumper()::getAsBoolean,
 				() -> true // openLoop
 			)
@@ -88,6 +85,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 		driver.rightTrigger().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
+		driver.leftTrigger().onTrue(swerve.rotateAboutPoint(90));
 		driver.leftTrigger()
 				.whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
 
@@ -161,10 +159,10 @@ public class RobotContainer {
 	public void mapAutonCommands() {
 		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, AutonFactory.fullAuto(swerve, straightBack));
                 AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.fullAuto(swerve, oneConeOneCube));
-                // AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, AutonFactory.fullAuto(swerve, testRot));
-                AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getPPSwerveAutonCmd(testRot));
-                AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE, AutonFactory.fullAuto(swerve, oneCone));
+                AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, AutonFactory.fullAuto(swerve, testRot));
+                // AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getPPSwerveAutonCmd(testRot));
 				AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
+				AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, AutonFactory.fullAuto(swerve, oneConeParkEvents));
 	}
 
 	public void mapTrajectories() {

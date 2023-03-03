@@ -59,8 +59,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_actualVelo = DashboardManager.addTabNumberBar(this, "ActualVelo Mps",
 			-10, 10);
 
-	private final double m_dampener = 0.7;
-
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
 		m_left.configFactoryDefault();

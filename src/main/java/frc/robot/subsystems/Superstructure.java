@@ -2,10 +2,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.WristK;
 // import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.TheClaw.ClawState;
@@ -114,25 +115,17 @@ public class Superstructure extends SubsystemBase {
 		return stateManageCmd.andThen(movement).withName("ToState-" + m_curState.toString());
 	}
 
-	// public CommandBase zeroSuperstructure() {
-	//     return m_wrist.toAngle(WristK.kMinAngleDegrees)
-	//             .andThen(m_elevator.toHeight(ElevatorK.kMinHeightMeters))
-	//             .andThen(m_tilt.toAngle(TiltK.kMinAngleDegrees));
-	// }
 
 	public void setTargetsToZero() {
-		m_wrist.setTarget(kMinDeg);
-		m_tilt.setTarget(0);
-		m_elevator.setTarget(kBotHeightMeters);
+		toState(SuperState.SAFE);
 	}
 
-/**
- * 	manipulator.leftBumper().onTrue((wrist.toAngle(72)) // to zero
-				// .andThen(new WaitCommand(0.3))
-				.andThen(elevator.toHeight(ElevatorK.kMinHeightMeters -.019)
-				.alongWith(tilt.toAngle(0))));
- */
 
+		public CommandBase zeroSuperstructure() {
+	    return m_wrist.toAngle(kMaxDeg)
+	            .andThen(m_elevator.toHeight(0))
+	            .andThen(m_tilt.toAngle(0));
+	}
 	public enum SuperState {
 		GROUND_PICK_UP(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.PICKUP, ClawState.AUTO),
 		SUBSTATION_PICK_UP(ElevatorState.SUBSTATION, TiltState.SUBSTATION, WristState.SUBSTATION, ClawState.AUTO),
