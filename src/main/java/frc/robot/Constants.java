@@ -220,17 +220,17 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kAbsMaxDegree = 29; // max possible from offset
 
         
-        public static final double kTopAngleDegrees = 15; // TODO: CHANGE >:(
-        public static final double kTopConeAngleDegrees = 30;
-        public static final double kTopCubeAngleDegrees = 30;
+        public static final double kTopAngleDegrees = 15;
+        public static final double kTopConeAngleDegrees = 29;
+        public static final double kTopCubeAngleDegrees = 29;
         public static final double kMidConeAngleDegrees = 23.418;
         public static final double kMidCubeAngleDegrees = 22.041;
-        public static final double kMidAngleDegrees = 30; // TODO: CHANGE T-T
-        public static final double kBotAngleDegrees = 0; // TODO: CHANGE >:D
+        public static final double kMidAngleDegrees = 29;
+        public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
 
-        public static final double kMaxAngleDegrees = 30;
+        public static final double kMaxAngleDegrees = 29;
         public static final double kMaxVelocity = 20; // degrees per sec
         public static final double kMaxAcceleration = 40.0; // degrees per sec squared
         public static final double kP = .75;
