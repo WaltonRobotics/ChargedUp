@@ -50,6 +50,9 @@ public class Paths {
 		public static final PathPlannerTrajectory oneCubeOneCone = PathPlanner.loadPath("oneCubeOneCone",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory twoConeOneCube = PathPlanner.loadPath("twoConeOneCube",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
 	}
 
 	public static final class PPAutoscoreClass {
