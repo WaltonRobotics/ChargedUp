@@ -163,6 +163,7 @@ public class RobotContainer {
                 // AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getPPSwerveAutonCmd(testRot));
 				AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
 				AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, AutonFactory.fullAuto(swerve, oneConeParkEvents));
+				AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, AutonFactory.fullAuto(swerve, oneCubeOneCone));
 	}
 
 	public void mapTrajectories() {

@@ -13,7 +13,8 @@ public class AutonChooser {
         ONE_CONE("Drop Cone"),
         TEST_ROT("test"),
         ONE_CONE_PARK("Drop cone then park"),
-        ONE_CONE_PARK_EVENTS("Drop cone then park w/ Events");
+        ONE_CONE_PARK_EVENTS("Drop cone then park w/ Events"),
+        ONE_CUBE_ONE_CONE("Drop cube then cone and park w/ events");
 
         public final String description;
 
