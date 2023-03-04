@@ -29,8 +29,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
-    public final PhotonCamera cam1 = new PhotonCamera("ov9281");
-    public final PhotonCamera cam2 = new PhotonCamera(null); // TODO: name the camera (will do when we have the actual camera)
+    public final PhotonCamera topLeftCam = new PhotonCamera("ov9281");
+    public final PhotonCamera highCam = new PhotonCamera(null); // TODO: name the camera (will do when we have the actual camera)
     // distance from robot to camera
     private final Transform3d robotToCam1 = new Transform3d(
             new Translation3d(Units.inchesToMeters(6), 0, Units.inchesToMeters(34.75)), // camera placement on robot
@@ -44,6 +44,8 @@ public class AprilTagCamera {
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
     PhotonPoseEstimator poseEstimator1;
     PhotonPoseEstimator poseEstimator2;
+
+    private boolean m_highCamDisabled = false;
 
     public AprilTagCamera() {
         init();
@@ -66,12 +68,12 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(cam1, robotToCam1));
-        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cam1,
+        camList.add(new Pair<PhotonCamera, Transform3d>(topLeftCam, robotToCam1));
+        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, topLeftCam,
                 robotToCam1);
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(cam2, robotToCam2));
-        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cam2,
+        camList.add(new Pair<PhotonCamera, Transform3d>(highCam, robotToCam2));
+        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, highCam,
                         robotToCam2);
     }
 
@@ -120,25 +122,30 @@ public class AprilTagCamera {
         return poseEstimator2.update();
     }
 
+    public void setHighCamDisabled(boolean disabled) {
+        m_highCamDisabled = disabled;
+    }
+
     // unfiltered view of camera
     public void toggleDriverMode() {
-        if (cam1.getDriverMode()) {
-            cam1.setDriverMode(false);
+        if (topLeftCam.getDriverMode()) {
+            topLeftCam.setDriverMode(false);
         }
 
         else {
-            cam1.setDriverMode(true);
+            topLeftCam.setDriverMode(true);
         }
     }
 
     public Optional<PhotonPipelineResult> getLatestResult1() {
-        var result1 = cam1.getLatestResult();
+        var result1 = topLeftCam.getLatestResult();
         return result1 != null ? Optional.of(result1) : Optional.empty();
     }
 
     public Optional<PhotonPipelineResult> getLatestResult2() {
-        var result1 = cam1.getLatestResult();
-        return result1 != null ? Optional.of(result1) : Optional.empty();
+        var result2 = highCam.getLatestResult();
+
+        return result2 != null && !m_highCamDisabled ? Optional.of(result2) : Optional.empty();
     }
 
     public Optional<PhotonTrackedTarget> getBestTarget1() {
