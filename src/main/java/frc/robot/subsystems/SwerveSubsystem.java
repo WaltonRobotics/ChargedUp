@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagCamera;
@@ -37,7 +38,10 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPointAccessor;
 import com.pathplanner.lib.ReflectedTransform;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
@@ -58,8 +62,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.vision.EstimatedRobotPose;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.SwerveK.Mod0;
 import frc.robot.Constants.SwerveK.Mod1;
 import frc.robot.Constants.SwerveK.Mod2;
@@ -414,39 +420,40 @@ public class SwerveSubsystem extends SubsystemBase {
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
 
-	// public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
-	// 	// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
-	// 	var pathCmd = runOnce(() -> {
-	// 		ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-	// 				getPose(),
-	// 				getChassisSpeeds());
-	// 		List<PathPoint> allPoints = new ArrayList<>();
-	// 		allPoints.add(ReferencePoints.currentPoint);
-	// 		boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-	// 		double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
+		// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
+		var pathCmd = runOnce(() -> {
+			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
+					getPose(),
+					getChassisSpeeds());
+			List<PathPoint> allPoints = new ArrayList<>();
+			allPoints.add(ReferencePoints.currentPoint);
+			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
+			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
-	// 		for (PathPoint addedPP : path) {
-	// 			double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-	// 			if (onRed && currentX < addedX) {
-	// 				allPoints.add(addedPP);
-	// 			} else if (!onRed && currentX > addedX) {
-	// 				allPoints.add(addedPP);
-	// 			}
-	// 		}
+			for (PathPoint addedPP : path) {
+				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
+				if (onRed && currentX < addedX) {
+					allPoints.add(addedPP);
+				} else if (!onRed && currentX > addedX) {
+					allPoints.add(addedPP);
+				}
+			}
 
-	// 		// allPoints.add(endPt);
+			// allPoints.add(endPt);
 
-	// 		currentTrajectory = PathPlanner.generatePath(
-	// 				new PathConstraints(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared),
-	// 				allPoints);
-	// 	});
+			currentTrajectory = PathPlanner.generatePath(
+					new PathConstraints(kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+					allPoints);
+		});
+		var followCmd = Commands.none();
 
-	// 	var followCmd = run(() -> autoBuilder.followPath(() -> {
-	// 		return Optional.ofNullable(currentTrajectory);
-	// 	}));
+		if(currentTrajectory != null) {
+			followCmd = run(() -> autoBuilder.followPath(currentTrajectory));
+		}
 
-	// 	return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPose));
-	// }
+		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPose));
+	}
 
 	/**
 	 * @return Cmd to drive to chosen, pre-specified pathpoint
@@ -627,11 +634,11 @@ public class SwerveSubsystem extends SubsystemBase {
 		Pose2d closest;
 		Pose2d finalDestination;
 
-		closest = ScoringPoints.blueScoringPoints[0];
+		closest = ScoringPoints.scoringPoints[0];
 		for (int i = 1; i <= 8; i++) {
 			if (Math.abs(yValue - closest.getTranslation().getY()) > Math
-					.abs(yValue - ScoringPoints.blueScoringPoints[i].getTranslation().getY())) {
-				closest = ScoringPoints.blueScoringPoints[i];
+					.abs(yValue - ScoringPoints.scoringPoints[i].getTranslation().getY())) {
+				closest = ScoringPoints.scoringPoints[i];
 			}
 		}
 		finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
