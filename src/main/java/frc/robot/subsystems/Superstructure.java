@@ -122,7 +122,7 @@ public class Superstructure extends SubsystemBase {
 
 
 		public CommandBase zeroSuperstructure() {
-	    return m_wrist.toAngle(kMaxDeg)
+	    return m_wrist.toAngle(kMinDeg)
 	            .andThen(m_elevator.toHeight(0))
 	            .andThen(m_tilt.toAngle(0));
 	}
