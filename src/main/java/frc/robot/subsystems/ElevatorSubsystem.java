@@ -76,6 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_left.follow(m_right);
 		m_left.setInverted(TalonFXInvertType.OpposeMaster);
+		m_controller.setTolerance(.02);
 	}
 
 	/*
@@ -145,10 +146,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 			// }
 
 			m_targetHeight += output*.05;
-			double effort = getEffortForTarget(m_targetHeight);
-			// 	double effort = output == 0 ? 
-			// 		getEffortForTarget(m_targetHeight) :
-			// 		getEffortToHold(m_targetHeight);
+				double effort = output == 0 ? 
+					getEffortForTarget(m_targetHeight) :
+					getEffortToHold(m_targetHeight);
 			m_right.setVoltage(effort);
 		})
 				.withName("TeleManual");
@@ -222,11 +222,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 			m_ffEffort = kFeedforward.calculate(pdSetpoint);
 		}
 		double totalEffort = m_ffEffort + m_pdEffort;
-		nte_ffEffort.setDouble(m_ffEffort);
-		nte_pdEffort.setDouble(m_pdEffort);
-		nte_totalEffort.setDouble(totalEffort);
-		nte_pdVelo.setDouble(pdSetpoint);
-		nte_actualVelo.setDouble(getActualVelocityMps());
 		return totalEffort;
 	}
 
@@ -244,7 +239,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 							kVoltageCompSaturationVolts);
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 				}))
-				// .until(() -> m_controller.atSetpoint())
+				.until(() -> m_controller.atGoal())
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);
 				})

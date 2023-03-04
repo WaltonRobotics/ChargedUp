@@ -114,9 +114,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		zeroGyro();
 
 		Timer.delay(.250);
-		for (var mod : m_modules) {
-			mod.resetToAbsolute();
-		}
+		resetModsToAbs();
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());

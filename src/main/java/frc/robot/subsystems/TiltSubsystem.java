@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-//TODO: redo tilt limits (possible moving the wrong way)
-//TODO: have the teleop command use toAngle (same for other subsystems) and stick inputs add or subtract from that
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -18,7 +16,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
@@ -30,7 +27,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final DutyCycleEncoder m_absoluteEncoder = new DutyCycleEncoder(kAbsoluteEncoderPort);
 	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
-	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
+	// private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
 	private Timer m_timer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
@@ -50,7 +47,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	public TiltSubsystem() {
-		m_diskBrake.set(true);
+		// m_diskBrake.set(true);
 		m_absoluteEncoder.reset();
 		m_motor.setIdleMode(IdleMode.kBrake);
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
@@ -58,6 +55,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// reset relative encoder on switch activation
 		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
+		m_controller.setTolerance(.2);
 	}
 
 	public CommandBase setTarget(double degrees) {
@@ -103,17 +101,17 @@ public class TiltSubsystem extends SubsystemBase {
 															// rotation)
 	}
 
-	public void disengageBrake() {
-		if (m_diskBrake.get()) {
-			m_diskBrake.set(false);
-		}
-	}
+	// public void disengageBrake() {
+	// 	if (m_diskBrake.get()) {
+	// 		m_diskBrake.set(false);
+	// 	}
+	// }
 
-	public void engageBrake() {
-		if (!m_diskBrake.get()) {
-			m_diskBrake.set(true);
-		}
-	}
+	// public void engageBrake() {
+	// 	if (!m_diskBrake.get()) {
+	// 		m_diskBrake.set(true);
+	// 	}
+	// }
 
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
@@ -173,10 +171,7 @@ public class TiltSubsystem extends SubsystemBase {
 	 */
 	public CommandBase toAngle(double angle) {
 		var setupCmd = runOnce(() -> {
-			disengageBrake();
-		});
-
-		var moveCmd = runOnce(() -> {
+			// disengageBrake();
 			if (angle > getDegrees()) {
 				double tempMaxVelocity = kMaxVelocity / 2;
 				double tempMaxAcceleration = kMaxAcceleration / 2;
@@ -187,17 +182,22 @@ public class TiltSubsystem extends SubsystemBase {
 			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
-		}).andThen(run(() -> {
+		});
+
+		var moveCmd = run(() -> {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
 			setVoltage(effort);
-		}))
+		})
+		.until(() -> {
+			return m_controller.atGoal();
+		})
 		.finallyDo((intr) -> {
 			m_motor.set(0);
 		})
 		.withName("ToAngle");
 
 		var brakeCmd = runOnce(() -> {
-			engageBrake();
+			// engageBrake();
 		});
 
 		return Commands.sequence(
@@ -210,12 +210,14 @@ public class TiltSubsystem extends SubsystemBase {
 
 	private void setCoast(boolean coast) {
 		if (coast) {
+			// disengageBrake(); 
 			m_motor.setIdleMode(IdleMode.kCoast);
 		} else {
+			// engageBrake();
 			m_motor.setIdleMode(IdleMode.kBrake);
 		}
 	}
-
+			
 	@Override
 	public void periodic() {
 		if (!m_homeSwitch.get()) {

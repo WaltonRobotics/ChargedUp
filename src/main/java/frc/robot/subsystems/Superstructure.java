@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.lib.util.DashboardManager;
 import frc.robot.Constants.WristK;
 // import frc.robot.auton.Paths.ScoringPoints;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
@@ -36,6 +37,8 @@ public class Superstructure extends SubsystemBase {
 		m_elevator = elevator;
 		m_wrist = wrist;
 		m_claw = claw;
+
+		DashboardManager.addTab(this);
 	}
 
 	/*
@@ -112,7 +115,9 @@ public class Superstructure extends SubsystemBase {
 			clawCmd
 		);
 
-		return runOnce(() -> stateManageCmd.andThen(movement)).withName("ToState-" + m_curState.toString());
+		return stateManageCmd
+				.andThen(movement)
+				.withName("ToState-" + m_curState.toString());
 	}
 
 
