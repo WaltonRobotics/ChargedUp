@@ -80,7 +80,7 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	private void i_setTarget(double degrees) {
-		m_targetAngle = MathUtil.clamp(degrees, 0, 30);
+		m_targetAngle = MathUtil.clamp(degrees, 0, 29);
 	}
 
 	private double getEffortForTarget(double angleDegrees) {

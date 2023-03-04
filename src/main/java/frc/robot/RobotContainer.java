@@ -19,6 +19,8 @@ import frc.robot.vision.PathChooser.PathOption;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
+import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
+
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
 
@@ -89,27 +91,27 @@ public class RobotContainer {
 		driver.leftTrigger()
 				.whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
 
-		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone1));
-		// driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2));
-		// driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone3));
-		// driver.x()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone4));
-		// driver.y()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCube5));
-		// driver.b()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6));
-		// driver.x()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone7));
-		// driver.y()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8));
-		// driver.b()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone9));
+		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone1));
+		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube2));
+		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone3));
+		driver.x()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone4));
+		driver.y()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCube5));
+		driver.b()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone6));
+		driver.x()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+		driver.y()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+		driver.b()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 
 		driver.rightBumper().whileTrue(swerve.autoBalance());
 
@@ -171,8 +173,8 @@ public class RobotContainer {
 		// PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
 		PathChooser.SetDefaultPath(PathOption.BLUE_NON_BUMPY);
 		// PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
-		PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.blueBumpy);
-		PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.blueNotBumpy);
+		PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.bumpy);
+		PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.notBumpy);
 	}
 
 	public void mapAprilTagPoints() {
