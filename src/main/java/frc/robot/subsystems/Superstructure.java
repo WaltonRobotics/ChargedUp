@@ -112,7 +112,7 @@ public class Superstructure extends SubsystemBase {
 			clawCmd
 		);
 
-		return stateManageCmd.andThen(movement).withName("ToState-" + m_curState.toString());
+		return runOnce(() -> stateManageCmd.andThen(movement)).withName("ToState-" + m_curState.toString());
 	}
 
 
