@@ -233,7 +233,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 			i_setTarget(heightMeters);
 		})
 				.andThen(run(() -> {
-					var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
+					var effort = getActualHeightMeters() == heightMeters ? 
+					getEffortToHold(heightMeters) :
+					MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
 							kVoltageCompSaturationVolts);
 					
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
