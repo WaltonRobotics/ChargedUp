@@ -237,10 +237,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 					
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 				}))
-				// .until(() -> m_controller.atGoal())
-				// .finallyDo((intr) -> {
-				// 	m_right.set(ControlMode.PercentOutput, 0);
-				// })
+				.until(() -> m_controller.atGoal())
+				.finallyDo((intr) -> {
+					m_right.set(ControlMode.PercentOutput, 0);
+				})
 				.withName("AutoToHeight");
 	}
 
