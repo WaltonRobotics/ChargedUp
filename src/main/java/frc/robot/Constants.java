@@ -283,7 +283,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kA = 0.38304;
         public static final double kG = 0.16806;
         
-        public static final double kPHold = .01;
+        public static final double kPHold = .1;
         public static final double kDHold = 0; // dummy values; change later
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);

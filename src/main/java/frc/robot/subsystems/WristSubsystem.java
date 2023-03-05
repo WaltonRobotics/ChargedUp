@@ -34,7 +34,7 @@ public class WristSubsystem extends SubsystemBase {
   private boolean m_isCoast = false;
 
   private final PIDController m_holdController = new PIDController(
-		kP, 0, kD);
+      kP, 0, kD);
 
   private final ProfiledPIDController m_controller = new ProfiledPIDController(
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
@@ -117,7 +117,7 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public CommandBase setTarget(double targetAngle) {
-    return run (() -> i_setTarget(targetAngle));
+    return run(() -> i_setTarget(targetAngle));
   }
 
   /*
@@ -162,6 +162,16 @@ public class WristSubsystem extends SubsystemBase {
     return m_pdEffort;
   }
 
+  private double getEffortToHold(double degrees) {
+    m_pdEffort = m_holdController.calculate(getDegrees(), degrees);
+    m_ffEffort = 0;
+    var pdSetpoint = m_holdController.getSetpoint();
+    if (pdSetpoint != 0) {
+      m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
+    }
+    double totalEffort = m_ffEffort + m_pdEffort;
+    return totalEffort;
+  }
   /*
    * @return Cmd to move the wrist with stick
    * 
@@ -198,33 +208,22 @@ public class WristSubsystem extends SubsystemBase {
     if (Math.abs(getDegrees() - angle) <= 0.2) {
       return Commands.none();
     }
-    
+
     return runOnce(() -> {
       m_controller.reset(getDegrees());
       i_setTarget(angle);
     }).andThen(run(() -> {
-      var effort = getDegrees() == angle ? 
-      getEffortToHold(angle) : 
-      MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
+      var effort = getDegrees() == angle ? getEffortToHold(angle)
+          : MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
       setPower(effort, true);
     }))
-        .until(()-> m_controller.atGoal())
         .finallyDo((intr) -> {
           m_motor.set(0);
         })
         .withName("ToAngle");
   }
 
-  private double getEffortToHold(double degrees) {
-		m_pdEffort = m_holdController.calculate(getDegrees(), degrees);
-		m_ffEffort = 0;
-		var pdSetpoint = m_holdController.getSetpoint();
-		if (pdSetpoint != 0) {
-			m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
-		}
-		double totalEffort = m_ffEffort + m_pdEffort;
-		return totalEffort;
-	}
+
 
   public CommandBase toState(WristState state) {
     return toAngle(state.angle);
