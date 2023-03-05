@@ -131,14 +131,14 @@ public class RobotContainer {
 		manipulator.povLeft().onTrue(
 			superstructure.toState(SuperState.MIDCUBE));
 
-		// manipulator.y().onTrue(
-		// 	superstructure.toState(SuperState.TOPCONE));
+		manipulator.y().onTrue(
+			superstructure.toState(SuperState.TOPCONE));
 			
 		manipulator.x().onTrue(
 			superstructure.toState(SuperState.MIDCONE));
 
-		// manipulator.a().onTrue(
-		// 	superstructure.toState(SuperState.GROUND_PICK_UP));
+		manipulator.a().onTrue(
+			superstructure.toState(SuperState.GROUND_PICK_UP));
 				
 		manipulator.povDown().onTrue(
 			superstructure.toState(SuperState.GROUND_SCORE));
@@ -153,8 +153,8 @@ public class RobotContainer {
 		// manipulator.b().whileTrue(wrist.toAngle(70));
 		// manipulator.x().whileTrue(wrist.toAngle(0));
 		// manipulator.b().whileTrue(elevator.toHeight(0.3));
-		manipulator.a().whileTrue(tilt.toAngle(15));
-		manipulator.y().whileTrue(tilt.toAngle(0));
+		// manipulator.a().whileTrue(tilt.toAngle(29));
+		// manipulator.y().whileTrue(tilt.toAngle(0));
 		// manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
 	}
 

@@ -10,8 +10,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -173,8 +171,8 @@ public class TiltSubsystem extends SubsystemBase {
 		var setupCmd = runOnce(() -> {
 			// disengageBrake();
 			if (angle > getDegrees()) {
-				double tempMaxVelocity = kMaxVelocity / 2;
-				double tempMaxAcceleration = kMaxAcceleration / 2;
+				double tempMaxVelocity = kMaxVelocityForward;
+				double tempMaxAcceleration = kMaxAccelerationForward;
 
 				m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity, tempMaxAcceleration));
 			} else {
@@ -185,7 +183,7 @@ public class TiltSubsystem extends SubsystemBase {
 		});
 
 		var moveCmd = run(() -> {
-			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
+			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
 			setVoltage(effort);
 		})
 		.until(() -> {
@@ -217,7 +215,7 @@ public class TiltSubsystem extends SubsystemBase {
 			m_motor.setIdleMode(IdleMode.kBrake);
 		}
 	}
-			
+
 	@Override
 	public void periodic() {
 		if (!m_homeSwitch.get()) {

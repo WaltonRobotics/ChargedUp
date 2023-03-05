@@ -146,9 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			// }
 
 			m_targetHeight += output*.05;
-				double effort = output == 0 ? 
-					getEffortForTarget(m_targetHeight) :
-					getEffortToHold(m_targetHeight);
+			double effort = getEffortForTarget(m_targetHeight);
 			m_right.setVoltage(effort);
 		})
 				.withName("TeleManual");
@@ -237,6 +235,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.andThen(run(() -> {
 					var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
 							kVoltageCompSaturationVolts);
+					
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 				}))
 				.until(() -> m_controller.atGoal())

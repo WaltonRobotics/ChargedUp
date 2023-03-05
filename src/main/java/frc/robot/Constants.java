@@ -231,8 +231,11 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMinAngleDegrees = 0;
 
         public static final double kMaxAngleDegrees = 29;
-        public static final double kMaxVelocity = 40; // degrees per sec
-        public static final double kMaxAcceleration =60.0; // degrees per sec squared
+        public static final double kMaxVelocity = 180; // degrees per sec
+        public static final double kMaxAcceleration = 200.0; // degrees per sec squared
+        public static final double kMaxVelocityForward = kMaxVelocity * .75;
+        public static final double kMaxAccelerationForward = kMaxAcceleration * .75;
+
         public static final double kP = .75;
         public static final double kD = 0.0;
         public static final double kS = 1.5;
@@ -280,7 +283,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kA = 0.38304;
         public static final double kG = 0.16806;
         
-        public static final double kPHold = 1;
+        public static final double kPHold = .01;
         public static final double kDHold = 0; // dummy values; change later
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
