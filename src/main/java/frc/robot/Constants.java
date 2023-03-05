@@ -212,8 +212,8 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final int kHomeSwitchPort = 9;
         public static final int kDiskBrakePort = 15;
 
-        public static final double kBeforeBrakeTime = .5;     //sec
-        public static final double kAfterBrakeTime = .5;
+        public static final double kBeforeBrakeTime = .125;     //sec
+        public static final double kAfterBrakeTime = .125;
         public static final double kTeleopBrakeTime = 1.5;
 
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
