@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
@@ -220,6 +221,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @param heightMeters The height to move to
 	 */
 	public CommandBase toHeight(double heightMeters) {
+		if (Math.abs(getActualHeightMeters() - heightMeters) <= 0.02) {
+			return Commands.none();
+		}
+		
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
 			i_setTarget(heightMeters);

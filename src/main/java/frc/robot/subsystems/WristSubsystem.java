@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
@@ -194,6 +195,10 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public CommandBase toAngle(double angle) {
+    if (Math.abs(getDegrees() - angle) <= 0.2) {
+      return Commands.none();
+    }
+    
     return runOnce(() -> {
       m_controller.reset(getDegrees());
       i_setTarget(angle);
