@@ -29,18 +29,19 @@ public class SuperstructureToState extends SequentialCommandGroup {
             var prevState = m_superstructure.getPrevState();
 
             if (m_targetState == SuperState.TOPCONE || m_targetState == SuperState.TOPCUBE) {
-				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle);
-				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height);
+				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle*.75);
+				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height*.9);
 			}
 
 			if (m_targetState == SuperState.MIDCONE || m_targetState == SuperState.MIDCUBE) {
-				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle / 2.0);
-				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height);
+				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle *.5);
+				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height *.8);
 			}
 
 			if (m_targetState == SuperState.SAFE && 
-				(prevState == SuperState.TOPCONE || prevState == SuperState.TOPCUBE)) {
-
+                (prevState == SuperState.MIDCONE || prevState == SuperState.MIDCUBE)) {
+                    m_elevWait = () -> (wrist.getDegrees() >= m_targetState.wrist.angle);
+                    m_tiltWait = () -> (elevator.getActualHeightMeters() <= m_targetState.elev.height);
 			}
 
 			if (m_targetState == SuperState.SAFE && 
