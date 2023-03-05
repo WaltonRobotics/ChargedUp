@@ -33,8 +33,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
             var prevState = m_superstructure.getPrevState();
 
             if (m_targetState == SuperState.TOPCONE || m_targetState == SuperState.TOPCUBE) {
-				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle*.75);
-				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height*.9);
+				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle*2);
+				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height*.1);
 			}
 
 			if (m_targetState == SuperState.MIDCONE || m_targetState == SuperState.MIDCUBE) {
@@ -69,7 +69,6 @@ public class SuperstructureToState extends SequentialCommandGroup {
         addCommands(
             initCmd,
             Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd)
-
         );
 
         setName("ToState-" + m_targetState.toString());

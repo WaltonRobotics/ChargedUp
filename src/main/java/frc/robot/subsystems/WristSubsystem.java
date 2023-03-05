@@ -205,9 +205,9 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public CommandBase toAngle(double angle) {
-    if (Math.abs(getDegrees() - angle) <= 0.2) {
-      return Commands.none();
-    }
+    // if (Math.abs(getDegrees() - angle) <= 0.2) {
+    //   return Commands.none();
+    // }
 
     return runOnce(() -> {
       m_controller.reset(getDegrees());
