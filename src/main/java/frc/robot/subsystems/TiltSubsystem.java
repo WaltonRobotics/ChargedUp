@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
@@ -168,9 +167,9 @@ public class TiltSubsystem extends SubsystemBase {
 	 * engagebrake
 	 */
 	public CommandBase toAngle(double angle) {
-		// if (Math.abs(getDegrees() - angle) <= 0.5) {
-		// 	return Commands.none();
-		// }
+		if (Math.abs(getDegrees() - angle) <= 0.5) {
+			return Commands.none().until(() -> Math.abs(getDegrees() - m_targetAngle) > 0.5).andThen(toAngle(m_targetAngle));
+		}
 		
 		var setupCmd = runOnce(() -> {
 			if (angle > getDegrees()) {

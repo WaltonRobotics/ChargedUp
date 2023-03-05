@@ -221,9 +221,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @param heightMeters The height to move to
 	 */
 	public CommandBase toHeight(double heightMeters) {
-		// if (Math.abs(getActualHeightMeters() - heightMeters) <= 0.02) {
-		// 	return Commands.none();
-		// }
+		if (Math.abs(getActualHeightMeters() - heightMeters) <= 0.02) {
+			return Commands.none().until(() -> Math.abs(getActualHeightMeters() - m_targetHeight) > 0.02).andThen(toHeight(m_targetHeight));
+		}
 		
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
