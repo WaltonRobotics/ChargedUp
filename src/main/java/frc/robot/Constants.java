@@ -372,6 +372,6 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final String DB_TAB_NAME = "LEDSubsys";
 
         public static final int kNumLEDs = 20; // TODO: update these when we get them
-        public static final int kPort = 0; 
+        public static final int kPort = 5; 
     }
 }
