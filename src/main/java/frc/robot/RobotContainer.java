@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Superstructure.SuperState;
+import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.PathChooser;
@@ -87,9 +88,6 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 		driver.rightTrigger().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
-		driver.leftTrigger().onTrue(swerve.rotateAboutPoint(90));
-		driver.leftTrigger()
-				.whileTrue(new InstantCommand(() -> swerve.drive(-0.5, 0, 0, true, true)));
 
 		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone1));
 		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube2));

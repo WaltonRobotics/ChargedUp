@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import frc.robot.SwerveModule;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
-import frc.robot.vision.AprilTagChooser;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonPPSwerveControllerCommand;
@@ -408,15 +407,15 @@ public class SwerveSubsystem extends SubsystemBase {
 	// 	return pathCmd.andThen(followCmd).andThen(goToChosenTag());
 	// }
 
-	private CommandBase goToChosenTag() {
-		return run(() -> {
-			var tagPPPose = PathPointAccessor.poseFromPathPointHolo(AprilTagChooser.GetChosenAprilTag());
-			var botPose = getPose();
-			double xRate = xController.calculate(botPose.getX(), tagPPPose.getX());
-			double yRate = yController.calculate(botPose.getY(), tagPPPose.getY());
-			drive(xRate, yRate, new Rotation2d(0), true);
-		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
-	}
+	// private CommandBase goToChosenTag() {
+	// 	return run(() -> {
+	// 		var tagPPPose = PathPointAccessor.poseFromPathPointHolo(AprilTagChooser.GetChosenAprilTag());
+	// 		var botPose = getPose();
+	// 		double xRate = xController.calculate(botPose.getX(), tagPPPose.getX());
+	// 		double yRate = yController.calculate(botPose.getY(), tagPPPose.getY());
+	// 		drive(xRate, yRate, new Rotation2d(0), true);
+	// 	}).until(() -> xController.atSetpoint() && yController.atSetpoint());
+	// }
 
 	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
 		// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
