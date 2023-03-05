@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.WristSubsystem;
 
 public class SuperstructureToState extends SequentialCommandGroup {
     private final Superstructure m_superstructure;
@@ -44,14 +45,16 @@ public class SuperstructureToState extends SequentialCommandGroup {
 
 			if (m_targetState == SuperState.SAFE && 
                 (prevState == SuperState.MIDCONE || prevState == SuperState.MIDCUBE)) {
-                    wristAngle += 1;
+                    wristAngle += 3;
+                    wrist.setMaxDegrees(wristAngle);
                     m_elevWait = () -> (wrist.getDegrees() >= wristAngle);
                     m_tiltWait = () -> (elevator.getActualHeightMeters() <= m_targetState.elev.height);
 			}
 
 			if (m_targetState == SuperState.SAFE && 
 				(prevState == SuperState.TOPCONE || prevState == SuperState.TOPCUBE)) {
-                    wristAngle += 1;
+                    wristAngle += 3;
+                    wrist.setMaxDegrees(wristAngle);
 					m_elevWait = () -> (wrist.getDegrees() >= wristAngle);
 					m_tiltWait = () -> (elevator.getActualHeightMeters() <= m_targetState.elev.height);
 			}
