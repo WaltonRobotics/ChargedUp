@@ -28,7 +28,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final DutyCycleEncoder m_absoluteEncoder = new DutyCycleEncoder(kAbsoluteEncoderPort);
 	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
-	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
+	// private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
 	// private Timer m_timer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
@@ -48,7 +48,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	public TiltSubsystem() {
-		m_diskBrake.set(true);
+		// m_diskBrake.set(true);
 		m_absoluteEncoder.reset();
 		m_motor.setIdleMode(IdleMode.kBrake);
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
@@ -102,13 +102,13 @@ public class TiltSubsystem extends SubsystemBase {
 															// rotation)
 	}
 
-	public void disengageBrake() {
-		m_diskBrake.set(false);
-	}
+	// public void disengageBrake() {
+	// 	m_diskBrake.set(false);
+	// }
 
-	public void engageBrake() {
-		m_diskBrake.set(true);
-	}
+	// public void engageBrake() {
+	// 	m_diskBrake.set(true);
+	// }
 
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
@@ -167,9 +167,9 @@ public class TiltSubsystem extends SubsystemBase {
 	 * engagebrake
 	 */
 	public CommandBase toAngle(double angle) {
-		if (Math.abs(getDegrees() - angle) <= 0.5) {
-			return Commands.none().until(() -> Math.abs(getDegrees() - m_targetAngle) > 0.5).andThen(toAngle(m_targetAngle));
-		}
+		// if (Math.abs(getDegrees() - angle) <= 0.5) {
+		// 	return Commands.none().until(() -> Math.abs(getDegrees() - m_targetAngle) > 0.5).andThen(toAngle(m_targetAngle));
+		// }
 		
 		var setupCmd = runOnce(() -> {
 			if (angle > getDegrees()) {
@@ -182,7 +182,7 @@ public class TiltSubsystem extends SubsystemBase {
 			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
-			disengageBrake();
+			// disengageBrake();
 		});
 
 		var moveCmd = run(() -> {
@@ -197,22 +197,22 @@ public class TiltSubsystem extends SubsystemBase {
 				})
 				.withName("ToAngle");
 				
-		var brakeCmd = runOnce(() -> {
-			engageBrake();
-		});
+		// var brakeCmd = runOnce(() -> {
+		// 	engageBrake();
+		// });
 
 		return Commands.sequence(
 			setupCmd,
 			Commands.waitSeconds(kBeforeBrakeTime),
 			moveCmd,
-			Commands.waitSeconds(kAfterBrakeTime),
-			brakeCmd);
+			Commands.waitSeconds(kAfterBrakeTime));
+			// brakeCmd);
 	}
 
 	private void setCoast(boolean coast) {
-		if (!DriverStation.isEnabled()) {
-			m_diskBrake.set(!coast);
-		}
+		// if (!DriverStation.isEnabled()) {
+		// 	m_diskBrake.set(!coast);
+		// }
 		m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
 	}
 

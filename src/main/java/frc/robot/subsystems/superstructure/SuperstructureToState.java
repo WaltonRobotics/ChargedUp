@@ -60,6 +60,24 @@ public class SuperstructureToState extends SequentialCommandGroup {
 			}
         });
 
+        var prevState = m_superstructure.getPrevState();
+        var curState = m_superstructure.getCurState();
+
+        if (m_targetState == SuperState.TOPCONE || m_targetState == SuperState.TOPCUBE) {
+            m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*.25));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.25));
+        }
+
+        if (m_targetState == SuperState.MIDCONE || m_targetState == SuperState.MIDCUBE) {
+            m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*.25));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.25));
+        }
+
+        if(m_targetState == SuperState.SAFE){
+            m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle *.95));
+            m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 15));
+        }
+
         var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
 		var elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
 		var tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
