@@ -114,27 +114,27 @@ public class RobotContainer {
 		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 
 		// using autoscore (for testing w/o camera): comment out later
-		driver.x().whileTrue(swerve.getPPSwerveAutonCmd(cone1));
-		driver.y().whileTrue(swerve.getPPSwerveAutonCmd(cube2));
-		driver.b().whileTrue(swerve.getPPSwerveAutonCmd(cone3));
+		driver.x().whileTrue(swerve.getFullAuto(cone1));
+		driver.y().whileTrue(swerve.getFullAuto(cube2));
+		driver.b().whileTrue(swerve.getFullAuto(cone3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.getPPSwerveAutonCmd(coopCone4));
+			.whileTrue(swerve.getFullAuto(coopCone4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.getPPSwerveAutonCmd(coopCube5));
+			.whileTrue(swerve.getFullAuto(coopCube5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.getPPSwerveAutonCmd(coopCone6));
+			.whileTrue(swerve.getFullAuto(coopCone6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.getPPSwerveAutonCmd(cone7));
+			.whileTrue(swerve.getFullAuto(cone7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.getPPSwerveAutonCmd(cube8));
+			.whileTrue(swerve.getFullAuto(cube8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.getPPSwerveAutonCmd(cone9));
+			.whileTrue(swerve.getFullAuto(cone9));
 
 		driver.rightBumper().whileTrue(swerve.autoBalance());
 
