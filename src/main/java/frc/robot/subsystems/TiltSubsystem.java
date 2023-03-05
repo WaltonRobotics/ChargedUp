@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
@@ -102,23 +104,19 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	public void disengageBrake() {
-		if (m_diskBrake.get()) {
-			m_diskBrake.set(false);
-		}
+		m_diskBrake.set(false);
 	}
 
 	public void engageBrake() {
-		if (!m_diskBrake.get()) {
-			m_diskBrake.set(true);
-		}
+		m_diskBrake.set(true);
 	}
 
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			m_targetAngle += powerVal * 1.2;
-			double effort = getEffortForTarget(m_targetAngle);	
-				setVoltage(effort);
+			double effort = getEffortForTarget(m_targetAngle);
+			setVoltage(effort);
 		});
 	}
 
@@ -171,51 +169,48 @@ public class TiltSubsystem extends SubsystemBase {
 	 */
 	public CommandBase toAngle(double angle) {
 		var setupCmd = runOnce(() -> {
-			disengageBrake();
 			if (angle > getDegrees()) {
 				double tempMaxVelocity = kMaxVelocityForward;
 				double tempMaxAcceleration = kMaxAccelerationForward;
-
+				
 				m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity, tempMaxAcceleration));
 			} else {
 				m_controller.setConstraints(kConstraints);
 			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
+			disengageBrake();
 		});
 
 		var moveCmd = run(() -> {
-			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
-			setVoltage(effort);
-		})
-		.until(() -> {
-			return m_controller.atGoal();
-		})
-		.finallyDo((intr) -> {
-			m_motor.set(0);
-		})
-		.withName("ToAngle");
-
+				var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
+				setVoltage(effort);
+				})
+				.until(() -> {
+				return m_controller.atGoal();
+				})
+				.finallyDo((intr) -> {
+				m_motor.set(0);
+				})
+				.withName("ToAngle");
+				
 		var brakeCmd = runOnce(() -> {
 			engageBrake();
 		});
 
 		return Commands.sequence(
-				setupCmd,
-				Commands.waitSeconds(kBeforeBrakeTime),
-				moveCmd,
-				Commands.waitSeconds(kAfterBrakeTime),
-				brakeCmd);
+			setupCmd,
+			Commands.waitSeconds(kBeforeBrakeTime),
+			moveCmd,
+			Commands.waitSeconds(kAfterBrakeTime),
+			brakeCmd);
 	}
 
 	private void setCoast(boolean coast) {
-		if (coast) {
-			disengageBrake(); 
-			m_motor.setIdleMode(IdleMode.kCoast);
-		} else {
-			engageBrake();
-			m_motor.setIdleMode(IdleMode.kBrake);
+		if (!DriverStation.isEnabled()) {
+			m_diskBrake.set(!coast);
 		}
+		m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
 	}
 
 	@Override

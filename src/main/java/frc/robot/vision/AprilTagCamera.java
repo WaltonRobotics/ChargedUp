@@ -1,5 +1,5 @@
 package frc.robot.vision;
-
+//TODO: measure cameras
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -28,8 +28,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
-    public final PhotonCamera topLeftCam = new PhotonCamera("ov9281");
-    public final PhotonCamera highCam = new PhotonCamera(null); // TODO: name the camera (will do when we have the actual camera)
+    public final PhotonCamera highCam = new PhotonCamera("LeftHighCam");
+    public final PhotonCamera lowCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
     // distance from robot to camera
     private final Transform3d robotToCam1 = new Transform3d(
             new Translation3d(Units.inchesToMeters(6), 0, Units.inchesToMeters(34.75)), // camera placement on robot
@@ -67,12 +67,12 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(topLeftCam, robotToCam1));
-        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, topLeftCam,
+        camList.add(new Pair<PhotonCamera, Transform3d>(highCam, robotToCam1));
+        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, highCam,
                 robotToCam1);
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(highCam, robotToCam2));
-        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, highCam,
+        camList.add(new Pair<PhotonCamera, Transform3d>(lowCam, robotToCam2));
+        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, lowCam,
                         robotToCam2);
     }
 
@@ -127,22 +127,22 @@ public class AprilTagCamera {
 
     // unfiltered view of camera
     public void toggleDriverMode() {
-        if (topLeftCam.getDriverMode()) {
-            topLeftCam.setDriverMode(false);
+        if (highCam.getDriverMode()) {
+            highCam.setDriverMode(false);
         }
 
         else {
-            topLeftCam.setDriverMode(true);
+            highCam.setDriverMode(true);
         }
     }
 
     public Optional<PhotonPipelineResult> getLatestResult1() {
-        var result1 = topLeftCam.getLatestResult();
+        var result1 = highCam.getLatestResult();
         return result1 != null ? Optional.of(result1) : Optional.empty();
     }
 
     public Optional<PhotonPipelineResult> getLatestResult2() {
-        var result2 = highCam.getLatestResult();
+        var result2 = lowCam.getLatestResult();
 
         return result2 != null && !m_highCamDisabled ? Optional.of(result2) : Optional.empty();
     }

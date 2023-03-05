@@ -14,6 +14,7 @@ public class LEDSubsystem {
     public LEDSubsystem() {
         led.setLength(kNumLEDs);
         led.setData(buffer);
+        setBlue();
         led.start();
     }
 
