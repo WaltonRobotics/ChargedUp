@@ -168,7 +168,7 @@ public class TiltSubsystem extends SubsystemBase {
 	 * engagebrake
 	 */
 	public CommandBase toAngle(double angle) {
-		if (Math.abs(getDegrees() - angle) <= 0.2) {
+		if (Math.abs(getDegrees() - angle) <= 0.5) {
 			return Commands.none();
 		}
 		

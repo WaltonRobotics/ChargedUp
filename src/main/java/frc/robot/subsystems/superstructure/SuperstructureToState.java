@@ -13,6 +13,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
 	private BooleanSupplier m_elevWait = () -> true;
 	private BooleanSupplier m_tiltWait = () -> true;
 
+    private double wristAngle;
+
     public SuperstructureToState(Superstructure superstructure, SuperState targetState) {
         m_superstructure = superstructure;
         m_targetState = targetState;
@@ -22,6 +24,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
         var elevator = m_superstructure.m_elevator;
         var wrist = m_superstructure.m_wrist;
         var claw = m_superstructure.m_claw;
+        
+        wristAngle = m_targetState.wrist.angle;
 
         // set Superstructure internal state
         var initCmd = Commands.runOnce(() -> {
@@ -40,18 +44,20 @@ public class SuperstructureToState extends SequentialCommandGroup {
 
 			if (m_targetState == SuperState.SAFE && 
                 (prevState == SuperState.MIDCONE || prevState == SuperState.MIDCUBE)) {
-                    m_elevWait = () -> (wrist.getDegrees() >= m_targetState.wrist.angle);
+                    wristAngle += 1;
+                    m_elevWait = () -> (wrist.getDegrees() >= wristAngle);
                     m_tiltWait = () -> (elevator.getActualHeightMeters() <= m_targetState.elev.height);
 			}
 
 			if (m_targetState == SuperState.SAFE && 
 				(prevState == SuperState.TOPCONE || prevState == SuperState.TOPCUBE)) {
-					m_elevWait = () -> (wrist.getDegrees() >= m_targetState.wrist.angle);
+                    wristAngle += 1;
+					m_elevWait = () -> (wrist.getDegrees() >= wristAngle);
 					m_tiltWait = () -> (elevator.getActualHeightMeters() <= m_targetState.elev.height);
 			}
         });
 
-        var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(m_targetState.wrist.angle));
+        var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
 		var elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
 		var tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
 		var clawCmd = claw.getCmdForState(m_targetState.claw);
