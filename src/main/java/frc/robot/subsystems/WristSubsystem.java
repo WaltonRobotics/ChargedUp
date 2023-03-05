@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
@@ -30,6 +31,9 @@ public class WristSubsystem extends SubsystemBase {
   private double m_totalEffort = 0;
   private double m_maxDegrees = kMaxDeg;
   private boolean m_isCoast = false;
+
+  private final PIDController m_holdController = new PIDController(
+		kP, 0, kD);
 
   private final ProfiledPIDController m_controller = new ProfiledPIDController(
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
@@ -197,7 +201,9 @@ public class WristSubsystem extends SubsystemBase {
       m_controller.reset(getDegrees());
       i_setTarget(angle);
     }).andThen(run(() -> {
-      var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
+      var effort = getDegrees() == angle ? 
+      getEffortToHold(angle) : 
+      MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
       setPower(effort, true);
     }))
         .until(()-> m_controller.atGoal())
@@ -206,6 +212,17 @@ public class WristSubsystem extends SubsystemBase {
         })
         .withName("ToAngle");
   }
+
+  private double getEffortToHold(double degrees) {
+		m_pdEffort = m_holdController.calculate(getDegrees(), degrees);
+		m_ffEffort = 0;
+		var pdSetpoint = m_holdController.getSetpoint();
+		if (pdSetpoint != 0) {
+			m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
+		}
+		double totalEffort = m_ffEffort + m_pdEffort;
+		return totalEffort;
+	}
 
   public CommandBase toState(WristState state) {
     return toAngle(state.angle);
