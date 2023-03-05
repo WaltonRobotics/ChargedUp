@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
+import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -89,27 +90,51 @@ public class RobotContainer {
 		driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 		driver.rightTrigger().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
 
-		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone1));
-		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube2));
-		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone3));
+		// add back later
+		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone1));
+		// driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube2));
+		// driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone3));
+		// driver.x()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone4));
+		// driver.y()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCube5));
+		// driver.b()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone6));
+		// driver.x()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+		// driver.y()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+		// driver.b()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+
+		// using autoscore (for testing w/o camera): comment out later
+		driver.x().whileTrue(swerve.getPPSwerveAutonCmd(cone1));
+		driver.y().whileTrue(swerve.getPPSwerveAutonCmd(cube2));
+		driver.b().whileTrue(swerve.getPPSwerveAutonCmd(cone3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone4));
+			.whileTrue(swerve.getPPSwerveAutonCmd(coopCone4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCube5));
+			.whileTrue(swerve.getPPSwerveAutonCmd(coopCube5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone6));
+			.whileTrue(swerve.getPPSwerveAutonCmd(coopCone6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+			.whileTrue(swerve.getPPSwerveAutonCmd(cone7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+			.whileTrue(swerve.getPPSwerveAutonCmd(cube8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+			.whileTrue(swerve.getPPSwerveAutonCmd(cone9));
 
 		driver.rightBumper().whileTrue(swerve.autoBalance());
 

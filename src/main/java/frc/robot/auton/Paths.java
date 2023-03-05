@@ -56,6 +56,57 @@ public class Paths {
 		public static final PathPlannerTrajectory twoConeOneCube = PathPlanner.loadPath("twoConeOneCube",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cone1 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCone1" :
+				"redCone9",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cube2 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCube2" :
+				"redCube8",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cone3 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCone3" :
+				"redCone7",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory coopCone4 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCoopCone4" :
+				"redCoopCone6",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory coopCube5 = PathPlanner.loadPath("redCoopCube5",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory coopCone6 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCoopCone6" :
+				"recCoopCone4",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cone7 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCone7" :
+				"redCone3",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cube8 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCube8" :
+				"redCube2",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cone9 = PathPlanner.loadPath(
+				DriverStation.getAlliance().equals(Alliance.Red) ?
+				"redCone9" :
+				"redCone1",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
 	}
 
 	public static final class PPAutoscoreClass {
