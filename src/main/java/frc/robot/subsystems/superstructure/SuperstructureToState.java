@@ -2,6 +2,7 @@ package frc.robot.subsystems.superstructure;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -66,7 +67,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
 
         addCommands(
             initCmd,
-            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd)
+            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd),
+            Commands.run(()-> elevator.holdHeight(), elevator)
         );
 
         setName("ToState-" + m_targetState.toString());
