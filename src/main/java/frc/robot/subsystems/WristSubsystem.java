@@ -217,7 +217,8 @@ public class WristSubsystem extends SubsystemBase {
           : MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
       setPower(effort, true);
     }))
-        .until(() -> m_controller.atSetpoint())
+        .until(() -> m_controller.atGoal())
+        .withTimeout(1.5)
         .finallyDo((intr) -> {
           m_motor.set(0);
         })
