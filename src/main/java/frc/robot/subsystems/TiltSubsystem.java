@@ -81,7 +81,7 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	private void i_setTarget(double degrees) {
-		m_targetAngle = MathUtil.clamp(degrees, 0, 29);
+		m_targetAngle = MathUtil.clamp(degrees, 0, 30);
 	}
 
 	private double getEffortForTarget(double angleDegrees) {
@@ -155,7 +155,7 @@ public class TiltSubsystem extends SubsystemBase {
 			}
 			setSpeed(getEffortForTarget(angle.getAsDouble()));
 		})
-				.until(m_controller::atSetpoint)
+				.until(() -> m_controller.atSetpoint())
 				.withName("ToAngle");
 	}
 

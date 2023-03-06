@@ -217,20 +217,20 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kTeleopBrakeTime = 1.5;
 
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
-        public static final double kAbsMaxDegree = 29; // max possible from offset
+        public static final double kAbsMaxDegree = 30; // max possible from offset
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 29;
-        public static final double kTopCubeAngleDegrees = 29;
+        public static final double kTopConeAngleDegrees = 30;
+        public static final double kTopCubeAngleDegrees = 30;
         public static final double kMidConeAngleDegrees = 23.418;
         public static final double kMidCubeAngleDegrees = 22.041;
-        public static final double kMidAngleDegrees = 29;
+        public static final double kMidAngleDegrees = 30;
         public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
 
-        public static final double kMaxAngleDegrees = 29;
+        public static final double kMaxAngleDegrees = 30;
         public static final double kMaxVelocity = 180; // degrees per sec
         public static final double kMaxAcceleration = 200.0; // degrees per sec squared
         public static final double kMaxVelocityForward = kMaxVelocity * .75;

@@ -3,6 +3,8 @@ package frc.robot.auton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -28,11 +30,13 @@ public final class AutonFactory {
 
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw){
         var placeCmd = superstructure.toState(SuperState.TOPCONE);
+        var waitCmd = new WaitCommand(3);
+        var placeGroup = new ParallelRaceGroup(placeCmd, waitCmd);
         var clawCmd = claw.release();
 
         var pathCmd = swerve.getFullAuto(Paths.PPPaths.oneConePark)
         .alongWith(superstructure.toState(SuperState.SAFE));
 
-        return placeCmd.andThen(clawCmd).andThen(pathCmd);
+        return placeGroup.andThen(clawCmd).andThen(pathCmd);
     }
 }
