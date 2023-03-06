@@ -170,9 +170,9 @@ public class TiltSubsystem extends SubsystemBase {
 				var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
 				setVoltage(effort);
 				})
-				.until(() ->
-				m_controller.atGoal() //TODO: test and see if we need a return
-				)
+				.until(() -> {
+					return m_controller.atGoal();
+				})
 				.finallyDo((intr) -> {
 				m_motor.set(0);
 				})
