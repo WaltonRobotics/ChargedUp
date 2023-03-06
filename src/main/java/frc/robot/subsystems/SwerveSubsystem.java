@@ -45,6 +45,7 @@ import com.pathplanner.lib.PathPointAccessor;
 import com.pathplanner.lib.ReflectedTransform;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
@@ -497,6 +498,14 @@ public class SwerveSubsystem extends SubsystemBase {
         );
 		return resetCmd.andThen(pathCmd);
 
+	}
+
+	public CommandBase getFollowPathWithEvents(PathPlannerTrajectory traj, HashMap<String, Command> eventMap) {
+		return new FollowPathWithEvents(
+					getFullAuto(traj),
+					traj.getMarkers(),
+					eventMap
+		);
 	}
 
 	/**

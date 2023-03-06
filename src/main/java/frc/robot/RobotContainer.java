@@ -12,6 +12,7 @@ import frc.lib.swerve.WaltonSwerveAutoBuilder;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.AprilTagChooser;
@@ -25,6 +26,8 @@ import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 import static frc.robot.auton.Paths.PPPaths.*;
+
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -182,14 +185,14 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, AutonFactory.fullAuto(swerve, straightBack));
-        AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.fullAuto(swerve, oneConeOneCube));
-        AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, AutonFactory.fullAuto(swerve, testRot));
+		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFollowPathWithEvents(straightBack, autonEventMap));
+        AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, swerve.getFollowPathWithEvents(oneConeOneCube, autonEventMap));
+        AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFollowPathWithEvents(testRot, autonEventMap));
         // AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getPPSwerveAutonCmd(testRot));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, AutonFactory.fullAuto(swerve, oneConeParkEvents));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, AutonFactory.fullAuto(swerve, oneCubeOneCone));
-		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, AutonFactory.fullAuto(swerve, twoConeOneCube));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFollowPathWithEvents(oneConeParkEvents, autonEventMap));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFollowPathWithEvents(oneCubeOneCone, autonEventMap));
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFollowPathWithEvents(twoConeOneCube, autonEventMap));
 	}
 
 	public void mapTrajectories() {
@@ -214,17 +217,17 @@ public class RobotContainer {
 		autonEventMap.put("testEvent",
 			AutonFactory.TestEvent(swerve));
 		autonEventMap.put("placeTopCube", 
-			superstructure.toState(SuperState.TOPCUBE)
+			new SuperstructureToState(superstructure, SuperState.TOPCUBE)
 			.andThen(new WaitCommand(1))
 			.andThen(claw.release()))
-			.andThen(superstructure.toState(SuperState.SAFE));
+			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE));
 		autonEventMap.put("placeTopCone",
-			superstructure.toState(SuperState.TOPCONE)
+			new SuperstructureToState(superstructure, SuperState.TOPCONE)
 			.andThen(new WaitCommand(1))
 			.andThen(claw.release()))
-			.andThen(superstructure.toState(SuperState.SAFE));
+			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE));
 		autonEventMap.put("groundPickUp",
-			superstructure.toState(SuperState.GROUND_PICK_UP));
+			new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP));
 		autonEventMap.put("autoBalance",
 			swerve.autoBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
