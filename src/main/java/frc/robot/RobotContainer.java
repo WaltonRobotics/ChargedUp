@@ -229,8 +229,8 @@ public class RobotContainer {
 			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 		autonEventMap.put("groundPickUp",
 			new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP));
-		autonEventMap.put("autoBalance",
-			swerve.autoBalance());
+		// autonEventMap.put("autoBalance",
+		// 	swerve.autoBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 	}
 
