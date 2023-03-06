@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
@@ -218,17 +219,23 @@ public class RobotContainer {
 		autonEventMap.put("testEvent",
 			AutonFactory.TestEvent(swerve));
 		autonEventMap.put("placeTopCube", 
-			new SuperstructureToState(superstructure, SuperState.TOPCUBE)
+			new ParallelRaceGroup(
+				new SuperstructureToState(superstructure, SuperState.TOPCUBE), 
+				new WaitCommand(2))
 			.andThen(new WaitCommand(1))
 			.andThen(claw.release())
 			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 		autonEventMap.put("placeTopCone",
-			new SuperstructureToState(superstructure, SuperState.TOPCONE)
-			.andThen(new WaitCommand(1))
-			.andThen(claw.release())
-			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
+		new ParallelRaceGroup(
+			new SuperstructureToState(superstructure, SuperState.TOPCONE), 
+			new WaitCommand(2))
+		.andThen(new WaitCommand(1))
+		.andThen(claw.release())
+		.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 		autonEventMap.put("groundPickUp",
-			new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP));
+			new ParallelRaceGroup(
+				new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP), 
+				new WaitCommand(2)));
 		// autonEventMap.put("autoBalance",
 		// 	swerve.autoBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
