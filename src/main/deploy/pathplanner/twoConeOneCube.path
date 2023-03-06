@@ -255,5 +255,42 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "placeTopCone"
+      ]
+    },
+    {
+      "position": 2.1599999999999593,
+      "names": [
+        "groundPickUp"
+      ]
+    },
+    {
+      "position": 4.123636363636291,
+      "names": [
+        "placeTopCube"
+      ]
+    },
+    {
+      "position": 5.890909090908975,
+      "names": [
+        "groundPickUp"
+      ]
+    },
+    {
+      "position": 7.919999999999801,
+      "names": [
+        "placeTopCone"
+      ]
+    },
+    {
+      "position": 9.0,
+      "names": [
+        "autoBalance"
+      ]
+    }
+  ]
 }

@@ -66,7 +66,7 @@
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [
           "groundPickUp"
@@ -118,7 +118,7 @@
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [
           "scoreTopCone"
@@ -153,5 +153,36 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 2.0000000000000204,
+      "names": [
+        "groundPickUp"
+      ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "placeTopCube"
+      ]
+    },
+    {
+      "position": 5.0,
+      "names": [
+        "autoBalance"
+      ]
+    },
+    {
+      "position": 4.072727272727269,
+      "names": [
+        "placeTopCone"
+      ]
+    },
+    {
+      "position": 5.0,
+      "names": [
+        "autoBalance"
+      ]
+    }
+  ]
 }

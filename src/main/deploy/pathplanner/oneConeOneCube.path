@@ -91,7 +91,7 @@
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [
           "placeCube"
@@ -154,6 +154,24 @@
       "position": 1.0000000000000102,
       "names": [
         "groundPickUp"
+      ]
+    },
+    {
+      "position": 2.9818181818181078,
+      "names": [
+        "placeTopCube"
+      ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "placeTopCone"
+      ]
+    },
+    {
+      "position": 5.0,
+      "names": [
+        "autoBalance"
       ]
     }
   ]
