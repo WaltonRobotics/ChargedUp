@@ -185,14 +185,14 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFollowPathWithEvents(straightBack, autonEventMap));
-        AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, swerve.getFollowPathWithEvents(oneConeOneCube, autonEventMap));
-        AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFollowPathWithEvents(testRot, autonEventMap));
+		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFollowPathWithEvents(straightBack));
+        AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, swerve.getFollowPathWithEvents(oneConeOneCube));
+        AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFollowPathWithEvents(testRot));
         // AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getPPSwerveAutonCmd(testRot));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFollowPathWithEvents(oneConeParkEvents, autonEventMap));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFollowPathWithEvents(oneCubeOneCone, autonEventMap));
-		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFollowPathWithEvents(twoConeOneCube, autonEventMap));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFollowPathWithEvents(oneConeParkEvents));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFollowPathWithEvents(oneCubeOneCone));
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFollowPathWithEvents(twoConeOneCube));
 	}
 
 	public void mapTrajectories() {
