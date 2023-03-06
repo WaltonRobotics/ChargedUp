@@ -88,7 +88,7 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		/* Driver Buttons */
 		driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-		driver.rightTrigger().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
+		driver.rightBumper().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
 
 		// add back later
 		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone1));
@@ -136,7 +136,7 @@ public class RobotContainer {
 			.and(driver.rightTrigger())
 			.whileTrue(swerve.getFullAuto(cone9));
 
-		driver.rightBumper().whileTrue(swerve.autoBalance());
+		// driver.rightBumper().whileTrue(swerve.autoBalance());
 
 		manipulator.start().onTrue(new InstantCommand(() -> leds.handle(0))); //cone
 		manipulator.back().onTrue(new InstantCommand(() -> leds.handle(1))); //cube
