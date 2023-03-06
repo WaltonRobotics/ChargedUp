@@ -226,12 +226,9 @@ public class RobotContainer {
 			.andThen(claw.release())
 			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 		autonEventMap.put("placeTopCone",
-		new ParallelRaceGroup(
-			new SuperstructureToState(superstructure, SuperState.TOPCONE), 
-			new WaitCommand(2))
-		.andThen(new WaitCommand(1))
-		.andThen(claw.release())
-		.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
+			new SuperstructureToState(superstructure, SuperState.TOPCONE).withTimeout(2.5));
+		autonEventMap.put("releaseClaw", new InstantCommand(()-> claw.release()));
+		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE));
 		autonEventMap.put("groundPickUp",
 			new ParallelRaceGroup(
 				new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP), 

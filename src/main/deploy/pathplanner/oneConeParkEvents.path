@@ -17,7 +17,9 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "placeTopCone"
+          "placeTopCone",
+          "releaseClaw",
+          "reset"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -76,11 +78,11 @@
     },
     {
       "anchorPoint": {
-        "x": 2.35,
+        "x": 2.6,
         "y": 2.91
       },
       "prevControl": {
-        "x": 3.6230595154410516,
+        "x": 3.8730595154410516,
         "y": 2.91
       },
       "nextControl": null,
