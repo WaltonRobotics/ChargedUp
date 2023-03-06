@@ -124,27 +124,27 @@ public class RobotContainer {
 		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 
 		// using autoscore (for testing w/o camera): comment out later
-		driver.x().whileTrue(swerve.getFullAuto(cone1));
-		driver.y().whileTrue(swerve.getFullAuto(cube2));
-		driver.b().whileTrue(swerve.getFullAuto(cone3));
-		driver.x()
-				.and(driver.leftTrigger())
-				.whileTrue(swerve.getFullAuto(coopCone4));
-		driver.y()
-				.and(driver.leftTrigger())
-				.whileTrue(swerve.getFullAuto(coopCube5));
-		driver.b()
-				.and(driver.leftTrigger())
-				.whileTrue(swerve.getFullAuto(coopCone6));
-		driver.x()
-				.and(driver.rightTrigger())
-				.whileTrue(swerve.getFullAuto(cone7));
-		driver.y()
-				.and(driver.rightTrigger())
-				.whileTrue(swerve.getFullAuto(cube8));
-		driver.b()
-				.and(driver.rightTrigger())
-				.whileTrue(swerve.getFullAuto(cone9));
+		// driver.x().whileTrue(swerve.getFullAuto(cone1));
+		// driver.y().whileTrue(swerve.getFullAuto(cube2));
+		// driver.b().whileTrue(swerve.getFullAuto(cone3));
+		// driver.x()
+		// 		.and(driver.leftTrigger())
+		// 		.whileTrue(swerve.getFullAuto(coopCone4));
+		// driver.y()
+		// 		.and(driver.leftTrigger())
+		// 		.whileTrue(swerve.getFullAuto(coopCube5));
+		// driver.b()
+		// 		.and(driver.leftTrigger())
+		// 		.whileTrue(swerve.getFullAuto(coopCone6));
+		// driver.x()
+		// 		.and(driver.rightTrigger())
+		// 		.whileTrue(swerve.getFullAuto(cone7));
+		// driver.y()
+		// 		.and(driver.rightTrigger())
+		// 		.whileTrue(swerve.getFullAuto(cube8));
+		// driver.b()
+		// 		.and(driver.rightTrigger())
+		// 		.whileTrue(swerve.getFullAuto(cone9));
 
 		// driver.rightBumper().whileTrue(swerve.autoBalance());
 
@@ -201,6 +201,7 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, swerve.getFullAuto(oneConePark));
 	}
 
 	public void mapTrajectories() {
