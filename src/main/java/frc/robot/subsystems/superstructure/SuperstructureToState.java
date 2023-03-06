@@ -4,7 +4,6 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.WristSubsystem;
 
 public class SuperstructureToState extends SequentialCommandGroup {
     private final Superstructure m_superstructure;
@@ -32,32 +31,6 @@ public class SuperstructureToState extends SequentialCommandGroup {
         var initCmd = Commands.runOnce(() -> {
             m_superstructure.updateState(m_targetState);
             var prevState = m_superstructure.getPrevState();
-
-            if (m_targetState == SuperState.TOPCONE || m_targetState == SuperState.TOPCUBE) {
-				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle*2);
-				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height*.1);
-			}
-
-			if (m_targetState == SuperState.MIDCONE || m_targetState == SuperState.MIDCUBE) {
-				m_elevWait = () -> (tilt.getDegrees() >= m_targetState.tilt.angle *.5);
-				m_wristWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height *.8);
-			}
-
-			if (m_targetState == SuperState.SAFE && 
-                (prevState == SuperState.MIDCONE || prevState == SuperState.MIDCUBE)) {
-                    wristAngle += 3;
-                    wrist.setMaxDegrees(wristAngle);
-                    m_elevWait = () -> (wrist.getDegrees() >= wristAngle);
-                    m_tiltWait = () -> (elevator.getActualHeightMeters() <= m_targetState.elev.height);
-			}
-
-			if (m_targetState == SuperState.SAFE && 
-				(prevState == SuperState.TOPCONE || prevState == SuperState.TOPCUBE)) {
-                    wristAngle += 3;
-                    wrist.setMaxDegrees(wristAngle);
-					m_elevWait = () -> (wrist.getDegrees() >= wristAngle);
-					m_tiltWait = () -> (elevator.getActualHeightMeters() <= m_targetState.elev.height);
-			}
         });
 
         var prevState = m_superstructure.getPrevState();
@@ -74,8 +47,12 @@ public class SuperstructureToState extends SequentialCommandGroup {
         }
 
         if(m_targetState == SuperState.SAFE){
-            m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle *.95));
-            m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 15));
+            m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle *.90));
+            m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 30));
+        }
+
+        if(curState == SuperState.SUBSTATION_PICK_UP){
+            m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle * 0.1));
         }
 
         var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
