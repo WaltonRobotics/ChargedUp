@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -34,14 +35,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
 
-	// private final PIDController m_holdController = new PIDController(
-	// 	kPHold, 0, kDHold);
+	private final PIDController m_holdController = new PIDController(
+		kPHold, 0, kDHold);
 
 	private double m_targetHeight = 0;
 	private double m_dynamicLowLimit = kMinHeightMeters;
 	private double m_pdEffort = 0;
 	private double m_ffEffort = 0;
 	private double m_totalEffort = 0;
+
+	private double m_holdPdEffort = 0;
+	private double m_holdFfEffort = 0;
 	// private boolean m_isCoast = false;
 
 	private final GenericEntry nte_ffEffort = DashboardManager.addTabDial(this, "FF Effort", -1, 1);
@@ -205,16 +209,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return totalEffort;
 	}
 
-	// private double getEffortToHold(double heightMeters) {
-	// 	m_pdEffort = m_holdController.calculate(getActualHeightMeters(), heightMeters);
-	// 	m_ffEffort = 0;
-	// 	var pdSetpoint = m_holdController.getSetpoint();
-	// 	if (pdSetpoint != 0) {
-	// 		m_ffEffort = kFeedforward.calculate(pdSetpoint);
-	// 	}
-	// 	double totalEffort = m_ffEffort + m_pdEffort;
-	// 	return totalEffort;
-	// }
+	private double getEffortToHold(double heightMeters) {
+		m_holdPdEffort = m_holdController.calculate(getActualHeightMeters(), heightMeters);
+		m_holdFfEffort = 0;
+		var pdSetpoint = m_holdController.getSetpoint();
+		if (pdSetpoint != 0) {
+			m_ffEffort = kFeedforward.calculate(pdSetpoint);
+		}
+		double totalEffort = m_holdFfEffort + m_holdPdEffort;
+		return totalEffort;
+	}
 
 	/**
 	 * @return Cmd to move the elevator to specified height w/ pd & ff
@@ -230,18 +234,24 @@ public class ElevatorSubsystem extends SubsystemBase {
 			i_setTarget(heightMeters);
 		})
 				.andThen(run(() -> {
-					var effort = /* getActualHeightMeters() == heightMeters ? 
-					getEffortToHold(heightMeters) : */
+					var effort = 
 					MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
 							kVoltageCompSaturationVolts);
 					
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 				}))
-				.until(() -> m_controller.atSetpoint())
+				.until(() -> m_controller.atGoal())
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);
 				})
 				.withName("AutoToHeight");
+	}
+
+	public void holdHeight(){
+			var holdEffort = 
+					MathUtil.clamp(getEffortToHold(m_targetHeight), -kVoltageCompSaturationVolts,
+							kVoltageCompSaturationVolts);
+			m_right.set(ControlMode.PercentOutput, holdEffort / kVoltageCompSaturationVolts);
 	}
 
 	public enum ElevatorState {

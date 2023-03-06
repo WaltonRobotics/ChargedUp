@@ -143,22 +143,6 @@ public class TiltSubsystem extends SubsystemBase {
 		m_motor.setVoltage(output);
 	}
 
-	public CommandBase toAngle(DoubleSupplier angle) {
-		return run(() -> {
-			if (angle.getAsDouble() > getDegrees()) {
-				double tempMaxVelocity = kMaxVelocity / 2;
-				double tempMaxAcceleration = kMaxAcceleration / 2;
-
-				m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity, tempMaxAcceleration));
-			} else {
-				m_controller.setConstraints(kConstraints);
-			}
-			setSpeed(getEffortForTarget(angle.getAsDouble()));
-		})
-				.until(() -> m_controller.atSetpoint())
-				.withName("ToAngle");
-	}
-
 	/**
 	 * disengageBrake
 	 * wait(n)
