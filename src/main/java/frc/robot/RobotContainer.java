@@ -220,13 +220,13 @@ public class RobotContainer {
 		autonEventMap.put("placeTopCube", 
 			new SuperstructureToState(superstructure, SuperState.TOPCUBE)
 			.andThen(new WaitCommand(1))
-			.andThen(claw.release()))
-			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE));
+			.andThen(claw.release())
+			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 		autonEventMap.put("placeTopCone",
 			new SuperstructureToState(superstructure, SuperState.TOPCONE)
 			.andThen(new WaitCommand(1))
-			.andThen(claw.release()))
-			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE));
+			.andThen(claw.release())
+			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 		autonEventMap.put("groundPickUp",
 			new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP));
 		autonEventMap.put("autoBalance",
