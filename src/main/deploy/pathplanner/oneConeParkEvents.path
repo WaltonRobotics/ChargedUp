@@ -17,10 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "placeTopCone",
-          "override",
-          "releaseClaw",
-          "reset"
+          "placeTopCone"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -55,15 +52,15 @@
     {
       "anchorPoint": {
         "x": 5.493569990698702,
-        "y": 2.909815356997262
+        "y": 2.81
       },
       "prevControl": {
         "x": 5.493569990698702,
-        "y": 3.109734849102848
+        "y": 3.009919492105586
       },
       "nextControl": {
         "x": 5.493569990698702,
-        "y": 2.8706079188667255
+        "y": 2.7707925618694635
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -80,11 +77,11 @@
     {
       "anchorPoint": {
         "x": 2.6,
-        "y": 2.91
+        "y": 2.81
       },
       "prevControl": {
         "x": 3.8730595154410516,
-        "y": 2.91
+        "y": 2.81
       },
       "nextControl": null,
       "holonomicAngle": 180.0,

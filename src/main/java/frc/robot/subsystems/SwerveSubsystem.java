@@ -273,6 +273,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	}
 
+	public CommandBase rotate180() {
+		return rotateAboutPoint(180);
+	}
+
 	public void resetModsToAbs() {
 		for (var mod : m_modules) {
 			mod.resetToAbsolute();
