@@ -66,14 +66,13 @@ public class RobotContainer {
 		// addPathChoices();
 		// addAprilTagChoices();
 		swerve.setDefaultCommand(
-			swerve.teleopDriveCmd(
-				() -> driver.getLeftY(),
-				() -> driver.getLeftX(),
-				() -> -driver.getRightX(),
-				driver.leftBumper()::getAsBoolean,
-				() -> true // openLoop
-			)
-		);
+				swerve.teleopDriveCmd(
+						() -> driver.getLeftY(),
+						() -> driver.getLeftX(),
+						() -> -driver.getRightX(),
+						driver.leftBumper()::getAsBoolean,
+						() -> true // openLoop
+				));
 		elevator.setDefaultCommand(elevator.teleOpCmd(() -> -manipulator.getLeftY()));
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
@@ -96,55 +95,61 @@ public class RobotContainer {
 		driver.rightBumper().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
 
 		// add back later
-		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone1));
-		// driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube2));
-		// driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone3));
+		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.cone1));
+		// driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.cube2));
+		// driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.cone3));
 		// driver.x()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone4));
+		// .and(driver.leftTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.coopCone4));
 		// driver.y()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCube5));
+		// .and(driver.leftTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.coopCube5));
 		// driver.b()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.coopCone6));
+		// .and(driver.leftTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.coopCone6));
 		// driver.x()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+		// .and(driver.rightTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
 		// driver.y()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+		// .and(driver.rightTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
 		// driver.b()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+		// .and(driver.rightTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 
 		// using autoscore (for testing w/o camera): comment out later
 		driver.x().whileTrue(swerve.getFullAuto(cone1));
 		driver.y().whileTrue(swerve.getFullAuto(cube2));
 		driver.b().whileTrue(swerve.getFullAuto(cone3));
 		driver.x()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.getFullAuto(coopCone4));
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.getFullAuto(coopCone4));
 		driver.y()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.getFullAuto(coopCube5));
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.getFullAuto(coopCube5));
 		driver.b()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.getFullAuto(coopCone6));
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.getFullAuto(coopCone6));
 		driver.x()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.getFullAuto(cone7));
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.getFullAuto(cone7));
 		driver.y()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.getFullAuto(cube8));
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.getFullAuto(cube8));
 		driver.b()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.getFullAuto(cone9));
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.getFullAuto(cone9));
 
 		// driver.rightBumper().whileTrue(swerve.autoBalance());
 
-		manipulator.start().onTrue(new InstantCommand(() -> leds.handle(0))); //cone
-		manipulator.back().onTrue(new InstantCommand(() -> leds.handle(1))); //cube
+		manipulator.start().onTrue(superstructure.overrideStates(() -> -manipulator.getLeftY(),
+				() -> manipulator.getRightY(), () -> manipulator.getLeftX())); 
 
 		manipulator.rightBumper()
 				.whileTrue(claw.autoGrab(true));
@@ -152,32 +157,31 @@ public class RobotContainer {
 		manipulator.leftTrigger().onTrue(claw.release());
 		manipulator.rightTrigger().onTrue(claw.grab());
 
-
 		manipulator.povUp().onTrue(
-			superstructure.toState(SuperState.TOPCUBE));
+				superstructure.toState(SuperState.TOPCUBE));
 
 		manipulator.povLeft().onTrue(
-			superstructure.toState(SuperState.MIDCUBE));
+				superstructure.toState(SuperState.MIDCUBE));
 
 		manipulator.y().onTrue(
-			superstructure.toState(SuperState.TOPCONE));
-			
+				superstructure.toState(SuperState.TOPCONE));
+
 		manipulator.x().onTrue(
-			superstructure.toState(SuperState.MIDCONE));
+				superstructure.toState(SuperState.MIDCONE));
 
 		manipulator.a().onTrue(
-			superstructure.toState(SuperState.GROUND_PICK_UP));
-				
+				superstructure.toState(SuperState.GROUND_PICK_UP));
+
 		manipulator.povDown().onTrue(
-			superstructure.toState(SuperState.GROUND_SCORE));
+				superstructure.toState(SuperState.GROUND_SCORE));
 
 		manipulator.povRight().onTrue(
-			superstructure.toState(SuperState.SUBSTATION_PICK_UP));
+				superstructure.toState(SuperState.SUBSTATION_PICK_UP));
 
 		manipulator.leftBumper().onTrue(
-			superstructure.toState(SuperState.SAFE));
+				superstructure.toState(SuperState.SAFE));
 
-						/*Tuning buttons */
+		/* Tuning buttons */
 		// manipulator.b().whileTrue(wrist.toAngle(70));
 		// manipulator.x().whileTrue(wrist.toAngle(0));
 		// manipulator.b().whileTrue(elevator.toHeight(0.3));
@@ -188,19 +192,23 @@ public class RobotContainer {
 
 	public void mapAutonCommands() {
 		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFullAuto(straightBack));
-        AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, swerve.getFullAuto(oneConeOneCube));
-        AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFullAuto(testRot));
-        // AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getPPSwerveAutonCmd(testRot));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, swerve.getFullAuto(oneConeOneCube));
+		AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFullAuto(testRot));
+		// AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT,
+		// swerve.getPPSwerveAutonCmd(testRot));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK,
+				AutonFactory.oneConePark(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
 	}
 
 	public void mapTrajectories() {
-		// PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY, PPAutoscoreClass.redNotBumpy);
+		// PathChooser.AssignTrajectory(PathOption.RED_NON_BUMPY,
+		// PPAutoscoreClass.redNotBumpy);
 		PathChooser.SetDefaultPath(PathOption.BLUE_NON_BUMPY);
-		// PathChooser.AssignTrajectory(PathOption.RED_BUMPY, PPAutoscoreClass.redBumpy);
+		// PathChooser.AssignTrajectory(PathOption.RED_BUMPY,
+		// PPAutoscoreClass.redBumpy);
 		PathChooser.AssignTrajectory(PathOption.BLUE_BUMPY, PPAutoscoreClass.bumpy);
 		PathChooser.AssignTrajectory(PathOption.BLUE_NON_BUMPY, PPAutoscoreClass.notBumpy);
 	}
@@ -217,24 +225,25 @@ public class RobotContainer {
 
 	public void mapAutonEvents() {
 		autonEventMap.put("testEvent",
-			AutonFactory.TestEvent(swerve));
-		autonEventMap.put("placeTopCube", 
-			new ParallelRaceGroup(
-				new SuperstructureToState(superstructure, SuperState.TOPCUBE), 
-				new WaitCommand(2))
-			.andThen(new WaitCommand(1))
-			.andThen(claw.release())
-			.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
+				AutonFactory.TestEvent(swerve));
+		autonEventMap.put("placeTopCube",
+				new ParallelRaceGroup(
+						new SuperstructureToState(superstructure, SuperState.TOPCUBE),
+						new WaitCommand(2))
+						.andThen(new WaitCommand(1))
+						.andThen(claw.release())
+						.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 		autonEventMap.put("placeTopCone",
-			new SuperstructureToState(superstructure, SuperState.TOPCONE).withTimeout(2.5));
-		autonEventMap.put("releaseClaw", new InstantCommand(()-> claw.release()));
-		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE));
+				new SuperstructureToState(superstructure, SuperState.TOPCONE).withTimeout(2.5));
+		autonEventMap.put("override", superstructure.overrideStates(null, null, null));
+		autonEventMap.put("releaseClaw", claw.release());
+		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE).withTimeout(2.5));
 		autonEventMap.put("groundPickUp",
-			new ParallelRaceGroup(
-				new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP), 
-				new WaitCommand(2)));
+				new ParallelRaceGroup(
+						new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP),
+						new WaitCommand(2)));
 		// autonEventMap.put("autoBalance",
-		// 	swerve.autoBalance());
+		// swerve.autoBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 	}
 
@@ -252,6 +261,6 @@ public class RobotContainer {
 	}
 
 	public enum GamePieceMode {
-		CONE,CUBE
+		CONE, CUBE
 	}
 }

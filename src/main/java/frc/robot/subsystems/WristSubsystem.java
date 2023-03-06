@@ -12,7 +12,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
@@ -218,7 +217,6 @@ public class WristSubsystem extends SubsystemBase {
       setPower(effort, true);
     }))
         .until(() -> m_controller.atGoal())
-        .withTimeout(1.5)
         .finallyDo((intr) -> {
           m_motor.set(0);
         })

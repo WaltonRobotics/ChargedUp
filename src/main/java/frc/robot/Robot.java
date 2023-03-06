@@ -108,8 +108,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    // m_robotContainer.swerve.resetModsToAbs();
     m_robotContainer.superstructure.reset();
+    m_robotContainer.swerve.resetModsToAbs();
     m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
   }
 

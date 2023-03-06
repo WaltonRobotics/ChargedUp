@@ -10,6 +10,8 @@ import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import static frc.robot.Constants.WristK.*;
 
+import java.util.function.DoubleSupplier;
+
 import static frc.robot.Constants.ElevatorK.*;
 
 public class Superstructure extends SubsystemBase {
@@ -21,7 +23,7 @@ public class Superstructure extends SubsystemBase {
 	// State management
 	private SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-	
+
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
 		m_tilt = tilt;
 		m_elevator = elevator;
@@ -56,7 +58,15 @@ public class Superstructure extends SubsystemBase {
 	public CommandBase toState(SuperState state) {
 		return new SuperstructureToState(this, state);
 	}
-	
+
+	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
+		return runOnce(() -> {
+			m_elevator.teleOpCmd(elevPow);
+			m_tilt.teleopCmd(tiltPow);
+			m_wrist.teleopCmd(wristPow);
+		});
+	}
+
 	public void reset() {
 		m_prevState = SuperState.SAFE;
 		m_curState = SuperState.SAFE;
@@ -64,9 +74,9 @@ public class Superstructure extends SubsystemBase {
 
 	protected void updateState(SuperState newState) {
 		System.out.println(
-			"[SS] upateState - WAS " + m_prevState +
-			", FROM " + m_curState +
-			" TO " + newState);
+				"[SS] upateState - WAS " + m_prevState +
+						", FROM " + m_curState +
+						" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
 	}
