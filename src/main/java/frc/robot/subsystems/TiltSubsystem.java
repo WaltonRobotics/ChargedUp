@@ -188,8 +188,8 @@ public class TiltSubsystem extends SubsystemBase {
 		return Commands.sequence(
 			setupCmd,
 			Commands.waitSeconds(kBeforeBrakeTime),
-			moveCmd,
-			Commands.waitSeconds(kAfterBrakeTime));
+			moveCmd);
+			// Commands.waitSeconds(kAfterBrakeTime));
 			// brakeCmd);
 	}
 

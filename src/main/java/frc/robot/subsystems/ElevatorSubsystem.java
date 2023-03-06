@@ -247,11 +247,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.withName("AutoToHeight");
 	}
 
-	public void holdHeight(){
+	public CommandBase holdHeight(){
+		return run(()->{
 			var holdEffort = 
 					MathUtil.clamp(getEffortToHold(m_targetHeight), -kVoltageCompSaturationVolts,
 							kVoltageCompSaturationVolts);
 			m_right.set(ControlMode.PercentOutput, holdEffort / kVoltageCompSaturationVolts);
+		})
+		.withName("Hold Height");
 	}
 
 	public enum ElevatorState {
