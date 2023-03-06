@@ -328,7 +328,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMinDeg = -35;
         public static final double kMaxDeg = 72;
 
-        public static final double kTopConeDeg = 46.5;
+        public static final double kTopConeDeg = 40.5;
         public static final double kTopCubeDeg = 29.888;
         public static final double kMidConeDeg = 43.929;
         public static final double kMidCubeDeg = 25.316;

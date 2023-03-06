@@ -118,7 +118,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
-		zeroGyro();
+		// zeroGyro();
 
 		Timer.delay(.250);
 		resetModsToAbs();
@@ -271,6 +271,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void zeroGyro() {
 		m_pigeon.setYaw(0);
 
+	}
+
+	public void setYaw(double angle) {
+		m_pigeon.setYaw(angle);
 	}
 
 	public CommandBase rotate180() {

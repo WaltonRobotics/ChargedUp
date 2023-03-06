@@ -201,7 +201,6 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents).andThen(swerve.rotate180()));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, swerve.getFullAuto(oneConePark));
 	}
 
 	public void mapTrajectories() {

@@ -47,8 +47,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
         }
 
         if(m_targetState == SuperState.SAFE){
-            m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle *.90));
-            m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 30));
+            m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle - 25));
+            m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 20));
         }
 
         if(curState == SuperState.SUBSTATION_PICK_UP){
