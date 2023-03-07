@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    m_robotContainer.swerve.setYaw(180);;
+    m_robotContainer.swerve.setYaw(0);
   }
 
   /** This function is called periodically during autonomous. */
