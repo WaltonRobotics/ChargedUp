@@ -99,27 +99,27 @@ public class RobotContainer {
 		ScoringPoints.cube2));
 		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
 		ScoringPoints.cone3));
-		driver.x()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCone4));
-		driver.y()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCube5));
-		driver.b()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCone6));
-		driver.x()
-		.and(driver.rightTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
-		driver.y()
-		.and(driver.rightTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
-		driver.b()
-		.and(driver.rightTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+		// driver.x()
+		// .and(driver.leftTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.coopCone4));
+		// driver.y()
+		// .and(driver.leftTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.coopCube5));
+		// driver.b()
+		// .and(driver.leftTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// ScoringPoints.coopCone6));
+		// driver.x()
+		// .and(driver.rightTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+		// driver.y()
+		// .and(driver.rightTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+		// driver.b()
+		// .and(driver.rightTrigger())
+		// .whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 
 		// using autoscore (for testing w/o camera): comment out later
 		// driver.x().whileTrue(swerve.getFullAuto(cone1));

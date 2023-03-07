@@ -37,7 +37,7 @@ public class AprilTagCamera {
 
     private final Transform3d robotToCam2 = new Transform3d(
                 new Translation3d(Units.inchesToMeters(9.5), Units.inchesToMeters(8.183), Units.inchesToMeters(7.25)), // camera placement on robot
-                new Rotation3d(0, Units.degreesToRadians(0), 0));
+                new Rotation3d(0, Units.degreesToRadians(14), 0));
 
     AprilTagFieldLayout aprilTagFieldLayout;
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
@@ -136,41 +136,41 @@ public class AprilTagCamera {
         }
     }
 
-    public Optional<PhotonPipelineResult> getLatestResult1() {
-        var result1 = highCam.getLatestResult();
-        return result1 != null ? Optional.of(result1) : Optional.empty();
-    }
+    // public Optional<PhotonPipelineResult> getLatestResult1() {
+    //     var result1 = highCam.getLatestResult();
+    //     return result1 != null ? Optional.of(result1) : Optional.empty();
+    // }
 
-    public Optional<PhotonPipelineResult> getLatestResult2() {
-        var result2 = lowCam.getLatestResult();
+    // public Optional<PhotonPipelineResult> getLatestResult2() {
+    //     var result2 = lowCam.getLatestResult();
 
-        return result2 != null && !m_highCamDisabled ? Optional.of(result2) : Optional.empty();
-    }
+    //     return result2 != null && !m_highCamDisabled ? Optional.of(result2) : Optional.empty();
+    // }
 
-    public Optional<PhotonTrackedTarget> getBestTarget1() {
-        var latestOpt = getLatestResult1();
-        if (latestOpt.isPresent()) {
-            if (latestOpt.get().hasTargets()) {
-                return Optional.of(latestOpt.get().getBestTarget());
-            }
-        }
+    // public Optional<PhotonTrackedTarget> getBestTarget1() {
+    //     var latestOpt = getLatestResult1();
+    //     if (latestOpt.isPresent()) {
+    //         if (latestOpt.get().hasTargets()) {
+    //             return Optional.of(latestOpt.get().getBestTarget());
+    //         }
+    //     }
 
-        return Optional.empty();
-    }
+    //     return Optional.empty();
+    // }
 
-    public Optional<PhotonTrackedTarget> getBestTarget2() {
-        var latestOpt = getLatestResult2();
-        if (latestOpt.isPresent()) {
-            if (latestOpt.get().hasTargets()) {
-                return Optional.of(latestOpt.get().getBestTarget());
-            }
-        }
+    // public Optional<PhotonTrackedTarget> getBestTarget2() {
+    //     var latestOpt = getLatestResult2();
+    //     if (latestOpt.isPresent()) {
+    //         if (latestOpt.get().hasTargets()) {
+    //             return Optional.of(latestOpt.get().getBestTarget());
+    //         }
+    //     }
 
-        return Optional.empty();
-    }
+    //     return Optional.empty();
+    // }
 
-    public void updateReferencePose(Pose2d poseMeters) {
-        poseEstimator1.setReferencePose(poseMeters);
-        poseEstimator2.setReferencePose(poseMeters);
-    }
+    // public void updateReferencePose(Pose2d poseMeters) {
+    //     poseEstimator1.setReferencePose(poseMeters);
+    //     poseEstimator2.setReferencePose(poseMeters);
+    // }
 }

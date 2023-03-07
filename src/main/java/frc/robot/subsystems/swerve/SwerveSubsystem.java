@@ -329,27 +329,27 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	}
 
-	public void followAprilTag(double yGoal, double xOffset, boolean shouldMove) {
-		var targetOpt = m_apriltagHelper.getBestTarget1(); // TODO: check to see if we need to use both cameras for this
-		if (targetOpt.isPresent()) {
-			System.out.println("TARGET DETECTED");
-			var target = targetOpt.get();
-			var tagTr3d = target.getBestCameraToTarget();
-			double xMeters = tagTr3d.getX();
-			double yMeters = tagTr3d.getY();
-			double xRate = xController.calculate(xMeters, xOffset);
-			double yRate = yController.calculate(yMeters, yGoal);
-			double zRadians = target.getYaw();
-			System.out.println("ANGLE DIFFERENCE: " + zRadians);
-			double turnRate = autoThetaController.calculate(zRadians, 0);
-			if (zRadians <= kAlignAngleThresholdRadians) {
-				turnRate = 0;
-				System.out.println("WITHIN ANGLE TOLERANCE");
-			}
-			drive(xRate, yRate, turnRate, true, true);
-		}
-		System.out.println("NO TARGET DETECTED");
-	}
+	// public void followAprilTag(double yGoal, double xOffset, boolean shouldMove) {
+	// 	var targetOpt = m_apriltagHelper.getBestTarget1(); // TODO: check to see if we need to use both cameras for this
+	// 	if (targetOpt.isPresent()) {
+	// 		System.out.println("TARGET DETECTED");
+	// 		var target = targetOpt.get();
+	// 		var tagTr3d = target.getBestCameraToTarget();
+	// 		double xMeters = tagTr3d.getX();
+	// 		double yMeters = tagTr3d.getY();
+	// 		double xRate = xController.calculate(xMeters, xOffset);
+	// 		double yRate = yController.calculate(yMeters, yGoal);
+	// 		double zRadians = target.getYaw();
+	// 		System.out.println("ANGLE DIFFERENCE: " + zRadians);
+	// 		double turnRate = autoThetaController.calculate(zRadians, 0);
+	// 		if (zRadians <= kAlignAngleThresholdRadians) {
+	// 			turnRate = 0;
+	// 			System.out.println("WITHIN ANGLE TOLERANCE");
+	// 		}
+	// 		drive(xRate, yRate, turnRate, true, true);
+	// 	}
+	// 	System.out.println("NO TARGET DETECTED");
+	// }
 
 	// public CommandBase autoScore() {
 	// 	// runOnce(curPos = thing; ppt = generate(thing))
@@ -402,8 +402,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	// 	}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	// }
 
-	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
-		return SwerveAutoGo.create(path, endPose, this);
+	public CommandBase autoScore(List<PathPoint> path, PathPoint endPose) {
+		return new SwerveAutoGo(path, endPose, this);
 	}
 
 	/**
@@ -411,11 +411,11 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * 
 	 * @endPt The last pathpoint to end up at
 	 */
-	protected CommandBase goToChosenPoint(Pose2d endPose) {
+	protected CommandBase goToChosenPoint(PathPoint endPose) {
 		return run(() -> {
 			var botPose = getPose();
-			double xRate = xController.calculate(botPose.getX(), endPose.getX());
-			double yRate = yController.calculate(botPose.getY(), endPose.getY());
+			double xRate = xController.calculate(botPose.getX(), PathPointAccessor.poseFromPathPointHolo(endPose).getX());
+			double yRate = yController.calculate(botPose.getY(), PathPointAccessor.poseFromPathPointHolo(endPose).getY());
 			drive(xRate, yRate, new Rotation2d(0), true);
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
@@ -529,7 +529,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		Optional<EstimatedRobotPose> result2 = //Optional.empty();
 		m_apriltagHelper.getEstimatedGlobalPose2(m_poseEstimator.getEstimatedPosition());
 
-		// m_state.update(getPose(), getModuleStates(), m_field);
+		m_state.update(getPose(), getModuleStates(), m_field);
 
 		if (result1.isEmpty() && result2.isEmpty()) {
 			m_field.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
@@ -583,26 +583,26 @@ public class SwerveSubsystem extends SubsystemBase {
 		});
 	}
 
-	public CommandBase alignToScoreCubeCmd() {
-		return goToChosenPoint(alignToScoreCube());
-	}
+	// public CommandBase alignToScoreCubeCmd() {
+	// 	return goToChosenPoint(alignToScoreCube());
+	// }
 
-	private Pose2d alignToScoreCube() {
-		double yValue = getPose().getY();
-		Pose2d closest;
-		Pose2d finalDestination;
+	// private Pose2d alignToScoreCube() {
+	// 	double yValue = getPose().getY();
+	// 	Pose2d closest;
+	// 	Pose2d finalDestination;
 
-		closest = ScoringPoints.scoringPoints[0];
-		for (int i = 1; i <= 8; i++) {
-			if (Math.abs(yValue - closest.getTranslation().getY()) > Math
-					.abs(yValue - ScoringPoints.scoringPoints[i].getTranslation().getY())) {
-				closest = ScoringPoints.scoringPoints[i];
-			}
-		}
-		finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
+	// 	closest = ScoringPoints.scoringPoints[0];
+	// 	for (int i = 1; i <= 8; i++) {
+	// 		if (Math.abs(yValue - closest.getTranslation().getY()) > Math
+	// 				.abs(yValue - ScoringPoints.scoringPoints[i].getTranslation().getY())) {
+	// 			closest = ScoringPoints.scoringPoints[i];
+	// 		}
+	// 	}
+	// 	finalDestination = new Pose2d(closest.getTranslation(), closest.getRotation());
 		
-		return finalDestination;
-	}
+	// 	return finalDestination;
+	// }
 
 	public void autoReset() {
 		if (m_timer.get() > 10) {

@@ -20,19 +20,14 @@ public class SwerveAutoGo extends CommandBase {
 
 	private final SwerveSubsystem m_swerve;
 	private final List<PathPoint> m_path;
+	private final PathPoint m_endPose;
 
 	private PathPlannerTrajectory m_traj;
 
-
-	public static CommandBase create(List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
-		var autoGo = new SwerveAutoGo(path, swerve);
-		var followCmd = swerve.autoBuilder.followPath(autoGo.m_traj);	
-		return autoGo.andThen(followCmd).andThen(swerve.goToChosenPoint(endPose));
-	}
-
-    private SwerveAutoGo(List<PathPoint> path, SwerveSubsystem swerve) {
+    public SwerveAutoGo(List<PathPoint> path, PathPoint endPose, SwerveSubsystem swerve) {
 		m_swerve = swerve;
 		m_path = path;
+		m_endPose = endPose;
     }
 
 	@Override
@@ -47,12 +42,17 @@ public class SwerveAutoGo extends CommandBase {
 
 		for (PathPoint addedPP : m_path) {
 			double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-			if (onRed && currentX < addedX) {
-				allPoints.add(addedPP);
-			} else if (!onRed && currentX > addedX) {
+			// if (onRed && currentX < addedX) {
+			// 	allPoints.add(addedPP);
+			// } else if (!onRed && currentX > addedX) {
+			// 	allPoints.add(addedPP);
+			// }
+			if(currentX > addedX) {
 				allPoints.add(addedPP);
 			}
 		}
+
+		allPoints.add(m_endPose);
 		
 		m_traj = PathPlanner.generatePath(
 			new PathConstraints(
@@ -60,5 +60,9 @@ public class SwerveAutoGo extends CommandBase {
 				AutoConstants.kMaxAccelerationMetersPerSecondSquared),
 			allPoints
 		);
+
+		var followCmd = m_swerve.autoBuilder.followPath(m_traj);	
+		var endCmd = m_swerve.goToChosenPoint(m_endPose);
+		followCmd.andThen(endCmd).withName("SwerveAutoGoGo").schedule();
 	}
 }
