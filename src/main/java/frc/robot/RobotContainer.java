@@ -201,6 +201,7 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents).andThen(swerve.rotate180()));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
+		AutonChooser.AssignAutonCommand(AutonOption.RELEASE_CLAW, AutonFactory.releaseClaw(claw));
 	}
 
 	public void mapTrajectories() {
@@ -233,8 +234,8 @@ public class RobotContainer {
 						.andThen(new WaitCommand(1))
 						.andThen(claw.release())
 						.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
-		autonEventMap.put("placeTopCone",
-				new SuperstructureToState(superstructure, SuperState.TOPCONE).withTimeout(2.5));
+		autonEventMap.put("substation",
+				new SuperstructureToState(superstructure, SuperState.SUBSTATION_PICK_UP).withTimeout(2.5));
 		autonEventMap.put("override", superstructure.overrideStates(null, null, null));
 		autonEventMap.put("releaseClaw", claw.release());
 		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE).withTimeout(2.5));

@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "placeTopCone",
+          "substation",
           "override",
           "releaseClaw",
           "reset"

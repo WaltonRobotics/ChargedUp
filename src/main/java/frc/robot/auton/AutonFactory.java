@@ -31,12 +31,14 @@ public final class AutonFactory {
 
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
         var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3);
-        var waitCmd = new WaitCommand(3);
-        var clawCmd = claw.grab();
-        var overrideCmd = superstructure.overrideStates(null, null, null);
+        var clawCmd = claw.release();
         var pathCmd = (superstructure.toState(SuperState.SAFE)).withTimeout(2)
                 .andThen(swerve.getFullAuto(Paths.PPPaths.oneConePark));
 
-        return placeCmd.andThen(overrideCmd).andThen(clawCmd).andThen(pathCmd);
+        return placeCmd.andThen(clawCmd).andThen(new WaitCommand(1.5).andThen(pathCmd));
+    }
+
+    public static CommandBase releaseClaw(TheClaw claw) {
+        return claw.release();
     }
 }
