@@ -189,7 +189,7 @@ public class Paths {
 		// Translation2d(13.180, 0.75), rot2dDeg(0),rot2dDeg(0));
 		public static final PathPoint notBumper1 = new PathPoint(notBumper1Pose.getTranslation(), rot2dDeg(180),
 				notBumper1Pose.getRotation());
-		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(175),
+		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(90),
 				notBumper2Pose.getRotation());
 		// public static final PathPoint blueLeft3 = new PathPoint(new
 		// Translation2d(2.45, 4.75), rot2dDeg(180),rot2dDeg(180));
@@ -230,32 +230,22 @@ public class Paths {
 			// };
 
 			public static final PathPoint cone1 =  
-				new PathPoint(new Translation2d(1.77, 0.50), rot2dDeg(90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 0.50), rot2dDeg(-90), rot2dDeg(180));
 			public static final PathPoint cube2 = 
-				new PathPoint(new Translation2d(1.77, 1.06), rot2dDeg(90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 1.06), rot2dDeg(-90), rot2dDeg(180));
 			public static final PathPoint cone3 = 
-				new PathPoint(new Translation2d(1.77, 1.62), rot2dDeg(90), rot2dDeg(180));
-			public static final Pose2d coopCone4 = 
-				DriverStation.getAlliance().equals(Alliance.Blue) ?
-				new Pose2d(new Translation2d(1.77, 2.18), rot2dDeg(180)) :
-				new Pose2d(new Translation2d(1.77, 3.29), rot2dDeg(180));
-			public static final Pose2d coopCube5 = new Pose2d(new Translation2d(1.77, 2.74), rot2dDeg(180));
-			public static final Pose2d coopCone6 = 
-				DriverStation.getAlliance().equals(Alliance.Blue) ?
-				new Pose2d(new Translation2d(1.77, 3.29), rot2dDeg(180)) :
-				new Pose2d(new Translation2d(1.77, 2.18), rot2dDeg(180));
-			public static final Pose2d cone7 = 
-				DriverStation.getAlliance().equals(Alliance.Blue) ?
-				new Pose2d(new Translation2d(1.77, 3.85), rot2dDeg(180)) :
-				new Pose2d(new Translation2d(1.77, 1.62), rot2dDeg(180));
-			public static final Pose2d cube8 = 
-				DriverStation.getAlliance().equals(Alliance.Blue) ? 
-				new Pose2d(new Translation2d(1.77, 4.42), rot2dDeg(180)) :
-				new Pose2d(new Translation2d(1.77, 4.42), rot2dDeg(180));
-			public static final Pose2d cone9 =
-				DriverStation.getAlliance().equals(Alliance.Blue) ? 
-				new Pose2d(new Translation2d(1.77, 4.98), rot2dDeg(180)) :
-				new Pose2d(new Translation2d(1.77, 0.50), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 1.62), rot2dDeg(-90), rot2dDeg(180));
+			public static final PathPoint coopCone4 = 
+				new PathPoint(new Translation2d(1.77, 2.18), rot2dDeg(-90), rot2dDeg(180));
+			public static final PathPoint coopCube5 = new PathPoint(new Translation2d(1.77, 2.74), rot2dDeg(90), rot2dDeg(180));
+			public static final PathPoint coopCone6 = 
+				new PathPoint(new Translation2d(1.77, 3.29), rot2dDeg(-90), rot2dDeg(180));
+			public static final PathPoint cone7 = 
+				new PathPoint(new Translation2d(1.77, 3.85), rot2dDeg(-90), rot2dDeg(180));
+			public static final PathPoint cube8 = 
+				new PathPoint(new Translation2d(1.77, 4.42), rot2dDeg(-90), rot2dDeg(180));
+			public static final PathPoint cone9 =
+				new PathPoint(new Translation2d(1.77, 4.98), rot2dDeg(-90), rot2dDeg(180));
 
 			public static final Pose2d substationPose = new Pose2d(new Translation2d(15.9, 6.68), rot2dDeg(0));
 			public static final Pose2d portalPose = new Pose2d(new Translation2d(13.63, 7.62), rot2dDeg(90));
@@ -268,27 +258,27 @@ public class Paths {
 
 		}
 
-		public enum ScoringPlaces {
-			CONE_1(ScoringPoints.cone1, 0),
-			CUBE_1(ScoringPoints.cube2, 1),
-			CONE_2(ScoringPoints.cone3, 0),
-			COOP_CONE_1(ScoringPoints.coopCone4, 0),
-			COOP_CUBE_1(ScoringPoints.coopCube5, 1),
-			COOP_CONE_2(ScoringPoints.coopCone6, 0),
-			CONE_3(ScoringPoints.cone7, 0),
-			CUBE_2(ScoringPoints.cube8, 1),
-			CONE_4(ScoringPoints.cone9, 0);
+		// public enum ScoringPlaces {
+		// 	CONE_1(ScoringPoints.cone1, 0),
+		// 	CUBE_1(ScoringPoints.cube2, 1),
+		// 	CONE_2(ScoringPoints.cone3, 0),
+		// 	COOP_CONE_1(ScoringPoints.coopCone4, 0),
+		// 	COOP_CUBE_1(ScoringPoints.coopCube5, 1),
+		// 	COOP_CONE_2(ScoringPoints.coopCone6, 0),
+		// 	CONE_3(ScoringPoints.cone7, 0),
+		// 	CUBE_2(ScoringPoints.cube8, 1),
+		// 	CONE_4(ScoringPoints.cone9, 0);
 
-			// public Pose2d redPt;
-			public Pose2d pt;
-			public int coneOrCube; // 0 is cone, 1 is cube
+		// 	// public Pose2d redPt;
+		// 	public Pose2d pt;
+		// 	public int coneOrCube; // 0 is cone, 1 is cube
 
-			private ScoringPlaces(Pose2d pt, int coneOrCube) {
-				// this.redPt = redPt;
-				this.pt = pt;
-				this.coneOrCube = coneOrCube;
-			}
-		}
+		// 	private ScoringPlaces(Pose2d pt, int coneOrCube) {
+		// 		// this.redPt = redPt;
+		// 		this.pt = pt;
+		// 		this.coneOrCube = coneOrCube;
+		// 	}
+		// }
 	} 
 
 	// public static class ScoringOptionsRed {
@@ -311,23 +301,23 @@ public class Paths {
 	// }
 	// }
 
-	public enum ScoringOption {
-		CONE_1(ReferencePoints.ScoringPoints.cone1, true),
-		CUBE_1(ReferencePoints.ScoringPoints.cube2, false),
-		CONE_2(ReferencePoints.ScoringPoints.cone3, true),
-		COOP_CONE_1(ReferencePoints.ScoringPoints.coopCone4, true),
-		COOP_CUBE_1(ReferencePoints.ScoringPoints.coopCube5, false),
-		COOP_CONE_2(ReferencePoints.ScoringPoints.coopCone6, true),
-		CONE_3(ReferencePoints.ScoringPoints.cone7, true),
-		CUBE_2(ReferencePoints.ScoringPoints.cube8, false),
-		CONE_4(ReferencePoints.ScoringPoints.cone9, true);
+	// public enum ScoringOption {
+	// 	CONE_1(ReferencePoints.ScoringPoints.cone1, true),
+	// 	CUBE_1(ReferencePoints.ScoringPoints.cube2, false),
+	// 	CONE_2(ReferencePoints.ScoringPoints.cone3, true),
+	// 	COOP_CONE_1(ReferencePoints.ScoringPoints.coopCone4, true),
+	// 	COOP_CUBE_1(ReferencePoints.ScoringPoints.coopCube5, false),
+	// 	COOP_CONE_2(ReferencePoints.ScoringPoints.coopCone6, true),
+	// 	CONE_3(ReferencePoints.ScoringPoints.cone7, true),
+	// 	CUBE_2(ReferencePoints.ScoringPoints.cube8, false),
+	// 	CONE_4(ReferencePoints.ScoringPoints.cone9, true);
 
-		public final Pose2d m_scoringPlace;
-		public final boolean m_cone;
+	// 	public final Pose2d m_scoringPlace;
+	// 	public final boolean m_cone;
 
-		private ScoringOption(Pose2d scoringPlace, boolean cone) {
-			m_scoringPlace = scoringPlace;
-			m_cone = cone;
-		}
-	}
+	// 	private ScoringOption(Pose2d scoringPlace, boolean cone) {
+	// 		m_scoringPlace = scoringPlace;
+	// 		m_cone = cone;
+	// 	}
+	// }
 }
