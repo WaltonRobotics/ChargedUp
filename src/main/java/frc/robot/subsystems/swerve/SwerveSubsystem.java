@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
 import frc.robot.auton.AutonFactory;
@@ -11,23 +11,9 @@ import frc.lib.util.DashboardManager;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import static frc.robot.Constants.AutoConstants.kAlignAngleThresholdRadians;
-import static frc.robot.Constants.AutoConstants.kDThetaController;
-import static frc.robot.Constants.AutoConstants.kFThetaController;
-import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
-import static frc.robot.Constants.AutoConstants.kPThetaController;
-import static frc.robot.Constants.AutoConstants.kPXController;
-import static frc.robot.Constants.AutoConstants.kPYController;
-import static frc.robot.Constants.AutoConstants.kRotationPID;
-import static frc.robot.Constants.AutoConstants.kThetaControllerConstraints;
-import static frc.robot.Constants.AutoConstants.kTranslationPID;
-import static frc.robot.Constants.SwerveK.kInvertGyro;
-import static frc.robot.Constants.SwerveK.kKinematics;
-import static frc.robot.Constants.SwerveK.kMaxAngularVelocityRadps;
-import static frc.robot.Constants.SwerveK.kMaxVelocityMps;
-import static frc.robot.Constants.SwerveK.kModuleTranslations;
+import static frc.robot.Constants.AutoConstants.*;
+import static frc.robot.Constants.SwerveK.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,13 +24,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPointAccessor;
-import com.pathplanner.lib.ReflectedTransform;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.*;
+import com.pathplanner.lib.PathPlannerTrajectory.*;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -61,16 +42,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.vision.EstimatedRobotPose;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.SwerveK.Mod0;
-import frc.robot.Constants.SwerveK.Mod1;
-import frc.robot.Constants.SwerveK.Mod2;
-import frc.robot.Constants.SwerveK.Mod3;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule[] m_modules = new SwerveModule[] {
@@ -91,10 +66,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
-	private final SwerveAutoBuilder autoBuilder;
+	protected final SwerveAutoBuilder autoBuilder;
 
-	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-			kKinematics, getHeading(), getModulePositions());
+	// private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+	// 		kKinematics, getHeading(), getModulePositions());
 
 
 	// private PathPoint currentPathPoint;
@@ -300,22 +275,22 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void resetPose(Pose2d pose) {
 		m_pigeon.setYaw(pose.getRotation().getDegrees());
 		resetEstimatorPose(pose); // resets poseEstimator
-		resetOdometryPose(pose); // sets odometry to poseEstimator
+		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
 
-	/*
-	 * Reset wheel odometry pose for autons
-	 */
-	public void resetOdometryPose(Pose2d pose) {
-		m_odometry.resetPosition(getHeading(), getModulePositions(), pose);
-	}
+	// /*
+	//  * Reset wheel odometry pose for autons
+	//  */
+	// public void resetOdometryPose(Pose2d pose) {
+	// 	m_odometry.resetPosition(getHeading(), getModulePositions(), pose);
+	// }
 
-	/*
-	 * reset wheel odometry to poseEstimator for teleop
-	 */
-	public void resetOdometryPose() {
-		m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
-	}
+	// /*
+	//  * reset wheel odometry to poseEstimator for teleop
+	//  */
+	// public void resetOdometryPose() {
+	// 	m_odometry.resetPosition(getHeading(), getModulePositions(), m_poseEstimator.getEstimatedPosition());
+	// }
 
 	/*
 	 * Set steer to brake and drive to coast for odometry testing
@@ -428,38 +403,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	// }
 
 	public CommandBase autoScore(List<PathPoint> path, Pose2d endPose) {
-		// PathPoint endPt = new PathPoint(endPose.getTranslation(), Rotation2d.fromDegrees(90), endPose.getRotation());
-		var pathCmd = runOnce(() -> {
-			ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-					getPose(),
-					getChassisSpeeds());
-			List<PathPoint> allPoints = new ArrayList<>();
-			allPoints.add(ReferencePoints.currentPoint);
-			boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
-			double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
-
-			for (PathPoint addedPP : path) {
-				double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-				if (onRed && currentX < addedX) {
-					allPoints.add(addedPP);
-				} else if (!onRed && currentX > addedX) {
-					allPoints.add(addedPP);
-				}
-			}
-
-			// allPoints.add(endPt);
-
-			currentTrajectory = PathPlanner.generatePath(
-					new PathConstraints(kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
-					allPoints);
-		});
-		var followCmd = Commands.none();
-
-		if(currentTrajectory != null) {
-			followCmd = run(() -> autoBuilder.followPath(currentTrajectory));
-		}
-
-		return pathCmd.andThen(followCmd).andThen(goToChosenPoint(endPose));
+		return SwerveAutoGo.create(path, endPose, this);
 	}
 
 	/**
@@ -467,7 +411,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * 
 	 * @endPt The last pathpoint to end up at
 	 */
-	private CommandBase goToChosenPoint(Pose2d endPose) {
+	protected CommandBase goToChosenPoint(Pose2d endPose) {
 		return run(() -> {
 			var botPose = getPose();
 			double xRate = xController.calculate(botPose.getX(), endPose.getX());
@@ -574,19 +518,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		List<Pose2d> poses = new ArrayList<>();
 
-		m_odometry.update(getHeading(), getModulePositions());
+		// m_odometry.update(getHeading(), getModulePositions());
 		// m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
 
 		m_poseEstimator.update(getHeading(), getModulePositions());
 
-		// m_apriltagHelper.updateReferencePose(m_odometry.getPoseMeters());
 		Optional<EstimatedRobotPose> result1 = m_apriltagHelper
 				.getEstimatedGlobalPose1(m_poseEstimator.getEstimatedPosition());
 		
-		Optional<EstimatedRobotPose> result2 = m_apriltagHelper
-				.getEstimatedGlobalPose2(m_poseEstimator.getEstimatedPosition());
+		Optional<EstimatedRobotPose> result2 = //Optional.empty();
+		m_apriltagHelper.getEstimatedGlobalPose2(m_poseEstimator.getEstimatedPosition());
 
-		m_state.update(getPose(), getModuleStates(), m_field);
+		// m_state.update(getPose(), getModuleStates(), m_field);
 
 		if (result1.isEmpty() && result2.isEmpty()) {
 			m_field.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
