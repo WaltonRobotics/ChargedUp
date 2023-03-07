@@ -453,7 +453,7 @@ public class SwerveSubsystem extends SubsystemBase {
 					new PathConstraints(kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
 					allPoints);
 		});
-		var followCmd = getFullAuto(currentTrajectory);
+		var followCmd = Commands.none();
 
 		if(currentTrajectory != null) {
 			followCmd = run(() -> autoBuilder.followPath(currentTrajectory));
