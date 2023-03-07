@@ -61,7 +61,7 @@ public class SwerveAutoGo extends CommandBase {
 			allPoints
 		);
 
-		var followCmd = m_swerve.autoBuilder.followPath(m_traj);	
+		var followCmd = m_swerve.getFullAuto(m_traj);	
 		var endCmd = m_swerve.goToChosenPoint(m_endPose);
 		followCmd.andThen(endCmd).withName("SwerveAutoGoGo").schedule();
 	}

@@ -86,13 +86,10 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.superstructure.reset();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    // m_robotContainer.swerve.resetModsToAbs();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
-    m_robotContainer.swerve.setYaw(0);
   }
 
   /** This function is called periodically during autonomous. */

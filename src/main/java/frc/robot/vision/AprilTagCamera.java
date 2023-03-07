@@ -10,24 +10,14 @@ import org.photonvision.PhotonCamera;
 import frc.lib.vision.PhotonPoseEstimator;
 // import org.photonvision.PhotonPoseEstimator;
 import frc.lib.vision.PhotonPoseEstimator.PoseStrategy;
-import frc.robot.Constants;
-
-// import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
@@ -80,15 +70,20 @@ public class AprilTagCamera {
     }
 
     public void periodic() {
-        //reverses based on PathPlanner coordinates
-		if(DriverStation.getAlliance() == Alliance.Blue){
-			poseEstimator1.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-            poseEstimator2.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-		}
-		else{
-			poseEstimator1.getFieldTags().setOrigin(Constants.FieldK.kRedAllianceOrigin);
-            poseEstimator2.getFieldTags().setOrigin(Constants.FieldK.kRedAllianceOrigin);
-		}
+        // //reverses based on PathPlanner coordinates
+		// if(DriverStation.getAlliance() == Alliance.Blue){
+		// 	poseEstimator1.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+        //     poseEstimator2.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+		// }
+		// else{
+		// 	poseEstimator1.getFieldTags().setOrigin(new Pose3d(
+        //         new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
+        //         new Rotation3d(0, 0, 0)));
+        //     poseEstimator2.getFieldTags().setOrigin(
+        //         new Pose3d(
+        //             new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
+        //             new Rotation3d(0, 0, 0)));
+		// }
     }
 
     /**
@@ -138,42 +133,4 @@ public class AprilTagCamera {
             highCam.setDriverMode(true);
         }
     }
-
-    // public Optional<PhotonPipelineResult> getLatestResult1() {
-    //     var result1 = highCam.getLatestResult();
-    //     return result1 != null ? Optional.of(result1) : Optional.empty();
-    // }
-
-    // public Optional<PhotonPipelineResult> getLatestResult2() {
-    //     var result2 = lowCam.getLatestResult();
-
-    //     return result2 != null && !m_highCamDisabled ? Optional.of(result2) : Optional.empty();
-    // }
-
-    // public Optional<PhotonTrackedTarget> getBestTarget1() {
-    //     var latestOpt = getLatestResult1();
-    //     if (latestOpt.isPresent()) {
-    //         if (latestOpt.get().hasTargets()) {
-    //             return Optional.of(latestOpt.get().getBestTarget());
-    //         }
-    //     }
-
-    //     return Optional.empty();
-    // }
-
-    // public Optional<PhotonTrackedTarget> getBestTarget2() {
-    //     var latestOpt = getLatestResult2();
-    //     if (latestOpt.isPresent()) {
-    //         if (latestOpt.get().hasTargets()) {
-    //             return Optional.of(latestOpt.get().getBestTarget());
-    //         }
-    //     }
-
-    //     return Optional.empty();
-    // }
-
-    // public void updateReferencePose(Pose2d poseMeters) {
-    //     poseEstimator1.setReferencePose(poseMeters);
-    //     poseEstimator2.setReferencePose(poseMeters);
-    // }
 }

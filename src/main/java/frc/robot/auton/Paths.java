@@ -187,9 +187,9 @@ public class Paths {
 		// redLeft2Pose.getRotation(), 2);
 		// public static final PathPoint redLeft3 = new PathPoint(new
 		// Translation2d(13.180, 0.75), rot2dDeg(0),rot2dDeg(0));
-		public static final PathPoint notBumper1 = new PathPoint(notBumper1Pose.getTranslation(), rot2dDeg(180),
+		public static final PathPoint notBumper1 = new PathPoint(notBumper1Pose.getTranslation(), rot2dDeg(-165),
 				notBumper1Pose.getRotation());
-		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(90),
+		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(-90),
 				notBumper2Pose.getRotation());
 		// public static final PathPoint blueLeft3 = new PathPoint(new
 		// Translation2d(2.45, 4.75), rot2dDeg(180),rot2dDeg(180));
@@ -230,22 +230,22 @@ public class Paths {
 			// };
 
 			public static final PathPoint cone1 =  
-				new PathPoint(new Translation2d(1.77, 0.50), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 0.50), rot2dDeg(-110), rot2dDeg(180));
 			public static final PathPoint cube2 = 
-				new PathPoint(new Translation2d(1.77, 1.06), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 1.06), rot2dDeg(-110), rot2dDeg(180));
 			public static final PathPoint cone3 = 
-				new PathPoint(new Translation2d(1.77, 1.62), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 1.62), rot2dDeg(-110), rot2dDeg(180));
 			public static final PathPoint coopCone4 = 
-				new PathPoint(new Translation2d(1.77, 2.18), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 2.18), rot2dDeg(-110), rot2dDeg(180));
 			public static final PathPoint coopCube5 = new PathPoint(new Translation2d(1.77, 2.74), rot2dDeg(90), rot2dDeg(180));
 			public static final PathPoint coopCone6 = 
-				new PathPoint(new Translation2d(1.77, 3.29), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 3.29), rot2dDeg(-110), rot2dDeg(180));
 			public static final PathPoint cone7 = 
-				new PathPoint(new Translation2d(1.77, 3.85), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 3.85), rot2dDeg(-110), rot2dDeg(180));
 			public static final PathPoint cube8 = 
-				new PathPoint(new Translation2d(1.77, 4.42), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 4.42), rot2dDeg(-110), rot2dDeg(180));
 			public static final PathPoint cone9 =
-				new PathPoint(new Translation2d(1.77, 4.98), rot2dDeg(-90), rot2dDeg(180));
+				new PathPoint(new Translation2d(1.77, 4.98), rot2dDeg(-110), rot2dDeg(180));
 
 			public static final Pose2d substationPose = new Pose2d(new Translation2d(15.9, 6.68), rot2dDeg(0));
 			public static final Pose2d portalPose = new Pose2d(new Translation2d(13.63, 7.62), rot2dDeg(90));
