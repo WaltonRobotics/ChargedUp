@@ -71,7 +71,7 @@ public class RobotContainer {
 						driver.leftBumper()::getAsBoolean,
 						() -> true // openLoop
 				));
-		elevator.setDefaultCommand(elevator.teleOpCmd(() -> -manipulator.getLeftY()));
+		elevator.setDefaultCommand(elevator.teleopCmd(() -> -manipulator.getLeftY()));
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
 
@@ -146,8 +146,9 @@ public class RobotContainer {
 
 		// driver.rightBumper().whileTrue(swerve.autoBalance());
 
-		manipulator.start().onTrue(superstructure.overrideStates(() -> -manipulator.getLeftY(),
-				() -> manipulator.getRightY(), () -> manipulator.getLeftX())); 
+		manipulator.start().onTrue(superstructure.overrideStates(
+			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
+		)); 
 
 		manipulator.rightBumper()
 				.whileTrue(claw.autoGrab(true));
