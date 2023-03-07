@@ -53,7 +53,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// reset relative encoder on switch activation
 		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
-		m_controller.setTolerance(.2);
+		m_controller.setTolerance(1);
 	}
 
 	public CommandBase setTarget(double degrees) {
@@ -170,12 +170,13 @@ public class TiltSubsystem extends SubsystemBase {
 				var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
 				setVoltage(effort);
 				})
-				// .until(() -> {
-				// 	return m_controller.atGoal();
-				// })
-				// .finallyDo((intr) -> {
-				// m_motor.set(0);
-				// })
+				.until(() -> {
+					return m_controller.atGoal();
+				})
+				.withTimeout(1.8)
+				.finallyDo((intr) -> {
+				m_motor.set(0);
+				})
 				.withName("ToAngle");
 				
 		// var brakeCmd = runOnce(() -> {

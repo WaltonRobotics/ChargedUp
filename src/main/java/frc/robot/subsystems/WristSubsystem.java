@@ -61,7 +61,7 @@ public class WristSubsystem extends SubsystemBase {
     m_absEncoder.setPositionConversionFactor(360);
     m_motor.burnFlash();
 
-    m_controller.setTolerance(.2);
+    m_controller.setTolerance(1);
   }
 
   /*
@@ -219,6 +219,7 @@ public class WristSubsystem extends SubsystemBase {
         .until(() -> {
           return m_controller.atGoal();
         })
+        .withTimeout(1.8)
         .finallyDo((intr) -> {
           m_motor.set(0);
         })

@@ -79,7 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_left.follow(m_right);
 		m_left.setInverted(TalonFXInvertType.OpposeMaster);
-		m_controller.setTolerance(.02);
+		m_controller.setTolerance(.1);
 	}
 
 	/*
@@ -242,6 +242,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.until(() -> {
 					return m_controller.atGoal();
 				})
+				.withTimeout(1.25)
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);
 				})
