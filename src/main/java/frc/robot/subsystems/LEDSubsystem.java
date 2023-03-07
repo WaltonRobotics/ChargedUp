@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.LedK.*;
 
-public class LedSubsystem extends SubsystemBase {
+public class LEDSubsystem extends SubsystemBase {
     private final AddressableLED m_leds = new AddressableLED(kPort);
     private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(kNumLeds);
 
@@ -19,7 +19,7 @@ public class LedSubsystem extends SubsystemBase {
     private int m_blinkCount = 0;
   
 
-    public LedSubsystem() {
+    public LEDSubsystem() {
         m_leds.setLength(m_ledBuffer.getLength());
         m_leds.setData(m_ledBuffer);
         m_leds.start();
