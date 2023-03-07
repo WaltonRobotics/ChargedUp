@@ -42,7 +42,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.vision.EstimatedRobotPose;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -267,6 +266,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void resetPose(Pose2d pose) {
+		//TODO: RESET GYRO ZERO TO ORIGIN FACE
 		m_pigeon.setYaw(pose.getRotation().getDegrees());
 		resetEstimatorPose(pose); // resets poseEstimator
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
@@ -351,39 +351,39 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * and run commands between paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
-		boolean shouldFlip = Flipper.shouldFlip();
-		var newTraj = trajectory;
-		if(shouldFlip){
-			newTraj = Flipper.allianceFlip(trajectory);
-		}
-		return autoBuilder.fullAuto(newTraj);
+		return new ProxyCommand(() -> {
+			boolean shouldFlip = Flipper.shouldFlip();
+			var newTraj = trajectory;
+			if(shouldFlip){
+				newTraj = Flipper.allianceFlip(trajectory);
+			}
+			return autoBuilder.fullAuto(newTraj);
+		});
 	}
 
-	public CommandBase getFullBlueAuto(PathPlannerTrajectory traj){
-		return autoBuilder.fullAuto(traj);
-	}
-
-	public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
-		return autoBuilder.fullAuto(trajectoryList);
-	}
+	// public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
+	// 	return autoBuilder.fullAuto(trajectoryList);
+	// }
 
 	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory) {
-		boolean shouldFlip = Flipper.shouldFlip();
-		var newTraj = trajectory;
-		var resetCmd = runOnce(() -> {
-			resetPose(trajectory.getInitialHolonomicPose());
-		});
+		return new ProxyCommand(() -> {
+			boolean shouldFlip = Flipper.shouldFlip();
+			var newTraj = trajectory;
 
-		if(shouldFlip){
-			resetCmd = runOnce(() -> {
-				resetPose(Flipper.allianceFlip(trajectory.getInitialHolonomicPose()));
+			var resetCmd = runOnce(() -> {
+				resetPose(trajectory.getInitialHolonomicPose());
 			});
-		}
 
-		if(Flipper.shouldFlip()){
-			newTraj = Flipper.allianceFlip(trajectory);
-		}
-		var pathCmd = new PPSwerveControllerCommand(
+			if(shouldFlip){
+				resetCmd = runOnce(() -> {
+					resetPose(Flipper.allianceFlip(trajectory.getInitialHolonomicPose()));
+				});
+			}
+	
+			if(Flipper.shouldFlip()){
+				newTraj = Flipper.allianceFlip(trajectory);
+			}
+			var pathCmd = new PPSwerveControllerCommand(
 				newTraj,
 				this::getPose, // Pose supplier
 				kKinematics, // SwerveDriveKinematics
@@ -394,8 +394,14 @@ public class SwerveSubsystem extends SubsystemBase {
 				false, // Should the path be automatically mirrored depending on alliance color.
 						// Optional, defaults to true
 				this // Requires this drive subsystem
-		);
-		return resetCmd.andThen(pathCmd);
+			);
+			return resetCmd.andThen(pathCmd);
+		});
+
+		
+
+		
+		
 	}
 
 	public CommandBase getFollowPathWithEvents(PathPlannerTrajectory traj) {
