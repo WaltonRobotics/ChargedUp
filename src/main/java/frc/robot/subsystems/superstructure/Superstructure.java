@@ -2,6 +2,7 @@ package frc.robot.subsystems.superstructure;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -61,7 +62,10 @@ public class Superstructure extends SubsystemBase {
 
 	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
 		return runOnce(() -> {
-			m_elevator.teleOpCmd(elevPow);
+			CommandScheduler.getInstance().cancel(
+				m_elevator.getCurrentCommand(), m_tilt.getCurrentCommand(), m_wrist.getCurrentCommand());
+			
+			m_elevator.teleopCmd(elevPow);
 			m_tilt.teleopCmd(tiltPow);
 			m_wrist.teleopCmd(wristPow);
 		});

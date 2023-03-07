@@ -132,7 +132,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @return A cmd to move the elevator via stick
 	 * sets elevator to target height if no input
 	 */
-	public CommandBase teleOpCmd(DoubleSupplier power) {
+	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			// double fromBottom = (getActualHeightMeters() - kMinHeightMeters) / kMaxHeightMeters;
 			// double fromTop = (kMaxHeightMeters - getActualHeightMeters()) / kMaxHeightMeters;
