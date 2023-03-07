@@ -8,7 +8,9 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.*;
@@ -197,8 +199,13 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         // used for PPSwerve Auto Builder
         public static final PIDConstants kTranslationPID = new PIDConstants(kPXController, 0, 0); // x & y
         public static final PIDConstants kRotationPID = new PIDConstants(kPThetaController, 0, kDThetaController);
+
     }
 
+    public static final class FieldK {
+        public static final Pose3d kRedAllianceOrigin = new Pose3d(16.5, 0.0, 0.0, new Rotation3d());
+    }
+    
     // Elevator tilting motor
     public static final class TiltK {
         public static final String DB_TAB_NAME = "TiltSubsys";

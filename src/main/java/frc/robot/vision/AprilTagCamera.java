@@ -10,6 +10,8 @@ import org.photonvision.PhotonCamera;
 import frc.lib.vision.PhotonPoseEstimator;
 // import org.photonvision.PhotonPoseEstimator;
 import frc.lib.vision.PhotonPoseEstimator.PoseStrategy;
+import frc.robot.Constants;
+
 // import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -19,6 +21,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -83,8 +86,8 @@ public class AprilTagCamera {
             poseEstimator2.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 		}
 		else{
-			poseEstimator1.getFieldTags().setOrigin(OriginPosition.kRedAllianceWallRightSide);
-            poseEstimator2.getFieldTags().setOrigin(OriginPosition.kRedAllianceWallRightSide);
+			poseEstimator1.getFieldTags().setOrigin(Constants.FieldK.kRedAllianceOrigin);
+            poseEstimator2.getFieldTags().setOrigin(Constants.FieldK.kRedAllianceOrigin);
 		}
     }
 
