@@ -202,9 +202,9 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
     }
 
-    public static final class FieldK {
-        public static final Pose3d kRedAllianceOrigin = new Pose3d(Units.inchesToMeters(651.25), 0.0, 0.0, new Rotation3d(0, 0, Math.PI));
-    }
+//     public static final class FieldK {
+//         public static final Pose3d kRedAllianceOrigin = new Pose3d(Units.inchesToMeters(651.25), 0.0, 0.0, new Rotation3d(0, 0, Math.PI));
+//     }
     
     // Elevator tilting motor
     public static final class TiltK {
