@@ -24,6 +24,7 @@ public class TheClaw extends SubsystemBase {
 
 	public final Trigger leftEyeTrig = new Trigger(leftEye::get);
 	public final Trigger rightEyeTrig = new Trigger(rightEye::get);
+	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
 
 	public TheClaw() {
 		// DashboardManager.addTab(this);

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -42,13 +43,13 @@ public class RobotContainer {
 	private final CommandXboxController driver = new CommandXboxController(0);
 	private final CommandXboxController manipulator = new CommandXboxController(1);
 
+	public final LedSubsystem leds = new LedSubsystem();
 	public final AprilTagCamera vision = new AprilTagCamera();
 	public final SwerveSubsystem swerve = new SwerveSubsystem(autonEventMap, vision);
 	public final TiltSubsystem tilt = new TiltSubsystem();
 	public final ElevatorSubsystem elevator = new ElevatorSubsystem();
 	public final WristSubsystem wrist = new WristSubsystem();
 	public final TheClaw claw = new TheClaw();
-	public final LEDSubsystem leds = new LEDSubsystem();
 
 	/* Subsystems */
 	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, claw);
@@ -77,6 +78,10 @@ public class RobotContainer {
 
 		DashboardManager.addTab("TeleSwerve");
 		configureButtonBindings();
+
+		// LED triggering
+		claw.leftEyeTrig.and(claw.rightEyeTrig)
+			.onTrue(leds.grabOk());
 	}
 
 	/**

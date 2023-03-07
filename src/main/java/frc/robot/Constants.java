@@ -1,5 +1,5 @@
 package frc.robot;
-//TODO: reset swerve to abs every 10 sec, after 1 sec of nonmovement
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.PIDConstants;
 
@@ -8,16 +8,16 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.util.COTSFalconSwerveConstants;
+import frc.lib.util.LedUtils;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
@@ -373,10 +373,27 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kTargetHeight = 1; // TODO: update value
     }
 
-    public static final class IndicatorLightsK {
-        public static final String DB_TAB_NAME = "LEDSubsys";
+    public static final class LedK {
+        public static final String DB_TAB_NAME = "LedSubsys";
 
-        public static final int kNumLEDs = 20; // TODO: update these when we get them
-        public static final int kPort = 5; 
+        public static final int kNumLeds = 13; // two 13-led strips in parallel
+        public static final int kPort = 0;
+
+        // Base colors
+        public static final Color kRed = LedUtils.fixColor(Color.kRed);
+        public static final Color kGreen = LedUtils.fixColor(Color.kGreen);
+        public static final Color kBlue = LedUtils.fixColor(Color.kBlue);
+        public static final Color kYellow = LedUtils.fixColor(Color.kYellow);
+        public static final Color kPurple = LedUtils.fixColor(Color.kPurple);
+
+        // Specific colors
+        public static final Color kCubeColor = kPurple;
+        public static final Color kConeColor = kYellow;
+        public static final Color kBlinkOnColor = kGreen;
+        public static final Color kBlinkOffColor = Color.kBlack;
+
+        // Behaviors
+        public static final double kBlinkPeriod = 0.080;
+        public static final double kBlinkCount = 10;
     }
 }
