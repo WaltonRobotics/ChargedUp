@@ -96,19 +96,19 @@ public class RobotContainer {
 
 		// add back later
 		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.cone1));
+			ScoringPoints.cone1));
 		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.cube2));
+			ScoringPoints.cube2));
 		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.cone3));
+			ScoringPoints.cone3));
 		driver.x()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCone4));
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+				ScoringPoints.coopCone4));
 		driver.y()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCube5));
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+				ScoringPoints.coopCube5));
 		driver.b()
 		.and(driver.leftTrigger())
 		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
