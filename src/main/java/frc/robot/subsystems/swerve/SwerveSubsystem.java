@@ -84,6 +84,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private double m_simYaw = 0;
 
+	private double[] m_xyzDPS = new double[3];
+
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
@@ -191,6 +193,35 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		setChassisSpeeds(targetChassisSpeeds, openLoop, false);
 		return thetaController.atGoal();
+	}
+
+	public double getPitchVelocity() {
+		m_pigeon.getRawGyro(m_xyzDPS);
+
+		return m_xyzDPS[1];
+	}
+
+	public double getRollVelocity() {
+		m_pigeon.getRawGyro(m_xyzDPS);
+
+		return m_xyzDPS[2];
+	}
+
+	  /**
+   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
+   * return to their normal orientations the next time a nonzero velocity is requested.
+   */
+	public void stopWithX() {
+		stop();
+		for (int i = 0; i < 4; i++) {
+		getModuleStates()[i] =
+			new SwerveModuleState(
+				getModuleStates()[i].speedMetersPerSecond, kModuleTranslations[i].getAngle());
+		}
+	}
+
+	public void stop() {
+		drive(0, 0, Rotation2d.fromDegrees(0), true);
 	}
 
 	public ChassisSpeeds getChassisSpeeds() {
