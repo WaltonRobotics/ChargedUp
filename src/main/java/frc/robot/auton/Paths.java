@@ -56,6 +56,18 @@ public class Paths {
 		public static final PathPlannerTrajectory twoConeOneCube = PathPlanner.loadPath("twoConeOneCube",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory coneBumper = PathPlanner.loadPath("coneDriveOutBumper",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cubeBumper = PathPlanner.loadPath("cubeDriveOutBumper",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory coneNotBumper = PathPlanner.loadPath("coneDriveOutNotBumper",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory cubeNotBumper = PathPlanner.loadPath("cubeDriveOutNotBumper",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory cone1 = PathPlanner.loadPath(
 				DriverStation.getAlliance().equals(Alliance.Red) ?
 				"redCone1" :
