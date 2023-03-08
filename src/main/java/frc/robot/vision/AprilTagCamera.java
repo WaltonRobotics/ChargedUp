@@ -113,6 +113,9 @@ public class AprilTagCamera {
     }
     
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose2(Pose2d prevEstimatedRobotPose) {
+        if (m_highCamDisabled) {
+            return null;
+        }
         poseEstimator2.setReferencePose(prevEstimatedRobotPose);
         poseEstimator2.setLastPose(prevEstimatedRobotPose);
         return poseEstimator2.update();
