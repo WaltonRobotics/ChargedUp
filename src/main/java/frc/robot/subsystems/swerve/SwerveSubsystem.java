@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 
-import java.rmi.ServerRuntimeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +82,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final AprilTagCamera m_apriltagHelper;
 
 	private double m_simYaw = 0;
+
+	private double[] m_xyzDPS = new double[3];
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
@@ -193,6 +194,35 @@ public class SwerveSubsystem extends SubsystemBase {
 		return thetaController.atGoal();
 	}
 
+	public double getPitchVelocity() {
+		m_pigeon.getRawGyro(m_xyzDPS);
+
+		return m_xyzDPS[1];
+	}
+
+	public double getRollVelocity() {
+		m_pigeon.getRawGyro(m_xyzDPS);
+
+		return m_xyzDPS[2];
+	}
+
+	  /**
+   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
+   * return to their normal orientations the next time a nonzero velocity is requested.
+   */
+	public void stopWithX() {
+		stop();
+		for (int i = 0; i < 4; i++) {
+		getModuleStates()[i] =
+			new SwerveModuleState(
+				getModuleStates()[i].speedMetersPerSecond, kModuleTranslations[i].getAngle());
+		}
+	}
+
+	public void stop() {
+		drive(0, 0, Rotation2d.fromDegrees(0), true);
+	}
+
 	public ChassisSpeeds getChassisSpeeds() {
 		return kKinematics.toChassisSpeeds(getModuleStates());
 	}
@@ -276,25 +306,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void resetPose(Pose2d pose) {
 		//TODO: RESET GYRO ZERO TO ORIGIN FACE
-		m_pigeon.setYaw(pose.getRotation().getDegrees());
+		zeroGyro();
 		resetEstimatorPose(pose); // resets poseEstimator
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
-
-	// /*
-	// * Reset wheel odometry pose for autons
-	// */
-	// public void resetOdometryPose(Pose2d pose) {
-	// m_odometry.resetPosition(getHeading(), getModulePositions(), pose);
-	// }
-
-	// /*
-	// * reset wheel odometry to poseEstimator for teleop
-	// */
-	// public void resetOdometryPose() {
-	// m_odometry.resetPosition(getHeading(), getModulePositions(),
-	// m_poseEstimator.getEstimatedPosition());
-	// }
 
 	/*
 	 * Set steer to brake and drive to coast for odometry testing
@@ -418,11 +433,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			);
 			return resetCmd.andThen(pathCmd);
 		});
-
-		
-
-		
-		
 	}
 
 	public CommandBase getFollowPathWithEvents(PathPlannerTrajectory traj) {
@@ -541,26 +551,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			}
 		}
 	}
-
-	// public enum AutoScoreState {
-	// RED_CONE_1(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone1),
-	// RED_CUBE_2(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube2),
-	// RED_CONE_3(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone3),
-	// RED_COOP_CONE_4(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone4),
-	// RED_COOP_CUBE_5(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCube5),
-	// RED_COOP_CONE_6(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCoopCone6),
-	// RED_CONE_7(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone7),
-	// RED_CUBE_8(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCube8),
-	// RED_CONE_9(PPAutoscoreClass.redNotBumpy, ScoringPoints.redCone9);
-
-	// public final List<PathPoint> path;
-	// public final Pose2d endPose;
-
-	// private AutoScoreState(List<PathPoint> path, Pose2d endPose) {
-	// this.path = path;
-	// this.endPose = endPose;
-	// }
-	// }
 
 	@Override
 	public void periodic() {
