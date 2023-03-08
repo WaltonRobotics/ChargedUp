@@ -125,8 +125,8 @@ public class RobotContainer {
 			.and(driver.rightTrigger())
 			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 		
-		driver.back().toggleOnTrue(leds.setCube());
-		driver.start().toggleOnTrue(leds.setCone());
+		driver.back().onTrue(leds.setCube().until(claw.closedTrig));
+		driver.start().onTrue(leds.setCone().until(claw.closedTrig));
 
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()

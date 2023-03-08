@@ -17,7 +17,6 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean m_chaseUp = false;
     private boolean m_blinkState = false;
     private int m_blinkCount = 0;
-  
 
     public LEDSubsystem() {
         m_leds.setLength(m_ledBuffer.getLength());
