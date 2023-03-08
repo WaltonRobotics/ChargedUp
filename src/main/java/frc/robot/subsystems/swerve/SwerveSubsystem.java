@@ -256,10 +256,17 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
-	private double getGyroYaw() {
+	protected double getGyroYaw() {
 		return m_pigeon.getYaw() - 180;
 	}
 
+	protected double getGyroRoll(){
+		return m_pigeon.getYaw();
+	}	
+
+	protected double getGyroPitch(){
+		return m_pigeon.getPitch();
+	}
 	// Side to side
 	public Rotation2d getHeading() {
 		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - getGyroYaw())
@@ -325,6 +332,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	}
 
+	public CommandBase bangBangAutoBalance(){
+		double currentYaw = m_pigeon.getYaw();
+		double drivePower = 0; 
+
+		if(currentYaw > 135 && currentYaw < 225){
+			drivePower *= -1;
+		}
+
+		return runOnce(()->{
+
+		});
+	}
 	public CommandBase autoScore(List<PathPoint> path, PathPoint endPose) {
 		return new SwerveAutoGo(path, endPose, this);
 	}

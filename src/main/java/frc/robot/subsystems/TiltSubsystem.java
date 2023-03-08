@@ -8,8 +8,11 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,7 +28,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final DutyCycleEncoder m_absoluteEncoder = new DutyCycleEncoder(kAbsoluteEncoderPort);
 	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
-	// private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
+	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
 	// private Timer m_timer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
@@ -45,7 +48,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	public TiltSubsystem() {
-		// m_diskBrake.set(true);
+		m_diskBrake.set(true);
 		m_absoluteEncoder.reset();
 		m_motor.setIdleMode(IdleMode.kBrake);
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
@@ -99,13 +102,13 @@ public class TiltSubsystem extends SubsystemBase {
 															// rotation)
 	}
 
-	// public void disengageBrake() {
-	// 	m_diskBrake.set(false);
-	// }
+	public void disengageBrake() {
+		m_diskBrake.set(false);
+	}
 
-	// public void engageBrake() {
-	// 	m_diskBrake.set(true);
-	// }
+	public void engageBrake() {
+		m_diskBrake.set(true);
+	}
 
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
@@ -192,9 +195,9 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	private void setCoast(boolean coast) {
-		// if (!DriverStation.isEnabled()) {
-		// 	m_diskBrake.set(!coast);
-		// }
+		if (!DriverStation.isEnabled()) {
+			m_diskBrake.set(!coast);
+		}
 		m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
 	}
 
