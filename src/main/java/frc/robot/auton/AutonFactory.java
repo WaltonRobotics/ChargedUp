@@ -72,4 +72,13 @@ public final class AutonFactory {
 
         return placeCmd.andThen(clawCmd).andThen(new WaitCommand(1.5).andThen(pathCmd).andThen(clawCmd));
     }
+
+    public static CommandBase oneConeBalance(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3)
+                .andThen(claw.release())
+                .andThen(superstructure.toState(SuperState.SAFE));
+        var driveCmd = new InstantCommand(() -> swerve.drive(-1, 0, 0, false, false)).withTimeout(4)
+                .andThen(new InstantCommand(() -> swerve.drive(0, -1, 0, false, false)).withTimeout(1.5));
+        return placeCmd.andThen(driveCmd).andThen(autoBalance(swerve));
+    }
 }

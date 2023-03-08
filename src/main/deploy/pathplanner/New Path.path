@@ -24,12 +24,37 @@
     },
     {
       "anchorPoint": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 0.28245217093805974,
+        "y": 1.664422281817057
       },
       "prevControl": {
-        "x": -0.7293117310913639,
-        "y": 2.9331949676738294
+        "x": -0.44685956015330425,
+        "y": 4.597617249490885
+      },
+      "nextControl": {
+        "x": 1.0117639020294238,
+        "y": -1.2687726858567714
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 0.3749200754834518,
+        "y": 0.9815823713280077
+      },
+      "prevControl": {
+        "x": 0.7466888567633949,
+        "y": -0.566813643452907
       },
       "nextControl": null,
       "holonomicAngle": 0,
