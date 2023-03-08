@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 
+import java.rmi.ServerRuntimeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -498,6 +499,12 @@ public class SwerveSubsystem extends SubsystemBase {
 			}
 
 			m_field.getObject("Cam Est Pos").setPoses(poses);
+		}
+	}
+
+	public void lockModules() {
+		for (SwerveModule module : m_modules) {
+			module.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), false, true);
 		}
 	}
 
