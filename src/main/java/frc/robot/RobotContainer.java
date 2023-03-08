@@ -238,8 +238,8 @@ public class RobotContainer {
 						.andThen(new WaitCommand(1))
 						.andThen(claw.release())
 						.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
-		autonEventMap.put("substation",
-				new SuperstructureToState(superstructure, SuperState.SUBSTATION_PICK_UP).withTimeout(2.5));
+		autonEventMap.put("placeTopCone",
+				new SuperstructureToState(superstructure, SuperState.TOPCONE).withTimeout(2.5));
 		autonEventMap.put("override", superstructure.overrideStates(null, null, null));
 		autonEventMap.put("releaseClaw", claw.release());
 		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE).withTimeout(2.5));
