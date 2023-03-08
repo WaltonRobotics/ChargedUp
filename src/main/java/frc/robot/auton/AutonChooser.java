@@ -16,6 +16,10 @@ public class AutonChooser {
         ONE_CONE_PARK_EVENTS("Drop cone then park w/ Events"),
         ONE_CUBE_ONE_CONE("Drop cube then cone and park w/ events"),
         TWO_CONE_ONE_CUBE("Drop cone then cube then cone and park w/ events"),
+        CONE_BUMPER("drop a cone and then drive out (bumper side)"),
+        CUBE_BUMPER("drop a cube and then drive out (bumper side)"),
+        CONE_NOT_BUMPER("drop a cone and then drive out (non-bumper side)"),
+        CUBE_NOT_BUMPER("drop a cube and then drive out (non-bumper side)"),
         RELEASE_CLAW("releases the claw");
 
         public final String description;
