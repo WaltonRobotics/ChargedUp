@@ -80,7 +80,7 @@ public class RobotContainer {
 
 		// LED triggering
 		claw.leftEyeTrig.and(claw.rightEyeTrig)
-			.onTrue(leds.grabOk());
+			.onTrue(leds.grabOk().until(claw.closedTrig));
 	}
 
 	/**
@@ -98,32 +98,35 @@ public class RobotContainer {
 
 		// add back later
 		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.cone1));
+			ScoringPoints.cone1));
 		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.cube2));
+			ScoringPoints.cube2));
 		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.cone3));
+			ScoringPoints.cone3));
 		driver.x()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCone4));
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.coopCone4));
 		driver.y()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCube5));
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.coopCube5));
 		driver.b()
-		.and(driver.leftTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		ScoringPoints.coopCone6));
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.coopCone6));
 		driver.x()
-		.and(driver.rightTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
 		driver.y()
-		.and(driver.rightTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
 		driver.b()
-		.and(driver.rightTrigger())
-		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+		
+		driver.back().toggleOnTrue(leds.setCube());
+		driver.start().toggleOnTrue(leds.setCone());
 
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
