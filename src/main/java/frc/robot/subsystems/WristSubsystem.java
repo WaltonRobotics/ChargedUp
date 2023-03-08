@@ -166,7 +166,7 @@ public class WristSubsystem extends SubsystemBase {
     m_ffEffort = 0;
     var pdSetpoint = m_holdController.getSetpoint();
     if (pdSetpoint != 0) {
-      m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
+      // m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
     }
     double totalEffort = m_ffEffort + m_pdEffort;
     return totalEffort;
@@ -182,7 +182,7 @@ public class WristSubsystem extends SubsystemBase {
       nte_stickVoltage.setDouble(volts);
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
       m_targetAngle += powerVal;
-      double effort = powerVal == 0 ? getEffortToHold(getDegrees()) : getEffortForTarget(m_targetAngle);
+      double effort = powerVal == 0 ? getEffortToHold(m_targetAngle) : getEffortForTarget(m_targetAngle);
       setPower(effort, true);
     });
   }
