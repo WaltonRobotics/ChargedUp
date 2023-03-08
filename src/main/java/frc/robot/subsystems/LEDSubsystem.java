@@ -45,7 +45,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public CommandBase setCube() {
-        return runOnce(() ->  { 
+        return run(() ->  { 
             Color col = Color.kPurple;
             for (int i = 0; i < kNumLeds; i++) {
                 m_ledBuffer.setLED(i, col);
@@ -55,7 +55,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public CommandBase setCone() {
-        return runOnce(() ->  { 
+        return run(() ->  { 
             Color col = Color.kYellow;
             for (int i = 0; i < kNumLeds; i++) {
                 m_ledBuffer.setLED(i, col);

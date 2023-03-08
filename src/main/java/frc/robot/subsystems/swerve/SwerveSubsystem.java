@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -36,6 +37,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -481,6 +483,18 @@ public class SwerveSubsystem extends SubsystemBase {
 				true,
 				this);
 		return resetCmd.andThen(pathCmd);
+	}
+
+	public CommandBase getSwerveAutoCommand(Trajectory traj) {
+		return new SwerveControllerCommand(
+            traj, 
+            this::getPose, 
+            kKinematics,
+			xController,
+	        yController,
+            thetaController,
+			states -> setModuleStates(states),
+			this);
 	}
 
 	/**
