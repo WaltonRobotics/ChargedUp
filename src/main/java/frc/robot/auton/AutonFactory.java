@@ -30,7 +30,7 @@ public final class AutonFactory {
     }
 
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
-        var placeCmd = superstructure.toState(SuperState.SUBSTATION_PICK_UP).withTimeout(3);
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3);
         var clawCmd = claw.release();
         var pathCmd = (superstructure.toState(SuperState.SAFE)).withTimeout(2)
                 .andThen(swerve.getFullAuto(Paths.PPPaths.oneConePark));
