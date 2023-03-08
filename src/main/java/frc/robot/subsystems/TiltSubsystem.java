@@ -166,7 +166,7 @@ public class TiltSubsystem extends SubsystemBase {
 			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
-			// disengageBrake();
+			disengageBrake();
 		});
 
 		var moveCmd = run(() -> {
@@ -182,16 +182,16 @@ public class TiltSubsystem extends SubsystemBase {
 				})
 				.withName("ToAngle");
 				
-		// var brakeCmd = runOnce(() -> {
-		// 	engageBrake();
-		// });
+		var brakeCmd = runOnce(() -> {
+			engageBrake();
+		});
 
 		return Commands.sequence(
 			setupCmd,
 			Commands.waitSeconds(kBeforeBrakeTime),
-			moveCmd);
-			// Commands.waitSeconds(kAfterBrakeTime));
-			// brakeCmd);
+			moveCmd,
+			Commands.waitSeconds(kAfterBrakeTime),
+			brakeCmd);
 	}
 
 	private void setCoast(boolean coast) {

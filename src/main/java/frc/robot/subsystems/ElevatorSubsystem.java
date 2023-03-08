@@ -149,7 +149,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			// }
 
 			m_targetHeight += output*.05;
-			double effort = output == 0 ? getEffortToHold(m_targetHeight) : getEffortForTarget(m_targetHeight);
+			double effort = getEffortForTarget(m_targetHeight);
 			m_right.setVoltage(effort);
 		})
 				.withName("TeleManual");
