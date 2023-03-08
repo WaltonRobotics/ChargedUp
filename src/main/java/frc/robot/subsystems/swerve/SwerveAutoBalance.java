@@ -1,16 +1,9 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import static frc.robot.Constants.SwerveK.*;
-import frc.robot.Robot;
 
   public class SwerveAutoBalance extends CommandBase {
 

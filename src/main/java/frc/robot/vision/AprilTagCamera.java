@@ -31,7 +31,7 @@ public class AprilTagCamera {
                 new Translation3d(Units.inchesToMeters(9.5), Units.inchesToMeters(8.183), Units.inchesToMeters(7.25)), // camera placement on robot
                 new Rotation3d(0, Units.degreesToRadians(14), 0));
 
-    AprilTagFieldLayout aprilTagFieldLayout;
+    AprilTagFieldLayout aprilTagFieldLayout;    
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
     PhotonPoseEstimator poseEstimator1;
     PhotonPoseEstimator poseEstimator2;
