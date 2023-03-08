@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -125,31 +124,6 @@ public class RobotContainer {
 		driver.b()
 		.and(driver.rightTrigger())
 		.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
-
-		// using autoscore (for testing w/o camera): comment out later
-		// driver.x().whileTrue(swerve.getFullAuto(cone1));
-		// driver.y().whileTrue(swerve.getFullAuto(cube2));
-		// driver.b().whileTrue(swerve.getFullAuto(cone3));
-		// driver.x()
-		// 		.and(driver.leftTrigger())
-		// 		.whileTrue(swerve.getFullAuto(coopCone4));
-		// driver.y()
-		// 		.and(driver.leftTrigger())
-		// 		.whileTrue(swerve.getFullAuto(coopCube5));
-		// driver.b()
-		// 		.and(driver.leftTrigger())
-		// 		.whileTrue(swerve.getFullAuto(coopCone6));
-		// driver.x()
-		// 		.and(driver.rightTrigger())
-		// 		.whileTrue(swerve.getFullAuto(cone7));
-		// driver.y()
-		// 		.and(driver.rightTrigger())
-		// 		.whileTrue(swerve.getFullAuto(cube8));
-		// driver.b()
-		// 		.and(driver.rightTrigger())
-		// 		.whileTrue(swerve.getFullAuto(cone9));
-
-		// driver.rightBumper().whileTrue(swerve.autoBalance());
 
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()

@@ -1,5 +1,4 @@
 package frc.robot.vision;
-//TODO: measure cameras
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;

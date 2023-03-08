@@ -182,7 +182,7 @@ public class WristSubsystem extends SubsystemBase {
       nte_stickVoltage.setDouble(volts);
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
       m_targetAngle += powerVal;
-      double effort = getEffortForTarget(m_targetAngle);
+      double effort = powerVal == 0 ? getEffortToHold(m_targetAngle) : getEffortForTarget(m_targetAngle);
       setPower(effort, true);
     });
   }

@@ -79,7 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_left.follow(m_right);
 		m_left.setInverted(TalonFXInvertType.OpposeMaster);
-		m_controller.setTolerance(.1);
+		m_controller.setTolerance(.02);
 	}
 
 	/*
