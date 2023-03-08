@@ -44,6 +44,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 35);
 	private final GenericEntry nte_rawAbsVal = DashboardManager.addTabNumberBar(this, "RawAbs", 0, 1);
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
+	private final GenericEntry nte_diskBrake = DashboardManager.addTabBooleanToggle(this, "diskbrake");
 	private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
@@ -151,9 +152,9 @@ public class TiltSubsystem extends SubsystemBase {
 	 * engagebrake
 	 */
 	public CommandBase toAngle(double angle) {
-		// if (Math.abs(getDegrees() - angle) <= 0.5) {
-		// 	return Commands.none().until(() -> Math.abs(getDegrees() - m_targetAngle) > 0.5).andThen(toAngle(m_targetAngle));
-		// }
+		if (Math.abs(getDegrees() - angle) <= 0.5) {
+			return Commands.none();
+		}
 		
 		var setupCmd = runOnce(() -> {
 			if (angle > getDegrees()) {
@@ -201,12 +202,17 @@ public class TiltSubsystem extends SubsystemBase {
 		m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
 	}
 
+	private void setDiskBrake(boolean diskBrake) {
+		m_diskBrake.set(diskBrake);
+	}
+
 	@Override
 	public void periodic() {
 		if (!m_homeSwitch.get()) {
 			m_absoluteEncoder.reset();
 		}
 		setCoast(nte_coast.getBoolean(false));
+		setDiskBrake(nte_coast.getBoolean(true));
 		updateShuffleBoard();
 	}
 
