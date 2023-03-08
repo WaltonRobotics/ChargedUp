@@ -31,7 +31,7 @@ public class AprilTagCamera {
                 new Translation3d(Units.inchesToMeters(9.5), Units.inchesToMeters(8.183), Units.inchesToMeters(7.25)), // camera placement on robot
                 new Rotation3d(0, Units.degreesToRadians(14), 0));
 
-    AprilTagFieldLayout aprilTagFieldLayout;
+    AprilTagFieldLayout aprilTagFieldLayout;    
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
     PhotonPoseEstimator poseEstimator1;
     PhotonPoseEstimator poseEstimator2;
@@ -113,6 +113,9 @@ public class AprilTagCamera {
     }
     
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose2(Pose2d prevEstimatedRobotPose) {
+        if (m_highCamDisabled) {
+            return null;
+        }
         poseEstimator2.setReferencePose(prevEstimatedRobotPose);
         poseEstimator2.setLastPose(prevEstimatedRobotPose);
         return poseEstimator2.update();
