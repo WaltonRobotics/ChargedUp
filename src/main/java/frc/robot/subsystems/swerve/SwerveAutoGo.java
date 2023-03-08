@@ -36,7 +36,6 @@ public class SwerveAutoGo extends CommandBase {
 			m_swerve.getChassisSpeeds());
 		List<PathPoint> allPoints = new ArrayList<>();
 		allPoints.add(ReferencePoints.currentPoint);
-		boolean onRed = DriverStation.getAlliance().equals(Alliance.Red);
 		double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
 
 		for (PathPoint addedPP : m_path) {
