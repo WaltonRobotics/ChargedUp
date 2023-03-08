@@ -9,7 +9,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -212,6 +214,11 @@ public class Paths {
 				bumper1Pose.getRotation(), 2);
 		public static final PathPoint bumper2 = new PathPoint(bumper2Pose.getTranslation(), rot2dDeg(175),
 				bumper2Pose.getRotation());
+
+		public static final Pose2d oneConeInitial = new Pose2d(1.68, 5.00, Rotation2d.fromDegrees(180));
+		public static final Pose2d oneConeWaypoint = new Pose2d(5.41, 5.00, Rotation2d.fromDegrees(180));
+		public static final Pose2d oneConeEnd = new Pose2d(5.41, 2.91, Rotation2d.fromDegrees(180));
+
 
 		// public static final PathPoint blueRight3 = new PathPoint(new
 		// Translation2d(2.45, 0.75), rot2dDeg(180),rot2dDeg(180));

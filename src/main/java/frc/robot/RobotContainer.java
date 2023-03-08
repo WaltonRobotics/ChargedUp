@@ -184,6 +184,7 @@ public class RobotContainer {
 				AutonFactory.oneConePark(swerve, superstructure, claw));
 		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents).andThen(swerve.rotate180()));
 		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_WPILIB, AutonFactory.oneConeSequential(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_BUMPER, swerve.getFullAuto(coneBumper));
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BUMPER, swerve.getFullAuto(cubeBumper));
