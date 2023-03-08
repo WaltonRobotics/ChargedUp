@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.vision.EstimatedRobotPose;
 
@@ -541,6 +542,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		updateRobotPose();
+
+		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
+		SmartDashboard.putNumber("Pitch", m_pigeon.getPitch());
 	}
 
 	@Override
