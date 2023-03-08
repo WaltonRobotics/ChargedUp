@@ -148,7 +148,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			// 	output *= 1 - m_dampener;
 			// }
 
-			m_targetHeight += output*.05;
+			m_targetHeight += output*.5;
 			double effort = getEffortForTarget(m_targetHeight);
 			m_right.setVoltage(effort);
 		})
@@ -242,7 +242,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.until(() -> {
 					return m_controller.atGoal();
 				})
-				.withTimeout(1.25)
+				.withTimeout(1.65)
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);
 				})

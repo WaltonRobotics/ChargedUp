@@ -20,7 +20,8 @@ public class AutonChooser {
         CUBE_BUMPER("drop a cube and then drive out (bumper side)"),
         CONE_NOT_BUMPER("drop a cone and then drive out (non-bumper side)"),
         CUBE_NOT_BUMPER("drop a cube and then drive out (non-bumper side)"),
-        RELEASE_CLAW("releases the claw");
+        RELEASE_CLAW("releases the claw"),
+        AUTOBALANCE("autobalance");
 
         public final String description;
 

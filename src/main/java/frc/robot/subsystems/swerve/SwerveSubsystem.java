@@ -89,6 +89,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_apriltagHelper = apriltagHelper;
 		DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
+		m_pigeon.zeroGyroBiasNow();
 		// zeroGyro();
 
 		Timer.delay(.250);
@@ -248,6 +249,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		return m_poseEstimator.getEstimatedPosition();
 	}
 
+	protected PIDController getThetaController(){
+		return autoThetaController;
+	}
+
 	public void resetEstimatorPose(Pose2d pose) {
 		m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
 	}
@@ -291,12 +296,12 @@ public class SwerveSubsystem extends SubsystemBase {
 		return m_pigeon.getYaw() - 180;
 	}
 
-	protected double getGyroRoll(){
-		return m_pigeon.getYaw();
+	protected double getGyroRoll() {
+		return m_pigeon.getPitch(); // CTRE is Dumb
 	}	
 
-	protected double getGyroPitch(){
-		return m_pigeon.getPitch();
+	protected double getGyroPitch() {
+		return m_pigeon.getRoll(); // CTRE is Dumb
 	}
 	// Side to side
 	public Rotation2d getHeading() {
@@ -306,7 +311,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void resetPose(Pose2d pose) {
 		//TODO: RESET GYRO ZERO TO ORIGIN FACE
-		zeroGyro();
+		if(DriverStation.getAlliance() == DriverStation.Alliance.Blue){
+			zeroGyro();
+		}
+		else{
+			setYaw(-180);
+		}
 		resetEstimatorPose(pose); // resets poseEstimator
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
@@ -561,6 +571,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
 		SmartDashboard.putNumber("Pitch", m_pigeon.getPitch());
+		SmartDashboard.putNumber("Roll", m_pigeon.getRoll());
 	}
 
 	@Override

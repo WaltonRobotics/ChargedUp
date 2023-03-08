@@ -13,6 +13,8 @@ import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureToState;
+import frc.robot.subsystems.swerve.AutoBalance;
+import frc.robot.subsystems.swerve.SwerveAutoBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
@@ -95,6 +97,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 		driver.rightBumper().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
+		driver.rightTrigger().whileTrue(new AutoBalance(swerve));
 
 		// add back later
 		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
@@ -125,8 +128,8 @@ public class RobotContainer {
 			.and(driver.rightTrigger())
 			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 		
-		driver.back().onTrue(leds.setCube().until(claw.closedTrig));
-		driver.start().onTrue(leds.setCone().until(claw.closedTrig));
+		driver.leftBumper().onTrue(leds.setCube());
+		driver.rightBumper().onTrue(leds.setCone());
 
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
@@ -172,21 +175,22 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFullAuto(straightBack));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.oneConeOneCube(swerve, superstructure, claw));
+		// AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFullAuto(straightBack));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.oneConeOneCube(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFullAuto(testRot));
 		// AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT,
 		// swerve.getPPSwerveAutonCmd(testRot));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK,
 				AutonFactory.oneConePark(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents).andThen(swerve.rotate180()));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents).andThen(swerve.rotate180()));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_BUMPER, swerve.getFullAuto(coneBumper));
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BUMPER, swerve.getFullAuto(cubeBumper));
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_NOT_BUMPER, swerve.getFullAuto(coneNotBumper));
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_NOT_BUMPER, swerve.getFullAuto(cubeNotBumper));
-		AutonChooser.AssignAutonCommand(AutonOption.RELEASE_CLAW, AutonFactory.releaseClaw(claw));
+		AutonChooser.AssignAutonCommand(AutonOption.AUTOBALANCE, AutonFactory.autoBalance(swerve));
+		// AutonChooser.AssignAutonCommand(AutonOption.RELEASE_CLAW, AutonFactory.releaseClaw(claw));
 	}
 
 	public void mapTrajectories() {
@@ -228,6 +232,7 @@ public class RobotContainer {
 				new ParallelRaceGroup(
 						new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP),
 						new WaitCommand(2)));
+		autonEventMap.put("autoBalance", new AutoBalance(swerve));
 		// autonEventMap.put("autoBalance",
 		// swerve.bangBangBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));

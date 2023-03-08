@@ -60,6 +60,10 @@ public class Superstructure extends SubsystemBase {
 		return new SuperstructureToState(this, state);
 	}
 
+	public CommandBase autoReset(){
+		return new SuperstructureToState(this, SuperState.SAFE).withTimeout(.5);
+	}
+
 	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
 		return runOnce(() -> {
 			CommandScheduler.getInstance().cancel(

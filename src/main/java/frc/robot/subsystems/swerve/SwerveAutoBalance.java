@@ -50,6 +50,6 @@ import static frc.robot.Constants.SwerveK.*;
   
     @Override
     public boolean isFinished() {
-      return Math.abs(angleDegrees) < 2.5; // 2.5 = max degrees for the robot to be considered docked
+      return Math.abs(angleDegrees) < 2; // 2.5 = max degrees for the robot to be considered docked
     }
   }
