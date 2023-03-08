@@ -38,7 +38,10 @@ public class Paths {
 		public static final PathPlannerTrajectory straightBack = PathPlanner.loadPath("straightBack",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory oneConeOneCube = PathPlanner.loadPath("oneConeOneCube",
+		public static final PathPlannerTrajectory oneConeOneCube1 = PathPlanner.loadPath("oneConeOneCubeP1",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory oneConeOneCube2 = PathPlanner.loadPath("oneConeOneCubeP2",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory testRot = PathPlanner.loadPath("testRot",

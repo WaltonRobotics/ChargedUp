@@ -40,4 +40,16 @@ public final class AutonFactory {
     public static CommandBase releaseClaw(TheClaw claw) {
         return claw.release();
     }
+
+    public static CommandBase oneConeOneCube(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3);
+        var clawCmd = claw.release();
+        var pathCmd = (superstructure.toState(SuperState.SAFE)).withTimeout(2)
+                .andThen(swerve.getFullAuto(Paths.PPPaths.oneConeOneCube1))
+                .andThen(superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(3)
+                .andThen(swerve.getFullAuto(Paths.PPPaths.oneConeOneCube2))
+                .andThen(superstructure.toState(SuperState.TOPCUBE).withTimeout(3)));
+
+        return placeCmd.andThen(clawCmd).andThen(new WaitCommand(1.5).andThen(pathCmd).andThen(clawCmd));
+    }
 }

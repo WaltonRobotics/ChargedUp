@@ -173,7 +173,7 @@ public class RobotContainer {
 
 	public void mapAutonCommands() {
 		AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFullAuto(straightBack));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, swerve.getFullAuto(oneConeOneCube));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.oneConeOneCube(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFullAuto(testRot));
 		// AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT,
 		// swerve.getPPSwerveAutonCmd(testRot));
