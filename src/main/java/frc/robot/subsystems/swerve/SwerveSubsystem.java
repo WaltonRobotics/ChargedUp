@@ -310,15 +310,25 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void resetPose(Pose2d pose) {
-		//TODO: RESET GYRO ZERO TO ORIGIN FACE
-		if(DriverStation.getAlliance() == DriverStation.Alliance.Blue){
-			zeroGyro();
-		}
-		else{
-			setYaw(-180);
-		}
+		// if(DriverStation.getAlliance() == DriverStation.Alliance.Blue){
+		// 	zeroGyro();
+		// }
+		// else{
+		// 	setYaw(-180);
+		// }
+		zeroGyro();
 		resetEstimatorPose(pose); // resets poseEstimator
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
+	}
+
+	public CommandBase driveOneDirection(boolean reverse){
+		double power = 1;
+		if(reverse){
+			power *= -1;
+		}
+		return run(()->{
+			drive(-1, 0, 0, false, false);
+		});
 	}
 
 	/*
@@ -407,6 +417,16 @@ public class SwerveSubsystem extends SubsystemBase {
 		});
 	}
 
+	public CommandBase getTimedFullAuto(PathPlannerTrajectory trajectory) {
+		return new ProxyCommand(() -> {
+			boolean shouldFlip = Flipper.shouldFlip();
+			var newTraj = trajectory;
+			if(shouldFlip){
+				newTraj = Flipper.allianceFlip(trajectory);
+			}
+			return autoBuilder.fullAuto(newTraj).withTimeout(trajectory.getTotalTimeSeconds());
+		}).withTimeout(4);
+	}
 	// public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
 	// 	return autoBuilder.fullAuto(trajectoryList);
 	// }
@@ -441,7 +461,7 @@ public class SwerveSubsystem extends SubsystemBase {
 						// Optional, defaults to true
 				this // Requires this drive subsystem
 			);
-			return resetCmd.andThen(pathCmd);
+			return resetCmd.andThen(pathCmd).withTimeout(2);
 		});
 	}
 

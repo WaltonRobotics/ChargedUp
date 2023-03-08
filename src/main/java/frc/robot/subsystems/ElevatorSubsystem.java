@@ -148,7 +148,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			// 	output *= 1 - m_dampener;
 			// }
 
-			m_targetHeight += output*.5;
+			m_targetHeight += output*.02;
 			double effort = getEffortForTarget(m_targetHeight);
 			m_right.setVoltage(effort);
 		})

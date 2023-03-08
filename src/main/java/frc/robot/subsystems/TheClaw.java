@@ -25,6 +25,7 @@ public class TheClaw extends SubsystemBase {
 	public final Trigger leftEyeTrig = new Trigger(leftEye::get);
 	public final Trigger rightEyeTrig = new Trigger(rightEye::get);
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
+	public final Trigger openTrig = new Trigger(()-> !m_isClosed);
 
 	public TheClaw() {
 		// DashboardManager.addTab(this);
@@ -40,7 +41,7 @@ public class TheClaw extends SubsystemBase {
 				m_isClosed = false;  // open claw
 				claw.set(true); 
 			})
-			.andThen(new WaitCommand(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 0.4)) // wait 0.8sec before sensor
+			.andThen(new WaitCommand(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 1.1)) // wait 0.8sec before sensor
 			.andThen(
 				startEnd(() -> {}, 
 					() -> {

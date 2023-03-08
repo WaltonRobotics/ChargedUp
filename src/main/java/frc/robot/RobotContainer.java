@@ -14,7 +14,6 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.swerve.AutoBalance;
-import frc.robot.subsystems.swerve.SwerveAutoBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
@@ -81,8 +80,10 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// LED triggering
-		claw.leftEyeTrig.and(claw.rightEyeTrig)
+		claw.leftEyeTrig.and(claw.rightEyeTrig).and(claw.openTrig)
 			.onTrue(leds.grabOk().until(claw.closedTrig));
+		
+		
 	}
 
 	/**
@@ -95,9 +96,8 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		/* Driver Buttons */
-		driver.leftBumper().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-		driver.rightBumper().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
-		driver.rightTrigger().whileTrue(new AutoBalance(swerve));
+		driver.back().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+		driver.start().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
 
 		// add back later
 		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
@@ -128,8 +128,8 @@ public class RobotContainer {
 			.and(driver.rightTrigger())
 			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 		
-		driver.leftBumper().onTrue(leds.setCube());
-		driver.rightBumper().onTrue(leds.setCone());
+		driver.rightTrigger().onTrue(leds.setCube());
+		driver.leftTrigger().onTrue(leds.setCone());
 
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
@@ -232,7 +232,7 @@ public class RobotContainer {
 				new ParallelRaceGroup(
 						new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP),
 						new WaitCommand(2)));
-		autonEventMap.put("autoBalance", new AutoBalance(swerve));
+		autonEventMap.put("autoBalance", new AutoBalance(swerve, false));
 		// autonEventMap.put("autoBalance",
 		// swerve.bangBangBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));

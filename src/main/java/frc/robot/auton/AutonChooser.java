@@ -21,7 +21,8 @@ public class AutonChooser {
         CONE_NOT_BUMPER("drop a cone and then drive out (non-bumper side)"),
         CUBE_NOT_BUMPER("drop a cube and then drive out (non-bumper side)"),
         RELEASE_CLAW("releases the claw"),
-        AUTOBALANCE("autobalance");
+        AUTOBALANCE("autobalance"),
+        PURE_DRIVE("Pure Drive");
 
         public final String description;
 

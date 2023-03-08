@@ -1,13 +1,11 @@
 package frc.robot.auton;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import frc.robot.Constants.SwerveK;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.swerve.AutoBalance;
@@ -34,15 +32,16 @@ public final class AutonFactory {
     }
 
     public static CommandBase autoBalance(SwerveSubsystem swerve){
-        return new AutoBalance(swerve);
+        return new AutoBalance(swerve, false);
     }
 
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
         var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var pathCmd = swerve.getPPSwerveAutonCmd(Paths.PPPaths.oneConePark).withTimeout(4.5).withName("Path1Cmd");
+        var pathCmd = swerve.getPPSwerveAutonCmd(Paths.PPPaths.oneConePark).withName("Path1Cmd");
         // var pathCmd = swerve.getFullAuto(Paths.PPPaths.oneConePark).withInterruptBehavior(InterruptionBehavior.kCancelSelf).withTimeout(4.5).withName("Path1Cmd");
+        var driveCmd = swerve.driveOneDirection(false).withTimeout(3);
 
         return Commands.sequence(
             placeCmd,
@@ -50,9 +49,9 @@ public final class AutonFactory {
             Commands.waitSeconds(1),
             ssResetCmd,
             Commands.print("===========BeforePathCmd==========="),
-            // pathCmd,
+            driveCmd,
             Commands.print("===========AfterPathCmd==========="),
-            new AutoBalance(swerve).withName("autobalance"),
+            new AutoBalance(swerve, false).withName("autobalance"),
             Commands.print("===========AfterBalanceCmd===========")
         );
     }   
@@ -71,14 +70,5 @@ public final class AutonFactory {
                 .andThen(superstructure.toState(SuperState.TOPCUBE).withTimeout(3)));
 
         return placeCmd.andThen(clawCmd).andThen(new WaitCommand(1.5).andThen(pathCmd).andThen(clawCmd));
-    }
-
-    public static CommandBase oneConeBalance(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
-        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3)
-                .andThen(claw.release())
-                .andThen(superstructure.toState(SuperState.SAFE));
-        var driveCmd = new InstantCommand(() -> swerve.drive(-1, 0, 0, false, false)).withTimeout(4)
-                .andThen(new InstantCommand(() -> swerve.drive(0, -1, 0, false, false)).withTimeout(1.5));
-        return placeCmd.andThen(driveCmd).andThen(autoBalance(swerve));
     }
 }
