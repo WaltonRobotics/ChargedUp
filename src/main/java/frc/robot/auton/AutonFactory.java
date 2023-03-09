@@ -60,15 +60,21 @@ public final class AutonFactory {
         var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var backCmd = swerve.driveOneDirection(true).withTimeout(3);
-        var strafeCmd = swerve.driveSide(true).withTimeout(2);
+        var toPt1 = swerve.goToChosenPoint(
+                        new PathPoint(new Translation2d(5.87, 5.11), 
+                            Rotation2d.fromDegrees(0), 
+                            Rotation2d.fromDegrees(180)));
+        var toPt2 = swerve.goToChosenPoint(
+                        new PathPoint(new Translation2d(5.87, 2.96), 
+                            Rotation2d.fromDegrees(0), 
+                            Rotation2d.fromDegrees(-90)));
 
         return Commands.sequence(
             placeCmd,
             clawCmd,
             ssResetCmd,
-            backCmd,
-            strafeCmd,
+            toPt1,
+            toPt2,
             new AutoBalance(swerve, false)
         );
     }
@@ -77,15 +83,21 @@ public final class AutonFactory {
         var placeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2.5).withName("SS-Auto-TopCube");
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var backCmd = swerve.driveOneDirection(true).withTimeout(3);
-        var strafeCmd = swerve.driveSide(false).withTimeout(2);
+        var toPt1 = swerve.goToChosenPoint(
+                        new PathPoint(new Translation2d(5.87, 1.05), 
+                            Rotation2d.fromDegrees(0), 
+                            Rotation2d.fromDegrees(180)));
+        var toPt2 = swerve.goToChosenPoint(
+                        new PathPoint(new Translation2d(5.87, 2.75), 
+                            Rotation2d.fromDegrees(0), 
+                            Rotation2d.fromDegrees(90)));
 
         return Commands.sequence(
             placeCmd,
             clawCmd,
             ssResetCmd,
-            backCmd,
-            strafeCmd,
+            toPt1,
+            toPt2,
             new AutoBalance(swerve, false)
         );
     }
