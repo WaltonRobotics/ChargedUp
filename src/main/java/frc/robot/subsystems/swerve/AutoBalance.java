@@ -18,7 +18,6 @@ public class AutoBalance extends CommandBase {
         m_swerve = swerve;
         addRequirements(swerve);
         m_reverse = reverse;
-
     }
 
     @Override

@@ -328,22 +328,14 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase driveOneDirection(boolean reverse){
-		double power = 1;
-		if(reverse){
-			power *= -1;
-		}
-		return run(()->{
-			drive(-2, 0, 0, false, false);
+		return run(()-> {
+			drive(reverse ? 2 : -2, 0, 0, false, false);
 		});
 	}
 
 	public CommandBase driveSide(boolean left){
-		double power = 1;
-		if(left){
-			power *= -1;
-		}
-		return run(()->{
-			drive(0, -2, 0, false, false);
+		return run(()-> {
+			drive(0, left ? 2 : -2, 0, false, false);
 		});
 	}
 

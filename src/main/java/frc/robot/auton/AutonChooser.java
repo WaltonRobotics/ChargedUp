@@ -8,22 +8,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AutonChooser {
     public enum AutonOption {
-        STRAIGHT_BACK("Straight Back"),
-        ONE_CONE_ONE_CUBE("Drop Cone then Cube"),
-        ONE_CONE("Drop Cone"),
         TEST_ROT("test"),
-        ONE_CONE_PARK("Drop cone then park"),
-        ONE_CONE_PARK_EVENTS("Drop cone then park w/ Events"),
-        ONE_CONE_PARK_WPILIB("Drop cone then park using wpilib trajectory"),
-        ONE_CUBE_ONE_CONE("Drop cube then cone and park w/ events"),
-        TWO_CONE_ONE_CUBE("Drop cone then cube then cone and park w/ events"),
-        CONE_BUMPER("drop a cone and then drive out (bumper side)"),
-        CUBE_BUMPER("drop a cube and then drive out (bumper side)"),
-        CONE_NOT_BUMPER("drop a cone and then drive out (non-bumper side)"),
-        DROPCONEBACK("DROP CONE BACK"),
-        RELEASE_CLAW("releases the claw"),
-        AUTOBALANCE("autobalance"),
-        PURE_DRIVE("Pure Drive");
+        ONE_CONE_PARK("drop cone then park"),
+        DROP_CONE_BACK("drop cone back"),
+        ONE_CONE_AROUND("drop cone then go around and park"),
+        ONE_CUBE_AROUND("drop cube then go around and park"),
+        AUTOBALANCE("autobalance");
 
         public final String description;
 
