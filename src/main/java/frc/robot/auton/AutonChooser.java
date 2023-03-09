@@ -20,7 +20,7 @@ public class AutonChooser {
         CONE_BUMPER("drop a cone and then drive out (bumper side)"),
         CUBE_BUMPER("drop a cube and then drive out (bumper side)"),
         CONE_NOT_BUMPER("drop a cone and then drive out (non-bumper side)"),
-        CUBE_NOT_BUMPER("drop a cube and then drive out (non-bumper side)"),
+        DROPCONEBACK("DROP CONE BACK"),
         RELEASE_CLAW("releases the claw"),
         AUTOBALANCE("autobalance"),
         PURE_DRIVE("Pure Drive");

@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.swerve.resetModsToAbs();
     // m_robotContainer.swerve.resetGyro();
     m_robotContainer.superstructure.reset();
-    m_robotContainer.superstructure.autoReset().schedule();
+
     m_autonomousCommand = 
     m_robotContainer.getAutonomousCommand();
 

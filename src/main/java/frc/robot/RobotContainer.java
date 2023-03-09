@@ -131,6 +131,8 @@ public class RobotContainer {
 		driver.rightTrigger().onTrue(leds.setCube());
 		driver.leftTrigger().onTrue(leds.setCone());
 
+		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
+
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
 		)); 
@@ -180,16 +182,15 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFullAuto(testRot));
 		// AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT,
 		// swerve.getPPSwerveAutonCmd(testRot));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK,
-				AutonFactory.oneConePark(swerve, superstructure, claw));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
 		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_EVENTS, swerve.getFullAuto(oneConeParkEvents).andThen(swerve.rotate180()));
 		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_ONE_CONE, swerve.getFullAuto(oneCubeOneCone));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_WPILIB, AutonFactory.oneConeSequential(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_BUMPER, swerve.getFullAuto(coneBumper));
-		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BUMPER, swerve.getFullAuto(cubeBumper));
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_NOT_BUMPER, swerve.getFullAuto(coneNotBumper));
-		AutonChooser.AssignAutonCommand(AutonOption.CUBE_NOT_BUMPER, swerve.getFullAuto(cubeNotBumper));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_WPILIB, AutonFactory.oneConeSequential(swerve, superstructure, claw));
+		// AutonChooser.AssignAutonCommand(AutonOption.TWO_CONE_ONE_CUBE, swerve.getFullAuto(twoConeOneCube));
+		// AutonChooser.AssignAutonCommand(AutonOption.CONE_BUMPER, swerve.getFullAuto(coneBumper));
+		// AutonChooser.AssignAutonCommand(AutonOption.CUBE_BUMPER, swerve.getFullAuto(cubeBumper));
+		// AutonChooser.AssignAutonCommand(AutonOption.CONE_NOT_BUMPER, swerve.getFullAuto(coneNotBumper));
+		AutonChooser.AssignAutonCommand(AutonOption.DROPCONEBACK, AutonFactory.OneConeBack(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.AUTOBALANCE, AutonFactory.autoBalance(swerve));
 		// AutonChooser.AssignAutonCommand(AutonOption.RELEASE_CLAW, AutonFactory.releaseClaw(claw));
 	}
@@ -215,25 +216,25 @@ public class RobotContainer {
 	}
 
 	public void mapAutonEvents() {
-		autonEventMap.put("testEvent",
-				AutonFactory.TestEvent(swerve));
-		autonEventMap.put("placeTopCube",
-				new ParallelRaceGroup(
-						new SuperstructureToState(superstructure, SuperState.TOPCUBE),
-						new WaitCommand(2))
-						.andThen(new WaitCommand(1))
-						.andThen(claw.release())
-						.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
-		autonEventMap.put("placeTopCone",
-				new SuperstructureToState(superstructure, SuperState.TOPCONE).withTimeout(2.5));
-		autonEventMap.put("override", superstructure.overrideStates(null, null, null));
-		autonEventMap.put("releaseClaw", claw.release());
-		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE).withTimeout(2.5));
-		autonEventMap.put("groundPickUp",
-				new ParallelRaceGroup(
-						new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP),
-						new WaitCommand(2)));
-		autonEventMap.put("autoBalance", new AutoBalance(swerve, false));
+		// autonEventMap.put("testEvent",
+		// 		AutonFactory.TestEvent(swerve));
+		// autonEventMap.put("placeTopCube",
+		// 		new ParallelRaceGroup(
+		// 				new SuperstructureToState(superstructure, SuperState.TOPCUBE),
+		// 				new WaitCommand(2))
+		// 				.andThen(new WaitCommand(1))
+		// 				.andThen(claw.release())
+		// 				.andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
+		// autonEventMap.put("placeTopCone",
+		// 		new SuperstructureToState(superstructure, SuperState.TOPCONE).withTimeout(2.5));
+		// autonEventMap.put("override", superstructure.overrideStates(null, null, null));
+		// autonEventMap.put("releaseClaw", claw.release());
+		// autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE).withTimeout(2.5));
+		// autonEventMap.put("groundPickUp",
+		// 		new ParallelRaceGroup(
+		// 				new SuperstructureToState(superstructure, SuperState.GROUND_PICK_UP),
+		// 				new WaitCommand(2)));
+		// autonEventMap.put("autoBalance", new AutoBalance(swerve, false));
 		// autonEventMap.put("autoBalance",
 		// swerve.bangBangBalance());
 		// zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));

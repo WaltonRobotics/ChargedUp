@@ -34,6 +34,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -67,6 +68,9 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
 	protected final SwerveAutoBuilder autoBuilder;
+    protected final LinearFilter m_dropFilter = LinearFilter.highPass(0.3, 0.02);
+	protected boolean m_startedBalance = false;
+
 
 	// private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
 	// kKinematics, getHeading(), getModulePositions());
@@ -329,9 +333,20 @@ public class SwerveSubsystem extends SubsystemBase {
 			power *= -1;
 		}
 		return run(()->{
-			drive(-1, 0, 0, false, false);
+			drive(-2, 0, 0, false, false);
 		});
 	}
+
+	public CommandBase driveSide(boolean left){
+		double power = 1;
+		if(left){
+			power *= -1;
+		}
+		return run(()->{
+			drive(0, -2, 0, false, false);
+		});
+	}
+
 
 	/*
 	 * Set steer to brake and drive to coast for odometry testing
@@ -604,8 +619,14 @@ public class SwerveSubsystem extends SubsystemBase {
 		updateRobotPose();
 
 		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
-		SmartDashboard.putNumber("Pitch", m_pigeon.getPitch());
-		SmartDashboard.putNumber("Roll", m_pigeon.getRoll());
+		SmartDashboard.putNumber("Pitch", getGyroPitch());
+		SmartDashboard.putNumber("Roll", getGyroRoll());
+
+		var filteredPitch = m_dropFilter.calculate(getGyroPitch());
+		m_startedBalance = filteredPitch >= -3;
+
+		SmartDashboard.putNumber("HighPassPitch", filteredPitch);
+        SmartDashboard.putBoolean("StartedBalance", m_startedBalance);
 	}
 
 	@Override
