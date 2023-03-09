@@ -1,5 +1,4 @@
 package frc.robot.vision;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -10,10 +9,6 @@ import org.photonvision.PhotonCamera;
 import frc.lib.vision.PhotonPoseEstimator;
 // import org.photonvision.PhotonPoseEstimator;
 import frc.lib.vision.PhotonPoseEstimator.PoseStrategy;
-// import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Pair;
@@ -25,15 +20,23 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
-    public final PhotonCamera cam = new PhotonCamera("ov9281");
+    public final PhotonCamera highCam = new PhotonCamera("LeftHighCam");
+    public final PhotonCamera lowCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
     // distance from robot to camera
-    Transform3d robotToCam = new Transform3d(
-            new Translation3d(Units.inchesToMeters(6), 0, Units.inchesToMeters(34.75)), // camera placement on robot
+    private final Transform3d robotToCam1 = new Transform3d(
+            new Translation3d(Units.inchesToMeters(11), Units.inchesToMeters(1.25), Units.inchesToMeters(42.5)), // camera placement on robot
             new Rotation3d(0, Units.degreesToRadians(0), 0));
 
-    AprilTagFieldLayout aprilTagFieldLayout;
+    private final Transform3d robotToCam2 = new Transform3d(
+                new Translation3d(Units.inchesToMeters(9.5), Units.inchesToMeters(8.183), Units.inchesToMeters(7.25)), // camera placement on robot
+                new Rotation3d(0, Units.degreesToRadians(14), 0));
+
+    AprilTagFieldLayout aprilTagFieldLayout;    
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
-    static PhotonPoseEstimator poseEstimator;
+    PhotonPoseEstimator poseEstimator1;
+    PhotonPoseEstimator poseEstimator2;
+
+    private boolean m_highCamDisabled = false;
 
     public AprilTagCamera() {
         init();
@@ -56,9 +59,30 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(cam, robotToCam));
-        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cam,
-                robotToCam);
+        camList.add(new Pair<PhotonCamera, Transform3d>(highCam, robotToCam1));
+        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, highCam,
+                robotToCam1);
+
+        camList.add(new Pair<PhotonCamera, Transform3d>(lowCam, robotToCam2));
+        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, lowCam,
+                        robotToCam2);
+    }
+
+    public void periodic() {
+        // //reverses based on PathPlanner coordinates
+		// if(DriverStation.getAlliance() == Alliance.Blue){
+		// 	poseEstimator1.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+        //     poseEstimator2.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+		// }
+		// else{
+		// 	poseEstimator1.getFieldTags().setOrigin(new Pose3d(
+        //         new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
+        //         new Rotation3d(0, 0, 0)));
+        //     poseEstimator2.getFieldTags().setOrigin(
+        //         new Pose3d(
+        //             new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
+        //             new Rotation3d(0, 0, 0)));
+		// }
     }
 
     /**
@@ -69,40 +93,46 @@ public class AprilTagCamera {
      *         timestamp when the robot pose was estimated
      *         Use this to update drivetrain pose estimator
      */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        poseEstimator.setReferencePose(prevEstimatedRobotPose);
-        poseEstimator.setLastPose(prevEstimatedRobotPose);
-        return poseEstimator.update();
+    // public ArrayList<Optional<EstimatedRobotPose>> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+    //     ArrayList<Optional<EstimatedRobotPose>> estimatedGlobalPoses = new ArrayList<>();
+    //     poseEstimator1.setReferencePose(prevEstimatedRobotPose);
+    //     poseEstimator1.setLastPose(prevEstimatedRobotPose);
+    //     estimatedGlobalPoses.add( poseEstimator1.update());
+        
+    //     poseEstimator2.setReferencePose(prevEstimatedRobotPose);
+    //     poseEstimator2.setLastPose(prevEstimatedRobotPose);
+    //     estimatedGlobalPoses.add( poseEstimator2.update());
+
+    //     return estimatedGlobalPoses;
+    // }
+
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose1(Pose2d prevEstimatedRobotPose) {
+        poseEstimator1.setReferencePose(prevEstimatedRobotPose);
+        poseEstimator1.setLastPose(prevEstimatedRobotPose);
+        return poseEstimator1.update();
+    }
+    
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose2(Pose2d prevEstimatedRobotPose) {
+        if (m_highCamDisabled) {
+            return null;
+        }
+        poseEstimator2.setReferencePose(prevEstimatedRobotPose);
+        poseEstimator2.setLastPose(prevEstimatedRobotPose);
+        return poseEstimator2.update();
+    }
+
+    public void setHighCamDisabled(boolean disabled) {
+        m_highCamDisabled = disabled;
     }
 
     // unfiltered view of camera
     public void toggleDriverMode() {
-        if (cam.getDriverMode()) {
-            cam.setDriverMode(false);
+        if (highCam.getDriverMode()) {
+            highCam.setDriverMode(false);
         }
 
         else {
-            cam.setDriverMode(true);
+            highCam.setDriverMode(true);
         }
-    }
-
-    public Optional<PhotonPipelineResult> getLatestResult() {
-        var result = cam.getLatestResult();
-        return result != null ? Optional.of(result) : Optional.empty();
-    }
-
-    public Optional<PhotonTrackedTarget> getBestTarget() {
-        var latestOpt = getLatestResult();
-        if (latestOpt.isPresent()) {
-            if (latestOpt.get().hasTargets()) {
-                return Optional.of(latestOpt.get().getBestTarget());
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    public void updateReferencePose(Pose2d poseMeters) {
-        poseEstimator.setReferencePose(poseMeters);
     }
 }

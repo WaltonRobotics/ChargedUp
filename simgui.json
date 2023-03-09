@@ -15,6 +15,11 @@
         "header": {
           "open": true
         }
+      },
+      "Talon FX[3]/Integrated Sensor": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
@@ -25,8 +30,11 @@
       "/Shuffleboard/Elevator/Lift Sim": "Mechanism2d",
       "/Shuffleboard/ElevatorSubsystem/ElevatorSubsystem": "Subsystem",
       "/Shuffleboard/Swerve/Swerve": "Subsystem",
+      "/Shuffleboard/SwerveSubsystem/AutoThetaCtrl": "PIDController",
       "/Shuffleboard/SwerveSubsystem/Field2d": "Field2d",
       "/Shuffleboard/SwerveSubsystem/SwerveSubsystem": "Subsystem",
+      "/Shuffleboard/SwerveSubsystem/XCtrl": "PIDController",
+      "/Shuffleboard/SwerveSubsystem/YCtrl": "PIDController",
       "/Shuffleboard/TheClaw/TheClaw": "Subsystem",
       "/Shuffleboard/TiltSubsystem/TiltSubsystem": "Subsystem",
       "/Shuffleboard/WristSubsystem/WristSubsystem": "Subsystem",

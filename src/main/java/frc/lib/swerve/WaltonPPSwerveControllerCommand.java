@@ -1,7 +1,7 @@
 package frc.lib.swerve;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.ReflectedTransform;
+import com.pathplanner.lib.PathPlannerUtil;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.server.PathPlannerServer;
@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
@@ -238,10 +239,13 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
 
     var trajectory = trajectoryOpt.get();
 
+    if (trajectory.getStates().isEmpty()) {
+      throw new RuntimeException("Empty trajectory!");
+    }
+
     if (useAllianceColor && trajectory.fromGUI) {
       transformedTrajectory =
-          ReflectedTransform.reflectiveTransformTrajectory(
-            trajectory);
+          PathPlannerUtil.transformTrajectoryForAlliance(trajectory, Alliance.Red);
     } else {
       transformedTrajectory = trajectory;
     }

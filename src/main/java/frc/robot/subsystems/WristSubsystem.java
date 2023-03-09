@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
@@ -28,8 +29,11 @@ public class WristSubsystem extends SubsystemBase {
   private double m_ffEffort = 0;
   private double m_pdEffort = 0;
   private double m_totalEffort = 0;
-  private double m_maxDegrees = kMaxAngleDegrees;
+  private double m_maxDegrees = kMaxDeg;
   private boolean m_isCoast = false;
+
+  private final PIDController m_holdController = new PIDController(
+      kP, 0, kD);
 
   private final ProfiledPIDController m_controller = new ProfiledPIDController(
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
@@ -39,10 +43,10 @@ public class WristSubsystem extends SubsystemBase {
   private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "PD Effort", -15, 15);
   private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "Total Effort", -15, 15);
   private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "Target Angle",
-      WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
+      WristK.kMinDeg, WristK.kMaxDeg);
   private final GenericEntry nte_rawAbsEncoder = DashboardManager.addTabDial(this, "Raw Abs Encoder", 0, 1);
   private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "Actual Angle",
-      WristK.kMinAngleDegrees, WristK.kMaxAngleDegrees);
+      WristK.kMinDeg, WristK.kMaxDeg);
   private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
   private final GenericEntry nte_motorTemp = DashboardManager.addTabNumberBar(this, "Motor Temp", 0, 100);
   private final GenericEntry nte_minLimit = DashboardManager.addTabBooleanBox(this, "At Bot Limit");
@@ -56,6 +60,8 @@ public class WristSubsystem extends SubsystemBase {
     m_absEncoder.setInverted(false);
     m_absEncoder.setPositionConversionFactor(360);
     m_motor.burnFlash();
+
+    m_controller.setTolerance(1);
   }
 
   /*
@@ -63,17 +69,14 @@ public class WristSubsystem extends SubsystemBase {
    * true for coast, false for brake
    */
   private void setCoast(boolean coast) {
-    if (coast) {
-      m_motor.setIdleMode(IdleMode.kCoast);
-    } else {
-      m_motor.setIdleMode(IdleMode.kBrake);
-    }
+    m_isCoast = coast;
+    m_motor.setIdleMode(m_isCoast ? IdleMode.kCoast : IdleMode.kBrake);
   }
 
   /*
    * @return The actual degree of the wrist (this dynamically changes)
    */
-  private double getDegrees() {
+  public double getDegrees() {
     var rawRads = Units.degreesToRadians(m_absEncoder.getPosition());
     return Units.radiansToDegrees(MathUtil.angleModulus(rawRads));
   }
@@ -91,29 +94,29 @@ public class WristSubsystem extends SubsystemBase {
    * @param degrees The max degree to set to
    */
   public void setMaxDegrees(double degrees) {
-    m_maxDegrees = MathUtil.clamp(degrees, kMaxAngleDegrees, kMinAngleDegrees);
+    m_maxDegrees = MathUtil.clamp(degrees, kMaxDeg, kMinDeg);
   }
 
   /*
    * @return Whether or not wrist is straight up
    */
   private boolean atMinLimit() {
-    return getDegrees() <= kMinAngleDegrees;
+    return getDegrees() <= kMinDeg;
   }
 
   /*
    * @return Whether or not wrist is as low as possible
    */
   private boolean atMaxLimit() {
-    return getDegrees() >= kMaxAngleDegrees;
+    return getDegrees() >= kMaxDeg;
   }
 
   private void i_setTarget(double targetAngle) {
-    m_targetAngle = MathUtil.clamp(targetAngle, kMinAngleDegrees, m_maxDegrees);
+    m_targetAngle = MathUtil.clamp(targetAngle, kMinDeg, m_maxDegrees);
   }
 
-  public void setTarget(double targetAngle) {
-    i_setTarget(targetAngle);
+  public CommandBase setTarget(double targetAngle) {
+    return run(() -> i_setTarget(targetAngle));
   }
 
   /*
@@ -158,6 +161,16 @@ public class WristSubsystem extends SubsystemBase {
     return m_pdEffort;
   }
 
+  private double getEffortToHold(double degrees) {
+    m_pdEffort = m_holdController.calculate(getDegrees(), degrees);
+    m_ffEffort = 0;
+    var pdSetpoint = m_holdController.getSetpoint();
+    if (pdSetpoint != 0) {
+      // m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
+    }
+    double totalEffort = m_ffEffort + m_pdEffort;
+    return totalEffort;
+  }
   /*
    * @return Cmd to move the wrist with stick
    * 
@@ -169,7 +182,7 @@ public class WristSubsystem extends SubsystemBase {
       nte_stickVoltage.setDouble(volts);
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
       m_targetAngle += powerVal;
-      double effort = getEffortForTarget(m_targetAngle);
+      double effort = powerVal == 0 ? getEffortToHold(m_targetAngle) : getEffortForTarget(m_targetAngle);
       setPower(effort, true);
     });
   }
@@ -191,21 +204,31 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public CommandBase toAngle(double angle) {
+    // if (Math.abs(getDegrees() - angle) <= 0.2) {
+    //   return Commands.none().until(() -> Math.abs(getDegrees() - m_targetAngle) > 0.2).andThen(toAngle(m_targetAngle));
+    // }
+
     return runOnce(() -> {
       m_controller.reset(getDegrees());
       i_setTarget(angle);
     }).andThen(run(() -> {
-      var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
+      var effort = getDegrees() == angle ? getEffortToHold(angle)
+          : MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
       setPower(effort, true);
     }))
-        .withTimeout(1.2)
+        .until(() -> {
+          return m_controller.atGoal();
+        })
+        .withTimeout(1.8)
         .finallyDo((intr) -> {
           m_motor.set(0);
         })
         .withName("ToAngle");
   }
 
-  public CommandBase toState(WristStates state) {
+
+
+  public CommandBase toState(WristState state) {
     return toAngle(state.angle);
   }
 
@@ -230,20 +253,20 @@ public class WristSubsystem extends SubsystemBase {
     nte_maxLimit.setBoolean(atMaxLimit());
   }
 
-  public static enum WristStates {
-    MAX(0, 0),
-    SUBSTATION(kSubstationAngleDegrees, 0),
-    TOPCONE(kTopConeAngleDegrees, 0),
-    TOPCUBE(kTopCubeAngleDegrees, 1),
-    MIDCONE(kMidConeAngleDegrees, 0),
-    MIDCUBE(kMidCubeAngleDegrees, 1),
-    BOT(kBotAngleDegrees, 0),
-    MIN(115, 0);
+  public static enum WristState {
+    MAX(kMaxDeg, 0),
+    SUBSTATION(kSubstationDeg, 0),
+    TOPCONE(kTopConeDeg, 0),
+    TOPCUBE(kTopCubeDeg, 1),
+    MIDCONE(kMidConeDeg, 0),
+    MIDCUBE(kMidCubeDeg, 1),
+    PICKUP(kPickupDeg, 0),
+    MIN(kMinDeg, 0);
 
     public final double angle;
     public final int isCube;
 
-    private WristStates(double angle, int isCube) {
+    private WristState(double angle, int isCube) {
       this.angle = angle;
       this.isCube = isCube;
     }

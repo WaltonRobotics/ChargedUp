@@ -1,5 +1,5 @@
 package frc.robot;
-//TODO: reset swerve to abs every 10 sec, after 1 sec of nonmovement
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.PIDConstants;
 
@@ -15,7 +15,9 @@ import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.util.COTSFalconSwerveConstants;
+import frc.lib.util.LedUtils;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
@@ -169,25 +171,26 @@ public final class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 2;
         public static final double kMaxAccelerationMetersPerSecondSquared = 8;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 3*Math.PI;
 
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
         public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 0.9);
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 8;
-        public static double kPYController = 8;
-        public static double kPThetaController = 6.75;
+        public static double kPXController = 8; // 8
+        public static double kPYController = 8; // 8
+        public static double kPThetaController = 5; // 1
         public static final double kDThetaController = 0.1;
+        public static final double kFThetaControllerAuto = 0;
         public static final double kFThetaController = 1;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
         public static final double kOnBalanceAngleThresholdDegrees = Math.toRadians(5);
         public static final double kMinimumBalanceDegrees = 2;
 
-        public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
+public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         // Constraint for the motion profiled robt angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -196,8 +199,13 @@ public final class Constants {
         // used for PPSwerve Auto Builder
         public static final PIDConstants kTranslationPID = new PIDConstants(kPXController, 0, 0); // x & y
         public static final PIDConstants kRotationPID = new PIDConstants(kPThetaController, 0, kDThetaController);
+
     }
 
+//     public static final class FieldK {
+//         public static final Pose3d kRedAllianceOrigin = new Pose3d(Units.inchesToMeters(651.25), 0.0, 0.0, new Rotation3d(0, 0, Math.PI));
+//     }
+    
     // Elevator tilting motor
     public static final class TiltK {
         public static final String DB_TAB_NAME = "TiltSubsys";
@@ -211,23 +219,30 @@ public final class Constants {
         public static final int kHomeSwitchPort = 9;
         public static final int kDiskBrakePort = 15;
 
+        public static final double kBeforeBrakeTime = .25;     //sec
+        public static final double kAfterBrakeTime = .25;
+        public static final double kTeleopBrakeTime = 1.5;
+
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
-        public static final double kAbsMaxDegree = 29; // max possible from offset
+        public static final double kAbsMaxDegree = 30; // max possible from offset
 
         
-        public static final double kTopAngleDegrees = 15; // TODO: CHANGE >:(
+        public static final double kTopAngleDegrees = 15;
         public static final double kTopConeAngleDegrees = 30;
         public static final double kTopCubeAngleDegrees = 30;
         public static final double kMidConeAngleDegrees = 23.418;
         public static final double kMidCubeAngleDegrees = 22.041;
-        public static final double kMidAngleDegrees = 30; // TODO: CHANGE T-T
-        public static final double kBotAngleDegrees = 0; // TODO: CHANGE >:D
+        public static final double kMidAngleDegrees = 30;
+        public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
 
         public static final double kMaxAngleDegrees = 30;
-        public static final double kMaxVelocity = 20; // degrees per sec
-        public static final double kMaxAcceleration = 40.0; // degrees per sec squared
+        public static final double kMaxVelocity = 180; // degrees per sec
+        public static final double kMaxAcceleration = 200.0; // degrees per sec squared
+        public static final double kMaxVelocityForward = kMaxVelocity * .75;
+        public static final double kMaxAccelerationForward = kMaxAcceleration * .75;
+
         public static final double kP = .75;
         public static final double kD = 0.0;
         public static final double kS = 1.5;
@@ -274,6 +289,9 @@ public final class Constants {
         public static final double kV = 9.6804;
         public static final double kA = 0.38304;
         public static final double kG = 0.16806;
+        
+        public static final double kPHold = .1;
+        public static final double kDHold = 0; // dummy values; change later
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
@@ -285,16 +303,16 @@ public final class Constants {
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.7;
-        public static final double kMidConeHeightM = 0.432;
-        public static final double kMidCubeHeightM = 0.391;
+        public static final double kTopConeHeightM = 0.75;
+        public static final double kMidConeHeightM = 0.44;
+        public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.44;
+        public static final double kSubstationHeightM = 0.43;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 1; // Meters Per Second
-        public static final double kMaxAcceleration = 1; // Meters Per Second Squared
+        public static final double kMaxVelocity = 3; // Meters Per Second
+        public static final double kMaxAcceleration = 3; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
@@ -314,18 +332,15 @@ public final class Constants {
         public static final double kMaxAcceleration = 14000; // deg/sec^2
 
         public static final double kZeroDegOffset = 5.5;
-        public static final double kMinAngleDegrees = -35;
-        public static final double kMaxAngleDegrees = 75;
+        public static final double kMinDeg = -35;
+        public static final double kMaxDeg = 75;
 
-
-        public static final double kBotAngleDegrees = -23;
-        public static final double kMidAngleDegrees = 90 - TiltK.kMidAngleDegrees; // TODO: CHECK THINGY
-        public static final double kTopAngleDegrees = 90 - TiltK.kTopAngleDegrees; // TODO: CHECK IT LATER
-        public static final double kTopConeAngleDegrees = 34.367;
-        public static final double kTopCubeAngleDegrees = 29.888;
-        public static final double kMidConeAngleDegrees = 43.929;
-        public static final double kMidCubeAngleDegrees = 25.316;
-        public static final double kSubstationAngleDegrees = -8.274536;
+        public static final double kTopConeDeg = 40.5;
+        public static final double kTopCubeDeg = 29.888;
+        public static final double kMidConeDeg = 43.929;
+        public static final double kMidCubeDeg = 25.316;
+        public static final double kPickupDeg = -8.5;
+        public static final double kSubstationDeg = 0;
         
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
@@ -358,10 +373,27 @@ public final class Constants {
         public static final double kTargetHeight = 1; // TODO: update value
     }
 
-    public static final class IndicatorLightsK {
-        public static final String DB_TAB_NAME = "LEDSubsys";
+    public static final class LedK {
+        public static final String DB_TAB_NAME = "LedSubsys";
 
-        public static final int kNumLEDs = 20; // TODO: update these when we get them
-        public static final int kPort = 0; 
+        public static final int kNumLeds = 13; // two 13-led strips in parallel
+        public static final int kPort = 0;
+
+        // Base colors
+        public static final Color kRed = LedUtils.fixColor(Color.kRed);
+        public static final Color kGreen = LedUtils.fixColor(Color.kGreen);
+        public static final Color kBlue = LedUtils.fixColor(Color.kBlue);
+        public static final Color kYellow = LedUtils.fixColor(Color.kYellow);
+        public static final Color kPurple = LedUtils.fixColor(Color.kPurple);
+
+        // Specific colors
+        public static final Color kCubeColor = kPurple;
+        public static final Color kConeColor = kYellow;
+        public static final Color kBlinkOnColor = kGreen;
+        public static final Color kBlinkOffColor = Color.kBlack;
+
+        // Behaviors
+        public static final double kBlinkPeriod = 0.080;
+        public static final double kBlinkCount = 10;
     }
 }

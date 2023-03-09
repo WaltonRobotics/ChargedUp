@@ -1,17 +1,21 @@
 package frc.robot.subsystems;
 
-//TODO: redo tilt limits (possible moving the wrong way)
-//TODO: have the teleop command use toAngle (same for other subsystems) and stick inputs add or subtract from that
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
@@ -24,6 +28,8 @@ public class TiltSubsystem extends SubsystemBase {
 	private final DutyCycleEncoder m_absoluteEncoder = new DutyCycleEncoder(kAbsoluteEncoderPort);
 	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
+	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
+	// private Timer m_timer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
 	private double m_targetAngle = 0;
@@ -42,6 +48,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	public TiltSubsystem() {
+		m_diskBrake.set(true);
 		m_absoluteEncoder.reset();
 		m_motor.setIdleMode(IdleMode.kBrake);
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
@@ -49,6 +56,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// reset relative encoder on switch activation
 		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
+		m_controller.setTolerance(1);
 	}
 
 	public CommandBase setTarget(double degrees) {
@@ -94,10 +102,18 @@ public class TiltSubsystem extends SubsystemBase {
 															// rotation)
 	}
 
+	public void disengageBrake() {
+		m_diskBrake.set(false);
+	}
+
+	public void engageBrake() {
+		m_diskBrake.set(true);
+	}
+
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
-			m_targetAngle += powerVal * 2;
+			m_targetAngle += powerVal * 1.2;
 			double effort = getEffortForTarget(m_targetAngle);
 			setVoltage(effort);
 		});
@@ -127,35 +143,56 @@ public class TiltSubsystem extends SubsystemBase {
 		m_motor.setVoltage(output);
 	}
 
-	public CommandBase toAngle(DoubleSupplier angle) {
-		return run(() -> {
-			setSpeed(getEffortForTarget(angle.getAsDouble()));
-		})
-				.until(m_controller::atSetpoint)
-				.withName("ToAngle");
-	}
-
+	/**
+	 * disengageBrake
+	 * wait(n)
+	 * move().until(atSetpoint)
+	 * wait(n1)
+	 * engagebrake
+	 */
 	public CommandBase toAngle(double angle) {
-		return runOnce(() -> {
+		var setupCmd = runOnce(() -> {
+			if (angle > getDegrees()) {
+				double tempMaxVelocity = kMaxVelocityForward;
+				double tempMaxAcceleration = kMaxAccelerationForward;
+				
+				m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity, tempMaxAcceleration));
+			} else {
+				m_controller.setConstraints(kConstraints);
+			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
-		}).andThen(run(() -> {
-			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -8, 8);
+			// disengageBrake();
+		});
+
+		var moveCmd = run(() -> {
+			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
 			setVoltage(effort);
-		}))
-				.withTimeout(1.2)
-				.finallyDo((intr) -> {
-					m_motor.set(0);
-				})
-				.withName("ToAngle");
+		})
+		.until(() -> {
+			return m_controller.atGoal();
+		})
+		.withTimeout(1.8)
+		.finallyDo((intr) -> {
+			m_motor.set(0);
+		})
+		.withName("ToAngle");
+				
+		// var brakeCmd = runOnce(() -> {
+			// engageBrake();
+		// });
+
+		return Commands.sequence(
+			setupCmd,
+			moveCmd
+		);
 	}
 
 	private void setCoast(boolean coast) {
-		if (coast) {
-			m_motor.setIdleMode(IdleMode.kCoast);
-		} else {
-			m_motor.setIdleMode(IdleMode.kBrake);
+		if (!DriverStation.isEnabled()) {
+			m_diskBrake.set(!coast);
 		}
+		m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
 	}
 
 	@Override
@@ -179,24 +216,23 @@ public class TiltSubsystem extends SubsystemBase {
 		nte_forwardLimit.setBoolean(atForwardLimit());
 	}
 
-	public CommandBase toState(TiltStates state) {
+	public CommandBase toState(TiltState state) {
 		return toAngle(state.angle);
 	}
 
-	public enum TiltStates {
-		MAX(kMaxAngleDegrees, 0),
+	public enum TiltState {
+		UPMOST(kMaxAngleDegrees, 0),
 		SUBSTATION(kSubstationAngleDegrees, 0),
 		TOPCONE(kTopConeAngleDegrees, 0),
 		TOPCUBE(kTopCubeAngleDegrees, 1),
 		MIDCONE(kMidConeAngleDegrees, 0),
 		MIDCUBE(kMidCubeAngleDegrees, 1),
-		BOT(kBotAngleDegrees, 0),
-		MIN(kMinAngleDegrees, 0);
+		BOTTOMMOST(kMinAngleDegrees, 0);
 
 		public final double angle;
 		public final int isCube;
 
-		private TiltStates(double angle, int isCube) {
+		private TiltState(double angle, int isCube) {
 			this.angle = angle;
 			this.isCube = isCube;
 		}

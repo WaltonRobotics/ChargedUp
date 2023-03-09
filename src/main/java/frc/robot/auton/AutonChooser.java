@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AutonChooser {
     public enum AutonOption {
-        BACK_OUT("back out of community"),
-        CONE("score one cone (non-bumper side)"),
-        CUBE_CONE_1("score one cube and one cone (non-bumper side)"),
-        CUBE_CONE_2("score one cube and one cone (bumper side)"),
-        CONE_RED("scone one cone (non-bumper side, red)");
+        TEST_ROT("test"),
+        ONE_CONE_PARK("drop cone then park"),
+        DROP_CONE_BACK("drop cone back"),
+        // ONE_CONE_AROUND("drop cone then go around and park"),
+        ONE_CUBE_AROUND("drop cube then go around and park"),
+        AUTOBALANCE("autobalance");
 
         public final String description;
 
