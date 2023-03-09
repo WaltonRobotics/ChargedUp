@@ -2,7 +2,6 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -40,12 +39,12 @@ public class AutoBalance extends CommandBase {
     public void execute() {
         double pitch = m_swerve.getGyroPitch();
 
-        if (pitch > rampDeg && !startedBalance) {
+        if (Math.abs(pitch) > rampDeg && !startedBalance) {
             startedBalance = true;
         }
 
         if (startedBalance) {
-            if (pitch < 7.5) {
+            if (Math.abs(pitch) < 2) {
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
@@ -61,7 +60,7 @@ public class AutoBalance extends CommandBase {
                 // the pitch
                 // double output_percentage = std::clamp(((units::math::abs(pitch) - min_pitch)
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
-                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 4.75;
+                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 3.0;
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);
                 SmartDashboard.putNumber("AutoBal-Pct", percentage);

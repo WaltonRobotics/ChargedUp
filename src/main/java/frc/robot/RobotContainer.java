@@ -98,6 +98,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
+		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
 
 		// add back later
 		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,

@@ -2,6 +2,7 @@ package frc.robot.auton;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +30,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 public final class AutonFactory {
     public static HashMap<String, Command> autonEventMap = new HashMap<>();
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
+    public static Translation2d position = new Translation2d();
 
     /* EVENT COMMANDS */
     public static CommandBase TestEvent(SwerveSubsystem swerve) {
@@ -50,9 +52,10 @@ public final class AutonFactory {
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(Paths.PPPaths.oneConePark).withName("Path1Cmd");
+        var getPosition = new InstantCommand(()-> position = swerve.getPose().getTranslation());
         // var pathCmd = swerve.getFullAuto(Paths.PPPaths.oneConePark).withInterruptBehavior(InterruptionBehavior.kCancelSelf).withTimeout(4.5).withName("Path1Cmd");
-        var driveCmd = swerve.driveOneDirection(true).withTimeout(2).andThen(swerve.driveSide(true).withTimeout(1));
-        
+        var driveCmd = swerve.driveOneDirection(false).until(
+            ()-> swerve.atDistance(position, 2));
 
         return Commands.sequence(
             placeCmd,
@@ -60,6 +63,7 @@ public final class AutonFactory {
             Commands.waitSeconds(1),
             ssResetCmd,
             Commands.print("===========BeforePathCmd==========="),
+            getPosition,
             driveCmd,
             Commands.print("===========AfterPathCmd==========="),
             new AutoBalance(swerve, false).withName("autobalance"),
