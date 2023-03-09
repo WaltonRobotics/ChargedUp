@@ -8,8 +8,10 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.superstructure.SuperState;
 
 /**
@@ -24,6 +26,8 @@ import frc.robot.subsystems.superstructure.SuperState;
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
 
+  private final Timer m_modResetTimer = new Timer();
+
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer = new RobotContainer();
@@ -35,6 +39,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    m_modResetTimer.restart();
     PathPlannerServer.startServer(5811);
     DriverStation.silenceJoystickConnectionWarning(true);
     // Instantiate our RobotContainer. This will perform all our button bindings,
@@ -76,6 +81,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    if (m_modResetTimer.advanceIfElapsed(1)) {
+      m_robotContainer.swerve.resetToAbsolute();
+    }
   }
 
   /**
@@ -85,13 +93,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.superstructure.reset();
-    m_robotContainer.swerve.resetModsToAbs();
+    m_robotContainer.swerve.resetToAbsolute();
     // m_robotContainer.swerve.resetGyro();
     m_robotContainer.superstructure.initState();
 
-    m_autonomousCommand = 
-    m_robotContainer.superstructure.dumbReset()
-    .andThen(m_robotContainer.getAutonomousCommand());
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -114,7 +120,7 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.superstructure.initState();
-    m_robotContainer.swerve.resetModsToAbs();
+    m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
 
     m_robotContainer.swerve.zeroGyro();

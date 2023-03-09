@@ -99,7 +99,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		// zeroGyro();
 
 		Timer.delay(.250);
-		resetModsToAbs();
+		resetToAbsolute();
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
@@ -292,7 +292,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return rotateAboutPoint(180);
 	}
 
-	public void resetModsToAbs() {
+	public void resetToAbsolute() {
 		for (var mod : m_modules) {
 			mod.resetToAbsolute();
 		}
@@ -335,10 +335,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public CommandBase driveSide(boolean left){
 		return run(()-> {
-			drive(0, left ? 2 : -2, 0, false, false);
+			double reverse = 1;
+			if(DriverStation.getAlliance() == Alliance.Blue){
+				reverse = -1;
+			}
+			drive(0, left ? 2*reverse : -2*reverse, 0, false, false);
 		});
 	}
-
 
 	/*
 	 * Set steer to brake and drive to coast for odometry testing
@@ -398,7 +401,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * 
 	 * @endPt The last pathpoint to end up at
 	 */
-	protected CommandBase goToChosenPoint(PathPoint endPose) {
+	public CommandBase goToChosenPoint(PathPoint endPose) {
 		return run(() -> {
 			var botPose = getPose();
 			double xRate = xController.calculate(botPose.getX(),

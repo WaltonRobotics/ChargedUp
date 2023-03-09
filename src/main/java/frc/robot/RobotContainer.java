@@ -83,7 +83,7 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		/* Driver Buttons */
 		driver.back().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-		driver.start().onTrue(new InstantCommand(() -> swerve.resetModsToAbs()));
+		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
 		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
 
 		// add back later
@@ -164,16 +164,9 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		// AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFullAuto(straightBack));
-		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.oneConeOneCube(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, AutonFactory.manualStateTest(tilt, elevator, wrist));
-		// AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT,
-		// swerve.getPPSwerveAutonCmd(testRot));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw));
-		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_AROUND, AutonFactory.oneConeAround(swerve, superstructure, claw));
-		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.AUTOBALANCE, AutonFactory.autoBalance(swerve));
+
 	}
 
 	public void turnOffRumble() {
