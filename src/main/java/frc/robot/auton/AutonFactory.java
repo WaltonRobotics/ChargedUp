@@ -5,7 +5,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.TheClaw;
+import frc.robot.subsystems.TiltSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.swerve.AutoBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -61,61 +64,90 @@ public final class AutonFactory {
     }
 
     public static CommandBase oneConeBack(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
-        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3).withName("SS-Auto-TopCone");
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
 
         return Commands.sequence(
             placeCmd,
+            Commands.waitSeconds(0.2),
             clawCmd,
+            Commands.waitSeconds(0.4),
             ssResetCmd,
             new AutoBalance(swerve, true)
         );
     }
-
-    public static CommandBase oneConeAround(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
-        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
-        var clawCmd = claw.release().withName("ClawRelease");
-        var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var getPosition = new InstantCommand(()-> position = swerve.getPose().getTranslation());
-        var backCmd = swerve.driveOneDirection(true).until(
-            ()-> swerve.atDistance(position, 5));
-        var strafeCmd = swerve.driveSide(true).until(
-            ()-> swerve.atDistance(position, 3));
-
-        return Commands.sequence(
-            placeCmd,
-            clawCmd,
-            ssResetCmd,
-            getPosition,
-            backCmd,
-            getPosition,
-            strafeCmd,
-            new AutoBalance(swerve, false)
-        );
+    
+    public static CommandBase manualStateTest(TiltSubsystem tilt, ElevatorSubsystem elev, WristSubsystem wrist) {
+        return Commands.none();
     }
 
-    public static CommandBase oneCubeAround(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
-        var placeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2.5).withName("SS-Auto-TopCube");
-        var clawCmd = claw.release().withName("ClawRelease");
-        var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var getPosition = new InstantCommand(()-> position = swerve.getPose().getTranslation());
-        var backCmd = swerve.driveOneDirection(true).until(
-            ()-> swerve.atDistance(position, 5));
-        var strafeCmd = swerve.driveSide(false).until(
-            ()-> swerve.atDistance(position, 3));
+    // public static CommandBase oneConeSequential(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
+    //     var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3).withName("SS-Auto-TopCone");
+    //     var clawCmd = claw.release().withName("ClawRelease");
+    //     var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+    //     var getPosition = new InstantCommand(()-> position = swerve.getPose().getTranslation());
+    //     var backCmd = swerve.driveOneDirection(true).until(
+    //         ()-> swerve.atDistance(position, 5));
+    //     var strafeCmd = swerve.driveSide(true).until(
+    //         ()-> swerve.atDistance(position, 3));
 
-        return Commands.sequence(
-            placeCmd,
-            clawCmd,
-            ssResetCmd,
-            getPosition,
-            backCmd,
-            getPosition,
-            strafeCmd,
-            new AutoBalance(swerve, false)
-        );
-    }
+    //     return Commands.sequence(
+    //         placeCmd,
+    //         clawCmd,
+    //         ssResetCmd,
+    //         getPosition,
+    //         backCmd,
+    //         getPosition,
+    //         strafeCmd,
+    //         new AutoBalance(swerve, false)
+    //     );
+    // }
+
+    // public static CommandBase oneCubeAround(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
+    //     var placeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2.5).withName("SS-Auto-TopCube");
+    //     var clawCmd = claw.release().withName("ClawRelease");
+    //     var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+    //     var getPosition = new InstantCommand(()-> position = swerve.getPose().getTranslation());
+    //     var backCmd = swerve.driveOneDirection(true).until(
+    //         ()-> swerve.atDistance(position, 5));
+    //     var strafeCmd = swerve.driveSide(false).until(
+    //         ()-> swerve.atDistance(position, 3));
+
+    //     return Commands.sequence(
+    //         placeCmd,
+    //         clawCmd,
+    //         ssResetCmd,
+    //         getPosition,
+    //         backCmd,
+    //         getPosition,
+    //         strafeCmd,
+    //         new AutoBalance(swerve, false)
+    //     );
+    // }
+
+    // public static CommandBase oneConeAround(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
+    //     var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
+    //     var clawCmd = claw.release().withName("ClawRelease");
+    //     var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+
+    //     var getPosition = new InstantCommand(()-> position = swerve.getPose().getTranslation());
+    //     var backCmd = swerve.driveOneDirection(true).until(
+    //         ()-> swerve.atDistance(position, 5));
+    //     var strafeCmd = swerve.driveSide(true).until(
+    //         ()-> swerve.atDistance(position, 3));
+
+    //     return Commands.sequence(
+    //         placeCmd,
+    //         clawCmd,
+    //         ssResetCmd,
+    //         getPosition,
+    //         backCmd,
+    //         getPosition,
+    //         strafeCmd,
+    //         new AutoBalance(swerve, false)
+    //     );
+    // }
 
     public static CommandBase releaseClaw(TheClaw claw) {
         return claw.release();

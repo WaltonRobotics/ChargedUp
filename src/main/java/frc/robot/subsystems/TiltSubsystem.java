@@ -162,32 +162,30 @@ public class TiltSubsystem extends SubsystemBase {
 			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
-			disengageBrake();
+			// disengageBrake();
 		});
 
 		var moveCmd = run(() -> {
-				var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
-				setVoltage(effort);
-				})
-				.until(() -> {
-					return m_controller.atGoal();
-				})
-				.withTimeout(1.8)
-				.finallyDo((intr) -> {
-				m_motor.set(0);
-				})
-				.withName("ToAngle");
+			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
+			setVoltage(effort);
+		})
+		.until(() -> {
+			return m_controller.atGoal();
+		})
+		.withTimeout(1.8)
+		.finallyDo((intr) -> {
+			m_motor.set(0);
+		})
+		.withName("ToAngle");
 				
-		var brakeCmd = runOnce(() -> {
-			engageBrake();
-		});
+		// var brakeCmd = runOnce(() -> {
+			// engageBrake();
+		// });
 
 		return Commands.sequence(
 			setupCmd,
-			Commands.waitSeconds(kBeforeBrakeTime),
-			moveCmd,
-			Commands.waitSeconds(kAfterBrakeTime),
-			brakeCmd);
+			moveCmd
+		);
 	}
 
 	private void setCoast(boolean coast) {

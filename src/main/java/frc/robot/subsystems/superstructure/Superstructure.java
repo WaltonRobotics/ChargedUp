@@ -3,8 +3,12 @@ package frc.robot.subsystems.superstructure;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
+import frc.robot.Constants.ElevatorK;
+import frc.robot.Constants.TiltK;
+import frc.robot.Constants.WristK;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
@@ -75,16 +79,24 @@ public class Superstructure extends SubsystemBase {
 		});
 	}
 
-	public void reset() {
+	public void initState() {
 		m_prevState = SuperState.SAFE;
 		m_curState = SuperState.SAFE;
 	}
 
+	public CommandBase dumbReset() {
+		return Commands.parallel(
+            m_tilt.toAngle(TiltK.kBotAngleDegrees),
+            m_wrist.toAngle(WristK.kMaxDeg),
+            m_elevator.toHeight(ElevatorK.kBotHeightMeters)
+        );
+	}
+
 	protected void updateState(SuperState newState) {
 		System.out.println(
-				"[SS] upateState - WAS " + m_prevState +
-						", FROM " + m_curState +
-						" TO " + newState);
+			"[SS] upateState - WAS " + m_prevState +
+			", FROM " + m_curState +
+			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
 	}

@@ -5,29 +5,20 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.swerve.AutoBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
-import frc.robot.vision.AprilTagChooser;
-import frc.robot.vision.PathChooser;
-import frc.robot.vision.AprilTagChooser.AprilTagOption;
-import frc.robot.vision.PathChooser.PathOption;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPAutoscoreClass;
-import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
-import static frc.robot.auton.Paths.PPPaths.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -173,11 +164,15 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, swerve.getFullAuto(testRot));
+		// AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT_BACK, swerve.getFullAuto(straightBack));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_ONE_CUBE, AutonFactory.oneConeOneCube(swerve, superstructure, claw));
+		AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT, AutonFactory.manualStateTest(tilt, elevator, wrist));
+		// AutonChooser.AssignAutonCommand(AutonOption.TEST_ROT,
+		// swerve.getPPSwerveAutonCmd(testRot));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_AROUND, AutonFactory.oneConeAround(swerve, superstructure, claw));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_AROUND, AutonFactory.oneConeAround(swerve, superstructure, claw));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.AUTOBALANCE, AutonFactory.autoBalance(swerve));
 	}
 

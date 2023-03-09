@@ -30,7 +30,7 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        m_swerve.drive(3 * reverseMultiplier, 0, 0, false, true);
+        m_swerve.drive(3.5 * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
 
@@ -43,7 +43,7 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (Math.abs(pitch) < 2) {
+            if (Math.abs(pitch) < 3.5) {
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
