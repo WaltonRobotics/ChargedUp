@@ -12,7 +12,7 @@ public class AutonChooser {
         ONE_CONE_PARK("drop cone then park"),
         DROP_CONE_BACK("drop cone back"),
         // ONE_CONE_AROUND("drop cone then go around and park"),
-        // ONE_CUBE_AROUND("drop cube then go around and park"),
+        ONE_CUBE_AROUND("drop cube then go around and park"),
         AUTOBALANCE("autobalance");
 
         public final String description;

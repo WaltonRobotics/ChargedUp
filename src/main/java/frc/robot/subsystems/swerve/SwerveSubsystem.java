@@ -329,7 +329,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public CommandBase driveOneDirection(boolean reverse){
 		return run(()-> {
-			drive(reverse ? 2 : -2, 0, 0, false, false);
+			drive(reverse ? -3 : 3, 0, 0, false, false);
 		});
 	}
 
@@ -339,7 +339,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			if(DriverStation.getAlliance() == Alliance.Blue){
 				reverse = -1;
 			}
-			drive(0, left ? 2*reverse : -2*reverse, 0, false, false);
+			drive(0, left ? -3*reverse : 3*reverse, 0, false, false);
 		});
 	}
 

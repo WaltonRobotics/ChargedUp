@@ -30,7 +30,7 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        m_swerve.drive(3.5 * reverseMultiplier, 0, 0, false, true);
+        m_swerve.drive(4 * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
 
