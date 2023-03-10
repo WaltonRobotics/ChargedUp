@@ -15,9 +15,6 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.auton.AutonChooser.AutonOption;
-import frc.robot.auton.Paths.PPAutoscoreClass;
-import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
-
 import static frc.robot.auton.AutonFactory.autonEventMap;
 
 /**
@@ -68,7 +65,10 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// LED triggering
-		claw.leftEyeTrig.and(claw.rightEyeTrig).and(claw.openTrig)
+		claw.leftEyeTrig
+			.and(claw.rightEyeTrig)
+			.and(claw.openTrig)
+			.and(claw.openTrig.negate())
 			.onTrue(leds.grabOk().until(claw.closedTrig));
 	}
 
@@ -84,41 +84,40 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
+		driver.leftBumper().whileTrue(new AutoBalance(swerve, false));
+		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
 
 		// add back later
-		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.cone1));
-		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.cube2));
-		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.cone3));
-		driver.x()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.coopCone4));
-		driver.y()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.coopCube5));
-		driver.b()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.coopCone6));
-		driver.x()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
-		driver.y()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
-		driver.b()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// 	ScoringPoints.cone1));
+		// driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// 	ScoringPoints.cube2));
+		// driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// 	ScoringPoints.cone3));
+		// driver.x()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// 	ScoringPoints.coopCone4));
+		// driver.y()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// 	ScoringPoints.coopCube5));
+		// driver.b()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+		// 	ScoringPoints.coopCone6));
+		// driver.x()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+		// driver.y()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+		// driver.b()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 		
 		driver.rightTrigger().onTrue(leds.setCube());
 		driver.leftTrigger().onTrue(leds.setCone());
-
-		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
 
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
@@ -164,7 +163,7 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw));
 

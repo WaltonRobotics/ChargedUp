@@ -150,7 +150,7 @@ public class WristSubsystem extends SubsystemBase {
    * 
    * @param setpointAngle The angle to go to
    */
-  private double getEffortForTarget(double setpointAngle) {
+  public double getEffortForTarget(double setpointAngle) {
     m_pdEffort = m_controller.calculate(getDegrees(), setpointAngle);
     var pdSetpoint = m_controller.getSetpoint();
     if (pdSetpoint.velocity != 0) {

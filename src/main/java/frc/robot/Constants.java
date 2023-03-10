@@ -311,8 +311,8 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSubstationHeightM = 0.43;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 3; // Meters Per Second
-        public static final double kMaxAcceleration = 3; // Meters Per Second Squared
+        public static final double kMaxVelocity = 3.5; // Meters Per Second
+        public static final double kMaxAcceleration = 5; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
@@ -333,7 +333,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kZeroDegOffset = 5.5;
         public static final double kMinDeg = -35;
-        public static final double kMaxDeg = 75;
+        public static final double kMaxDeg = 78;
 
         public static final double kTopConeDeg = 40.5;
         public static final double kTopCubeDeg = 29.888;

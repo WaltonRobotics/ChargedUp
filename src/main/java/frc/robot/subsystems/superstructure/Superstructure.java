@@ -92,6 +92,14 @@ public class Superstructure extends SubsystemBase {
         );
 	}
 
+	public CommandBase calculateControllers(SuperState targetState){
+		return runOnce(()->{
+			m_elevator.getEffortForTarget(targetState.elev.height);
+			m_tilt.getEffortForTarget(targetState.tilt.angle);
+			m_wrist.getEffortForTarget(targetState.wrist.angle);
+		});
+	}
+
 	protected void updateState(SuperState newState) {
 		System.out.println(
 			"[SS] upateState - WAS " + m_prevState +
@@ -101,11 +109,11 @@ public class Superstructure extends SubsystemBase {
 		m_curState = newState;
 	}
 
-	protected SuperState getPrevState() {
+	public SuperState getPrevState() {
 		return m_prevState;
 	}
 
-	protected SuperState getCurState() {
+	public SuperState getCurState() {
 		return m_curState;
 	}
 
