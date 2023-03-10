@@ -311,12 +311,12 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSubstationHeightM = 0.43;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 3.5; // Meters Per Second
-        public static final double kMaxAcceleration = 5; // Meters Per Second Squared
+        public static final double kMaxVelocity = 3; // Meters Per Second
+        public static final double kMaxAcceleration = 3.5; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
-                kMaxAcceleration);
+                kMaxAcceleration);      
     }
 
     public static final class WristK {

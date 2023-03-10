@@ -43,7 +43,7 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (m_reverse && Math.abs(pitch) < 12) { //3
+            if (m_reverse && Math.abs(pitch) < 11) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
@@ -68,7 +68,7 @@ public class AutoBalance extends CommandBase {
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
                 double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.5;
                 if(m_reverse){
-                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.5;
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 1.75;
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);
