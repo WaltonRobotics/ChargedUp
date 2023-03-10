@@ -43,7 +43,7 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (m_reverse && Math.abs(pitch) < 12) { //3
+            if (m_reverse && Math.abs(pitch) < 4.5) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;

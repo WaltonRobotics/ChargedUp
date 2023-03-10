@@ -30,7 +30,7 @@ public final class AutonFactory {
         ).withTimeout(3);
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var driveCmd = swerve.driveOneDirection(true,3).withTimeout(3);
+        var driveCmd = swerve.driveOneDirection(true,3).withTimeout(2.25);
         var strafeCmd = swerve.driveSide(true).withTimeout(1.6);
 
         return Commands.sequence(
@@ -60,7 +60,7 @@ public final class AutonFactory {
                 .andThen(wrist.toAngle(SuperState.TOPCONE.wrist.angle))
         ).withTimeout(3);
         var clawCmd = claw.release()
-            .andThen(Commands.waitSeconds(0.6))
+            .andThen(Commands.waitSeconds(0.75))
             .withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE)
             .withTimeout(2)
@@ -102,14 +102,14 @@ public final class AutonFactory {
         ).withTimeout(3);
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var backCmd = swerve.driveOneDirection(true,3).withTimeout(3);
-        var strafeCmd = swerve.driveSide(false).withTimeout(1.25);
+        var backCmd = swerve.driveOneDirection(true,3).withTimeout(2.0);
+        var strafeCmd = swerve.driveSide(false).withTimeout(1.0);
 
         return Commands.sequence(
             superstructure.smartReset(),
             placeCmd,
             clawCmd,
-            Commands.waitSeconds(0.4),
+            Commands.waitSeconds(0.75),
             ssResetCmd,
             backCmd,
             strafeCmd,

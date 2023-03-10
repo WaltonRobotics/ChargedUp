@@ -65,10 +65,7 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// LED triggering
-		claw.leftEyeTrig
-			.and(claw.rightEyeTrig)
-			.and(claw.openTrig)
-			.onTrue(leds.grabOk());
+		claw.grabOkTrig.onTrue(leds.grabOk());
 	}
 
 	/**
@@ -83,7 +80,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(new AutoBalance(swerve, false));
+		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
 		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
 
 		// add back later
