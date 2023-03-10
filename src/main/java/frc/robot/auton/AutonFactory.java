@@ -34,7 +34,7 @@ public final class AutonFactory {
         var strafeCmd = swerve.driveSide(true).withTimeout(1.6);
 
         return Commands.sequence(
-            // superstructure.dumbReset(),
+            superstructure.smartReset(),
             placeCmd,
             clawCmd,
             Commands.waitSeconds(1),
@@ -47,11 +47,11 @@ public final class AutonFactory {
 
     public static CommandBase oneConeBack(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var printBeginCmd = Commands.print("============ONE_CONE_BACK BEGIN============");
-        var dumbReset = Commands.parallel(
-            elev.toHeight(SuperState.SAFE.elev.height),
-            tilt.toAngle(SuperState.SAFE.tilt.angle),
-            wrist.toAngle(SuperState.SAFE.wrist.angle)
-        );
+        // var dumbReset = Commands.parallel(
+        //     elev.toHeight(SuperState.SAFE.elev.height),
+        //     tilt.toAngle(SuperState.SAFE.tilt.angle),
+        //     wrist.toAngle(SuperState.SAFE.wrist.angle)
+        // );
         var placeCmd = Commands.parallel(
             Commands.waitSeconds(.5)
                 .andThen(elev.toHeight(SuperState.TOPCONE.elev.height)),
@@ -67,8 +67,7 @@ public final class AutonFactory {
             .withName("SS-Auto-Safe");
 
         return Commands.sequence(
-            // superstructure.smartReset(),
-            dumbReset,
+            superstructure.smartReset(),
             printBeginCmd,
             placeCmd,
             clawCmd,
@@ -107,9 +106,8 @@ public final class AutonFactory {
         var strafeCmd = swerve.driveSide(false).withTimeout(1.25);
 
         return Commands.sequence(
-            // superstructure.dumbReset(),
+            superstructure.smartReset(),
             placeCmd,
-            Commands.waitSeconds(0.4),
             clawCmd,
             Commands.waitSeconds(0.4),
             ssResetCmd,

@@ -333,13 +333,13 @@ public class SwerveSubsystem extends SubsystemBase {
 		});
 	}
 
-	public CommandBase driveSide(boolean left){
+	public CommandBase driveSide(boolean blueLeft){
 		return run(()-> {
 			double reverse = 1;
 			if(DriverStation.getAlliance() == Alliance.Blue){
 				reverse = -1;
 			}
-			drive(0, left ? -3*reverse : 3*reverse, 0, false, false);
+			drive(0, blueLeft ? -3*reverse : 3*reverse, 0, false, false);
 		});
 	}
 
