@@ -166,7 +166,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	/*
 	 * Sets both elevator motors to coast/brake
 	 */
-	private void setCoast(boolean coast) {
+	public void setCoast(boolean coast) {
 		m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 		m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 	}

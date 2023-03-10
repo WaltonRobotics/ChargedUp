@@ -68,7 +68,7 @@ public class WristSubsystem extends SubsystemBase {
    * @param coast Whether or not to set motor to coast/brake
    * true for coast, false for brake
    */
-  private void setCoast(boolean coast) {
+  public void setCoast(boolean coast) {
     m_isCoast = coast;
     m_motor.setIdleMode(m_isCoast ? IdleMode.kCoast : IdleMode.kBrake);
   }

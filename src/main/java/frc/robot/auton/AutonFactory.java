@@ -1,5 +1,6 @@
 package frc.robot.auton;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -33,7 +34,7 @@ public final class AutonFactory {
         var strafeCmd = swerve.driveSide(true).withTimeout(1.6);
 
         return Commands.sequence(
-            superstructure.dumbReset(),
+            // superstructure.dumbReset(),
             placeCmd,
             clawCmd,
             Commands.waitSeconds(1),
@@ -45,24 +46,36 @@ public final class AutonFactory {
     }
 
     public static CommandBase oneConeBack(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var printBeginCmd = Commands.print("============ONE_CONE_BACK BEGIN============");
+        var dumbReset = Commands.parallel(
+            elev.toHeight(SuperState.SAFE.elev.height),
+            tilt.toAngle(SuperState.SAFE.tilt.angle),
+            wrist.toAngle(SuperState.SAFE.wrist.angle)
+        );
         var placeCmd = Commands.parallel(
-            Commands.waitSeconds(.5).andThen(elev.toHeight(SuperState.TOPCONE.elev.height)),
+            Commands.waitSeconds(.5)
+                .andThen(elev.toHeight(SuperState.TOPCONE.elev.height)),
             tilt.toAngle(SuperState.TOPCONE.tilt.angle),
-            Commands.waitSeconds(1).andThen(wrist.toAngle(SuperState.TOPCONE.wrist.angle))
+            Commands.waitSeconds(1)
+                .andThen(wrist.toAngle(SuperState.TOPCONE.wrist.angle))
         ).withTimeout(3);
-        var clawCmd = claw.release().withName("ClawRelease");
-        var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var driveCmd = swerve.driveOneDirection(true,1.5).withTimeout(2.75);
+        var clawCmd = claw.release()
+            .andThen(Commands.waitSeconds(0.6))
+            .withName("ClawRelease");
+        var ssResetCmd = superstructure.toState(SuperState.SAFE)
+            .withTimeout(2)
+            .withName("SS-Auto-Safe");
 
         return Commands.sequence(
-            // superstructure.dumbReset(),
+            // superstructure.smartReset(),
+            dumbReset,
+            printBeginCmd,
             placeCmd,
-            Commands.waitSeconds(0.2),
             clawCmd,
-            Commands.waitSeconds(0.4),
             ssResetCmd,
             new AutoBalance(swerve, true)
-        );
+
+        ).withName("OneConeBack");
     }
 
     // public static CommandBase oneConeAround(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw) {
@@ -94,7 +107,7 @@ public final class AutonFactory {
         var strafeCmd = swerve.driveSide(false).withTimeout(1.25);
 
         return Commands.sequence(
-            superstructure.dumbReset(),
+            // superstructure.dumbReset(),
             placeCmd,
             Commands.waitSeconds(0.4),
             clawCmd,

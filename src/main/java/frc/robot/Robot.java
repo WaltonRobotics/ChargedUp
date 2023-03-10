@@ -74,13 +74,13 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_robotContainer.swerve.stopWithX();
+    // m_robotContainer.swerve.stopWithX();
   }
 
   @Override
   public void disabledPeriodic() {
     if (m_modResetTimer.advanceIfElapsed(1)) {
-      m_robotContainer.swerve.resetToAbsolute();
+      // m_robotContainer.swerve.resetToAbsolute();
     }
   }
 
@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_robotContainer.superstructure.calculateControllers(m_robotContainer.superstructure.getCurState());
+    // m_robotContainer.superstructure.calculateControllers(m_robotContainer.superstructure.getCurState());
   }
 
   @Override

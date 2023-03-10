@@ -68,8 +68,7 @@ public class RobotContainer {
 		claw.leftEyeTrig
 			.and(claw.rightEyeTrig)
 			.and(claw.openTrig)
-			.and(claw.openTrig.negate())
-			.onTrue(leds.grabOk().until(claw.closedTrig));
+			.onTrue(leds.grabOk());
 	}
 
 	/**

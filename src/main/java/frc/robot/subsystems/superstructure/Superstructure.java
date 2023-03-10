@@ -82,9 +82,12 @@ public class Superstructure extends SubsystemBase {
 	public void initState() {
 		m_prevState = SuperState.SAFE;
 		m_curState = SuperState.SAFE;
+		m_elevator.setCoast(false);
+		m_wrist.setCoast(false);
+		m_tilt.setCoast(false);
 	}
 
-	public CommandBase dumbReset() {
+	public CommandBase smartReset() {
 		return Commands.parallel(
             m_tilt.toAngle(TiltK.kBotAngleDegrees),
             m_wrist.toAngle(WristK.kMaxDeg),

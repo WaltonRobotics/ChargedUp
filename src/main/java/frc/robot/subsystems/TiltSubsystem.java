@@ -188,7 +188,7 @@ public class TiltSubsystem extends SubsystemBase {
 		);
 	}
 
-	private void setCoast(boolean coast) {
+	public void setCoast(boolean coast) {
 		if (!DriverStation.isEnabled()) {
 			m_diskBrake.set(!coast);
 		}
