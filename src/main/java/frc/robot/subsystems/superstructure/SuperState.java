@@ -6,8 +6,8 @@ import frc.robot.subsystems.TiltSubsystem.TiltState;
 import frc.robot.subsystems.WristSubsystem.WristState;
 
 public enum SuperState {
-    GROUND_PICK_UP(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.PICKUP, ClawState.AUTO),
-    SUBSTATION_PICK_UP(ElevatorState.SUBSTATION, TiltState.SUBSTATION, WristState.SUBSTATION, ClawState.AUTO),
+    GROUND_PICK_UP(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.PICKUP, ClawState.OPEN),
+    SUBSTATION_PICK_UP(ElevatorState.SUBSTATION, TiltState.SUBSTATION, WristState.SUBSTATION, ClawState.OPEN),
     TOPCONE(ElevatorState.TOPCONE, TiltState.TOPCONE, WristState.TOPCONE, ClawState.IGNORE),
     TOPCUBE(ElevatorState.TOPCUBE, TiltState.TOPCUBE, WristState.TOPCUBE, ClawState.IGNORE),
     MIDCONE(ElevatorState.MIDCONE, TiltState.MIDCONE, WristState.MIDCONE, ClawState.IGNORE),

@@ -119,7 +119,9 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    
     m_robotContainer.superstructure.initState();
+    //add if no fms, smartreset superstrucute
     m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
     m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();

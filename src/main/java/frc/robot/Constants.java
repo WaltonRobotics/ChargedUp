@@ -228,16 +228,16 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 30;
-        public static final double kTopCubeAngleDegrees = 30;
-        public static final double kMidConeAngleDegrees = 23.418;
+        public static final double kTopConeAngleDegrees = 29.1;
+        public static final double kTopCubeAngleDegrees = 29.1;
+        public static final double kMidConeAngleDegrees = 22.118;
         public static final double kMidCubeAngleDegrees = 22.041;
-        public static final double kMidAngleDegrees = 30;
+        public static final double kMidAngleDegrees = 29.1;
         public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
 
-        public static final double kMaxAngleDegrees = 30;
+        public static final double kMaxAngleDegrees = 29.1;
         public static final double kMaxVelocity = 180; // degrees per sec
         public static final double kMaxAcceleration = 200.0; // degrees per sec squared
         public static final double kMaxVelocityForward = kMaxVelocity * .75;
@@ -303,12 +303,12 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.75;
+        public static final double kTopConeHeightM = 0.775;
         public static final double kMidConeHeightM = 0.44;
         public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.43;
+        public static final double kSubstationHeightM = 0.45;
         public static final double kSubstationConeHeightM = 0;
 
         public static final double kMaxVelocity = 3; // Meters Per Second
