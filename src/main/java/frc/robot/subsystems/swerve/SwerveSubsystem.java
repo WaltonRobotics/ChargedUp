@@ -389,7 +389,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * and run commands between paths with stop events
 	 */
 	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
-		return new ProxyCommand(() -> {
+		return new DeferredCommand(() -> {
 			boolean shouldFlip = Flipper.shouldFlip();
 			var newTraj = trajectory;
 			if(shouldFlip){
@@ -400,7 +400,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase getTimedFullAuto(PathPlannerTrajectory trajectory) {
-		return new ProxyCommand(() -> {
+		return new DeferredCommand(() -> {
 			boolean shouldFlip = Flipper.shouldFlip();
 			var newTraj = trajectory;
 			if(shouldFlip){
@@ -414,7 +414,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	// }
 
 	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory) {
-		return new ProxyCommand(() -> {
+		return new DeferredCommand(() -> {
 			boolean shouldFlip = Flipper.shouldFlip();
 			var newTraj = trajectory;
 
