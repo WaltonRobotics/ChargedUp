@@ -82,14 +82,25 @@ public class Superstructure extends SubsystemBase {
 	public void initState() {
 		m_prevState = SuperState.SAFE;
 		m_curState = SuperState.SAFE;
+		m_elevator.setCoast(false);
+		m_wrist.setCoast(false);
+		m_tilt.setCoast(false);
 	}
 
-	public CommandBase dumbReset() {
+	public CommandBase smartReset() {
 		return Commands.parallel(
             m_tilt.toAngle(TiltK.kBotAngleDegrees),
             m_wrist.toAngle(WristK.kMaxDeg),
             m_elevator.toHeight(ElevatorK.kBotHeightMeters)
         );
+	}
+
+	public CommandBase calculateControllers(SuperState targetState){
+		return runOnce(()->{
+			m_elevator.getEffortForTarget(targetState.elev.height);
+			m_tilt.getEffortForTarget(targetState.tilt.angle);
+			m_wrist.getEffortForTarget(targetState.wrist.angle);
+		});
 	}
 
 	protected void updateState(SuperState newState) {
@@ -101,11 +112,11 @@ public class Superstructure extends SubsystemBase {
 		m_curState = newState;
 	}
 
-	protected SuperState getPrevState() {
+	public SuperState getPrevState() {
 		return m_prevState;
 	}
 
-	protected SuperState getCurState() {
+	public SuperState getCurState() {
 		return m_curState;
 	}
 

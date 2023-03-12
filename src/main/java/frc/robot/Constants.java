@@ -228,16 +228,16 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 30;
-        public static final double kTopCubeAngleDegrees = 30;
-        public static final double kMidConeAngleDegrees = 23.418;
+        public static final double kTopConeAngleDegrees = 29.1;
+        public static final double kTopCubeAngleDegrees = 29.1;
+        public static final double kMidConeAngleDegrees = 22.118;
         public static final double kMidCubeAngleDegrees = 22.041;
-        public static final double kMidAngleDegrees = 30;
+        public static final double kMidAngleDegrees = 29.1;
         public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
 
-        public static final double kMaxAngleDegrees = 30;
+        public static final double kMaxAngleDegrees = 29.1;
         public static final double kMaxVelocity = 180; // degrees per sec
         public static final double kMaxAcceleration = 200.0; // degrees per sec squared
         public static final double kMaxVelocityForward = kMaxVelocity * .75;
@@ -303,7 +303,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.75;
+        public static final double kTopConeHeightM = 0.775;
         public static final double kMidConeHeightM = 0.44;
         public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
@@ -312,11 +312,11 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSubstationConeHeightM = 0;
 
         public static final double kMaxVelocity = 3; // Meters Per Second
-        public static final double kMaxAcceleration = 3; // Meters Per Second Squared
+        public static final double kMaxAcceleration = 3.5; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
-                kMaxAcceleration);
+                kMaxAcceleration);      
     }
 
     public static final class WristK {
@@ -333,7 +333,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kZeroDegOffset = 5.5;
         public static final double kMinDeg = -35;
-        public static final double kMaxDeg = 75;
+        public static final double kMaxDeg = 78;
 
         public static final double kTopConeDeg = 40.5;
         public static final double kTopCubeDeg = 29.888;

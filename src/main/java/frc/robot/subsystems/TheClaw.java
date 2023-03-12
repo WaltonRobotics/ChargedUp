@@ -17,15 +17,18 @@ public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
 	private final DigitalInput leftEye = new DigitalInput(kLeftEyeID);
 	private final DigitalInput rightEye = new DigitalInput(kRightEyeID);
-	private boolean m_isClosed = false;
 	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
 	private final GenericEntry nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
 	private final GenericEntry nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
-
+	
+	private boolean m_isClosed = false;
+	private boolean m_grabOk = false;
+	
 	public final Trigger leftEyeTrig = new Trigger(leftEye::get);
 	public final Trigger rightEyeTrig = new Trigger(rightEye::get);
-	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
-	public final Trigger openTrig = new Trigger(()-> !m_isClosed);
+	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
+	
+	
 
 	public TheClaw() {
 		// DashboardManager.addTab(this);
@@ -38,17 +41,19 @@ public class TheClaw extends SubsystemBase {
 	public CommandBase autoGrab(boolean autoRelease) {
 
 		return runOnce(() ->  {
-				m_isClosed = false;  // open claw
+				m_grabOk = false;
 				claw.set(true); 
+				m_isClosed = !claw.get();  // open claw
 			})
-			.andThen(new WaitCommand(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.0 : 1.1)) // wait 0.8sec before sensor
+			.andThen(new WaitCommand(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.2 : 1.2)) // wait 0.8sec before sensor
 			.andThen(
 				startEnd(() -> {}, 
 					() -> {
-						m_isClosed = true;
 						claw.set(false); 
+						m_isClosed = !claw.get();
 					})
-					.until(leftEyeTrig.and(rightEyeTrig)));
+					.until(leftEyeTrig.and(rightEyeTrig)))
+					.finallyDo((intr) -> m_grabOk = true);
 	}
 
 	/*

@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoBalance extends CommandBase {
-    private double rampDeg = 16;
+    private double rampDeg = 14;
     private final SwerveSubsystem m_swerve;
     private boolean startedBalance = false;
     private boolean done = false;
@@ -30,7 +30,7 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        m_swerve.drive(4 * reverseMultiplier, 0, 0, false, true);
+        m_swerve.drive(3 * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
 
@@ -43,12 +43,19 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (Math.abs(pitch) < 3.5) {
+            if (m_reverse && Math.abs(pitch) < 4.5) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
                 done = true;
-            } else {
+            } 
+            if (!m_reverse && Math.abs(pitch) < 8) { //3
+                m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
+                m_swerve.stopWithX();
+                startedBalance = false;
+                done = true;
+            } 
+            else {
                 double powerSign = pitch > 0 ? 1 : -1;
                 double maxPitch = 30;
                 double thetaEffort = m_swerve.getThetaController().calculate(Math.toRadians(m_swerve.getGyroYaw()),
@@ -59,7 +66,10 @@ public class AutoBalance extends CommandBase {
                 // the pitch
                 // double output_percentage = std::clamp(((units::math::abs(pitch) - min_pitch)
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
-                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 3.0;
+                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.5;
+                if(m_reverse){
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 1.75;
+                }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);
                 SmartDashboard.putNumber("AutoBal-Pct", percentage);
@@ -72,5 +82,10 @@ public class AutoBalance extends CommandBase {
     @Override
     public boolean isFinished() {
         return done;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_swerve.stopWithX();
     }
 }

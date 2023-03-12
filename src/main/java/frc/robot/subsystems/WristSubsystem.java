@@ -68,7 +68,7 @@ public class WristSubsystem extends SubsystemBase {
    * @param coast Whether or not to set motor to coast/brake
    * true for coast, false for brake
    */
-  private void setCoast(boolean coast) {
+  public void setCoast(boolean coast) {
     m_isCoast = coast;
     m_motor.setIdleMode(m_isCoast ? IdleMode.kCoast : IdleMode.kBrake);
   }
@@ -150,7 +150,7 @@ public class WristSubsystem extends SubsystemBase {
    * 
    * @param setpointAngle The angle to go to
    */
-  private double getEffortForTarget(double setpointAngle) {
+  public double getEffortForTarget(double setpointAngle) {
     m_pdEffort = m_controller.calculate(getDegrees(), setpointAngle);
     var pdSetpoint = m_controller.getSetpoint();
     if (pdSetpoint.velocity != 0) {

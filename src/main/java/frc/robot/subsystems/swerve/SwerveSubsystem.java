@@ -327,19 +327,19 @@ public class SwerveSubsystem extends SubsystemBase {
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
 
-	public CommandBase driveOneDirection(boolean reverse){
+	public CommandBase driveOneDirection(boolean reverse, double speed){
 		return run(()-> {
-			drive(reverse ? -3 : 3, 0, 0, false, false);
+			drive(reverse ? -(speed) : (speed), 0, 0, false, false);
 		});
 	}
 
-	public CommandBase driveSide(boolean left){
+	public CommandBase driveSide(boolean blueLeft){
 		return run(()-> {
 			double reverse = 1;
 			if(DriverStation.getAlliance() == Alliance.Blue){
 				reverse = -1;
 			}
-			drive(0, left ? -3*reverse : 3*reverse, 0, false, false);
+			drive(0, blueLeft ? -3*reverse : 3*reverse, 0, false, false);
 		});
 	}
 
@@ -362,36 +362,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
-	/**
-	 * Use gyro to balance on charging station (CURRENTLY UNUSED)
-	 */
-	public void handleAutoBalance() {
-		double xRate = 0;
-		double yRate = 0;
-		double pitchAngleDegrees = m_pigeon.getPitch();
-		double rollAngleDegrees = m_pigeon.getRoll();
-
-		double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
-		xRate = Math.sin(pitchAngleRadians) * -1;
-		double rollAngleRadians = rollAngleDegrees * (Math.PI / 180.0);
-		yRate = Math.sin(rollAngleRadians) * -1;
-
-		drive(xRate, yRate, 0, true, true);
-
-	}
-
-	public CommandBase bangBangAutoBalance(){
-		double currentYaw = m_pigeon.getYaw();
-		double drivePower = 0; 
-
-		if(currentYaw > 135 && currentYaw < 225){
-			drivePower *= -1;
-		}
-
-		return runOnce(()->{
-
-		});
-	}
 	public CommandBase autoScore(List<PathPoint> path, PathPoint endPose) {
 		return new SwerveAutoGo(path, endPose, this);
 	}

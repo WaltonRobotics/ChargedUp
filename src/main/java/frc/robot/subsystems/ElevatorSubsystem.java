@@ -166,7 +166,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	/*
 	 * Sets both elevator motors to coast/brake
 	 */
-	private void setCoast(boolean coast) {
+	public void setCoast(boolean coast) {
 		m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 		m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 	}
@@ -192,7 +192,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * 
 	 * @return The total effort (ff & pd) required to reach target height
 	 */
-	private double getEffortForTarget(double heightMeters) {
+	public double getEffortForTarget(double heightMeters) {
 		m_pdEffort = m_controller.calculate(getActualHeightMeters(), heightMeters);
 		m_ffEffort = 0;
 		var pdSetpoint = m_controller.getSetpoint();

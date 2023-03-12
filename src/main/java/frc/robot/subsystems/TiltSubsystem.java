@@ -84,7 +84,7 @@ public class TiltSubsystem extends SubsystemBase {
 		m_targetAngle = MathUtil.clamp(degrees, 0, 30);
 	}
 
-	private double getEffortForTarget(double angleDegrees) {
+	public double getEffortForTarget(double angleDegrees) {
 		m_pdEffort = m_controller.calculate(getDegrees(), angleDegrees);
 		m_ffEffort = 0;
 		var pdSetpoint = m_controller.getSetpoint();
@@ -188,7 +188,7 @@ public class TiltSubsystem extends SubsystemBase {
 		);
 	}
 
-	private void setCoast(boolean coast) {
+	public void setCoast(boolean coast) {
 		if (!DriverStation.isEnabled()) {
 			m_diskBrake.set(!coast);
 		}

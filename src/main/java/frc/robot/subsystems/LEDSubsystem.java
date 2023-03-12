@@ -69,7 +69,7 @@ public class LEDSubsystem extends SubsystemBase {
             setIdle();
         })
         .ignoringDisable(true)
-        .andThen(Commands.waitSeconds(0.125))
+        .andThen(Commands.waitSeconds(0.5))
         .repeatedly();
     }
 
