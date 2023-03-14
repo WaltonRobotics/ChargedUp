@@ -9,9 +9,9 @@ public enum SuperState {
     GROUND_PICK_UP(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.PICKUP, ClawState.OPEN),
     SUBSTATION_PICK_UP(ElevatorState.SUBSTATION, TiltState.SUBSTATION, WristState.SUBSTATION, ClawState.OPEN),
     TOPCONE(ElevatorState.TOPCONE, TiltState.TOPCONE, WristState.TOPCONE, ClawState.IGNORE),
-    TOPCUBE(ElevatorState.TOPCUBE, TiltState.TOPCUBE, WristState.TOPCUBE, ClawState.IGNORE),
+    TOPCUBE(ElevatorState.TOPCUBE, TiltState.TOPCUBE, WristState.TOPCUBE, ClawState.OPEN),
     MIDCONE(ElevatorState.MIDCONE, TiltState.MIDCONE, WristState.MIDCONE, ClawState.IGNORE),
-    MIDCUBE(ElevatorState.MIDCUBE, TiltState.MIDCUBE, WristState.MIDCUBE, ClawState.IGNORE),
+    MIDCUBE(ElevatorState.MIDCUBE, TiltState.MIDCUBE, WristState.MIDCUBE, ClawState.OPEN),
     GROUND_SCORE(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.PICKUP, ClawState.IGNORE),
     SAFE(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.MAX, ClawState.CLOSE);
 

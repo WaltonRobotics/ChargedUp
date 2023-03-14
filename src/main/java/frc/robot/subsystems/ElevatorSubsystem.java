@@ -17,6 +17,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
@@ -150,7 +152,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 			m_targetHeight += output*.02;
 			double effort = getEffortForTarget(m_targetHeight);
-			m_right.setVoltage(effort);
+			double holdEffort = getEffortToHold(m_targetHeight);
+			
+			if(output > 0){
+				m_right.setVoltage(effort);
+			} else {
+				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
+				m_right.setVoltage(holdEffort);
+			}
 		})
 				.withName("TeleManual");
 	}
@@ -213,7 +222,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		m_holdFfEffort = 0;
 		var pdSetpoint = m_holdController.getSetpoint();
 		if (pdSetpoint != 0) {
-			m_ffEffort = kFeedforward.calculate(pdSetpoint);
+			m_holdFfEffort = kHoldKs;
 		}
 		double totalEffort = m_holdFfEffort + m_holdPdEffort;
 		return totalEffort;
@@ -227,7 +236,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		// if (Math.abs(getActualHeightMeters() - heightMeters) <= 0.02) {
 		// 	return Commands.none().until(() -> Math.abs(getActualHeightMeters() - m_targetHeight) > 0.02).andThen(toHeight(m_targetHeight));
 		// }
-		
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
 			i_setTarget(heightMeters);
@@ -242,7 +250,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.until(() -> {
 					return m_controller.atGoal();
 				})
-				.withTimeout(1.65)
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);
 				})
@@ -282,6 +289,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		}
 		updateShuffleBoard();
 		setCoast(nte_coast.getBoolean(false));
+		SmartDashboard.putNumber("HOLD P Effort", m_holdPdEffort);
+		SmartDashboard.putNumber("HOLD FF Effort", m_holdFfEffort);
 	}
 
 	/*

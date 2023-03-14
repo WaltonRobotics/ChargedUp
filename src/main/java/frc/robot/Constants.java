@@ -283,19 +283,20 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kGearRatio = 12.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
-        public static final double kP = 7.5891;
+        public static final double kP = 22; //sysid 9.2597E-05
         public static final double kD = 0;
-        public static final double kS = 0.1703;
-        public static final double kV = 9.6804;
-        public static final double kA = 0.38304;
-        public static final double kG = 0.16806;
+        public static final double kS = 0.15253;
+        public static final double kV = 9.8382;
+        public static final double kA = 0.20343;
+        public static final double kG = 0.20488;
         
-        public static final double kPHold = .1;
-        public static final double kDHold = 0; // dummy values; change later
+        public static final double kPHold = .7;
+        public static final double kDHold = 0;
+        public static final double kHoldKs = .75;
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
-        public static final double kElevatorHeightOffset = 0; // offset in meters
+        public static final double kElevatorHeightOffset = 0.015; // offset in meters
         public static final double kCarriageMassKg = Units.lbsToKilograms(40);
         public static final double kMinHeightMeters = Units.inchesToMeters(0) + kElevatorHeightOffset;
         public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
@@ -303,7 +304,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.775;
+        public static final double kTopConeHeightM = 0.70;
         public static final double kMidConeHeightM = 0.44;
         public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
@@ -311,8 +312,8 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSubstationHeightM = 0.43;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 3; // Meters Per Second
-        public static final double kMaxAcceleration = 3.5; // Meters Per Second Squared
+        public static final double kMaxVelocity = 2.85; // Meters Per Second
+        public static final double kMaxAcceleration = 3; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
@@ -325,9 +326,10 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final int kCurrLimit = 20;
         public static final double kAbsEncoderTicksPerRotation = 1024;
-        public static final double kP = .10;
+        public static final double kP = .11;
         public static final double kD = 0.00;
         public static final double kS = 1.5; 
+        public static final double kHoldKs = 4.125;
         public static final double kMaxVelocity = 12000; // deg/sec
         public static final double kMaxAcceleration = 14000; // deg/sec^2
 

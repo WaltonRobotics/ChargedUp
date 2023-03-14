@@ -166,7 +166,7 @@ public class WristSubsystem extends SubsystemBase {
     m_ffEffort = 0;
     var pdSetpoint = m_holdController.getSetpoint();
     if (pdSetpoint != 0) {
-      // m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
+      m_ffEffort = kHoldKs;
     }
     double totalEffort = m_ffEffort + m_pdEffort;
     return totalEffort;
