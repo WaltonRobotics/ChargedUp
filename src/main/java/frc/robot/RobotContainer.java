@@ -50,7 +50,7 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		mapAutonCommands();
-		mapAutonEvents();
+		// mapAutonEvents();
 		// addPathChoices();
 		// addAprilTagChoices();
 		swerve.setDefaultCommand(
@@ -166,7 +166,7 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_PP, swerve.getFullAuto(PPPaths.oneConePark).andThen(new AutoBalance(swerve, true)));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_PP, swerve.getFullAuto(PPPaths.oneConePark).andThen(new AutoBalance(swerve, false)));
 	}
 
 	public void mapAutonEvents() { 

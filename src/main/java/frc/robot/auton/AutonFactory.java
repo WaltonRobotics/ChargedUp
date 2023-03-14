@@ -116,6 +116,23 @@ public final class AutonFactory {
         );
     }
 
+    public static CommandBase dropTopCone(Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var placeCmd = Commands.parallel(
+            Commands.waitSeconds(.65).andThen(elev.toHeight(SuperState.TOPCUBE.elev.height)), 
+            tilt.toAngle(SuperState.TOPCUBE.tilt.angle),
+            Commands.waitSeconds(1).andThen(wrist.toAngle(SuperState.TOPCUBE.wrist.angle))
+        ).withTimeout(3);
+        var clawCmd = claw.release().withName("ClawRelease");
+        var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+        return Commands.sequence(
+            superstructure.smartReset(),
+            placeCmd,
+            clawCmd,
+            Commands.waitSeconds(0.75),
+            ssResetCmd
+        );
+    }
+
     public static CommandBase releaseClaw(TheClaw claw) {
         return claw.release();
     }
