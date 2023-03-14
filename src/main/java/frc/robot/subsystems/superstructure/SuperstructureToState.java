@@ -31,10 +31,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
         // set Superstructure internal state
         var initCmd = Commands.runOnce(() -> {
             m_superstructure.updateState(m_targetState);
-            var prevState = m_superstructure.getPrevState();
         });
 
-        var prevState = m_superstructure.getPrevState();
         var curState = m_superstructure.getCurState();
 
         if (m_targetState == SuperState.TOPCONE || m_targetState == SuperState.TOPCUBE) {
