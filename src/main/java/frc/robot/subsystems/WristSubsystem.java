@@ -133,10 +133,10 @@ public class WristSubsystem extends SubsystemBase {
 
     if (atMinLimit() && dir == -1) {
       output = 0;
-      System.out.println("BotLimit!!!");
+      // System.out.println("BotLimit!!!");
     } else if (atMaxLimit() && dir == 1) {
       output = 0;
-      System.out.println("TopLimit!!!");
+      // System.out.println("TopLimit!!!");
     }
     if (voltage) {
       m_motor.setVoltage(output);

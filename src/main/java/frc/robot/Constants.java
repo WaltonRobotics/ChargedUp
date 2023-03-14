@@ -329,7 +329,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kP = .11;
         public static final double kD = 0.00;
         public static final double kS = 1.5; 
-        public static final double kHoldKs = 4.125;
+        public static final double kHoldKs = .15;
         public static final double kMaxVelocity = 12000; // deg/sec
         public static final double kMaxAcceleration = 14000; // deg/sec^2
 

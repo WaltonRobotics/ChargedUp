@@ -50,7 +50,7 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		mapAutonCommands();
-		// mapAutonEvents();
+		mapAutonEvents();
 		// addPathChoices();
 		// addAprilTagChoices();
 		swerve.setDefaultCommand(
