@@ -171,6 +171,7 @@ public class RobotContainer {
 
 	public void mapAutonEvents() { 
 		autonEventMap.put("placeTopCone", new SuperstructureToState(superstructure, SuperState.TOPCONE));
+		autonEventMap.put("placeTopCube", new SuperstructureToState(superstructure, SuperState.TOPCUBE));
 		autonEventMap.put("releaseClaw", claw.release());
 		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE));
 	}
