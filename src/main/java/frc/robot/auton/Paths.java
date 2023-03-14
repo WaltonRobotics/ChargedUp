@@ -35,6 +35,9 @@ public class Paths {
 		public static final PathPlannerTrajectory testRot = PathPlanner.loadPath("testRot",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory oneConePark = PathPlanner.loadPath("oneConePark",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
 	}
 
 	public static final class PPAutoscoreClass {
