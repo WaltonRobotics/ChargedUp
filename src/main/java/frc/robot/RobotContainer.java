@@ -10,11 +10,14 @@ import frc.robot.auton.*;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.swerve.AutoBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.auton.AutonChooser.AutonOption;
+import frc.robot.auton.Paths.PPPaths;
+
 import static frc.robot.auton.AutonFactory.autonEventMap;
 
 /**
@@ -47,6 +50,7 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		mapAutonCommands();
+		mapAutonEvents();
 		// addPathChoices();
 		// addAprilTagChoices();
 		swerve.setDefaultCommand(
@@ -162,7 +166,13 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist));
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_PP, swerve.getFullAuto(PPPaths.oneConePark).andThen(new AutoBalance(swerve, true)));
+	}
 
+	public void mapAutonEvents() { 
+		autonEventMap.put("placeTopCone", new SuperstructureToState(superstructure, SuperState.TOPCONE));
+		autonEventMap.put("releaseClaw", claw.release());
+		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE));
 	}
 
 	public void turnOffRumble() {
