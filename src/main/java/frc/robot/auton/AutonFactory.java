@@ -68,6 +68,23 @@ public final class AutonFactory {
         );
     }
 
+    public static CommandBase oneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto-TopCone");
+        var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConePark);
+        var autoGrabCmd = claw.autoGrab(false);
+        var ssResetCmd2 = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+
+        return Commands.sequence(
+            superstructure.smartReset(),
+            placeCmd,
+            Commands.waitSeconds(1),
+            ssResetCmd,
+            pathCmd.alongWith(Commands.waitSeconds(1).andThen(autoGrabCmd)),
+            new AutoBalance(swerve, true).withName("autobalance").alongWith(Commands.waitSeconds(.5).andThen(ssResetCmd2))
+        );
+    }
+
     public static CommandBase oneConeBack(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var printBeginCmd = Commands.print("============ONE_CONE_BACK BEGIN============");
         // var dumbReset = Commands.parallel(

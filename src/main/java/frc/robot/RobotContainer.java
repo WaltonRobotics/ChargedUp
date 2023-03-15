@@ -18,7 +18,9 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.auton.AutonChooser.AutonOption;
+import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.PPPaths;
+import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 
@@ -91,34 +93,33 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
 		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
 
-		// add back later
-		// driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		// 	ScoringPoints.cone1));
-		// driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		// 	ScoringPoints.cube2));
-		// driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		// 	ScoringPoints.cone3));
-		// driver.x()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		// 	ScoringPoints.coopCone4));
-		// driver.y()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		// 	ScoringPoints.coopCube5));
-		// driver.b()
-		// 	.and(driver.leftTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-		// 	ScoringPoints.coopCone6));
-		// driver.x()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
-		// driver.y()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
-		// driver.b()
-		// 	.and(driver.rightTrigger())
-		// 	.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.cone1));
+		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.cube2));
+		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.cone3));
+		driver.x()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.coopCone4));
+		driver.y()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.coopCube5));
+		driver.b()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
+			ScoringPoints.coopCone6));
+		driver.x()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+		driver.y()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+		driver.b()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
 		
 		driver.rightTrigger().onTrue(leds.setCube());
 		driver.leftTrigger().onTrue(leds.setCone());

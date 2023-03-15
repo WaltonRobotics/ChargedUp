@@ -1,6 +1,5 @@
 package frc.robot.auton;
 
-import java.lang.StackWalker.Option;
 import java.util.EnumMap;
 import java.util.Optional;
 
@@ -18,8 +17,6 @@ public class AutonChooser {
         DROP_CONE_BACK("drop cone back"),
         // ONE_CONE_AROUND("drop cone then go around and park"),
         ONE_CUBE_AROUND("drop cube then go around and park"),
-        ONE_CONE_PARK_PP("drop cone then park (pathplanner)"),
-        AUTOBALANCE("autobalance"),
         STRAIGHT("straight"),
         TURN("turn"),
         TWO_ELEMENT("cube then cone");
