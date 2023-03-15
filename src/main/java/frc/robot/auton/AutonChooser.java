@@ -14,7 +14,9 @@ public class AutonChooser {
         // ONE_CONE_AROUND("drop cone then go around and park"),
         ONE_CUBE_AROUND("drop cube then go around and park"),
         ONE_CONE_PARK_PP("drop cone then park (pathplanner)"),
-        AUTOBALANCE("autobalance");
+        AUTOBALANCE("autobalance"),
+        STRAIGHT("straight"),
+        TURN("turn");
 
         public final String description;
 

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
@@ -82,7 +83,7 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		/* Driver Buttons */
-		driver.back().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+		driver.back().onTrue(new InstantCommand(() -> swerve.teleOpReset()));
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
 		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
 		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
@@ -164,16 +165,23 @@ public class RobotContainer {
 
 	public void mapAutonCommands() {
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist));
-		AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw, elevator, tilt, wrist));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist));
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_PP, swerve.getFullAuto(PPPaths.oneConePark).andThen(new AutoBalance(swerve, false)));
+		// AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw, elevator, tilt, wrist));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist));
+		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_PP, swerve.getFullAuto(PPPaths.oneConePark));
+					// .andThen(new AutoBalance(swerve, true)));
+		// AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT, AutonFactory.testAuto(swerve, superstructure, claw, elevator, tilt, wrist)); 
+		// AutonChooser.AssignAutonCommand(AutonOption.TURN, swerve.getPPSwerveAutonCmd(PPPaths.turn)); 
 	}
 
 	public void mapAutonEvents() { 
-		autonEventMap.put("placeTopCone", new SuperstructureToState(superstructure, SuperState.TOPCONE));
-		autonEventMap.put("placeTopCube", new SuperstructureToState(superstructure, SuperState.TOPCUBE));
-		autonEventMap.put("releaseClaw", claw.release());
-		autonEventMap.put("reset", new SuperstructureToState(superstructure, SuperState.SAFE));
+		// autonEventMap.put("wait", Commands.waitSeconds(.5));
+		autonEventMap.put("placeTopCone", Commands.waitSeconds(0.5).andThen(Commands.parallel(
+            Commands.waitSeconds(.5).andThen(elevator.toHeight(SuperState.TOPCONE.elev.height)), 
+            tilt.toAngle(SuperState.TOPCONE.tilt.angle),
+            Commands.waitSeconds(1).andThen(wrist.toAngle(SuperState.TOPCONE.wrist.angle)))));
+		autonEventMap.put("placeTopCube", Commands.waitSeconds(0.5).andThen(new SuperstructureToState(superstructure, SuperState.TOPCUBE)));
+		autonEventMap.put("releaseClaw", Commands.waitSeconds(0.25).andThen(claw.release()));
+		autonEventMap.put("reset", Commands.waitSeconds(0.5).andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
 	}
 
 	public void turnOffRumble() {

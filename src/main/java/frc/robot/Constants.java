@@ -93,15 +93,15 @@ public final class Constants {
         public static final double kAngleKF = kSwerveModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double kDriveKP = 0.10;
+        public static final double kDriveKP = 0.05;
         public static final double kDriveKI = 0.0;
         public static final double kDriveKD = 0.0;
         public static final double kDriveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double kDriveKS = 0.3 / 12; // TODO: This must be tuned to specific robot
-        public static final double kDriveKV = 1.0 / 12;
-        public static final double kDriveKA = 0.2 / 12;
+        public static final double kDriveKS = 0.32 / 12; // TODO: This must be tuned to specific robot
+        public static final double kDriveKV = 1.51 / 12;
+        public static final double kDriveKA = 0.27 / 12;
 
         /* Feedforwards */
         public static final SimpleMotorFeedforward kDriveFF = new SimpleMotorFeedforward( // real
@@ -117,9 +117,9 @@ public final class Constants {
         );
 
         /* Swerve Profiling Values */
-        public static final double kMaxVelocityMps = 8; // TODO: This must be tuned to specific robot //4.5
+        public static final double kMaxVelocityMps = 4.5; // TODO: This must be tuned to specific robot //4.5
         /* Radians per Second */
-        public static final double kMaxAngularVelocityRadps = 14; // TODO: This must be tuned to specific robot    //11.5
+        public static final double kMaxAngularVelocityRadps = 10.0; // TODO: This must be tuned to specific robot    //11.5
 
         /* Neutral Modes */
         public static final NeutralMode kAngleNeutralMode = NeutralMode.Coast;
@@ -169,7 +169,7 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 2;
+        public static final double kMaxSpeedMetersPerSecond = 4;
         public static final double kMaxAccelerationMetersPerSecondSquared = 8;
         public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 3*Math.PI;
@@ -298,9 +298,9 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
         public static final double kElevatorHeightOffset = 0.015; // offset in meters
         public static final double kCarriageMassKg = Units.lbsToKilograms(40);
-        public static final double kMinHeightMeters = Units.inchesToMeters(0) + kElevatorHeightOffset;
+        public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
-        public static final double kSafeHeight = Units.inchesToMeters(0); // where wrist is free to move
+        public static final double kSafeHeight = kElevatorHeightOffset; // where wrist is free to move
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;

@@ -4,7 +4,6 @@ import frc.robot.SwerveModule;
 import frc.robot.auton.AutonFactory;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.swerve.SwerveDriveState;
-import frc.lib.swerve.WaltonPPSwerveControllerCommand;
 import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
 import frc.robot.Constants;
@@ -20,11 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
-import com.pathplanner.lib.PathPlannerTrajectory.*;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -38,7 +34,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -72,11 +67,6 @@ public class SwerveSubsystem extends SubsystemBase {
 	protected boolean m_startedBalance = false;
 
 
-	// private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-	// kKinematics, getHeading(), getModulePositions());
-
-	private PathPlannerTrajectory trajectoryUsed = new PathPlannerTrajectory();
-
 	public Timer m_timer = new Timer();
 
 	private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -102,9 +92,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		resetToAbsolute();
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
-		autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
+		// autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
-		thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
+		// thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 
 		m_state.update(getPose(), getModuleStates(), m_field);
 		m_apriltagHelper.updateField2d(m_field);
@@ -220,8 +210,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void stopWithX() {
 		stop();
 		for (int i = 0; i < 4; i++) {
-		getModuleStates()[i] =
-			new SwerveModuleState(
+			getModuleStates()[i] = new SwerveModuleState(
 				getModuleStates()[i].speedMetersPerSecond, kModuleTranslations[i].getAngle());
 		}
 	}
@@ -234,20 +223,11 @@ public class SwerveSubsystem extends SubsystemBase {
 		return kKinematics.toChassisSpeeds(getModuleStates());
 	}
 
-	/* Used by SwerveControllerCommand in Auto */
 	public void setModuleStates(SwerveModuleState[] desiredStates, boolean openLoop, boolean steerInPlace) {
 		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kMaxVelocityMps);
 
 		for (SwerveModule mod : m_modules) {
 			mod.setDesiredState(desiredStates[mod.moduleNumber], openLoop, steerInPlace);
-		}
-	}
-
-	public void setModuleStates(SwerveModuleState[] desiredStates) {
-		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kMaxSpeedMetersPerSecond);
-
-		for (SwerveModule mod : m_modules) {
-			mod.setDesiredState(desiredStates[mod.moduleNumber], false, false);
 		}
 	}
 
@@ -280,8 +260,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void zeroGyro() {
-		m_pigeon.setYaw(0);
-
+			m_pigeon.setYaw(180);
 	}
 
 	public void setYaw(double angle) {
@@ -299,7 +278,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	protected double getGyroYaw() {
-		return m_pigeon.getYaw() - 180;
+		return m_pigeon.getYaw() ;
 	}
 
 	protected double getGyroRoll() {
@@ -316,15 +295,19 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void resetPose(Pose2d pose) {
-		// if(DriverStation.getAlliance() == DriverStation.Alliance.Blue){
-		// 	zeroGyro();
-		// }
+		if(pose.getRotation().getDegrees() < 180){
+			setYaw(pose.getRotation().getDegrees());
+		}
 		// else{
-		// 	setYaw(-180);
+		// 	setYaw(pose.getRotation().getDegrees());
 		// }
-		zeroGyro();
 		resetEstimatorPose(pose); // resets poseEstimator
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
+	}
+
+
+	public void teleOpReset(){
+		zeroGyro();
 	}
 
 	public CommandBase driveOneDirection(boolean reverse, double speed){
@@ -415,22 +398,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory) {
 		return new DeferredCommand(() -> {
-			boolean shouldFlip = Flipper.shouldFlip();
 			var newTraj = trajectory;
 
-			var resetCmd = runOnce(() -> {
-				resetPose(trajectory.getInitialHolonomicPose());
-			});
-
-			if(shouldFlip){
-				resetCmd = runOnce(() -> {
-					resetPose(Flipper.allianceFlip(trajectory.getInitialHolonomicPose()));
-				});
-			}
-	
 			if(Flipper.shouldFlip()){
 				newTraj = Flipper.allianceFlip(trajectory);
 			}
+
+			final var actualNewTraj = newTraj;
+
+			var resetCmd = runOnce(() -> {
+				resetPose(actualNewTraj.getInitialHolonomicPose());
+			});
+			
 			var pathCmd = new PPSwerveControllerCommand(
 				newTraj,
 				this::getPose, // Pose supplier
@@ -438,13 +417,13 @@ public class SwerveSubsystem extends SubsystemBase {
 				xController,
 				yController,
 				autoThetaController,
-				this::setModuleStates, // Module states consumer
+				(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
 				false, // Should the path be automatically mirrored depending on alliance color.
 						// Optional, defaults to true
 				this // Requires this drive subsystem
 			);
-			return resetCmd.andThen(pathCmd).withTimeout(2);
-		});
+			return resetCmd.andThen(pathCmd);
+		}, this);
 	}
 
 	public CommandBase getFollowPathWithEvents(PathPlannerTrajectory traj) {
@@ -452,49 +431,6 @@ public class SwerveSubsystem extends SubsystemBase {
 				getFullAuto(traj),
 				traj.getMarkers(),
 				AutonFactory.autonEventMap);
-	}
-
-	/**
-	 * @return Swerve trajectory cmd for auton pathing that sets
-	 *         the initial pose and trajectory to the correct alliance color
-	 *         before running the trajectory
-	 * 
-	 * @param trajectory The blue-side original trajectory to run
-	 */
-	public CommandBase getWaltonPPSwerveAutonCommand(PathPlannerTrajectory trajectory) {
-		var resetCmd = runOnce(() -> {
-			trajectoryUsed = trajectory;
-			PathPlannerState initialState = trajectory.getInitialState();
-			if (DriverStation.getAlliance() == Alliance.Red) {
-				initialState = ReflectedTransform.reflectiveTransformState(trajectory.getInitialState());
-			}
-			Pose2d initialPose = initialState.poseMeters;
-			resetPose(initialPose);
-		});
-		Supplier<Optional<PathPlannerTrajectory>> trajSupplier = () -> Optional.of(trajectoryUsed);
-		var pathCmd = new WaltonPPSwerveControllerCommand(
-				trajSupplier,
-				this::getPose,
-				kKinematics,
-				xController,
-				yController,
-				autoThetaController,
-				this::setModuleStates,
-				true,
-				this);
-		return resetCmd.andThen(pathCmd);
-	}
-
-	public CommandBase getSwerveAutoCommand(Trajectory traj) {
-		return new SwerveControllerCommand(
-            traj, 
-            this::getPose, 
-            kKinematics,
-			xController,
-	        yController,
-            thetaController,
-			states -> setModuleStates(states),
-			this);
 	}
 
 	/**
