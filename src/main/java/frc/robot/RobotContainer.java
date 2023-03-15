@@ -131,7 +131,7 @@ public class RobotContainer {
 		manipulator.rightBumper()
 				.whileTrue(claw.autoGrab(true));
 
-		manipulator.leftTrigger().onTrue(claw.release());
+		manipulator.leftTrigger().onTrue(superstructure.returnToSafe());
 		manipulator.rightTrigger().onTrue(claw.grab());
 
 		manipulator.povUp().onTrue(
