@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
@@ -163,6 +164,8 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
+		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
+		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist));

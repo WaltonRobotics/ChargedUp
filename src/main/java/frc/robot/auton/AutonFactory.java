@@ -19,6 +19,11 @@ public final class AutonFactory {
     public static HashMap<String, Command> autonEventMap = new HashMap<>();
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
     public static Translation2d position = new Translation2d();
+
+    public static CommandBase testAuto(SwerveSubsystem swerve){
+        var driveCmd = swerve.getPPSwerveAutonCmd(Paths.PPPaths.oneConePark);
+        return driveCmd;
+    }
    
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         //var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3).withName("SS-Auto-TopCone");

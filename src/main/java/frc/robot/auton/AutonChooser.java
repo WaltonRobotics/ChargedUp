@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AutonChooser {
     public enum AutonOption {
-        TEST_ROT("test"),
+        DO_NOTHING("do nothing"),
+        TEST("test"),
         ONE_CONE_PARK("drop cone then park"),
         DROP_CONE_BACK("drop cone back"),
         // ONE_CONE_AROUND("drop cone then go around and park"),
