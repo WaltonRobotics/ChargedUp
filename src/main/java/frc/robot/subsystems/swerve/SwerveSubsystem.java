@@ -295,7 +295,16 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void resetPose(Pose2d pose) {
-		if(pose.getRotation().getDegrees() < 180){
+		if(Flipper.shouldFlip() && pose.getRotation().getDegrees() < 180){
+			setYaw(pose.getRotation().getDegrees()-180);
+		}
+		else if(Flipper.shouldFlip() && pose.getRotation().getDegrees() >= 180){
+			setYaw(pose.getRotation().getDegrees());
+		}
+		else if(!Flipper.shouldFlip() && pose.getRotation().getDegrees() < 180){
+			setYaw(pose.getRotation().getDegrees()-180);
+		}
+		else{
 			setYaw(pose.getRotation().getDegrees());
 		}
 		// else{

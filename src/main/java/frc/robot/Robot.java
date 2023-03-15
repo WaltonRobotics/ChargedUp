@@ -98,6 +98,11 @@ public class Robot extends TimedRobot {
     // m_robotContainer.swerve.resetGyro();
     m_robotContainer.superstructure.initState();
 
+    var initPoseOpt = m_robotContainer.getAutonomousInitPose();
+    if (initPoseOpt.isPresent()) {
+      m_robotContainer.swerve.resetPose(initPoseOpt.get());
+    }
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {

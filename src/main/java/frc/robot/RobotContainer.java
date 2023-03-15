@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -20,6 +21,8 @@ import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPPaths;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
+
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -164,15 +167,12 @@ public class RobotContainer {
 	}
 
 	public void mapAutonCommands() {
-		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
 		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist));
-		// AutonChooser.AssignAutonCommand(AutonOption.DROP_CONE_BACK, AutonFactory.oneConeBack(swerve, superstructure, claw, elevator, tilt, wrist));
-		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist));
-		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK_PP, swerve.getFullAuto(PPPaths.oneConePark));
-					// .andThen(new AutoBalance(swerve, true)));
-		// AutonChooser.AssignAutonCommand(AutonOption.STRAIGHT, AutonFactory.testAuto(swerve, superstructure, claw, elevator, tilt, wrist)); 
-		// AutonChooser.AssignAutonCommand(AutonOption.TURN, swerve.getPPSwerveAutonCmd(PPPaths.turn)); 
+		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_PARK, 
+			AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.oneConePark.getInitialHolonomicPose()
+		);
 	}
 
 	public void mapAutonEvents() { 
@@ -190,13 +190,17 @@ public class RobotContainer {
 		driver.getHID().setRumble(RumbleType.kBothRumble, 0);
 	}
 
+	public Optional<Pose2d> getAutonomousInitPose() {
+		return AutonChooser.GetChosenAutonInitPose();
+	}
+
 	/**
 	 * Use this to pass the autonomous command to the main {@link Robot} class.
 	 *
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		return AutonChooser.GetChosenAuton();
+		return AutonChooser.GetChosenAutonCmd();
 	}
 
 	public enum GamePieceMode {
