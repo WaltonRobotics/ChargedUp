@@ -30,7 +30,7 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        m_swerve.drive(3 * reverseMultiplier, 0, 0, false, true);
+        m_swerve.drive(3.0 * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
 
@@ -58,7 +58,7 @@ public class AutoBalance extends CommandBase {
             else {
                 double powerSign = pitch > 0 ? 1 : -1;
                 double maxPitch = 30;
-                double thetaEffort = m_swerve.getThetaController().calculate(Math.toRadians(m_swerve.getGyroYaw()),
+                double thetaEffort = m_swerve.getThetaController().calculate(Math.toRadians(m_swerve.getGyroYaw() - 180),
                         Math.toRadians(targetYaw));
 
                 // Calculate a value between -1 and 1 based on the value of the min/max pitch
@@ -68,7 +68,7 @@ public class AutoBalance extends CommandBase {
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
                 double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.5;
                 if(m_reverse){
-                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 1.75;
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2;
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);
