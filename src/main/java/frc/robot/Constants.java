@@ -23,6 +23,11 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
     public static final String canbus = "Canivore";
+    
+    public static final class AtHome {
+        public static final boolean AreWe = true;
+        public static final double chargeStationApproachPwr = 2;
+    }
 
     public static final class SwerveK {
         public static final String DB_TAB_NAME = "SwerveSubsys";

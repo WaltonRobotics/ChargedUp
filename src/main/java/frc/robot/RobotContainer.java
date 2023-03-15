@@ -173,7 +173,9 @@ public class RobotContainer {
 			AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.oneConePark.getInitialHolonomicPose()
 		);
-	}
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.twoElement.getInitialHolonomicPose());
+}
 
 	public void mapAutonEvents() { 
 		// autonEventMap.put("wait", Commands.waitSeconds(.5));

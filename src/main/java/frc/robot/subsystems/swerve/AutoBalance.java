@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 
 public class AutoBalance extends CommandBase {
     private double rampDeg = 14;
@@ -30,7 +31,8 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        m_swerve.drive(3.0 * reverseMultiplier, 0, 0, false, true);
+        double approachSpeed = Constants.AtHome.AreWe ? Constants.AtHome.chargeStationApproachPwr : 3.0;
+        m_swerve.drive(approachSpeed * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
 
@@ -66,9 +68,9 @@ public class AutoBalance extends CommandBase {
                 // the pitch
                 // double output_percentage = std::clamp(((units::math::abs(pitch) - min_pitch)
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
-                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.5;
+                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.75;
                 if(m_reverse){
-                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2;
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.75;
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);

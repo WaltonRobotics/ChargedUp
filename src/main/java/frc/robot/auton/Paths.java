@@ -44,6 +44,10 @@ public class Paths {
 		public static final PathPlannerTrajectory turn = PathPlanner.loadPath("turn", 
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory twoElement = PathPlanner.loadPath("twoElement",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		// public static final List<PathPlannerTrajectory> twoElement2 = PathPlanner.loadPathGroup("twoElement2", kPPConstraints);
 	}
 
 	public static final class PPAutoscoreClass {

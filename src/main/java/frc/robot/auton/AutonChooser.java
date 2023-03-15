@@ -21,7 +21,8 @@ public class AutonChooser {
         ONE_CONE_PARK_PP("drop cone then park (pathplanner)"),
         AUTOBALANCE("autobalance"),
         STRAIGHT("straight"),
-        TURN("turn");
+        TURN("turn"),
+        TWO_ELEMENT("cube then cone");
 
         public final String description;
 
