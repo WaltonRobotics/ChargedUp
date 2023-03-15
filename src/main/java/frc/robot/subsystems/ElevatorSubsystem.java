@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
-import frc.robot.CTREConfigs;
+import frc.robot.CTREV5Configs;
 
 import java.util.function.DoubleSupplier;
 
@@ -65,10 +65,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
 		m_left.configFactoryDefault();
-		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
+		m_left.configAllSettings(CTREV5Configs.Get().leftConfig);
 
 		m_right.configFactoryDefault();
-		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
+		m_right.configAllSettings(CTREV5Configs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);

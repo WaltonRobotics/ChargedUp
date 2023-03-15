@@ -1,10 +1,13 @@
-package frc.lib.util;
+package com.pathplanner.lib;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.PathPlannerTrajectory.StopEvent;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +22,31 @@ import static frc.robot.FieldConstants.*;
 
 
 public class Flipper {
+
+    private static Constructor<PathPlannerTrajectory> constructor;
+    
+    static {
+        try {
+            // Set all `.deltaPos` on PathPlannerState objects to be public
+            // deltaPosField = PathPlannerState.class.getDeclaredField("deltaPos");
+            // deltaPosField.setAccessible(true);
+
+            // Set all `.curveRadius` on PathPlannerState objects to be public
+            // curveRadiusField = PathPlannerState.class.getDeclaredField("curveRadius");
+            // curveRadiusField.setAccessible(true);
+
+            // Access the private constructor that builds a trajectory from states
+            constructor = PathPlannerTrajectory.class.getDeclaredConstructor(
+                    List.class, List.class, StopEvent.class, StopEvent.class, boolean.class);
+            constructor.setAccessible(true);
+        } catch (SecurityException | NoSuchMethodException e) {
+            System.err.println(
+                    "Could not access private fields via reflection in PathPlannerTrajectory.");
+            e.printStackTrace(System.err);
+        }
+    }
+
+
     public static boolean shouldFlip() {
         return DriverStation.getAlliance() == Alliance.Red;
     }
@@ -58,12 +86,17 @@ public class Flipper {
             newStates.add(allianceFlip(state));
         }
 
-        return new PathPlannerTrajectory(
-                newStates,
-                trajectory.getMarkers(),
-                trajectory.getStartStopEvent(),
-                trajectory.getEndStopEvent(),
-                trajectory.fromGUI);
+        try {
+            return constructor.newInstance(
+                    newStates,
+                    trajectory.getMarkers(),
+                    trajectory.getStartStopEvent(),
+                    trajectory.getEndStopEvent(),
+                    trajectory.fromGUI);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            return new PathPlannerTrajectory();
+        }
     }
 
     public static PathPlannerState allianceFlip(PathPlannerState state) {

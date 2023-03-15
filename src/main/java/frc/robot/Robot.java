@@ -22,7 +22,7 @@ import frc.robot.subsystems.superstructure.SuperState;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static CTREConfigs ctreConfigs;
+  public static CTREProConfigs ctreConfigs;
 
   private Command m_autonomousCommand;
 

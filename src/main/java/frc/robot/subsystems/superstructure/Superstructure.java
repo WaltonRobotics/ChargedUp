@@ -34,27 +34,6 @@ public class Superstructure extends SubsystemBase {
 		DashboardManager.addTab(this);
 	}
 
-	/*
-	 * Dynamically change the max (downwards) angle of the wrist
-	 * in degrees based on height and tilt of the elevator
-	 */
-	public void limitWristDynamic() {
-		double dynamicLimit = 0;
-		if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
-			dynamicLimit = kMaxDeg;
-		}
-		m_wrist.setMaxDegrees(dynamicLimit);
-	}
-
-	/*
-	 * As soon as elevator is tilted,
-	 * change lower limit of elevator
-	 */
-	public void limitElevatorDynamic() {
-		if (!m_tilt.atReverseLimit()) {
-			m_elevator.setDynamicLimit(kMinHeightMeters + Units.inchesToMeters(2));
-		}
-	}
 
 	public CommandBase toState(SuperState state) {
 		return new SuperstructureToState(this, state);
@@ -96,47 +75,4 @@ public class Superstructure extends SubsystemBase {
 	protected SuperState getCurState() {
 		return m_curState;
 	}
-
-	// aka autoScore
-	// TODO: pass in swerve subsystem, it's not included in this class
-	/**
-	 * @param state   high, mid, or low
-	 * @param place   where to score :D (also includes cone/cube mode)
-	 * @param isBumpy if it is bumpy or not
-	 * @return command to autoscore
-	 */
-	// public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces
-	// place, boolean isBumpy) {
-	// var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
-	// var autoScore = runOnce(() -> {
-	// if(isBumpy) {
-	// if(DriverStation.getAlliance().equals(Alliance.Red)) {
-	// m_swerve.autoScore(PPAutoscoreClass.redBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// else {
-	// m_swerve.autoScore(PPAutoscoreClass.blueBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// }
-	// else {
-	// if(DriverStation.getAlliance().equals(Alliance.Red)) {
-	// m_swerve.autoScore(PPAutoscoreClass.redNotBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// else {
-	// m_swerve.autoScore(PPAutoscoreClass.blueNotBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// }
-	// });
-	// var elevatorHeight = runOnce(() -> {
-	// m_elevator.setState(state.elevatorHeight);
-	// });
-	// var finalPos = runOnce(() -> {
-	// m_tilt.setTiltTarget(state.elevatorTilt.angle); // finish later maybe?
-	// m_wrist.toPosition(.5, state.wristTilt);
-	// });
-	// return leds.andThen(autoScore).andThen(elevatorHeight).andThen(finalPos);
-	// }
 }

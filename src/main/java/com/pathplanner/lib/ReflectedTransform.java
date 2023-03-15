@@ -128,7 +128,7 @@ public class ReflectedTransform {
             // Call the now unhidden constructor
             return constructor.newInstance(
                     transformedStates,
-                    .getMarkers(),
+                    trajectory.getMarkers(),
                     trajectory.getStartStopEvent(),
                     trajectory.getEndStopEvent(),
                     trajectory.fromGUI);

@@ -6,7 +6,6 @@ import frc.robot.vision.AprilTagCamera;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.swerve.WaltonPPSwerveControllerCommand;
 import frc.lib.util.DashboardManager;
-import frc.lib.util.Flipper;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;

@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.Matrix;
@@ -90,7 +92,8 @@ public final class Constants {
         public static final double kAngleKP = kSwerveModule.angleKP;
         public static final double kAngleKI = kSwerveModule.angleKI;
         public static final double kAngleKD = kSwerveModule.angleKD;
-        public static final double kAngleKF = kSwerveModule.angleKF;
+        public static final double kAngleKV = kSwerveModule.angleKV;
+        public static final double kAngleKS = kSwerveModule.angleKS;
 
         /* Drive Motor PID Values */
         public static final double kDriveKP = 0.10;
