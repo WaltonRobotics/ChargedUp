@@ -47,6 +47,18 @@ public class Paths {
 		public static final PathPlannerTrajectory twoElement = PathPlanner.loadPath("twoElement",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory threePiece1 = PathPlanner.loadPath("threePiece1",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory threePiece2 = PathPlanner.loadPath("threePiece2",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory threePiece3 = PathPlanner.loadPath("threePiece3",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory threePiece4 = PathPlanner.loadPath("threePiece4",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
 		// public static final List<PathPlannerTrajectory> twoElement2 = PathPlanner.loadPathGroup("twoElement2", kPPConstraints);
 	}
 

@@ -176,6 +176,7 @@ public class RobotContainer {
 		);
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.twoElement.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist));
 }
 
 	public void mapAutonEvents() { 
