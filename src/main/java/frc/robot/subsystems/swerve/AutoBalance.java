@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Constants.AtHome;
 
 public class AutoBalance extends CommandBase {
     private double rampDeg = 14;
@@ -45,13 +46,13 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (m_reverse && Math.abs(pitch) < 4.5) { //3
+            if (m_reverse && Math.abs(pitch) < AtHome.reversePitch) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
                 done = true;
             } 
-            if (!m_reverse && Math.abs(pitch) < 8) { //3
+            if (!m_reverse && Math.abs(pitch) < AtHome.forwardPitch) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
@@ -68,9 +69,9 @@ public class AutoBalance extends CommandBase {
                 // the pitch
                 // double output_percentage = std::clamp(((units::math::abs(pitch) - min_pitch)
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
-                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.75;
+                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtHome.forwardPwr;
                 if(m_reverse){
-                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.0;
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtHome.reversePwr;
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);

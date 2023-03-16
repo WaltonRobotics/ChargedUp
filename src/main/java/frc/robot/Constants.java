@@ -26,7 +26,19 @@ public final class Constants {
     
     public static final class AtHome {
         public static final boolean AreWe = true;
-        public static final double chargeStationApproachPwr = 2;
+        public static final double chargeStationApproachPwr = 2.75;
+        public static final double forwardPitch = 3;
+        public static final double reversePitch = 6;
+        public static final double forwardPwr = 2;
+        public static final double reversePwr = 2;
+    }
+
+    public static final class AtComp{
+        public static final double chargeStationApproachPwr = 3;
+        public static final double forwardPitch = 8;
+        public static final double reversePitch = 4.5;
+        public static final double forwardPwr = 2.5;
+        public static final double reversePwr = 1.75;
     }
 
     public static final class SwerveK {
@@ -288,7 +300,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kGearRatio = 12.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
-        public static final double kP = 22; //sysid 9.2597E-05
+        public static final double kP = 22.5; //sysid 9.2597E-05
         public static final double kD = 0;
         public static final double kS = 0.15253;
         public static final double kV = 9.8382;

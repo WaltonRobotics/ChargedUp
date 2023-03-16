@@ -20,8 +20,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
-    public final PhotonCamera rightCam = new PhotonCamera("RightLowCam");
-    public final PhotonCamera leftCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
+    public final PhotonCamera rightLowCam = new PhotonCamera("LeftHighCam");
+    public final PhotonCamera leftLowCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
     // distance from robot to camera
     private final Transform3d robotToCam1 = new Transform3d(
             new Translation3d(Units.inchesToMeters(11), Units.inchesToMeters(1.25), Units.inchesToMeters(42.5)), // camera placement on robot
@@ -59,12 +59,12 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(rightCam, robotToCam1));
-        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, rightCam,
+        camList.add(new Pair<PhotonCamera, Transform3d>(rightLowCam, robotToCam1));
+        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, rightLowCam,
                 robotToCam1);
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(leftCam, robotToCam2));
-        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, leftCam,
+        camList.add(new Pair<PhotonCamera, Transform3d>(leftLowCam, robotToCam2));
+        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, leftLowCam,
                         robotToCam2);
     }
 
@@ -127,12 +127,12 @@ public class AprilTagCamera {
 
     // unfiltered view of camera
     public void toggleDriverMode() {
-        if (rightCam.getDriverMode()) {
-            rightCam.setDriverMode(false);
+        if (rightLowCam.getDriverMode()) {
+            rightLowCam.setDriverMode(false);
         }
 
         else {
-            rightCam.setDriverMode(true);
+            rightLowCam.setDriverMode(true);
         }
     }
 }

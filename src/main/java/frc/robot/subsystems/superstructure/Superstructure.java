@@ -1,7 +1,6 @@
 package frc.robot.subsystems.superstructure;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -124,9 +123,9 @@ public class Superstructure extends SubsystemBase {
 	public CommandBase returnToSafe() {
 		var clawCmd = m_claw.release();
 
-		if (getCurState() != SuperState.SAFE && getCurState() != SuperState.GROUND_PICK_UP && getCurState() != SuperState.SUBSTATION_PICK_UP) {
-			return clawCmd.andThen(new SuperstructureToState(this, SuperState.SAFE));
-		}
+		// if (getCurState() != SuperState.SAFE && getCurState() != SuperState.GROUND_PICK_UP && getCurState() != SuperState.SUBSTATION_PICK_UP) {
+		// 	return clawCmd.andThen(new SuperstructureToState(this, SuperState.SAFE));
+		// }
 
 		return clawCmd;
 	}
