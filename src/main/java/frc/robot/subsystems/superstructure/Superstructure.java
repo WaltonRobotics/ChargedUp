@@ -88,10 +88,13 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase smartReset() {
+		var tiltCmd = m_tilt.getDegrees() > 2 ? m_tilt.toAngle(TiltK.kBotAngleDegrees) : Commands.none();
+		var wristCmd = WristK.kMaxDeg - m_wrist.getDegrees() > 2 ? m_wrist.toAngle(WristK.kMaxDeg) : Commands.none();
+		var elevatorCmd = Units.metersToInches(m_elevator.getActualHeightMeters()) > 2 ? m_elevator.toHeight(ElevatorK.kBotHeightMeters) : Commands.none();
 		return Commands.parallel(
-            m_tilt.toAngle(TiltK.kBotAngleDegrees),
-            m_wrist.toAngle(WristK.kMaxDeg),
-            m_elevator.toHeight(ElevatorK.kBotHeightMeters)
+            tiltCmd,
+            wristCmd,
+			elevatorCmd
         );
 	}
 
