@@ -208,8 +208,12 @@ public class SwerveModule {
     }
 
     public void resetToAbsolute() {
+        double absPosDeg = 
+            getCanCoder().getDegrees() < 0 ?
+            makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees() - 360 :
+            makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees();
         double absolutePosition = Conversions.degreesToFalcon(
-                makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees(), kAngleGearRatio);
+                absPosDeg, kAngleGearRatio);
         m_steerMotor.setSelectedSensorPosition(absolutePosition);
     }
 

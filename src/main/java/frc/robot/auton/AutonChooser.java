@@ -19,7 +19,8 @@ public class AutonChooser {
         ONE_CUBE_AROUND("drop cube then go around and park"),
         STRAIGHT("straight"),
         TURN("turn"),
-        TWO_ELEMENT("cube then cone");
+        TWO_ELEMENT("cube then cone"),
+        THREE_PIECE("three piece scoring");
 
         public final String description;
 
