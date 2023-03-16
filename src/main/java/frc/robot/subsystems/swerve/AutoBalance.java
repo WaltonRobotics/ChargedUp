@@ -70,7 +70,7 @@ public class AutoBalance extends CommandBase {
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
                 double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.75;
                 if(m_reverse){
-                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.75;
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.0;
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);

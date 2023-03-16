@@ -32,12 +32,12 @@
         "y": 4.45030584011346
       },
       "nextControl": {
-        "x": 5.560134394290143,
-        "y": 4.45030584011346
+        "x": 7.918416121529752,
+        "y": 4.754600256531473
       },
       "holonomicAngle": 0,
-      "isReversal": true,
-      "velOverride": null,
+      "isReversal": false,
+      "velOverride": 1.0,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -70,5 +70,8 @@
       }
     }
   ],
+  "maxVelocity": 3.0,
+  "maxAcceleration": null,
+  "isReversed": null,
   "markers": []
 }

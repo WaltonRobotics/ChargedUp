@@ -64,7 +64,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
 		var clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
 
 		if (m_targetState == SuperState.GROUND_PICK_UP || m_targetState == SuperState.SUBSTATION_PICK_UP) {
-			clawCmd = Commands.waitSeconds(0).andThen(claw.release());
+			clawCmd = Commands.waitSeconds(0).andThen(claw.autoGrab(false));
 		} 
 
         addCommands(

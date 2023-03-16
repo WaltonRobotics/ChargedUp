@@ -47,7 +47,10 @@ public class Paths {
 		public static final PathPlannerTrajectory twoElement = PathPlanner.loadPath("twoElement",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		// public static final List<PathPlannerTrajectory> twoElement2 = PathPlanner.loadPathGroup("twoElement2", kPPConstraints);
+		public static final PathPlannerTrajectory coneOneHalf = PathPlanner.loadPath("coneOneHalf", kMaxSpeedMetersPerSecond,
+		kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", kMaxSpeedMetersPerSecond,
+		kMaxAccelerationMetersPerSecondSquared);
 	}
 
 	public static final class PPAutoscoreClass {

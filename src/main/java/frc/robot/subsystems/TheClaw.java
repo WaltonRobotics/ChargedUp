@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
-import frc.robot.subsystems.superstructure.SuperState;
-
 import static frc.robot.Constants.TheClawK.*;
 
 public class TheClaw extends SubsystemBase {
@@ -21,19 +19,21 @@ public class TheClaw extends SubsystemBase {
 	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
 	private final GenericEntry nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
 	private final GenericEntry nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
+	private final GenericEntry nte_bothEyes = DashboardManager.addTabBooleanBox(this, "Both Eyes");
+
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
 	
-	public final Trigger leftEyeTrig = new Trigger(leftEye::get);
-	public final Trigger rightEyeTrig = new Trigger(rightEye::get);
+	public final Trigger leftEyeTrig = new Trigger(leftEye::get).negate();
+	public final Trigger rightEyeTrig = new Trigger(rightEye::get).negate();
+	public final Trigger bothEyesTrig = leftEyeTrig.and(rightEyeTrig);
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	
 	
 
 	public TheClaw() {
 		// DashboardManager.addTab(this);
-
 	}
 
 	/*
@@ -46,15 +46,16 @@ public class TheClaw extends SubsystemBase {
 				claw.set(true); 
 				m_isClosed = !claw.get();  // open claw
 			})
-			.andThen(new WaitCommand(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.2 : 1.2)) // wait 0.8sec before sensor
+			.andThen(new WaitCommand(bothEyesTrig.getAsBoolean() ? 1.2 : .8)) // wait 0.8sec before sensor
 			.andThen(
 				startEnd(() -> {}, 
 					() -> {
 						claw.set(false); 
 						m_isClosed = !claw.get();
 					})
-					.until(leftEyeTrig.and(rightEyeTrig)))
-					.finallyDo((intr) -> m_grabOk = true);
+					.until(bothEyesTrig)
+			)
+			.finallyDo((intr) -> m_grabOk = true);
 	}
 
 	/*
@@ -93,7 +94,8 @@ public class TheClaw extends SubsystemBase {
 	@Override
 	public void periodic() {
 		nte_isClosed.setBoolean(m_isClosed);
-		nte_leftEye.setBoolean(leftEye.get());
-		nte_rightEye.setBoolean(rightEye.get());
+		nte_leftEye.setBoolean(leftEyeTrig.getAsBoolean());
+		nte_rightEye.setBoolean(rightEyeTrig.getAsBoolean());
+		nte_bothEyes.setBoolean(bothEyesTrig.getAsBoolean());
 	}
 }

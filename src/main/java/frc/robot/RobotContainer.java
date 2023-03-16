@@ -90,7 +90,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(new InstantCommand(() -> swerve.teleOpReset()));
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(new AutoBalance(swerve, true));
+		driver.leftBumper().whileTrue(new AutoBalance(swerve, false));
 		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
 
 		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
@@ -176,6 +176,10 @@ public class RobotContainer {
 		);
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.twoElement.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.coneOneHalf.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.oneCubePark.getInitialHolonomicPose());
 }
 
 	public void mapAutonEvents() { 
