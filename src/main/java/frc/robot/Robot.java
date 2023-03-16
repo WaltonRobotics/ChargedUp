@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.superstructure.SuperState;
+import io.github.oblarg.oblog.Logger;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,7 +25,6 @@ import frc.robot.subsystems.superstructure.SuperState;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static CTREConfigs ctreConfigs;
 
   private final Timer m_modResetTimer = new Timer();
 
@@ -40,15 +40,17 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_modResetTimer.restart();
-    PathPlannerServer.startServer(5811);
+    if (!DriverStation.isFMSAttached()) {
+      // Only run at home!
+      PathPlannerServer.startServer(5811);
+    }
     DriverStation.silenceJoystickConnectionWarning(true);
+    addPeriodic(m_robotContainer.vision::periodic, .5);
+
+
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-    // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
-
-    addPeriodic(m_robotContainer.vision::periodic, .5);
+    Logger.configureLoggingAndConfig(this, true);
   }
 
   /**
@@ -72,6 +74,7 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    Logger.updateEntries();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

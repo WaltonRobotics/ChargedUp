@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
+import frc.lib.LoggedCommandXboxController;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -37,8 +39,8 @@ import java.util.Optional;
  */
 public class RobotContainer {
 	/* Controllers */
-	private final CommandXboxController driver = new CommandXboxController(0);
-	private final CommandXboxController manipulator = new CommandXboxController(1);
+	private final LoggedCommandXboxController driver = new LoggedCommandXboxController(0, "driver");
+	private final LoggedCommandXboxController manipulator = new LoggedCommandXboxController(1, "manipulator");
 
 	public final LEDSubsystem leds = new LEDSubsystem();
 	public final AprilTagCamera vision = new AprilTagCamera();
@@ -60,13 +62,14 @@ public class RobotContainer {
 		// addPathChoices();
 		// addAprilTagChoices();
 		swerve.setDefaultCommand(
-				swerve.teleopDriveCmd(
-						() -> driver.getLeftY(),
-						() -> driver.getLeftX(),
-						() -> -driver.getRightX(),
-						driver.leftBumper()::getAsBoolean,
-						() -> true // openLoop
-				));
+			swerve.teleopDriveCmd(
+				() -> driver.getLeftY(),
+				() -> driver.getLeftX(),
+				() -> -driver.getRightX(),
+				driver.leftBumper()::getAsBoolean,
+				() -> true // openLoop
+			)
+		);
 		elevator.setDefaultCommand(elevator.teleopCmd(() -> -manipulator.getLeftY()));
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
