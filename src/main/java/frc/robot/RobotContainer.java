@@ -183,7 +183,7 @@ public class RobotContainer {
 		PPPaths.coneOneHalf.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.oneCubePark.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist), PPPaths.threePiece1.getInitialHolonomicPose());
+		// AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist), PPPaths.threePiece1.getInitialHolonomicPose());
 }
 
 	public void mapAutonEvents() { 
