@@ -379,8 +379,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final String DB_TAB_NAME = "ClawSubsys";
 
         public static final int kTheID = 0;
-        public static final int kLeftEyeID = 0;
-        public static final int kRightEyeID = 1;
+        public static final int kClawSensor = 0;
     }
 
        // in meters

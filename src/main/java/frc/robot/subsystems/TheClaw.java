@@ -14,26 +14,20 @@ import static frc.robot.Constants.TheClawK.*;
 
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
-	private final DigitalInput leftEye = new DigitalInput(kLeftEyeID);
-	private final DigitalInput rightEye = new DigitalInput(kRightEyeID);
+	private final DigitalInput clawSensor = new DigitalInput(kClawSensor);
 	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
-	private final GenericEntry nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
-	private final GenericEntry nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
-	private final GenericEntry nte_bothEyes = DashboardManager.addTabBooleanBox(this, "Both Eyes");
+	private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
 
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
 	
-	public final Trigger leftEyeTrig = new Trigger(leftEye::get).negate();
-	public final Trigger rightEyeTrig = new Trigger(rightEye::get).negate();
-	public final Trigger bothEyesTrig = leftEyeTrig.and(rightEyeTrig);
+	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	
 	
 
 	public TheClaw() {
-		// DashboardManager.addTab(this);
 	}
 
 	/*
@@ -46,14 +40,14 @@ public class TheClaw extends SubsystemBase {
 				claw.set(true); 
 				m_isClosed = !claw.get();  // open claw
 			})
-			.andThen(new WaitCommand(bothEyesTrig.getAsBoolean() ? 1.2 : .8)) // wait 0.8sec before sensor
+			.andThen(new WaitCommand(sensorTrig.getAsBoolean() ? 1.2 : .8)) // wait 0.8sec before sensor
 			.andThen(
 				startEnd(() -> {}, 
 					() -> {
 						claw.set(false); 
 						m_isClosed = !claw.get();
 					})
-					.until(bothEyesTrig)
+					.until(sensorTrig)
 			)
 			.finallyDo((intr) -> m_grabOk = true);
 	}
@@ -94,8 +88,6 @@ public class TheClaw extends SubsystemBase {
 	@Override
 	public void periodic() {
 		nte_isClosed.setBoolean(m_isClosed);
-		nte_leftEye.setBoolean(leftEyeTrig.getAsBoolean());
-		nte_rightEye.setBoolean(rightEyeTrig.getAsBoolean());
-		nte_bothEyes.setBoolean(bothEyesTrig.getAsBoolean());
+		nte_clawSensor.setBoolean(sensorTrig.getAsBoolean());
 	}
 }
