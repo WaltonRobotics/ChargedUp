@@ -20,12 +20,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
-    public final PhotonCamera highCam = new PhotonCamera("LeftHighCam");
+    // public final PhotonCamera highCam = new PhotonCamera("LeftHighCam");
     public final PhotonCamera lowCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
     // distance from robot to camera
-    private final Transform3d robotToCam1 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(11), Units.inchesToMeters(1.25), Units.inchesToMeters(42.5)), // camera placement on robot
-            new Rotation3d(0, Units.degreesToRadians(0), 0));
+    // private final Transform3d robotToCam1 = new Transform3d(
+    //         new Translation3d(Units.inchesToMeters(11), Units.inchesToMeters(1.25), Units.inchesToMeters(42.5)), // camera placement on robot
+    //         new Rotation3d(0, Units.degreesToRadians(0), 0));
 
     private final Transform3d robotToCam2 = new Transform3d(
                 new Translation3d(Units.inchesToMeters(9.5), Units.inchesToMeters(8.183), Units.inchesToMeters(7.25)), // camera placement on robot
@@ -59,9 +59,9 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(highCam, robotToCam1));
-        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, highCam,
-                robotToCam1);
+        // camList.add(new Pair<PhotonCamera, Transform3d>(highCam, robotToCam1));
+        // poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, highCam,
+        //         robotToCam1);
 
         camList.add(new Pair<PhotonCamera, Transform3d>(lowCam, robotToCam2));
         poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, lowCam,
@@ -126,13 +126,13 @@ public class AprilTagCamera {
     }
 
     // unfiltered view of camera
-    public void toggleDriverMode() {
-        if (highCam.getDriverMode()) {
-            highCam.setDriverMode(false);
-        }
+    // public void toggleDriverMode() {
+    //     if (highCam.getDriverMode()) {
+    //         highCam.setDriverMode(false);
+    //     }
 
-        else {
-            highCam.setDriverMode(true);
-        }
-    }
+    //     else {
+    //         highCam.setDriverMode(true);
+    //     }
+    // }
 }
