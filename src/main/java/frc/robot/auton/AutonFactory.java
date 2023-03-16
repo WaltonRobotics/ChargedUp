@@ -68,28 +68,32 @@ public final class AutonFactory {
         );
     }
     public static CommandBase threePiece(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var placeConeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto_TopCone");
-        var resetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var groundPickUpCmd = superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(2).andThen(claw.autoGrab(false).withTimeout(2));
+        var placeCone1Cmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto_TopCone");
+        var placeCone2Cmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto_TopCone");
+        var reset1Cmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+        var reset2Cmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+        var reset3Cmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+        var groundPickUp1Cmd = superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(2).andThen(claw.autoGrab(false).withTimeout(2));
+        var groundPickUp2Cmd = superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(2).andThen(claw.autoGrab(false).withTimeout(2));
         var placeCubeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2).andThen(claw.release()).withName("SS-Auto-TopCube");
 
         return Commands.sequence(
             superstructure.smartReset(),
-            placeConeCmd,
+            placeCone1Cmd,
             Commands.waitSeconds(1),
-            resetCmd,
+            reset1Cmd,
             swerve.getPPSwerveAutonCmd(PPPaths.threePiece1),
-            groundPickUpCmd,
+            groundPickUp1Cmd,
             swerve.getPPSwerveAutonCmd(PPPaths.threePiece2),
             placeCubeCmd,
             Commands.waitSeconds(1),
-            resetCmd,
+            reset2Cmd,
             swerve.getPPSwerveAutonCmd(PPPaths.threePiece3),
-            groundPickUpCmd,
+            groundPickUp2Cmd,
             swerve.getPPSwerveAutonCmd(PPPaths.threePiece4),
-            placeConeCmd,
+            placeCone2Cmd,
             Commands.waitSeconds(1),
-            resetCmd
+            reset3Cmd
         );
     }
 
