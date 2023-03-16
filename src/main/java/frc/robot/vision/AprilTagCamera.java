@@ -24,7 +24,7 @@ public class AprilTagCamera {
     public final PhotonCamera leftLowCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
     // distance from robot to camera
     private final Transform3d robotToCam1 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(11), Units.inchesToMeters(1.25), Units.inchesToMeters(42.5)), // camera placement on robot
+            new Translation3d(Units.inchesToMeters(9.5), Units.inchesToMeters(-8.183), Units.inchesToMeters(7.25)), // camera placement on robot
             new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(-45)));
 
     private final Transform3d robotToCam2 = new Transform3d(
