@@ -98,7 +98,7 @@ public final class AutonFactory {
     }
 
     public static CommandBase coneOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withName("SS-Auto-TopCone");
         var releaseCmd = claw.release();
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.coneOneHalf);
