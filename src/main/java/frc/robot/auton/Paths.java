@@ -47,7 +47,7 @@ public class Paths {
 		public static final PathPlannerTrajectory twoElement = PathPlanner.loadPath("twoElement",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory coneOneHalf = PathPlanner.loadPath("coneOneHalf", kMaxSpeedMetersPerSecond,
+		public static final PathPlannerTrajectory coneOneHalf = PathPlanner.loadPath("coneOneHalf", 3,
 		kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", kMaxSpeedMetersPerSecond,
 		kMaxAccelerationMetersPerSecondSquared);

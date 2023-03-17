@@ -40,7 +40,7 @@ public class TheClaw extends SubsystemBase {
 				claw.set(true); 
 				m_isClosed = !claw.get();  // open claw
 			})
-			.andThen(new WaitCommand(sensorTrig.getAsBoolean() ? 1.2 : .8)) // wait 0.8sec before sensor
+			.andThen(new WaitCommand(sensorTrig.getAsBoolean() ? .5: .5)) // wait 0.8sec before sensor
 			.andThen(
 				startEnd(() -> {}, 
 					() -> {

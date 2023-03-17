@@ -2,6 +2,7 @@ package frc.robot.subsystems.superstructure;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -61,16 +62,16 @@ public class SuperstructureToState extends SequentialCommandGroup {
 
         var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
 		var elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
-		var tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
+		CommandBase tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
 		var clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
 
 		if (m_targetState == SuperState.GROUND_PICK_UP || m_targetState == SuperState.SUBSTATION_PICK_UP) {
-			clawCmd = Commands.waitSeconds(0).andThen(claw.release());
+			clawCmd = Commands.waitSeconds(0).andThen(claw.autoGrab(false));
 		} 
 
-        if(tilt.getDegrees() < 2){
-            tiltCmd = Commands.none().andThen(Commands.none()); //lol sequential
-        }
+        // if(tilt.getDegrees() < 2 && (m_targetState == SuperState.SAFE || m_targetState == SuperState.GROUND_PICK_UP) || m_targetState == SuperState.SUBSTATION_PICK_UP){
+        //     tiltCmd = Commands.none(); //lol sequential
+        // }
 
         addCommands(
             initCmd,

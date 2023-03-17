@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.sql.Driver;
+
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -132,9 +134,12 @@ public class Robot extends TimedRobot {
     
     m_robotContainer.superstructure.initState();
     //add if no fms, smartreset superstrucute
+    if(!DriverStation.isFMSAttached()){
+      m_robotContainer.superstructure.smartReset();
+    }
     m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
-    m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
+    // m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
 
     m_robotContainer.swerve.zeroGyro();
   }

@@ -26,7 +26,7 @@ public final class Constants {
     
     public static final class AtHome {
         public static final boolean AreWe = true;
-        public static final double chargeStationApproachPwr = 2.75;
+        public static final double chargeStationApproachPwr = 2.25;
         public static final double forwardPitch = 3;
         public static final double reversePitch = 6;
         public static final double forwardPwr = 2;
@@ -186,8 +186,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 4;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 8;
+        public static final double kMaxSpeedMetersPerSecond = 5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 9;
         public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 3*Math.PI;
 

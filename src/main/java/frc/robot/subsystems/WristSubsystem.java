@@ -25,7 +25,7 @@ import frc.robot.Constants.WristK;
 public class WristSubsystem extends SubsystemBase {
   private final CANSparkMax m_motor = new CANSparkMax(kCANID, MotorType.kBrushless);
   private final SparkMaxAbsoluteEncoder m_absEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
-  private double m_targetAngle = 0;
+  private double m_targetAngle = kMaxDeg;
   private double m_ffEffort = 0;
   private double m_pdEffort = 0;
   private double m_totalEffort = 0;
@@ -61,7 +61,7 @@ public class WristSubsystem extends SubsystemBase {
     m_absEncoder.setPositionConversionFactor(360);
     m_motor.burnFlash();
 
-    m_controller.setTolerance(1);
+    m_controller.setTolerance(1.5);
   }
 
   /*
@@ -219,10 +219,10 @@ public class WristSubsystem extends SubsystemBase {
         .until(() -> {
           return m_controller.atGoal();
         })
-        .withTimeout(1.8)
         .finallyDo((intr) -> {
           m_motor.set(0);
         })
+        .withTimeout(1.6)
         .withName("ToAngle");
   }
 
