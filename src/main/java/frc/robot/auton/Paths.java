@@ -57,6 +57,9 @@ public class Paths {
 		public static final PathPlannerTrajectory threePiece4 = PathPlanner.loadPath("threePiece4",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
+				2,
+				4);
 	}
 
 	public static final class PPAutoscoreClass {

@@ -65,10 +65,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
-		m_left.configFactoryDefault();
 		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
-
-		m_right.configFactoryDefault();
 		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -135,8 +132,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 */
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
-			// double fromBottom = (getActualHeightMeters() - kMinHeightMeters) / kMaxHeightMeters;
-			// double fromTop = (kMaxHeightMeters - getActualHeightMeters()) / kMaxHeightMeters;
 			double dir = Math.signum(power.getAsDouble());
 			double output = 0;
 			
@@ -145,9 +140,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 			} else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
-			// if (fromBottom <= 0.1 || fromTop <= 0.1) {
-			// 	output *= 1 - m_dampener;
-			// }
 
 			m_targetHeight += output*.02;
 			double effort = getEffortForTarget(m_targetHeight);
@@ -232,9 +224,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @param heightMeters The height to move to
 	 */
 	public CommandBase toHeight(double heightMeters) {
-		// if (Math.abs(getActualHeightMeters() - heightMeters) <= 0.02) {
-		// 	return Commands.none().until(() -> Math.abs(getActualHeightMeters() - m_targetHeight) > 0.02).andThen(toHeight(m_targetHeight));
-		// }
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
 			i_setTarget(heightMeters);

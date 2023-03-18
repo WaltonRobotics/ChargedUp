@@ -26,7 +26,7 @@ public class AutoBalance extends CommandBase {
     public void initialize() {
         startedBalance = false;
         done = false;
-        targetYaw = m_swerve.getGyroYaw();
+        targetYaw = 180;    //may be zero, set to get Yaw if doesn't work
         m_swerve.getThetaController().setTolerance(Math.toRadians(5));
         if (m_reverse) {
             reverseMultiplier = -1;

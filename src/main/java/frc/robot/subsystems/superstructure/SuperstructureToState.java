@@ -57,7 +57,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
         }
 
         if(curState == SuperState.SUBSTATION_PICK_UP){
-            m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle * 0.1));
+            // m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle * 0.1));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .25));
         }
 
         var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
@@ -69,9 +70,9 @@ public class SuperstructureToState extends SequentialCommandGroup {
 			clawCmd = Commands.waitSeconds(0).andThen(claw.autoGrab(false));
 		} 
 
-        // if(tilt.getDegrees() < 2 && (m_targetState == SuperState.SAFE || m_targetState == SuperState.GROUND_PICK_UP) || m_targetState == SuperState.SUBSTATION_PICK_UP){
-        //     tiltCmd = Commands.none(); //lol sequential
-        // }
+        if(tilt.getDegrees() < 2 && (m_targetState == SuperState.SAFE || m_targetState == SuperState.GROUND_PICK_UP) || m_targetState == SuperState.SUBSTATION_PICK_UP){
+            tiltCmd = Commands.none();
+        }
 
         addCommands(
             initCmd,

@@ -69,20 +69,6 @@ public class AprilTagCamera {
     }
 
     public void periodic() {
-        // //reverses based on PathPlanner coordinates
-		// if(DriverStation.getAlliance() == Alliance.Blue){
-		// 	poseEstimator1.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-        //     poseEstimator2.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-		// }
-		// else{
-		// 	poseEstimator1.getFieldTags().setOrigin(new Pose3d(
-        //         new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
-        //         new Rotation3d(0, 0, 0)));
-        //     poseEstimator2.getFieldTags().setOrigin(
-        //         new Pose3d(
-        //             new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
-        //             new Rotation3d(0, 0, 0)));
-		// }
     }
 
     /**
