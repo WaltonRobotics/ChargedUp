@@ -69,6 +69,7 @@ public class RobotContainer {
 		elevator.setDefaultCommand(elevator.teleopCmd(() -> -manipulator.getLeftY()));
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
+		claw.setDefaultCommand(claw.teleOpCmd(true));
 
 		DashboardManager.addTab("TeleSwerve");
 		configureButtonBindings();
@@ -181,6 +182,8 @@ public class RobotContainer {
 		PPPaths.oneCubePark.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.threePiece1.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CONE_BACK_PARK, AutonFactory.coneBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.backPark.getInitialHolonomicPose());
 }
 
 	public void mapAutonEvents() {

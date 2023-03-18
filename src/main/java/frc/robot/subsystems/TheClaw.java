@@ -30,6 +30,18 @@ public class TheClaw extends SubsystemBase {
 	public TheClaw() {
 	}
 
+	public CommandBase teleOpCmd(boolean autoGrab){
+		return run(()->{
+			if(!m_isClosed){
+				Commands.waitSeconds(.85);	//releasing won't auto close
+				if(sensorTrig.getAsBoolean()){
+					claw.set(false);
+					m_isClosed = true;
+				}
+			}
+		});
+	}
+
 	/*
 	 * @return Cmd to automatically close claw on eye sight
 	 */
