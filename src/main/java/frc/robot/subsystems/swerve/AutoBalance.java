@@ -46,6 +46,13 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
+            if (m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
+                m_reverse = false;
+            }
+            if (!m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
+                m_reverse = true;
+            }
+
             if (m_reverse && Math.abs(pitch) < AtHome.reversePitch) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
