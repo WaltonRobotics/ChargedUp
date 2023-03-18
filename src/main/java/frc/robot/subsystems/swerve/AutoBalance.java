@@ -46,10 +46,10 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
+            if (m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
                 m_reverse = false;
             }
-            if (!m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
+            if (!m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
                 m_reverse = true;
             }
 
