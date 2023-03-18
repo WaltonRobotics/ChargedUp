@@ -28,11 +28,6 @@ public final class AutonFactory {
    
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
-        // var placeCmd = Commands.parallel(
-        //     Commands.waitSeconds(.5).andThen(elev.toHeight(SuperState.TOPCONE.elev.height)), 
-        //     tilt.toAngle(SuperState.TOPCONE.tilt.angle),
-        //     Commands.waitSeconds(1).andThen(wrist.toAngle(SuperState.TOPCONE.wrist.angle))
-        // ).withTimeout(3);
         var clawCmd = claw.release().withName("ClawRelease");
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConePark);

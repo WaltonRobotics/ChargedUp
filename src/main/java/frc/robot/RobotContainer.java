@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,7 +11,6 @@ import frc.lib.LoggedCommandXboxController;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.swerve.AutoBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
@@ -181,22 +179,11 @@ public class RobotContainer {
 		PPPaths.coneOneHalf.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.oneCubePark.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist), PPPaths.threePiece1.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.threePiece1.getInitialHolonomicPose());
 }
 
-	public void mapAutonEvents() { 
-		// autonEventMap.put("wait", Commands.waitSeconds(.5));
-		autonEventMap.put("placeTopCone", Commands.waitSeconds(0.5).andThen(Commands.parallel(
-            Commands.waitSeconds(.5).andThen(elevator.toHeight(SuperState.TOPCONE.elev.height)), 
-            tilt.toAngle(SuperState.TOPCONE.tilt.angle),
-            Commands.waitSeconds(1).andThen(wrist.toAngle(SuperState.TOPCONE.wrist.angle)))));
-		autonEventMap.put("placeTopCube", Commands.waitSeconds(0.5).andThen(new SuperstructureToState(superstructure, SuperState.TOPCUBE)));
-		autonEventMap.put("releaseClaw", Commands.waitSeconds(0.25).andThen(claw.release()));
-		autonEventMap.put("reset", Commands.waitSeconds(0.5).andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
-	}
-
-	public void turnOffRumble() {
-		driver.getHID().setRumble(RumbleType.kBothRumble, 0);
+	public void mapAutonEvents() {
 	}
 
 	public Optional<Pose2d> getAutonomousInitPose() {

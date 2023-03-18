@@ -32,25 +32,19 @@ public class Paths {
 			kMaxAccelerationMetersPerSecondSquared);
 
 	public static final class PPPaths {
-		public static final PathPlannerTrajectory testRot = PathPlanner.loadPath("testRot",
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory oneConePark = PathPlanner.loadPath("oneConePark",
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory straight = PathPlanner.loadPath("straight", 
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory turn = PathPlanner.loadPath("turn", 
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory twoElement = PathPlanner.loadPath("twoElement",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory coneOneHalf = PathPlanner.loadPath("coneOneHalf", 3,
+		public static final PathPlannerTrajectory coneOneHalf = PathPlanner.loadPath("coneOneHalf", 
+		kMaxSpeedMetersPerSecond,
 		kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", kMaxSpeedMetersPerSecond,
+		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", 
+		kMaxSpeedMetersPerSecond,
 		kMaxAccelerationMetersPerSecondSquared);
+
 		public static final PathPlannerTrajectory threePiece1 = PathPlanner.loadPath("threePiece1",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
@@ -63,7 +57,6 @@ public class Paths {
 		public static final PathPlannerTrajectory threePiece4 = PathPlanner.loadPath("threePiece4",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		// public static final List<PathPlannerTrajectory> twoElement2 = PathPlanner.loadPathGroup("twoElement2", kPPConstraints);
 	}
 
 	public static final class PPAutoscoreClass {

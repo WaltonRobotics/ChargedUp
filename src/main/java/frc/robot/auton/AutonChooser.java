@@ -15,10 +15,7 @@ public class AutonChooser {
         CONE_ONE_HALF_PARK("cone, grab, park"),
         ONE_CONE_PARK("drop cone then park"),
         DROP_CONE_BACK("drop cone back"),
-        // ONE_CONE_AROUND("drop cone then go around and park"),
         ONE_CUBE_AROUND("drop cube then go around and park"),
-        STRAIGHT("straight"),
-        TURN("turn"),
         TWO_ELEMENT("cube then cone"),
         THREE_PIECE("three piece scoring");
 

@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
     // m_robotContainer.swerve.resetToAbsolute();
     // m_robotContainer.swerve.resetGyro();
     m_robotContainer.superstructure.initState();
+    m_robotContainer.superstructure.smartReset();
 
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
     if (initPoseOpt.isPresent()) {
@@ -137,6 +138,7 @@ public class Robot extends TimedRobot {
     if(!DriverStation.isFMSAttached()){
       m_robotContainer.superstructure.smartReset();
     }
+    
     m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
     // m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
