@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TheClawK.*;
 
+import java.util.function.BooleanSupplier;
+
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
 	private final DigitalInput clawSensor = new DigitalInput(kClawSensor);
@@ -31,9 +33,10 @@ public class TheClaw extends SubsystemBase {
 	}
 
 	public CommandBase teleOpCmd(boolean autoGrab){
+		BooleanSupplier sensorBool = () -> sensorTrig.getAsBoolean();
 		return run(()->{
 			if(!m_isClosed){
-				Commands.waitSeconds(.85);	//releasing won't auto close
+				Commands.none().until(sensorBool);
 				if(sensorTrig.getAsBoolean()){
 					claw.set(false);
 					m_isClosed = true;

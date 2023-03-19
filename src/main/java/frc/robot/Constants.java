@@ -252,6 +252,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMidAngleDegrees = 29.1;
         public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
+        public static final double kExtendedSubstationAngleDegrees = 0;
         public static final double kMinAngleDegrees = 0;
 
         public static final double kMaxAngleDegrees = 29.1;
@@ -327,6 +328,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
         public static final double kSubstationHeightM = 0.43;
+        public static final double kExtendedSubstationHeightM = .43;
         public static final double kSubstationConeHeightM = 0;
 
         public static final double kMaxVelocity = 2.85; // Meters Per Second
@@ -360,6 +362,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMidCubeDeg = 25.316;
         public static final double kPickupDeg = -8.5;
         public static final double kSubstationDeg = 0;
+        public static final double kExtendedSubstationDeg = 0;
         
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);

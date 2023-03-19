@@ -92,7 +92,7 @@ public class Superstructure extends SubsystemBase {
 		var elevCmd = m_elevator.getActualHeightMeters() < .05 ? Commands.none() : m_elevator.toHeight(ElevatorK.kBotHeightMeters);
 		var wristCmd = Math.abs(m_wrist.getDegrees() - WristK.kMaxDeg) < 2 ? Commands.none() : m_wrist.toAngle(WristK.kMaxDeg);
 		return Commands.parallel(
-            tiltCmd,
+            tiltCmd,	
             wristCmd,
             elevCmd
         );

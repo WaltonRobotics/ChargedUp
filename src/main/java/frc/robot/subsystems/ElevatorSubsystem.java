@@ -261,7 +261,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		TOPCUBE(kTopCubeHeightM),
 		MIDCONE(kMidConeHeightM),
 		MIDCUBE(kMidCubeHeightM),
-		MIN(kMinHeightMeters);
+		MIN(kMinHeightMeters),
+		EXTENDED_SUBSTATION(kExtendedSubstationHeightM);
 
 		public double height;
 
