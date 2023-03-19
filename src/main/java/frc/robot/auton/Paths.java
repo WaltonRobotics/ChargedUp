@@ -59,7 +59,7 @@ public class Paths {
 				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
 				1.0,
-				4);
+				3);
 	}
 
 	public static final class PPAutoscoreClass {
