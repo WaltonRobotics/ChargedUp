@@ -509,7 +509,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 */
 	public CommandBase rotateAboutPoint(double degrees) {
 		return run(() -> {
-			autoThetaController.setSetpoint(Math.toRadians(degrees));
+			autoThetaController.setSetpoint(Math.toRadians(degrees) + getHeading().getRadians());
 			double thetaEffort = autoThetaController.calculate(getHeading().getRadians());
 			if (autoThetaController.getPositionError() > 0.001) {
 				thetaEffort += kFThetaController;
