@@ -1,7 +1,11 @@
 package frc.robot.subsystems.swerve;
 
+import java.sql.Driver;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -46,11 +50,20 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
-                m_reverse = false;
-            }
-            if (!m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
-                m_reverse = true;
+            if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+                if (m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
+                    m_reverse = false;
+                }
+                if (!m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
+                    m_reverse = true;
+                }
+            } else if(DriverStation.getAlliance().equals(Alliance.Red)) {
+                if (m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
+                    m_reverse = false;
+                }
+                if (!m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
+                    m_reverse = true;
+                }
             }
 
             if (m_reverse && Math.abs(pitch) < AtHome.reversePitch) { //3

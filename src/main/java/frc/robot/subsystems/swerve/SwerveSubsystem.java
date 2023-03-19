@@ -513,10 +513,10 @@ public class SwerveSubsystem extends SubsystemBase {
 				thetaEffort += kFThetaController;
 			}
 			drive(0, 0, thetaEffort, true, true);
-		})
-				.finallyDo((intr) -> drive(0, 0, 0, false, false))
-				.until(() -> autoThetaController.atSetpoint());
-	}
+			})
+				.until(() -> autoThetaController.atSetpoint())
+				.finallyDo((intr) -> drive(0, 0, 0, false, false));
+			}
 
 	/**
 	 * updates odometry & poseEstimator positions
