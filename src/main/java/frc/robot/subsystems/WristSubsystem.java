@@ -261,7 +261,8 @@ public class WristSubsystem extends SubsystemBase {
     MIDCONE(kMidConeDeg, 0),
     MIDCUBE(kMidCubeDeg, 1),
     PICKUP(kPickupDeg, 0),
-    MIN(kMinDeg, 0);
+    MIN(kMinDeg, 0),
+    EXTENDED_SUBSTATION(kExtendedSubstationDeg,0);
 
     public final double angle;
     public final int isCube;

@@ -222,7 +222,8 @@ public class TiltSubsystem extends SubsystemBase {
 		TOPCUBE(kTopCubeAngleDegrees, 1),
 		MIDCONE(kMidConeAngleDegrees, 0),
 		MIDCUBE(kMidCubeAngleDegrees, 1),
-		BOTTOMMOST(kMinAngleDegrees, 0);
+		BOTTOMMOST(kMinAngleDegrees, 0),
+		EXTENDED_SUBSTATION(kExtendedSubstationAngleDegrees,0);
 
 		public final double angle;
 		public final int isCube;

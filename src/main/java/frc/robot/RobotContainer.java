@@ -148,6 +148,9 @@ public class RobotContainer {
 
 		manipulator.a().onTrue(
 				superstructure.toState(SuperState.GROUND_PICK_UP));
+		
+		manipulator.b().onTrue(
+				superstructure.toState(SuperState.EXTENDED_SUBSTATION));
 
 		manipulator.povDown().onTrue(
 				superstructure.toState(SuperState.GROUND_SCORE));
