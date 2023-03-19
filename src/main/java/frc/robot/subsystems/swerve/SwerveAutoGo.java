@@ -39,9 +39,9 @@ public class SwerveAutoGo extends CommandBase {
 		m_traj2 = SwerveSubsystem.generateTrajectoryToPose(pathPoses.get(0), pathPoses.get(1), m_swerve.getFieldRelativeLinearSpeedsMPS());
 		m_traj3 = SwerveSubsystem.generateTrajectoryToPose(pathPoses.get(1), m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
 
-		var followCmd1 = m_swerve.getFullAuto(m_traj1);
-		var followCmd2 = m_swerve.getFullAuto(m_traj2);
-		var endCmd = m_swerve.getFullAuto(m_traj3);
+		var followCmd1 = m_swerve.getFollowPathWithEvents(m_traj1);
+		var followCmd2 = m_swerve.getFollowPathWithEvents(m_traj2);
+		var endCmd = m_swerve.getFollowPathWithEvents(m_traj3);
 		
 		followCmd1.andThen(followCmd2).andThen(endCmd).withName("SwerveAutoGoGo").schedule();
 	}
