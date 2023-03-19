@@ -12,12 +12,10 @@ import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.swerve.AutoBalance;
-import frc.robot.subsystems.swerve.SwerveAutoGo;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.auton.AutonChooser.AutonOption;
-import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.PPPaths;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
 
@@ -124,7 +122,10 @@ public class RobotContainer {
 		)); 
 
 		manipulator.rightBumper()
-				.whileTrue(claw.autoGrab(true));
+				.onTrue(claw.release()
+					.andThen(Commands.waitSeconds(.75)
+					.alongWith(leds.scoreOk())
+					.andThen(superstructure.toState(SuperState.SAFE))));
 
 		manipulator.leftTrigger().onTrue(superstructure.releaseClaw());
 		manipulator.rightTrigger().onTrue(claw.grab());
@@ -181,6 +182,8 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.threePiece1.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_BACK_PARK, AutonFactory.coneBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.backPark.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BACK_PARK, AutonFactory.cubeBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.backPark.getInitialHolonomicPose());
 }
 

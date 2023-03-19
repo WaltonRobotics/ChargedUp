@@ -34,31 +34,51 @@ public class SuperstructureToState extends SequentialCommandGroup {
             m_superstructure.updateState(m_targetState);
         });
 
-        var curState = m_superstructure.getCurState();
         var prevState = m_superstructure.getPrevState();
+
+        String quirks = "";
 
         if (m_targetState == SuperState.TOPCONE || m_targetState == SuperState.TOPCUBE) {
             m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*(.3)));
             m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.3));
+            quirks += "-TG_TOPCONECUBE";
         }
 
         if (m_targetState == SuperState.MIDCONE || m_targetState == SuperState.MIDCUBE) {
             m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*.25));
             m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.25));
+            quirks += "-TG_MIDCONECUBE";
         }
 
         if(m_targetState == SuperState.MIDCUBE || m_targetState == SuperState.TOPCUBE){
             m_clawWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height *.25);
+            quirks += "-TG_CUBE";
         }
 
         if(m_targetState == SuperState.SAFE){
             m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle - 25));
             m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 20));
+            quirks += "-TG_SAFE";
         }
 
-        if(curState == SuperState.SUBSTATION_PICK_UP){
+        if(m_targetState == SuperState.SAFE && superstructure.m_prevState == SuperState.EXTENDED_SUBSTATION){
+            m_elevWait = () -> (tilt.getDegrees() <= m_targetState.tilt.angle + 5);
+            m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 20));
+            quirks += "-TG_SAFE__PV_EXTSUB";
+        }
+
+        if(m_targetState == SuperState.SAFE && (Math.abs(elevator.getActualHeightMeters() - SuperState.EXTENDED_SUBSTATION.elev.height) <= .2)
+        && (Math.abs(tilt.getDegrees() - SuperState.EXTENDED_SUBSTATION.tilt.angle) <= 2)
+        && (Math.abs(wrist.getDegrees() - SuperState.EXTENDED_SUBSTATION.wrist.angle) <= 2)){
+            m_elevWait = () -> (tilt.getDegrees() <= m_targetState.tilt.angle + 5);
+            m_tiltWait = ()-> (wrist.getDegrees() >= (m_targetState.wrist.angle - 20));
+            quirks += "-TG_SAFE__PV_EXTSUB";
+        }
+
+        if(m_targetState == SuperState.SUBSTATION_PICK_UP){
             // m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle * 0.1));
             m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .25));
+            quirks += "-TG_SUB";
         }
 
         var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
@@ -74,9 +94,17 @@ public class SuperstructureToState extends SequentialCommandGroup {
             tiltCmd = Commands.none();
         }
 
+        var fromStr = prevState.toString();
+        var toStr = m_targetState.toString();
+        final String fnQuirks = quirks;
+
+        var dbgCmd = Commands.runOnce(() -> {
+            superstructure.nte_stateQuirk.setString(fromStr + "-" + toStr + "-" + fnQuirks);
+        });
+
         addCommands(
             initCmd,
-            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd)
+            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd, dbgCmd)
         );
 
 

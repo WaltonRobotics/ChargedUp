@@ -58,7 +58,7 @@ public class Paths {
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
-				2,
+				1.0,
 				4);
 	}
 

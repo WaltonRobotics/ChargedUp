@@ -80,7 +80,7 @@ public class LEDSubsystem extends SubsystemBase {
         .ignoringDisable(true)
         .andThen(Commands.waitSeconds(0.125))
         .repeatedly()
-        .withTimeout(1);
+        .withTimeout(2);
     }
 
     public CommandBase grabOk() {

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure;
 //TODO: have autograb based on beam break not seeing anything then seeing things.
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,9 +27,12 @@ public class Superstructure extends SubsystemBase {
 	protected final TheClaw m_claw;
 
 	// State management
-	private SuperState m_prevState = SuperState.SAFE;
+	SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-
+	private final GenericEntry nte_currState = DashboardManager.addTabItem(this, "CurrState", "UNK");
+	private final GenericEntry nte_prevState = DashboardManager.addTabItem(this, "PrevState", "UNK");
+	protected final GenericEntry nte_stateQuirk = DashboardManager.addTabItem(this, "StateQuirk", "UNK");
+	
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
 		m_tilt = tilt;
 		m_elevator = elevator;
@@ -36,6 +40,7 @@ public class Superstructure extends SubsystemBase {
 		m_claw = claw;
 
 		DashboardManager.addTab(this);
+		
 	}
 
 	/*
@@ -137,46 +142,9 @@ public class Superstructure extends SubsystemBase {
 		return clawCmd.andThen(Commands.waitSeconds(1));
 	}
 
-	// aka autoScore
-	// TODO: pass in swerve subsystem, it's not included in this class
-	/**
-	 * @param state   high, mid, or low
-	 * @param place   where to score :D (also includes cone/cube mode)
-	 * @param isBumpy if it is bumpy or not
-	 * @return command to autoscore
-	 */
-	// public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces
-	// place, boolean isBumpy) {
-	// var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
-	// var autoScore = runOnce(() -> {
-	// if(isBumpy) {
-	// if(DriverStation.getAlliance().equals(Alliance.Red)) {
-	// m_swerve.autoScore(PPAutoscoreClass.redBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// else {
-	// m_swerve.autoScore(PPAutoscoreClass.blueBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// }
-	// else {
-	// if(DriverStation.getAlliance().equals(Alliance.Red)) {
-	// m_swerve.autoScore(PPAutoscoreClass.redNotBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// else {
-	// m_swerve.autoScore(PPAutoscoreClass.blueNotBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// }
-	// });
-	// var elevatorHeight = runOnce(() -> {
-	// m_elevator.setState(state.elevatorHeight);
-	// });
-	// var finalPos = runOnce(() -> {
-	// m_tilt.setTiltTarget(state.elevatorTilt.angle); // finish later maybe?
-	// m_wrist.toPosition(.5, state.wristTilt);
-	// });
-	// return leds.andThen(autoScore).andThen(elevatorHeight).andThen(finalPos);
-	// }
+	@Override
+	public void periodic() {
+		nte_currState.setString(m_curState.toString());
+		nte_prevState.setString(m_prevState.toString());
+	}
 }
