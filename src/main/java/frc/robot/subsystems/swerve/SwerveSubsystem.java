@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
@@ -314,6 +316,63 @@ public class SwerveSubsystem extends SubsystemBase {
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
 
+	public static PathPlannerTrajectory generateTrajectoryToPose(Pose2d robotPose, Pose2d target, Translation2d currentSpeedVectorMPS) {                
+		Rotation2d fieldRelativeTravelDirection = new Rotation2d(currentSpeedVectorMPS.getX(), currentSpeedVectorMPS.getY());
+		double travelSpeed = currentSpeedVectorMPS.getNorm();
+		Translation2d robotToTargetTranslation = target.getTranslation().minus(robotPose.getTranslation());
+		Rotation2d robotToTargetAngle = new Rotation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
+		Rotation2d travelOffsetFromTarget = 
+			robotToTargetAngle.minus(fieldRelativeTravelDirection);
+		travelSpeed = Math.max(0, travelSpeed * travelOffsetFromTarget.getCos());
+
+		if (robotToTargetTranslation.getNorm() > 0.1) {
+			PathPlannerTrajectory pathPlannerTrajectory = PathPlanner.generatePath(
+				new PathConstraints(2, 2), 
+				new PathPoint(
+					robotPose.getTranslation(),
+					robotToTargetAngle,
+					robotPose.getRotation(),
+					travelSpeed),
+				new PathPoint(
+					target.getTranslation(),
+					robotToTargetAngle,
+					target.getRotation())
+			);
+			
+			return pathPlannerTrajectory;
+		}
+
+		return new PathPlannerTrajectory();
+	}
+
+	private Translation2d getFieldRelativeLinearSpeedsMPS() {
+        ChassisSpeeds robotRelativeSpeeds = kKinematics.toChassisSpeeds(getModuleStates());
+        ChassisSpeeds fieldRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            robotRelativeSpeeds,
+            Rotation2d.fromRadians(robotRelativeSpeeds.omegaRadiansPerSecond)
+        );
+        Translation2d translation = new Translation2d(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond);
+
+        if (translation.getNorm() < 0.01) {
+            return new Translation2d();
+        }
+        else {
+            return translation;
+        }
+    }
+
+	public CommandBase chasePoseCmd(Supplier<Pose2d> targetSupplier) {
+        return new PPChasePoseCommand(
+            targetSupplier,
+            this::getPose,
+            xController,
+			yController,
+			autoThetaController,
+            (chassisSpeeds) -> setChassisSpeeds(chassisSpeeds, false, false),
+            (PathPlannerTrajectory traj) -> {},
+            (startPose, endPose) -> generateTrajectoryToPose(startPose, endPose, getFieldRelativeLinearSpeedsMPS()),
+            this);
+    }
 
 	public void teleOpReset(){
 		zeroGyro();
