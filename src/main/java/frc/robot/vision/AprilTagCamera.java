@@ -20,23 +20,22 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AprilTagCamera {
-    public final PhotonCamera rightCam = new PhotonCamera("LeftHighCam");
-    public final PhotonCamera leftCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
-    // distance from robot to camera
-    private final Transform3d robotToCam1 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(9.279), Units.inchesToMeters(-9.52), Units.inchesToMeters(8.845)), // camera placement on robot
-            new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(-39.6)));
+    public final PhotonCamera rightLowCam = new PhotonCamera("RightCornerLow");
+    public final PhotonCamera leftLowCam = new PhotonCamera("LeftCornerLow");
 
-    private final Transform3d robotToCam2 = new Transform3d(
-                new Translation3d(Units.inchesToMeters(9.279), Units.inchesToMeters(9.52), Units.inchesToMeters(8.845)), // camera placement on robot
-                new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(49.2)));
+    private final Transform3d rightLowCamToRobot = new Transform3d(
+            new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
+            new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(39.6)));
+
+    private final Transform3d leftLowCamToRobot = new Transform3d(
+                new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
+                new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(-39.6)));
+    
 
     AprilTagFieldLayout aprilTagFieldLayout;    
     ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
-    PhotonPoseEstimator poseEstimator1;
-    PhotonPoseEstimator poseEstimator2;
-
-    private boolean m_highCamDisabled = false;
+    PhotonPoseEstimator leftLowPoseEstimator;
+    PhotonPoseEstimator rightLowPoseEstimator;
 
     public AprilTagCamera() {
         init();
@@ -59,13 +58,13 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(rightCam, robotToCam1));
-        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, rightCam,
-                robotToCam1);
+        camList.add(new Pair<PhotonCamera, Transform3d>(rightLowCam, leftLowCamToRobot));
+        leftLowPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, leftLowCam,
+                leftLowCamToRobot);
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(leftCam, robotToCam2));
-        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, leftCam,
-                        robotToCam2);
+        camList.add(new Pair<PhotonCamera, Transform3d>(leftLowCam, rightLowCamToRobot));
+        rightLowPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, rightLowCam,
+                        rightLowCamToRobot);
     }
 
     public void periodic() {
@@ -92,33 +91,26 @@ public class AprilTagCamera {
     //     return estimatedGlobalPoses;
     // }
 
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose1(Pose2d prevEstimatedRobotPose) {
-        poseEstimator1.setReferencePose(prevEstimatedRobotPose);
-        poseEstimator1.setLastPose(prevEstimatedRobotPose);
-        return poseEstimator1.update();
+    public Optional<EstimatedRobotPose> leftLow_getEstPose(Pose2d prevEstimatedRobotPose) {
+        leftLowPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        leftLowPoseEstimator.setLastPose(prevEstimatedRobotPose);
+        return leftLowPoseEstimator.update();
     }
     
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose2(Pose2d prevEstimatedRobotPose) {
-        if (m_highCamDisabled) {
-            return null;
-        }
-        poseEstimator2.setReferencePose(prevEstimatedRobotPose);
-        poseEstimator2.setLastPose(prevEstimatedRobotPose);
-        return poseEstimator2.update();
-    }
-
-    public void setHighCamDisabled(boolean disabled) {
-        m_highCamDisabled = disabled;
+    public Optional<EstimatedRobotPose> rightLow_getEstPose(Pose2d prevEstimatedRobotPose) {
+        rightLowPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        rightLowPoseEstimator.setLastPose(prevEstimatedRobotPose);
+        return rightLowPoseEstimator.update();
     }
 
     // unfiltered view of camera
     public void toggleDriverMode() {
-        if (rightCam.getDriverMode()) {
-            rightCam.setDriverMode(false);
+        if (rightLowCam.getDriverMode()) {
+            rightLowCam.setDriverMode(false);
         }
 
         else {
-            rightCam.setDriverMode(true);
+            rightLowCam.setDriverMode(true);
         }
     }
 }
