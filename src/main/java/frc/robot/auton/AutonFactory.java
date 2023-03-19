@@ -131,12 +131,14 @@ public final class AutonFactory {
             .withTimeout(2)
             .withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.backPark);
+        var rotateCmd = swerve.rotate180();
 
         return Commands.sequence(
             placeCmd,
             ssResetCmd,
             pathCmd,
-            new AutoBalance(swerve, false)
+            rotateCmd,
+            new AutoBalance(swerve, true)
         ).withName("OneConeBack");
     }
 
