@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
 import frc.robot.auton.AutonFactory;
+import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.util.DashboardManager;
@@ -345,7 +346,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return new PathPlannerTrajectory();
 	}
 
-	private Translation2d getFieldRelativeLinearSpeedsMPS() {
+	public Translation2d getFieldRelativeLinearSpeedsMPS() {
         ChassisSpeeds robotRelativeSpeeds = kKinematics.toChassisSpeeds(getModuleStates());
         ChassisSpeeds fieldRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             robotRelativeSpeeds,
@@ -355,8 +356,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         if (translation.getNorm() < 0.01) {
             return new Translation2d();
-        }
-        else {
+        } else {
             return translation;
         }
     }
@@ -413,8 +413,8 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public CommandBase autoScore(List<PathPoint> path, PathPoint endPose) {
-		return new SwerveAutoGo(path, endPose, this);
+	public CommandBase autoScore(Pose2d endPose) {
+		return new SwerveAutoGo(getPose(), PPAutoscoreClass.notBumpy, endPose, this);
 	}
 
 	/**

@@ -12,6 +12,7 @@ import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.swerve.AutoBalance;
+import frc.robot.subsystems.swerve.SwerveAutoGo;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
@@ -93,33 +94,27 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(new AutoBalance(swerve, false));
 		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
 
-		driver.x().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.cone1));
-		driver.y().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.cube2));
-		driver.b().whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.cone3));
+		driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
+		driver.y().whileTrue(swerve.autoScore(ScoringPoints.cube2));
+		driver.b().whileTrue(swerve.autoScore(ScoringPoints.cone3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.coopCone4));
+			.whileTrue(swerve.autoScore(ScoringPoints.coopCone4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.coopCube5));
+			.whileTrue(swerve.autoScore(ScoringPoints.coopCube5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy,
-			ScoringPoints.coopCone6));
+			.whileTrue(swerve.autoScore(ScoringPoints.coopCone6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone7));
+			.whileTrue(swerve.autoScore(ScoringPoints.cone7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cube8));
+			.whileTrue(swerve.autoScore(ScoringPoints.cube8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(PPAutoscoreClass.notBumpy, ScoringPoints.cone9));
+			.whileTrue(swerve.autoScore(ScoringPoints.cone9));
 		
 		driver.rightTrigger().onTrue(leds.setCube());
 		driver.leftTrigger().onTrue(leds.setCone());
