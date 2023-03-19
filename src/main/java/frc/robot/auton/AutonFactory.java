@@ -1,5 +1,6 @@
 package frc.robot.auton;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -151,13 +152,15 @@ public final class AutonFactory {
             .withTimeout(2)
             .withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.backPark);
+        var rotateCmd = swerve.rotate180();
 
         return Commands.sequence(
             placeCmd,
             clawCmd,
             ssResetCmd,
             pathCmd,
-            new AutoBalance(swerve, false)
+            rotateCmd,
+            new AutoBalance(swerve, true)
         ).withName("OneConeBack");
     }
     public static CommandBase oneCubeAround(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
