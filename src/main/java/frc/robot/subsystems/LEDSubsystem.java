@@ -73,6 +73,16 @@ public class LEDSubsystem extends SubsystemBase {
         .repeatedly();
     }
 
+    public CommandBase scoreOk() {
+        return runOnce(() -> {
+            setIdle();
+        })
+        .ignoringDisable(true)
+        .andThen(Commands.waitSeconds(0.125))
+        .repeatedly()
+        .withTimeout(1);
+    }
+
     public CommandBase grabOk() {
         var init = runOnce(() -> {
             m_ledStateTimer.restart();
