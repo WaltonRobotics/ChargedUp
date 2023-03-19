@@ -271,7 +271,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase rotate180() {
-		return rotateAboutPoint(180);
+		return rotateAboutPoint(-180);
 	}
 
 	public void resetToAbsolute() {

@@ -28,9 +28,9 @@ public final class AutonFactory {
     }
    
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5).withName("SS-Auto-TopCone");
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withName("SS-Auto-TopCone");
         var clawCmd = claw.release().withName("ClawRelease");
-        var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
+        var ssResetCmd = superstructure.toState(SuperState.SAFE).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConePark);
 
         return Commands.sequence(
@@ -127,7 +127,7 @@ public final class AutonFactory {
     }
 
     public static CommandBase cubeBackPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var placeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2.5);
+        var placeCmd = superstructure.toState(SuperState.TOPCUBE);
         var ssResetCmd = superstructure.toState(SuperState.SAFE)
             .withTimeout(2)
             .withName("SS-Auto-Safe");
@@ -144,7 +144,7 @@ public final class AutonFactory {
     }
 
     public static CommandBase coneBackPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var placeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2.5);
+        var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(2.5);
         var clawCmd = claw.release()
             .andThen(Commands.waitSeconds(0.5))
             .withName("ClawRelease");
@@ -159,8 +159,7 @@ public final class AutonFactory {
             clawCmd,
             ssResetCmd,
             pathCmd,
-            rotateCmd,
-            new AutoBalance(swerve, true)
+            new AutoBalance(swerve, false)
         ).withName("OneConeBack");
     }
     public static CommandBase oneCubeAround(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
