@@ -8,6 +8,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -392,6 +393,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kCameraX = 0;
         public static final double kCameraY = 0.1524;
         public static final double kTargetHeight = 1; // TODO: update value
+        public static final Pose2d kWayOutTherePose = new Pose2d(-1000, -1000, Rotation2d.fromDegrees(0));
     }
 
     public static final class LedK {
