@@ -77,6 +77,11 @@ public class TheClaw extends SubsystemBase {
 		}
 		return Commands.none();
 	}
+
+	public boolean getState() {
+		return m_isClosed;
+	}
+
 	public enum ClawState{
 		IGNORE, 
 		OPEN,

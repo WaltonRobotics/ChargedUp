@@ -14,6 +14,8 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.TheClaw.ClawState;
+
 import static frc.robot.Constants.WristK.*;
 
 import java.util.function.DoubleSupplier;
@@ -136,6 +138,15 @@ public class Superstructure extends SubsystemBase {
 		// }
 
 		return clawCmd.andThen(Commands.waitSeconds(1));
+	}
+
+	public CommandBase autoSafe() {
+		if(m_claw.getState()) {
+			if(getCurState() == SuperState.GROUND_PICK_UP || getCurState() == SuperState.SUBSTATION_PICK_UP || getCurState() == SuperState.EXTENDED_SUBSTATION) {
+				return new SuperstructureToState(this, SuperState.SAFE);
+			}
+		}
+		return Commands.none();
 	}
 
 	@Override

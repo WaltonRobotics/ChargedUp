@@ -105,6 +105,7 @@ public final class AutonFactory {
                 Commands.waitSeconds(.5)
                 .andThen(superstructure.toState(SuperState.GROUND_PICK_UP))
                 .andThen(claw.teleOpCmd(true))
+                .andThen(superstructure.autoSafe())
             ),
             new AutoBalance(swerve, false).withName("autobalance").alongWith(ssResetCmd2)
         );
