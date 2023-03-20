@@ -318,9 +318,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		else{
 			setYaw(pose.getRotation().getDegrees());
 		}
-		// else{
-		// 	setYaw(pose.getRotation().getDegrees());
-		// }
 		resetEstimatorPose(pose); // resets poseEstimator
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
@@ -357,22 +354,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void teleOpReset(){
 		zeroGyro();
-	}
-
-	public CommandBase driveOneDirection(boolean reverse, double speed){
-		return run(()-> {
-			drive(reverse ? -(speed) : (speed), 0, 0, false, false);
-		});
-	}
-
-	public CommandBase driveSide(boolean blueLeft){
-		return run(()-> {
-			double reverse = 1;
-			if(DriverStation.getAlliance() == Alliance.Blue){
-				reverse = -1;
-			}
-			drive(0, blueLeft ? -3*reverse : 3*reverse, 0, false, false);
-		});
 	}
 
 	/*
@@ -413,37 +394,21 @@ public class SwerveSubsystem extends SubsystemBase {
 			drive(xRate, yRate, new Rotation2d(0), true);
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
-
-	/*
-	 * Create a complete autonomous command group. This will reset the robot pose at
-	 * the begininng of the first path, follow paths, trigger events during path
-	 * following,
-	 * and run commands between paths with stop events
-	 */
-	public CommandBase getFullAuto(PathPlannerTrajectory trajectory) {
-		return new DeferredCommand(() -> {
-			boolean shouldFlip = Flipper.shouldFlip();
-			var newTraj = trajectory;
-			if(shouldFlip){
-				newTraj = Flipper.allianceFlip(trajectory);
-			}
-			return autoBuilder.fullAuto(newTraj);
-		});
+	
+	public CommandBase getPPFollowerCmd(PathPlannerTrajectory trajectory) {
+		return new PPSwerveControllerCommand(
+			trajectory,
+			this::getPose, // Pose supplier
+			kKinematics, // SwerveDriveKinematics
+			xController,
+			yController,
+			autoThetaController,
+			(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
+			false, // Should the path be automatically mirrored depending on alliance color.
+					// Optional, defaults to true
+			this // Requires this drive subsystem
+		);
 	}
-
-	public CommandBase getTimedFullAuto(PathPlannerTrajectory trajectory) {
-		return new DeferredCommand(() -> {
-			boolean shouldFlip = Flipper.shouldFlip();
-			var newTraj = trajectory;
-			if(shouldFlip){
-				newTraj = Flipper.allianceFlip(trajectory);
-			}
-			return autoBuilder.fullAuto(newTraj).withTimeout(trajectory.getTotalTimeSeconds());
-		}).withTimeout(4);
-	}
-	// public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
-	// 	return autoBuilder.fullAuto(trajectoryList);
-	// }
 
 	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory) {
 		if (trajectory.getStates().size() == 0) {
@@ -463,18 +428,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				resetPose(actualNewTraj.getInitialHolonomicPose());
 			});
 			
-			var pathCmd = new PPSwerveControllerCommand(
-				newTraj,
-				this::getPose, // Pose supplier
-				kKinematics, // SwerveDriveKinematics
-				xController,
-				yController,
-				autoThetaController,
-				(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
-				false, // Should the path be automatically mirrored depending on alliance color.
-						// Optional, defaults to true
-				this // Requires this drive subsystem
-			);
+			var pathCmd = getPPFollowerCmd(newTraj);
 			return resetCmd.andThen(pathCmd);
 		}, this);
 	}
@@ -507,30 +461,12 @@ public class SwerveSubsystem extends SubsystemBase {
 			List<CommandBase> pathCmds = new ArrayList<CommandBase>();
 
 			for (var traj : newTrajList) {
-				pathCmds.add(new PPSwerveControllerCommand(
-					traj,
-					this::getPose, // Pose supplier
-					kKinematics, // SwerveDriveKinematics
-					xController,
-					yController,	
-					autoThetaController,
-					(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
-					false, // Should the path be automatically mirrored depending on alliance color.
-							// Optional, defaults to true
-					this // Requires this drive subsystem
-				));
+				pathCmds.add(getPPFollowerCmd(traj));
 			}
 
 			CommandBase[] pathCmdsArr = pathCmds.toArray(new CommandBase[0]);
 			return resetCmd.andThen(pathCmdsArr);
 		}, this);
-	}
-
-	public CommandBase getFollowPathWithEvents(PathPlannerTrajectory traj) {
-		return new FollowPathWithEvents(
-				getFullAuto(traj),
-				traj.getMarkers(),
-				AutonFactory.autonEventMap);
 	}
 
 	/**
@@ -593,21 +529,6 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void lockModules() {
 		for (SwerveModule module : m_modules) {
 			module.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), false, true);
-		}
-	}
-
-	public void autoReset() {
-		if (m_timer.get() > 10) {
-			m_timer.restart();
-		} else {
-			if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
-				Timer.delay(1);
-				if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
-					for (SwerveModule module : m_modules) {
-						module.resetToAbsolute();
-					}
-				}
-			}
 		}
 	}
 

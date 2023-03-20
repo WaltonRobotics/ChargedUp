@@ -101,6 +101,10 @@ public class Conversions {
         return positionCounts * (circumference / (gearRatio * 2048.0));
     }
 
+    public static double rotationsToMeters(double rotations, double circumference) {
+        return rotations * circumference;
+    }
+
     /**
      * @param meters        Meters
      * @param circumference Circumference of Wheel

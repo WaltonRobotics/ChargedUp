@@ -37,6 +37,8 @@ public final class CTREConfigs {
         swerveAngleFXConfig.slot0.kF = Constants.SwerveK.kAngleKF;
         swerveAngleFXConfig.supplyCurrLimit = angleSupplyLimit;
 
+        swerveAngleFXConfig.enableOptimizations = true;
+
         /* Swerve Drive Motor Configuration */
         SupplyCurrentLimitConfiguration driveSupplyLimit = new SupplyCurrentLimitConfiguration(
                 Constants.SwerveK.kDriveEnableCurrentLimit,

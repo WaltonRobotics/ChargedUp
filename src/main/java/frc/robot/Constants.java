@@ -17,7 +17,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.LedUtils;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -45,45 +44,38 @@ public final class Constants {
     public static final class SwerveK {
         public static final String DB_TAB_NAME = "SwerveSubsys";
 
-        /**
-         * Set to true to use external CANcoder for inital zero and switch to internal
-         * falcon encoder for angle control.
-         * Set to false to always use external CANcoder for angle control.
-         * Recommended to set to false and always use CANCoder.
-         */
-        public static final boolean kUseInternalEncoder = false;
-
         public static final int kPigeonCANID = 1;
         public static final boolean kInvertGyro = false; // Always ensure Gyro is CCW+ CW-
 
-        public static final COTSFalconSwerveConstants kSwerveModule = COTSFalconSwerveConstants
-                .SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
-
         /* Drivetrain Constants in meters */
-        public static final double kTrackWidth = Units.inchesToMeters(27);
-        public static final double kWheelBase = Units.inchesToMeters(27);
-        public static final double kWheelCircumference = kSwerveModule.wheelCircumference;
+        public static final double kTrackWidth_m = Units.inchesToMeters(27);
+        public static final double kWheelBase_m = Units.inchesToMeters(27);
+        public static final double kWheelCircumference_m = Units.inchesToMeters(3.9375);
+
+        public static final double kRobotMass_kg = Units.lbsToKilograms(106);
+        // Model moment of intertia as a square slab slightly bigger than wheelbase with axis through center
+        public static final double kRobotMoI_kgm2 = 1.0/12.0 * kRobotMass_kg * Math.pow((kWheelBase_m * 1.1), 2) * 2; 
 
         /* Swerve Kinematics */
         public static final Translation2d[] kModuleTranslations = {
-                new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0),
-                new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0),
-                new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0),
-                new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0)
+                new Translation2d(kWheelBase_m / 2.0, kTrackWidth_m / 2.0),
+                new Translation2d(kWheelBase_m / 2.0, -kTrackWidth_m / 2.0),
+                new Translation2d(-kWheelBase_m / 2.0, kTrackWidth_m / 2.0),
+                new Translation2d(-kWheelBase_m / 2.0, -kTrackWidth_m / 2.0)
         };
 
         public static final SwerveDriveKinematics kKinematics = new SwerveDriveKinematics(kModuleTranslations);
 
         /* Module Gear Ratios */
-        public static final double kDriveGearRatio = kSwerveModule.driveGearRatio;
-        public static final double kAngleGearRatio = kSwerveModule.angleGearRatio;
+        public static final double kDriveGearRatio = 6.75; // 6.75 for L2
+        public static final double kAngleGearRatio = 150.0 / 7.0; // 150.0/7.0 for MK4/MK4i
 
         /* Motor Inverts */
-        public static final boolean kInvertAngleMotor = kSwerveModule.angleMotorInvert;
-        public static final boolean kInvertDriveMotor = kSwerveModule.driveMotorInvert;
+        public static final boolean kInvertAngleMotor = true;
+        public static final boolean kInvertDriveMotor = false;
 
         /* Angle Encoder Invert */
-        public static final boolean kInvertCanCoder = kSwerveModule.canCoderInvert;
+        public static final boolean kInvertCanCoder = false;
 
         /* Swerve Current Limiting */
         public static final int kAngleContinuousCurrentLimit = 25;
@@ -105,10 +97,10 @@ public final class Constants {
         public static final double kClosedLoopRamp = 0.0;
 
         /* Angle Motor PID Values */
-        public static final double kAngleKP = kSwerveModule.angleKP;
-        public static final double kAngleKI = kSwerveModule.angleKI;
-        public static final double kAngleKD = kSwerveModule.angleKD;
-        public static final double kAngleKF = kSwerveModule.angleKF;
+        public static final double kAngleKP = 0.3;
+        public static final double kAngleKI = 0;
+        public static final double kAngleKD = 0;
+        public static final double kAngleKF = 0;
 
         /* Drive Motor PID Values */
         public static final double kDriveKP = 0.05;
@@ -210,7 +202,7 @@ public final class Constants {
         public static final double kOnBalanceAngleThresholdDegrees = Math.toRadians(5);
         public static final double kMinimumBalanceDegrees = 2;
 
-public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
+        public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         // Constraint for the motion profiled robt angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
