@@ -15,6 +15,7 @@ import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondS
 import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
 import static frc.robot.Constants.SwerveK.kKinematics;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -109,6 +110,8 @@ public class Paths {
 		public static final Pose2d notBumper2Pose = new Pose2d(new Translation2d(2.5, 4.75), rot2dDeg(180));
 		public static final Pose2d bumper1Pose = new Pose2d(new Translation2d(5.84, 0.75), rot2dDeg(180));
 		public static final Pose2d bumper2Pose = new Pose2d(new Translation2d(3.26, 0.75), rot2dDeg(180));
+
+		public static final Pose2d[] notBumperPoses = {notBumper1Pose, notBumper2Pose};
 
 		public static final PathPoint notBumper1 = new PathPoint(notBumper1Pose.getTranslation(), rot2dDeg(-165),
 				notBumper1Pose.getRotation());

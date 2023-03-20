@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class SwerveAutoGo extends CommandBase {
 
 	private final SwerveSubsystem m_swerve;
-	private final List<PathPoint> m_path;
+	private final Pose2d[] m_path;
 	private final Pose2d m_startPose;
 	private final Pose2d m_endPose;
 
@@ -21,7 +21,7 @@ public class SwerveAutoGo extends CommandBase {
 	private PathPlannerTrajectory m_traj2;
 	private PathPlannerTrajectory m_traj3;
 
-    public SwerveAutoGo(Pose2d startPose, List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
+    public SwerveAutoGo(Pose2d startPose, Pose2d[] path, Pose2d endPose, SwerveSubsystem swerve) {
 		m_swerve = swerve;
 		m_startPose = startPose; 
 		m_path = path;
@@ -30,14 +30,9 @@ public class SwerveAutoGo extends CommandBase {
 
 	@Override
 	public void initialize() {
-		List<Pose2d> pathPoses = new ArrayList<Pose2d>();
-		for (PathPoint point : m_path) {
-			pathPoses.add(PathPointAccessor.poseFromPathPointHolo(point));
-		}
-		
-		m_traj1 = SwerveSubsystem.generateTrajectoryToPose(m_startPose, pathPoses.get(0), m_swerve.getFieldRelativeLinearSpeedsMPS());
-		m_traj2 = SwerveSubsystem.generateTrajectoryToPose(pathPoses.get(0), pathPoses.get(1), m_swerve.getFieldRelativeLinearSpeedsMPS());
-		m_traj3 = SwerveSubsystem.generateTrajectoryToPose(pathPoses.get(1), m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj1 = SwerveSubsystem.generateTrajectoryToPose(m_startPose, m_path[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj2 = SwerveSubsystem.generateTrajectoryToPose(m_path[0], m_path[1], m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj3 = SwerveSubsystem.generateTrajectoryToPose(m_path[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
 
 		var followCmd1 = m_swerve.getFollowPathWithEvents(m_traj1);
 		var followCmd2 = m_swerve.getFollowPathWithEvents(m_traj2);
