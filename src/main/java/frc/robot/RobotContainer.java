@@ -118,9 +118,6 @@ public class RobotContainer {
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
 		)); 
-		manipulator.rightBumper()
-				.onTrue(superstructure.score());
-
 		manipulator.leftTrigger().onTrue(superstructure.releaseClaw());
 		manipulator.rightTrigger().onTrue(claw.grab());
 

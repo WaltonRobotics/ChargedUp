@@ -84,7 +84,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			getHeading(),
 			getModulePositions(),
 			new Pose2d(),
-			new Matrix<>(kVisionStdDevs_DefaultTrust),
+			new Matrix<>(kOdoStdDevs_DefaultTrust),
 			new Matrix<>(kVisionStdDevs_DefaultTrust));
 
 	private final AprilTagCamera m_apriltagHelper;

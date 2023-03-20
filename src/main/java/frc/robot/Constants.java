@@ -195,7 +195,7 @@ public final class Constants {
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
         public static final Matrix<N3, N1> kOdoStdDevs_DefaultTrust = VecBuilder.fill(0.1, 0.1, 0.025);
-        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 2);
+        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 10);
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
@@ -304,7 +304,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kGearRatio = 12.0 / 1.0;
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
-        public static final double kP = 22.5; //sysid 9.2597E-05
+        public static final double kP = 22; //sysid 9.2597E-05
         public static final double kD = 0;
         public static final double kS = 0.15253;
         public static final double kV = 9.8382;
@@ -325,17 +325,17 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
         public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.70;
-        public static final double kMidConeHeightM = 0.44;
+        public static final double kTopConeHeightM = 0.68;
+        public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.43;
+        public static final double kSubstationHeightM = 0.4185;
         public static final double kExtendedSubstationHeightM = .46;
         public static final double kSubstationConeHeightM = 0;
 
         public static final double kMaxVelocity = 2.85; // Meters Per Second
-        public static final double kMaxAcceleration = 3; // Meters Per Second Squared
+        public static final double kMaxAcceleration = 2.85; // Meters Per Second Squared
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
@@ -361,7 +361,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kTopConeDeg = 40.5;
         public static final double kTopCubeDeg = 29.888;
-        public static final double kMidConeDeg = 43.929;
+        public static final double kMidConeDeg = 36.0;
         public static final double kMidCubeDeg = 25.316;
         public static final double kPickupDeg = -8.5;
         public static final double kSubstationDeg = 0;

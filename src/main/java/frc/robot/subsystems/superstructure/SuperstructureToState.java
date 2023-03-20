@@ -105,8 +105,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
 
         addCommands(
             initCmd,
-            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd, dbgCmd),
-            toSafe
+            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd, dbgCmd)
         );
 
 

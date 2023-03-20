@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.auton.Paths;
-import frc.robot.auton.Paths.PPAutoscoreClass;
 
 public class SwerveAutoGo extends CommandBase {
 

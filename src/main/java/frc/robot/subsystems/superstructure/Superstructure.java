@@ -157,5 +157,7 @@ public class Superstructure extends SubsystemBase {
 	public void periodic() {
 		nte_currState.setString(m_curState.toString());
 		nte_prevState.setString(m_prevState.toString());
+
+		
 	}
 }

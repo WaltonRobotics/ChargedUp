@@ -40,7 +40,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "FFEffort", -1, 1);
 	private final GenericEntry nte_motorTotalEffort = DashboardManager.addTabDial(this, "TotalEffort", -1, 1);
 	private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "TargetAngle",
-			kMinAngleDegrees, kMaxAngleDegrees);
+			kMinAngleDegrees, 35);
 	private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 35);
 	private final GenericEntry nte_rawAbsVal = DashboardManager.addTabNumberBar(this, "RawAbs", 0, 1);
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
