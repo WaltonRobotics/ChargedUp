@@ -135,16 +135,12 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase autoSafe() {
-		var clawCmd = m_claw.autoGrab(true);
-		var safeCmd = Commands.none();
-		
-		if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
-			safeCmd = new SuperstructureToState(this, SuperState.SAFE);
-		}
 		if (m_claw.getClosed()) {
-			clawCmd = Commands.none();
+			if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
+				return new SuperstructureToState(this, SuperState.SAFE);
+			}
 		}
-		return clawCmd.andThen(safeCmd);
+		return Commands.none();
 	}
 	
 	// public CommandBase score(){
