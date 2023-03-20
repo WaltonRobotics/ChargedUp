@@ -57,6 +57,7 @@ public class TiltSubsystem extends SubsystemBase {
 		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
 		m_controller.setTolerance(1.0);
+		DashboardManager.addTab(this);
 	}
 
 	public CommandBase setTarget(double degrees) {

@@ -143,21 +143,13 @@ public class Superstructure extends SubsystemBase {
 		return Commands.none();
 	}
 	
-	public CommandBase score(){
-		var cmd = runOnce(()->{
-			m_claw.release()
-			.andThen(Commands.waitSeconds(.75))
-			.alongWith(m_leds.scoreOk())
-			.andThen(toState(SuperState.SAFE));
-		});
-		return cmd;
-	}
+	// public CommandBase score(){
+	// }
 
 	@Override
 	public void periodic() {
 		nte_currState.setString(m_curState.toString());
 		nte_prevState.setString(m_prevState.toString());
 
-		
 	}
 }

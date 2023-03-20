@@ -107,7 +107,7 @@ public final class AutonFactory {
             ssResetCmd,
             Commands.deadline(
                 pathCmd,
-                Commands.waitSeconds(2).andThen(groundPickUp)
+                Commands.waitSeconds(1).andThen(groundPickUp)
             ),
             ssResetCmd2.alongWith(new AutoBalance(swerve, false))
         );
