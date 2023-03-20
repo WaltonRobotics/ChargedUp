@@ -1,7 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import java.sql.Driver;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -56,7 +54,7 @@ public class AutoBalance extends CommandBase {
                 }
                 if (!m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
                     m_reverse = true;
-                }
+                }   
             } else if(DriverStation.getAlliance().equals(Alliance.Red)) {
                 if (m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
                     m_reverse = false;

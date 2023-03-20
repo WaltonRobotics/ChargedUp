@@ -46,7 +46,7 @@ public class RobotContainer {
 	public final TheClaw claw = new TheClaw();
 
 	/* Subsystems */
-	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, claw);
+	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, claw, leds);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -120,12 +120,8 @@ public class RobotContainer {
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
 		)); 
-
 		manipulator.rightBumper()
-				.onTrue(claw.release()
-					.andThen(Commands.waitSeconds(.75)
-					.alongWith(leds.scoreOk())
-					.andThen(superstructure.toState(SuperState.SAFE))));
+				.onTrue(superstructure.score());
 
 		manipulator.leftTrigger().onTrue(superstructure.releaseClaw());
 		manipulator.rightTrigger().onTrue(claw.grab());

@@ -10,6 +10,7 @@ import frc.robot.Constants.ElevatorK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
@@ -24,6 +25,7 @@ public class Superstructure extends SubsystemBase {
 	protected final ElevatorSubsystem m_elevator;
 	protected final WristSubsystem m_wrist;
 	protected final TheClaw m_claw;
+	protected final LEDSubsystem m_leds;
 
 	// State management
 	SuperState m_prevState = SuperState.SAFE;
@@ -32,11 +34,12 @@ public class Superstructure extends SubsystemBase {
 	private final GenericEntry nte_prevState = DashboardManager.addTabItem(this, "PrevState", "UNK");
 	protected final GenericEntry nte_stateQuirk = DashboardManager.addTabItem(this, "StateQuirk", "UNK");
 	
-	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
+	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw, LEDSubsystem leds) {
 		m_tilt = tilt;
 		m_elevator = elevator;
 		m_wrist = wrist;
 		m_claw = claw;
+		m_leds = leds;
 
 		DashboardManager.addTab(this);
 		
@@ -133,11 +136,21 @@ public class Superstructure extends SubsystemBase {
 
 	public CommandBase autoSafe() {
 		if (m_claw.getClosed()) {
-			if (getCurState() == SuperState.GROUND_PICK_UP || getCurState() == SuperState.SUBSTATION_PICK_UP || getCurState() == SuperState.EXTENDED_SUBSTATION) {
+			if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
 				return new SuperstructureToState(this, SuperState.SAFE);
 			}
 		}
 		return Commands.none();
+	}
+	
+	public CommandBase score(){
+		var cmd = runOnce(()->{
+			m_claw.release()
+			.andThen(Commands.waitSeconds(.75))
+			.alongWith(m_leds.scoreOk())
+			.andThen(toState(SuperState.SAFE));
+		});
+		return cmd;
 	}
 
 	@Override

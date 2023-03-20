@@ -6,19 +6,13 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.superstructure.SuperState;
-import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
-import frc.robot.vision.AprilTagCamera;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
-import static frc.robot.auton.AutonFactory.autonEventMap;
 
 /**
  * Contains various field dimensions and useful reference points. Dimensions are in meters, and sets
