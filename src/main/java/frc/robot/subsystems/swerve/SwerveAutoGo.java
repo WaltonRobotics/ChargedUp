@@ -1,14 +1,9 @@
 package frc.robot.subsystems.swerve;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPointAccessor;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.auton.Paths;
 
 public class SwerveAutoGo extends CommandBase {
 
@@ -30,9 +25,9 @@ public class SwerveAutoGo extends CommandBase {
 
 	@Override
 	public void initialize() {
-		m_traj1 = SwerveSubsystem.generateTrajectoryToPose(m_startPose, m_path[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
-		m_traj2 = SwerveSubsystem.generateTrajectoryToPose(m_path[0], m_path[1], m_swerve.getFieldRelativeLinearSpeedsMPS());
-		m_traj3 = SwerveSubsystem.generateTrajectoryToPose(m_path[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj1 = Paths.generateTrajectoryToPose(m_startPose, m_path[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj2 = Paths.generateTrajectoryToPose(m_path[0], m_path[1], m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj3 = Paths.generateTrajectoryToPose(m_path[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
 
 		var followCmd1 = m_swerve.getFollowPathWithEvents(m_traj1);
 		var followCmd2 = m_swerve.getFollowPathWithEvents(m_traj2);
