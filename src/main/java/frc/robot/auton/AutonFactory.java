@@ -95,6 +95,8 @@ public final class AutonFactory {
         var ssResetCmd = superstructure.toState(SuperState.SAFE).withTimeout(1.5).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.coneOneHalf);
         var ssResetCmd2 = superstructure.toState(SuperState.SAFE).withName("SS-Auto-Safe");
+        var groundPickUp = superstructure.toState(SuperState.GROUND_PICK_UP);
+        var grabCmd = claw.teleOpCmd(true);
 
         return Commands.sequence(
             placeCmd,
@@ -102,12 +104,11 @@ public final class AutonFactory {
             Commands.waitSeconds(.6),
             ssResetCmd,
             pathCmd.alongWith(
-                Commands.waitSeconds(.5)
-                .andThen(superstructure.toState(SuperState.GROUND_PICK_UP))
-                .andThen(claw.teleOpCmd(true))
-                .andThen(superstructure.autoSafe())
+                Commands.waitSeconds(2),
+                groundPickUp
             ),
-            new AutoBalance(swerve, false).withName("autobalance").alongWith(ssResetCmd2)
+            ssResetCmd2,
+            new AutoBalance(swerve, false)
         );
     }
 

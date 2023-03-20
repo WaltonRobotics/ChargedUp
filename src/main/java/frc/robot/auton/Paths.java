@@ -24,6 +24,35 @@ public class Paths {
 		return Rotation2d.fromDegrees(deg);
 	}
 
+	public static PathPlannerTrajectory generateTrajectoryToPose(Pose2d robotPose, Pose2d target, Translation2d currentSpeedVectorMPS) {                
+		Rotation2d fieldRelativeTravelDirection = new Rotation2d(currentSpeedVectorMPS.getX(), currentSpeedVectorMPS.getY());
+		double travelSpeed = currentSpeedVectorMPS.getNorm();
+		Translation2d robotToTargetTranslation = target.getTranslation().minus(robotPose.getTranslation());
+		Rotation2d robotToTargetAngle = new Rotation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
+		Rotation2d travelOffsetFromTarget = 
+			robotToTargetAngle.minus(fieldRelativeTravelDirection);
+		travelSpeed = Math.max(0, travelSpeed * travelOffsetFromTarget.getCos());
+
+		if (robotToTargetTranslation.getNorm() > 0.1) {
+			PathPlannerTrajectory pathPlannerTrajectory = PathPlanner.generatePath(
+				new PathConstraints(2, 2), 
+				new PathPoint(
+					robotPose.getTranslation(),
+					robotToTargetAngle,
+					robotPose.getRotation(),
+					travelSpeed),
+				new PathPoint(
+					target.getTranslation(),
+					robotToTargetAngle,
+					target.getRotation())
+			);
+			
+			return pathPlannerTrajectory;
+		}
+
+		return new PathPlannerTrajectory();
+	}
+
 	// this is not needed for PPSwerve autons
 	public static final TrajectoryConfig config = new TrajectoryConfig(
 			kMaxSpeedMetersPerSecond,

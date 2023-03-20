@@ -51,8 +51,12 @@ public class SwerveModule {
     private double m_driveMotorSimDistance;
     private double m_steerMotorSimDistance;
 
-    private final GenericEntry nte_driveTemp, nte_steerTemp, nte_cancoderAngle, nte_modVelocity,
-            nte_cancoderIntegratedAngle;
+    private final GenericEntry 
+        nte_driveTemp,
+        nte_steerTemp,
+        nte_cancoderAngle,
+        nte_modVelocity,
+        nte_cancoderIntegratedAngle;
     private final GenericEntry nte_desiredStateVelocity, nte_desiredStateRotation,
         nte_actualStateVelocity, nte_actualStateRotation, nte_driveMotorVeloCmd;
 

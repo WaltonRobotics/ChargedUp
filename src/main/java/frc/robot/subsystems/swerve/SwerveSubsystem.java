@@ -3,7 +3,7 @@ package frc.robot.subsystems.swerve;
 import frc.robot.SwerveModule;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.auton.AutonFactory;
-import frc.robot.auton.Paths.PPAutoscoreClass;
+import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.swerve.SwerveDriveState;
@@ -18,8 +18,6 @@ import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -53,11 +51,13 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.vision.EstimatedRobotPose;
 
 public class SwerveSubsystem extends SubsystemBase {
+	private final SwerveModule flModule = new SwerveModule("FrontLeft", 0, Mod0.constants);
+	private final SwerveModule frModule = new SwerveModule("FrontRight", 1, Mod1.constants);
+	private final SwerveModule rlModule = new SwerveModule("RearLeft", 2, Mod2.constants);
+	private final SwerveModule rrModule = new SwerveModule("RearRight", 3, Mod3.constants);
+
 	private final SwerveModule[] m_modules = new SwerveModule[] {
-			new SwerveModule("Front Left", 0, Mod0.constants),
-			new SwerveModule("Front Right", 1, Mod1.constants),
-			new SwerveModule("Rear Left", 2, Mod2.constants),
-			new SwerveModule("Rear Right", 3, Mod3.constants)
+		flModule, frModule, rlModule, rrModule
 	};
 	private final Pigeon2 m_pigeon = new Pigeon2(Constants.SwerveK.kPigeonCANID, "Canivore");
 
@@ -325,34 +325,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
 
-	public static PathPlannerTrajectory generateTrajectoryToPose(Pose2d robotPose, Pose2d target, Translation2d currentSpeedVectorMPS) {                
-		Rotation2d fieldRelativeTravelDirection = new Rotation2d(currentSpeedVectorMPS.getX(), currentSpeedVectorMPS.getY());
-		double travelSpeed = currentSpeedVectorMPS.getNorm();
-		Translation2d robotToTargetTranslation = target.getTranslation().minus(robotPose.getTranslation());
-		Rotation2d robotToTargetAngle = new Rotation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
-		Rotation2d travelOffsetFromTarget = 
-			robotToTargetAngle.minus(fieldRelativeTravelDirection);
-		travelSpeed = Math.max(0, travelSpeed * travelOffsetFromTarget.getCos());
-
-		if (robotToTargetTranslation.getNorm() > 0.1) {
-			PathPlannerTrajectory pathPlannerTrajectory = PathPlanner.generatePath(
-				new PathConstraints(2, 2), 
-				new PathPoint(
-					robotPose.getTranslation(),
-					robotToTargetAngle,
-					robotPose.getRotation(),
-					travelSpeed),
-				new PathPoint(
-					target.getTranslation(),
-					robotToTargetAngle,
-					target.getRotation())
-			);
-			
-			return pathPlannerTrajectory;
-		}
-
-		return new PathPlannerTrajectory();
-	}
+	
 
 	public Translation2d getFieldRelativeLinearSpeedsMPS() {
         ChassisSpeeds robotRelativeSpeeds = kKinematics.toChassisSpeeds(getModuleStates());
@@ -378,7 +351,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			autoThetaController,
             (chassisSpeeds) -> setChassisSpeeds(chassisSpeeds, false, false),
             (PathPlannerTrajectory traj) -> {},
-            (startPose, endPose) -> generateTrajectoryToPose(startPose, endPose, getFieldRelativeLinearSpeedsMPS()),
+            (startPose, endPose) -> Paths.generateTrajectoryToPose(startPose, endPose, getFieldRelativeLinearSpeedsMPS()),
             this);
     }
 

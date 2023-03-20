@@ -34,8 +34,8 @@ public final class FieldConstants {
   public static final double tapeWidth = Units.inchesToMeters(2.0);
   public static final double aprilTagWidth = Units.inchesToMeters(6.0);
 
-  public static final AprilTagCamera vision = new AprilTagCamera();
-  public static final SwerveSubsystem m_swerve = new SwerveSubsystem(autonEventMap, vision);
+  // public static final AprilTagCamera vision = new AprilTagCamera();
+  // public static final SwerveSubsystem m_swerve = new SwerveSubsystem(autonEventMap, vision);
 
   // Dimensions for community and charging station, including the tape.
   public static final class Community {
@@ -265,20 +265,20 @@ public final class FieldConstants {
 //               new Rotation3d()));
 // }
 
-public static Map<Integer, Pose3d> aprilTags = new HashMap<>();
+  public static Map<Integer, Pose3d> aprilTags = new HashMap<>();
 
-public static void updateAprilTags(PhotonCamera... cameras) {
-    aprilTags.clear();
-    ArrayList<PhotonTrackedTarget> targets = new ArrayList<>();
-    for (PhotonCamera cam : cameras) {
-        targets.addAll(cam.getLatestResult().getTargets());
-    }
+  public static void updateAprilTags(SwerveSubsystem swerve, PhotonCamera... cameras) {
+      aprilTags.clear();
+      ArrayList<PhotonTrackedTarget> targets = new ArrayList<>();
+      for (PhotonCamera cam : cameras) {
+          targets.addAll(cam.getLatestResult().getTargets());
+      }
 
-    for (PhotonTrackedTarget target : targets) {
-        aprilTags.put(target.getFiducialId(), new Pose3d(target.getBestCameraToTarget().getX() + m_swerve.getPose().getX(), 
-            target.getBestCameraToTarget().getY() + m_swerve.getPose().getY(), 
-            target.getFiducialId() == 4 || target.getFiducialId() == 5 ? Units.inchesToMeters(27.38) : Units.inchesToMeters(18.22),
-            target.getFiducialId() < 5 ? new Rotation3d(0, 0, Math.PI) : new Rotation3d()));
-    }
-}
+      for (PhotonTrackedTarget target : targets) {
+          aprilTags.put(target.getFiducialId(), new Pose3d(target.getBestCameraToTarget().getX() + swerve.getPose().getX(), 
+              target.getBestCameraToTarget().getY() + swerve.getPose().getY(), 
+              target.getFiducialId() == 4 || target.getFiducialId() == 5 ? Units.inchesToMeters(27.38) : Units.inchesToMeters(18.22),
+              target.getFiducialId() < 5 ? new Rotation3d(0, 0, Math.PI) : new Rotation3d()));
+      }
+  }
 }
