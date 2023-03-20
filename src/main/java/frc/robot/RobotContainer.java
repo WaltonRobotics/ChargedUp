@@ -143,16 +143,16 @@ public class RobotContainer {
 				superstructure.toState(SuperState.MIDCONE));
 
 		manipulator.a().onTrue(
-				superstructure.toState(SuperState.GROUND_PICK_UP).andThen(superstructure.autoSafe()));
+				superstructure.toState(SuperState.GROUND_PICK_UP));
 		
 		manipulator.b().onTrue(
-				superstructure.toState(SuperState.EXTENDED_SUBSTATION).andThen(superstructure.autoSafe()));
+				superstructure.toState(SuperState.EXTENDED_SUBSTATION));
 
 		manipulator.povDown().onTrue(
 				superstructure.toState(SuperState.GROUND_SCORE));
 
 		manipulator.povRight().onTrue(
-				superstructure.toState(SuperState.SUBSTATION_PICK_UP).andThen(superstructure.autoSafe()));
+				superstructure.toState(SuperState.SUBSTATION_PICK_UP));
 
 		manipulator.leftBumper().onTrue(
 				superstructure.toState(SuperState.SAFE));

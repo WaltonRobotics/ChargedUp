@@ -84,7 +84,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
         CommandBase wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
 		CommandBase elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
 		CommandBase tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
-		CommandBase clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
+		var clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
+        var toSafe = m_superstructure.autoSafe();
 
 		if (m_targetState == SuperState.GROUND_PICK_UP || m_targetState == SuperState.SUBSTATION_PICK_UP) {
 			clawCmd = claw.release().andThen(claw.autoGrab(true));
@@ -104,7 +105,8 @@ public class SuperstructureToState extends SequentialCommandGroup {
 
         addCommands(
             initCmd,
-            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd, dbgCmd)
+            Commands.parallel(wristCmd, elevCmd, tiltCmd, clawCmd, dbgCmd),
+            toSafe
         );
 
 
