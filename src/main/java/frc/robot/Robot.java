@@ -98,8 +98,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
-    // m_robotContainer.swerve.resetToAbsolute();
-    // m_robotContainer.swerve.resetGyro();
     m_robotContainer.superstructure.initState();
     m_robotContainer.superstructure.smartReset();
 

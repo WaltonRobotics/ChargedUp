@@ -30,41 +30,25 @@ public class TheClaw extends SubsystemBase {
 	
 
 	public TheClaw() {
+		DashboardManager.addTab(this);
 	}
 
-	public CommandBase teleOpCmd(boolean autoGrab){
-		BooleanSupplier sensorBool = () -> sensorTrig.getAsBoolean();
-		return run(()->{
-			if(!m_isClosed){
-				Commands.none().until(sensorBool);
-				if(sensorTrig.getAsBoolean()){
+	public CommandBase teleOpCmd(boolean autoGrab) {
+		return run(()-> {
+			m_grabOk = false;
+			if (!m_isClosed) {
+				if (sensorTrig.getAsBoolean()){
 					claw.set(false);
 					m_isClosed = true;
 				}
 			}
-		});
-	}
-
-	/*
-	 * @return Cmd to automatically close claw on eye sight
-	 */
-	public CommandBase autoGrab(boolean autoRelease) {
-
-		return runOnce(() ->  {
-				m_grabOk = false;
-				claw.set(true); 
-				m_isClosed = !claw.get();  // open claw
-			})
-			.andThen(new WaitCommand(sensorTrig.getAsBoolean() ? .5: .5)) // wait 0.8sec before sensor
-			.andThen(
-				startEnd(() -> {}, 
-					() -> {
-						claw.set(false); 
-						m_isClosed = !claw.get();
-					})
-					.until(sensorTrig)
-			)
-			.finallyDo((intr) -> m_grabOk = true);
+		})
+		.until(() -> m_isClosed)
+		.andThen(() -> {
+			m_grabOk = true;
+		})
+		.repeatedly()
+		.withName("DefaultAutoGrab");
 	}
 
 	/*
@@ -90,15 +74,13 @@ public class TheClaw extends SubsystemBase {
 			case IGNORE: return Commands.none();
 			case OPEN: return release();
 			case CLOSE: return grab();
-			case AUTO: return autoGrab(m_isClosed);
 		}
 		return Commands.none();
 	}
 	public enum ClawState{
 		IGNORE, 
 		OPEN,
-		CLOSE,
-		AUTO
+		CLOSE
 	}
 	@Override
 	public void periodic() {

@@ -39,12 +39,11 @@ public class Paths {
 		public static final PathPlannerTrajectory twoElement = PathPlanner.loadPath("twoElement",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory coneOneHalf = PathPlanner.loadPath("coneOneHalf", 
-		kMaxSpeedMetersPerSecond,
-		kMaxAccelerationMetersPerSecondSquared);
+		public static final List<PathPlannerTrajectory> coneOneHalf = PathPlanner.loadPathGroup("coneOneHalf", 
+			kPPConstraints, new PathConstraints(1, 2), kPPConstraints);
 		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", 
-		kMaxSpeedMetersPerSecond,
-		kMaxAccelerationMetersPerSecondSquared);
+			kMaxSpeedMetersPerSecond,
+			kMaxAccelerationMetersPerSecondSquared);
 
 		public static final PathPlannerTrajectory threePiece1 = PathPlanner.loadPath("threePiece1",
 				kMaxSpeedMetersPerSecond,

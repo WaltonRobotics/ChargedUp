@@ -18,6 +18,8 @@ import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -79,7 +82,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			kKinematics,
 			getHeading(),
 			getModulePositions(),
-			new Pose2d());
+			new Pose2d(),
+			new Matrix<>(kVisionStdDevs_DefaultTrust),
+			new Matrix<>(kVisionStdDevs_DefaultTrust));
 
 	private final AprilTagCamera m_apriltagHelper;
 
@@ -468,6 +473,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	// }
 
 	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory) {
+		if (trajectory.getStates().size() == 0) {
+			throw new RuntimeException("Empty path given!!!");
+		}
+
 		return new DeferredCommand(() -> {
 			var newTraj = trajectory;
 
@@ -494,6 +503,53 @@ public class SwerveSubsystem extends SubsystemBase {
 				this // Requires this drive subsystem
 			);
 			return resetCmd.andThen(pathCmd);
+		}, this);
+	}
+
+	public CommandBase getPPSwerveAutonCmd(List<PathPlannerTrajectory> trajList) {
+		if (trajList.size() == 0) {
+			throw new RuntimeException("Empty path group given!!!");
+		}
+
+		return new DeferredCommand(() -> {
+			if (trajList.size() == 0) return Commands.print("PPSwerve - Empty path group given!");
+
+			List<PathPlannerTrajectory> newTrajList = new ArrayList<PathPlannerTrajectory>();
+			newTrajList.addAll(trajList);
+
+
+			if(Flipper.shouldFlip()){
+				newTrajList.clear();
+				for (var traj : trajList) {
+					newTrajList.add(Flipper.allianceFlip(traj));
+				}
+			}
+
+			final var firstTraj = newTrajList.get(0);
+
+			var resetCmd = runOnce(() -> {
+				resetPose(firstTraj.getInitialHolonomicPose());
+			});
+
+			List<CommandBase> pathCmds = new ArrayList<CommandBase>();
+
+			for (var traj : newTrajList) {
+				pathCmds.add(new PPSwerveControllerCommand(
+					traj,
+					this::getPose, // Pose supplier
+					kKinematics, // SwerveDriveKinematics
+					xController,
+					yController,	
+					autoThetaController,
+					(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
+					false, // Should the path be automatically mirrored depending on alliance color.
+							// Optional, defaults to true
+					this // Requires this drive subsystem
+				));
+			}
+
+			CommandBase[] pathCmdsArr = pathCmds.toArray(new CommandBase[0]);
+			return resetCmd.andThen(pathCmdsArr);
 		}, this);
 	}
 
@@ -542,7 +598,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		if (leftLowPoseOpt.isPresent()) {
 			var leftLowPose = leftLowPoseOpt.get();
-			SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.arrFromPose3d(leftLowPose.estimatedPose));
+			SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
 
 			m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
 			m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
@@ -552,7 +608,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		if (rightLowPoseOpt.isPresent()) {
 			var rightLowPose = rightLowPoseOpt.get();
-			SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.arrFromPose3d(rightLowPose.estimatedPose));
+			SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
 
 			m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
 			m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);

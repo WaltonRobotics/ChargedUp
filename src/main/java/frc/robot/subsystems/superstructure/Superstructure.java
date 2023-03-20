@@ -127,11 +127,7 @@ public class Superstructure extends SubsystemBase {
 	public SuperState getCurState() {
 		return m_curState;
 	}
-
-	public CommandBase autoGrab() {
-		return m_claw.autoGrab(false).andThen(new SuperstructureToState(this, SuperState.SAFE));
-	}
-
+	
 	public CommandBase releaseClaw() {
 		var clawCmd = m_claw.release();
 

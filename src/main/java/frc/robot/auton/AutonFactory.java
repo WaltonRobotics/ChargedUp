@@ -66,8 +66,8 @@ public final class AutonFactory {
         var reset1Cmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
         var reset2Cmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
         var reset3Cmd = superstructure.toState(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-        var groundPickUp1Cmd = superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(2).andThen(claw.autoGrab(false).withTimeout(2));
-        var groundPickUp2Cmd = superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(2).andThen(claw.autoGrab(false).withTimeout(2));
+        var groundPickUp1Cmd = superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(2);
+        var groundPickUp2Cmd = superstructure.toState(SuperState.GROUND_PICK_UP).withTimeout(2);
         var placeCubeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2).andThen(claw.release()).withName("SS-Auto-TopCube");
 
         return Commands.sequence(
@@ -101,7 +101,11 @@ public final class AutonFactory {
             releaseCmd,
             Commands.waitSeconds(.6),
             ssResetCmd,
-            pathCmd.alongWith(Commands.waitSeconds(.75).andThen(superstructure.toState(SuperState.GROUND_PICK_UP)).withTimeout(PPPaths.coneOneHalf.getTotalTimeSeconds())),
+            pathCmd.alongWith(
+                Commands.waitSeconds(.5)
+                .andThen(superstructure.toState(SuperState.GROUND_PICK_UP))
+                .andThen(claw.teleOpCmd(true))
+            ),
             new AutoBalance(swerve, false).withName("autobalance").alongWith(ssResetCmd2)
         );
     }

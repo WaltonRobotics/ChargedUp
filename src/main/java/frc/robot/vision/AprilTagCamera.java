@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.vision.EstimatedRobotPose;
 // import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -11,29 +12,29 @@ import frc.lib.vision.PhotonPoseEstimator;
 import frc.lib.vision.PhotonPoseEstimator.PoseStrategy;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AprilTagCamera {
     public final PhotonCamera rightLowCam = new PhotonCamera("RightCornerLow");
     public final PhotonCamera leftLowCam = new PhotonCamera("LeftCornerLow");
 
-    private final Transform3d rightLowCamToRobot = new Transform3d(
-            new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
-            new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(39.6)));
+    private final Transform3d rightLowRobotToCamera = new Transform3d(
+        new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(-9.279), Units.inchesToMeters(8.845)),
+        new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(39.6)));
+    // private final Transform3d rightLowCameraToRobot = rightLowRobotToCamera.inverse();
 
-    private final Transform3d leftLowCamToRobot = new Transform3d(
-                new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
-                new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(-39.6)));
+    private final Transform3d leftLowRobotToCamera = new Transform3d(
+        new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
+        new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(-39.6)));
+    // private final Transform3d leftLowCameraToRobot = leftLowRobotToCamera.inverse();
     
-
-    AprilTagFieldLayout aprilTagFieldLayout;    
-    ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
+    AprilTagFieldLayout aprilTagFieldLayout;
     PhotonPoseEstimator leftLowPoseEstimator;
     PhotonPoseEstimator rightLowPoseEstimator;
 
@@ -58,13 +59,17 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(rightLowCam, leftLowCamToRobot));
-        leftLowPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, leftLowCam,
-                leftLowCamToRobot);
+        leftLowPoseEstimator = new PhotonPoseEstimator(
+            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP,
+            leftLowCam, leftLowRobotToCamera);
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(leftLowCam, rightLowCamToRobot));
-        rightLowPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, rightLowCam,
-                        rightLowCamToRobot);
+        rightLowPoseEstimator = new PhotonPoseEstimator(
+            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP,
+            rightLowCam, rightLowRobotToCamera);
+
+        SmartDashboard.putNumberArray("LeftLowCam_RobotToCam", AdvantageScopeUtils.toDoubleArr(leftLowRobotToCamera));
+        SmartDashboard.putNumberArray("RightLowCam_RobotToCam", AdvantageScopeUtils.toDoubleArr(rightLowRobotToCamera));
+
     }
 
     public void periodic() {
