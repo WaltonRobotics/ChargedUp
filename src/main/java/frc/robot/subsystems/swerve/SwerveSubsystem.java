@@ -307,23 +307,17 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void resetPose(Pose2d pose) {
-		if(Flipper.shouldFlip() && pose.getRotation().getDegrees() < 180){
-			setYaw(pose.getRotation().getDegrees()-180);
+		var poseDeg = pose.getRotation().getDegrees();
+		if(Flipper.shouldFlip() && poseDeg < 180) {
+			setYaw(poseDeg - 180);
+		} else if(Flipper.shouldFlip() && poseDeg >= 180) {
+			setYaw(poseDeg);
+		} else if(!Flipper.shouldFlip() && poseDeg < 180) {
+			setYaw(poseDeg - 180);
+		} else {
+			setYaw(poseDeg);
 		}
-		else if(Flipper.shouldFlip() && pose.getRotation().getDegrees() >= 180){
-			setYaw(pose.getRotation().getDegrees());
-		}
-		else if(!Flipper.shouldFlip() && pose.getRotation().getDegrees() < 180){
-			setYaw(pose.getRotation().getDegrees()-180);
-		}
-		else{
-			setYaw(pose.getRotation().getDegrees());
-		}
-		// else{
-		// 	setYaw(pose.getRotation().getDegrees());
-		// }
 		resetEstimatorPose(pose); // resets poseEstimator
-		// resetOdometryPose(pose); // sets odometry to poseEstimator
 	}
 
 	
