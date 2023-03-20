@@ -95,7 +95,7 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase smartReset() {
-		var tiltCmd = /* m_tilt.getDegrees() < 2 ? Commands.none() : */ m_tilt.toAngle(TiltK.kBotAngleDegrees);
+		var tiltCmd = m_tilt.getDegrees() < 2 ? Commands.none() : m_tilt.toAngle(TiltK.kBotAngleDegrees);
 		var elevCmd = m_elevator.getActualHeightMeters() < .05 ? Commands.none() : m_elevator.toHeight(ElevatorK.kBotHeightMeters);
 		var wristCmd = Math.abs(m_wrist.getDegrees() - WristK.kMaxDeg) < 2 ? Commands.none() : m_wrist.toAngle(WristK.kMaxDeg);
 		return Commands.parallel(

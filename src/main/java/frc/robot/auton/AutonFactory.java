@@ -33,6 +33,7 @@ public final class AutonFactory {
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConePark);
 
         return Commands.sequence(
+            superstructure.smartReset(),
             placeCmd,
             clawCmd,
             Commands.waitSeconds(.5),
@@ -50,6 +51,7 @@ public final class AutonFactory {
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoElement);
     
         return Commands.sequence(
+            superstructure.smartReset(),
             cubePlaceCmd,
             Commands.waitSeconds(.75),
             ssResetCmd,
@@ -70,6 +72,7 @@ public final class AutonFactory {
         var placeCubeCmd = superstructure.toState(SuperState.TOPCUBE).withTimeout(2).andThen(claw.release()).withName("SS-Auto-TopCube");
 
         return Commands.sequence(
+            superstructure.smartReset(),
             placeCone1Cmd,
             Commands.waitSeconds(1),
             reset1Cmd,
@@ -106,13 +109,11 @@ public final class AutonFactory {
                 pathCmd,
                 Commands.waitSeconds(2).andThen(groundPickUp)
             ),
-            ssResetCmd2, 
-            new AutoBalance(swerve, false)
+            ssResetCmd2.alongWith(new AutoBalance(swerve, false))
         );
     }
 
     public static CommandBase simpleOneConeBack(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var printBeginCmd = Commands.print("============ONE_CONE_BACK BEGIN============");
         var placeCmd = superstructure.toState(SuperState.TOPCONE).withTimeout(3);
         var clawCmd = claw.release()
             .andThen(Commands.waitSeconds(0.75))
@@ -122,7 +123,7 @@ public final class AutonFactory {
             .withName("SS-Auto-Safe");
 
         return Commands.sequence(
-            printBeginCmd,
+            superstructure.smartReset(),
             placeCmd,
             clawCmd,
             ssResetCmd,
@@ -141,6 +142,7 @@ public final class AutonFactory {
         var rotateCmd = swerve.rotate180();
 
         return Commands.sequence(
+            superstructure.smartReset(),
             placeCmd,
             ssResetCmd,
             pathCmd,
@@ -161,6 +163,7 @@ public final class AutonFactory {
         var rotateCmd = swerve.rotate180();
 
         return Commands.sequence(
+            superstructure.smartReset(),
             placeCmd,
             clawCmd,
             ssResetCmd,
