@@ -15,6 +15,7 @@ public enum SuperState {
     GROUND_SCORE(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.PICKUP, ClawState.IGNORE),
     SAFE(ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.MAX, ClawState.CLOSE),
     EXTENDED_SUBSTATION(ElevatorState.EXTENDED_SUBSTATION, TiltState.EXTENDED_SUBSTATION, WristState.EXTENDED_SUBSTATION, ClawState.OPEN);
+    
 
     public final ElevatorState elev;
     public final TiltState tilt;

@@ -17,8 +17,6 @@ import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPPaths;
-import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
-
 import static frc.robot.auton.AutonFactory.autonEventMap;
 
 import java.util.Optional;
