@@ -141,8 +141,8 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase autoSafe() {
-		if(m_claw.getState()) {
-			if(getCurState() == SuperState.GROUND_PICK_UP || getCurState() == SuperState.SUBSTATION_PICK_UP || getCurState() == SuperState.EXTENDED_SUBSTATION) {
+		if (m_claw.getState()) {
+			if (getCurState() == SuperState.GROUND_PICK_UP || getCurState() == SuperState.SUBSTATION_PICK_UP || getCurState() == SuperState.EXTENDED_SUBSTATION) {
 				return new SuperstructureToState(this, SuperState.SAFE);
 			}
 		}
