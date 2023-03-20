@@ -1,5 +1,4 @@
 package frc.robot.subsystems.superstructure;
-//TODO: have autograb based on beam break not seeing anything then seeing things.
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -14,8 +13,6 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.subsystems.TheClaw.ClawState;
-
 import static frc.robot.Constants.WristK.*;
 
 import java.util.function.DoubleSupplier;
@@ -131,17 +128,11 @@ public class Superstructure extends SubsystemBase {
 	}
 	
 	public CommandBase releaseClaw() {
-		var clawCmd = m_claw.release();
-
-		// if (getCurState() != SuperState.SAFE && getCurState() != SuperState.GROUND_PICK_UP && getCurState() != SuperState.SUBSTATION_PICK_UP) {
-		// 	return clawCmd.andThen(new SuperstructureToState(this, SuperState.SAFE));
-		// }
-
-		return clawCmd.andThen(Commands.waitSeconds(1));
+		return m_claw.release();
 	}
 
 	public CommandBase autoSafe() {
-		if(m_claw.getState()) {
+		if(m_claw.getClosed()) {
 			if(getCurState() == SuperState.GROUND_PICK_UP || getCurState() == SuperState.SUBSTATION_PICK_UP || getCurState() == SuperState.EXTENDED_SUBSTATION) {
 				return new SuperstructureToState(this, SuperState.SAFE);
 			}

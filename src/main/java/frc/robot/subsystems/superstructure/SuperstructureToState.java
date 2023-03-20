@@ -81,13 +81,13 @@ public class SuperstructureToState extends SequentialCommandGroup {
             quirks += "-TG_SUB";
         }
 
-        var wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
-		var elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
+        CommandBase wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
+		CommandBase elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
 		CommandBase tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
-		var clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
+		CommandBase clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
 
 		if (m_targetState == SuperState.GROUND_PICK_UP || m_targetState == SuperState.SUBSTATION_PICK_UP) {
-			clawCmd = Commands.waitSeconds(0).andThen(claw.release());
+			clawCmd = claw.release().andThen(claw.autoGrab(true));
 		} 
 
         if(tilt.getDegrees() < 2 && (m_targetState == SuperState.SAFE || m_targetState == SuperState.GROUND_PICK_UP) || m_targetState == SuperState.SUBSTATION_PICK_UP){

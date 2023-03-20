@@ -99,7 +99,6 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
     m_robotContainer.superstructure.initState();
-    m_robotContainer.superstructure.smartReset();
 
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
     if (initPoseOpt.isPresent()) {
