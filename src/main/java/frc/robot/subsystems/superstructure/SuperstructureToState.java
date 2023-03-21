@@ -90,7 +90,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
 		CommandBase elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
 		CommandBase tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
 		CommandBase clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
-        var toSafe = m_superstructure.autoSafe();
+        // var toSafe = m_superstructure.autoSafe();
 
 		if (m_targetState == SuperState.GROUND_PICK_UP || m_targetState == SuperState.SUBSTATION_PICK_UP || m_targetState == SuperState.EXTENDED_SUBSTATION) {
 			clawCmd = (Commands.waitUntil(m_clawWait).andThen(claw.release().andThen(claw.autoGrab(true))));
