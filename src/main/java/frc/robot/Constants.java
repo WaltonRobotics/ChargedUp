@@ -36,9 +36,9 @@ public final class Constants {
 
     public static final class AtComp{
         public static final double chargeStationApproachPwr = 3;
-        public static final double forwardPitch = 8;
+        public static final double forwardPitch = 9;
         public static final double reversePitch = 4.5;
-        public static final double forwardPwr = 2.5;
+        public static final double forwardPwr = 2.25;
         public static final double reversePwr = 1.75;
     }
 
@@ -311,9 +311,9 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kA = 0.20343;
         public static final double kG = 0.20488;
         
-        public static final double kPHold = .7;
+        public static final double kPHold = 0;
         public static final double kDHold = 0;
-        public static final double kHoldKs = .75;
+        public static final double kHoldKs = .705;
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
@@ -334,12 +334,15 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kExtendedSubstationHeightM = .46;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 2.85; // Meters Per Second
-        public static final double kMaxAcceleration = 2.85; // Meters Per Second Squared
+        public static final double kMaxVelocity = 2.75; // Meters Per Second
+        public static final double kMaxAcceleration = 2.60; // Meters Per Second Squared
+        public static final double kMaxAccelerationDown = 1.85;
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
                 kMaxAcceleration);      
+                public static final TrapezoidProfile.Constraints kConstraintsDown = new TrapezoidProfile.Constraints(kMaxVelocity,
+                kMaxAccelerationDown);      
     }
 
     public static final class WristK {

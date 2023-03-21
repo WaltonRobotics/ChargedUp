@@ -134,7 +134,7 @@ public class Robot extends TimedRobot {
     if(!DriverStation.isFMSAttached()){
       m_robotContainer.superstructure.smartReset();
     }
-
+    m_robotContainer.superstructure.smartReset();
     m_robotContainer.swerve.resetToAbsolute();
    
     // m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();

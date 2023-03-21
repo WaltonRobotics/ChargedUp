@@ -67,8 +67,12 @@ public class Superstructure extends SubsystemBase {
 		}
 	}
 
-	public CommandBase toState(SuperState state) {
-		return new SuperstructureToState(this, state);
+	public CommandBase toStateTeleop(SuperState state) {
+		return new SuperstructureToState(this, state, true);
+	}
+
+	public CommandBase toStateAuton(SuperState state) {
+		return new SuperstructureToState(this, state, false);
 	}
 
 	public CommandBase autoReset(){
@@ -95,7 +99,7 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase smartReset() {
-		var tiltCmd = m_tilt.getDegrees() < 2 ? Commands.none() : m_tilt.toAngle(TiltK.kBotAngleDegrees);
+		var tiltCmd = m_tilt.toAngle(TiltK.kBotAngleDegrees);
 		var elevCmd = m_elevator.getActualHeightMeters() < .05 ? Commands.none() : m_elevator.toHeight(ElevatorK.kBotHeightMeters);
 		var wristCmd = Math.abs(m_wrist.getDegrees() - WristK.kMaxDeg) < 2 ? Commands.none() : m_wrist.toAngle(WristK.kMaxDeg);
 		return Commands.parallel(

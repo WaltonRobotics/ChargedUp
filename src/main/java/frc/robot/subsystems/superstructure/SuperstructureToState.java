@@ -18,6 +18,10 @@ public class SuperstructureToState extends SequentialCommandGroup {
     private double wristAngle;
 
     public SuperstructureToState(Superstructure superstructure, SuperState targetState) {
+        this(superstructure, targetState, false);
+    }
+
+    public SuperstructureToState(Superstructure superstructure, SuperState targetState, boolean proxyInternal) {
         m_superstructure = superstructure;
         m_targetState = targetState;
 
@@ -104,14 +108,22 @@ public class SuperstructureToState extends SequentialCommandGroup {
             superstructure.nte_stateQuirk.setString(fromStr + "-" + toStr + "-" + fnQuirks);
         });
 
+        if (proxyInternal) {
+            wristCmd = wristCmd.asProxy();
+            elevCmd = elevCmd.asProxy();
+            tiltCmd = tiltCmd.asProxy();
+            clawCmd = clawCmd.asProxy();
+        }
+
         addCommands(
             initCmd,
             Commands.parallel(
-                wristCmd.asProxy(),
-                elevCmd.asProxy(),
-                tiltCmd.asProxy(),
-                clawCmd.asProxy(),
-                dbgCmd.asProxy())
+                wristCmd,
+                elevCmd,
+                tiltCmd,
+                clawCmd,
+                dbgCmd
+            )
         );
 
 

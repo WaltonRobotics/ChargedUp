@@ -8,6 +8,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
@@ -243,6 +244,7 @@ public class SwerveModule {
         m_steerMotor.configAllSettings(CTREConfigs.Get().swerveAngleFXConfig);
         m_steerMotor.setInverted(kInvertAngleMotor);
         m_steerMotor.setNeutralMode(kAngleNeutralMode);
+        Timer.delay(0.1);
         resetToAbsolute();
     }
 

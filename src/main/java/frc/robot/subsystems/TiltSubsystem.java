@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,7 +30,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
 	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
-	// private Timer m_timer = new Timer();
+	private final Timer m_resetTimer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
 	private double m_targetAngle = 0;
@@ -56,8 +57,9 @@ public class TiltSubsystem extends SubsystemBase {
 		// reset relative encoder on switch activation
 		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
-		m_controller.setTolerance(1.0);
 		DashboardManager.addTab(this);
+		m_resetTimer.reset();
+		m_resetTimer.start();
 	}
 
 	public CommandBase setTarget(double degrees) {
@@ -101,14 +103,6 @@ public class TiltSubsystem extends SubsystemBase {
 		var rawDeg = (m_absoluteEncoder.get() * 360);
 		return MathUtil.clamp(rawDeg, 0, kMaxAngleDegrees); // get returns rotations, so rotations * (360 degrees / 1
 															// rotation)
-	}
-
-	public void disengageBrake() {
-		m_diskBrake.set(false);
-	}
-
-	public void engageBrake() {
-		m_diskBrake.set(true);
 	}
 
 	public CommandBase teleopCmd(DoubleSupplier power) {
@@ -195,6 +189,10 @@ public class TiltSubsystem extends SubsystemBase {
 	public void periodic() {
 		if (!m_homeSwitch.get()) {
 			m_absoluteEncoder.reset();
+			if(m_resetTimer.hasElapsed(2.5)){
+				m_controller.reset(0);
+				m_resetTimer.reset();
+			}
 		}
 		setCoast(nte_coast.getBoolean(false));
 		updateShuffleBoard();

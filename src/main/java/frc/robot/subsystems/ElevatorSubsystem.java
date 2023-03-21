@@ -17,13 +17,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
 import frc.robot.CTREConfigs;
-
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.*;
@@ -31,6 +31,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_left = new WPI_TalonFX(kLeftCANID, canbus);
 	private final WPI_TalonFX m_right = new WPI_TalonFX(kRightCANID, canbus);
 	private final DigitalInput m_lowerLimit = new DigitalInput(kLowerLimitSwitchPort);
+	private final Timer m_resetTimer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
@@ -77,7 +78,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_left.follow(m_right);
 		m_left.setInverted(TalonFXInvertType.OpposeMaster);
-		// m_controller.setTolerance(.02);
+		m_controller.setTolerance(.02);
+		m_resetTimer.reset();
+		m_resetTimer.start();
 	}
 
 	/*
@@ -227,6 +230,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
 			i_setTarget(heightMeters);
+			if(heightMeters < getActualHeightMeters()){
+				m_controller.setConstraints(kConstraintsDown);
+			}
+			else{
+				m_controller.setConstraints(kConstraints);
+			}
 		})
 				.andThen(run(() -> {
 					var effort = 
@@ -275,7 +284,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public void periodic() {
 		if (!m_lowerLimit.get()) {
 			m_right.setSelectedSensorPosition(0);
+			if(m_resetTimer.hasElapsed(2.5)){
+				m_controller.reset(0);
+				m_resetTimer.reset();
+			}
 		}
+
 		updateShuffleBoard();
 		setCoast(nte_coast.getBoolean(false));
 		SmartDashboard.putNumber("HOLD P Effort", m_holdPdEffort);

@@ -120,35 +120,35 @@ public class RobotContainer {
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
 		)); 
-		manipulator.leftTrigger().onTrue(superstructure.releaseClaw());
+		manipulator.leftTrigger().whileTrue(superstructure.releaseClaw());
 		manipulator.rightTrigger().onTrue(claw.grab());
 
 		manipulator.povUp().onTrue(
-				superstructure.toState(SuperState.TOPCUBE));
+				superstructure.toStateTeleop(SuperState.TOPCUBE));
 
 		manipulator.povLeft().onTrue(
-				superstructure.toState(SuperState.MIDCUBE));
+				superstructure.toStateTeleop(SuperState.MIDCUBE));
 
 		manipulator.y().onTrue(
-				superstructure.toState(SuperState.TOPCONE));
+				superstructure.toStateTeleop(SuperState.TOPCONE));
 
 		manipulator.x().onTrue(
-				superstructure.toState(SuperState.MIDCONE));
+				superstructure.toStateTeleop(SuperState.MIDCONE));
 
 		manipulator.a().onTrue(
-				superstructure.toState(SuperState.GROUND_PICK_UP));
+				superstructure.toStateTeleop(SuperState.GROUND_PICK_UP));
 		
 		manipulator.b().onTrue(
-				superstructure.toState(SuperState.EXTENDED_SUBSTATION));
+				superstructure.toStateTeleop(SuperState.EXTENDED_SUBSTATION));
 
 		manipulator.povDown().onTrue(
-				superstructure.toState(SuperState.GROUND_SCORE));
+				superstructure.toStateTeleop(SuperState.GROUND_SCORE));
 
 		manipulator.povRight().onTrue(
-				superstructure.toState(SuperState.SUBSTATION_PICK_UP));
+				superstructure.toStateTeleop(SuperState.SUBSTATION_PICK_UP));
 
 		manipulator.leftBumper().onTrue(
-				superstructure.toState(SuperState.SAFE));
+				superstructure.toStateTeleop(SuperState.SAFE));
 
 		/* Tuning buttons */
 		// manipulator.b().whileTrue(wrist.toAngle(70));
