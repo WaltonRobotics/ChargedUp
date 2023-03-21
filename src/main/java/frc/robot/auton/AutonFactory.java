@@ -33,7 +33,7 @@ public final class AutonFactory {
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConePark);
 
         return Commands.sequence(
-            superstructure.smartReset(),
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             placeCmd,
             clawCmd,
             Commands.waitSeconds(.5),
@@ -55,7 +55,7 @@ public final class AutonFactory {
         var placeCubeCmd = superstructure.toStateAuton(SuperState.TOPCUBE).withTimeout(2).andThen(claw.release()).withName("SS-Auto-TopCube");
 
         return Commands.sequence(
-            superstructure.smartReset(),
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             placeCone1Cmd,
             Commands.waitSeconds(1),
             reset1Cmd,
@@ -125,7 +125,7 @@ public final class AutonFactory {
             .withName("SS-Auto-Safe");
 
         return Commands.sequence(
-            superstructure.smartReset(),
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             placeCmd,
             clawCmd,
             ssResetCmd,
@@ -144,7 +144,7 @@ public final class AutonFactory {
         var rotateCmd = swerve.rotate180();
 
         return Commands.sequence(
-            superstructure.smartReset(),
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             placeCmd,
             ssResetCmd,
             pathCmd,
@@ -165,7 +165,7 @@ public final class AutonFactory {
         var rotateCmd = swerve.rotate180();
 
         return Commands.sequence(
-            superstructure.smartReset(),
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             placeCmd,
             clawCmd,
             ssResetCmd,
@@ -179,7 +179,7 @@ public final class AutonFactory {
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneCubePark);
 
         return Commands.sequence(
-            superstructure.smartReset(),
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             placeCmd,
             ssResetCmd,
             pathCmd,
