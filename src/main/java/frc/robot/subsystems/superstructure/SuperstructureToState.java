@@ -96,9 +96,9 @@ public class SuperstructureToState extends SequentialCommandGroup {
 			clawCmd = (Commands.waitUntil(m_clawWait).andThen(claw.release().andThen(claw.autoGrab(true))));
 		} 
 
-        if(tilt.getDegrees() < 2 && (m_targetState == SuperState.SAFE || m_targetState == SuperState.GROUND_PICK_UP) || m_targetState == SuperState.SUBSTATION_PICK_UP){
-            tiltCmd = Commands.none();
-        }
+        // if(tilt.getDegrees() < 2 && (m_targetState == SuperState.SAFE || m_targetState == SuperState.GROUND_PICK_UP) || m_targetState == SuperState.SUBSTATION_PICK_UP){
+        //     tiltCmd = Commands.none();
+        // }
 
         var fromStr = prevState.toString();
         var toStr = m_targetState.toString();

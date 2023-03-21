@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -76,6 +78,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     Logger.updateEntries();
     FieldConstants.updateAprilTags(m_robotContainer.swerve, m_robotContainer.vision.leftLowCam, m_robotContainer.vision.rightLowCam);
+    NetworkTableInstance.getDefault().flush();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

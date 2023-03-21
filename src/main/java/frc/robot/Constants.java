@@ -36,9 +36,9 @@ public final class Constants {
 
     public static final class AtComp{
         public static final double chargeStationApproachPwr = 3;
-        public static final double forwardPitch = 9;
+        public static final double forwardPitch = 8.75;
         public static final double reversePitch = 4.5;
-        public static final double forwardPwr = 2.25;
+        public static final double forwardPwr = 2.4;
         public static final double reversePwr = 1.75;
     }
 
@@ -306,12 +306,12 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kP = 22; //sysid 9.2597E-05
         public static final double kD = 0;
-        public static final double kS = 0.15253;
-        public static final double kV = 9.8382;
-        public static final double kA = 0.20343;
-        public static final double kG = 0.20488;
+        public static final double kS = 0.16114;
+        public static final double kV = 9.7833;
+        public static final double kA = 0.4375; // 0.41885 from Tyler
+        public static final double kG = 0.1744;
         
-        public static final double kPHold = 0;
+        public static final double kPHold = .7;
         public static final double kDHold = 0;
         public static final double kHoldKs = .705;
 

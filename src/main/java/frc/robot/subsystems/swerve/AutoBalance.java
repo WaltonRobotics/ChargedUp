@@ -35,7 +35,7 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        double approachSpeed = Constants.AtHome.AreWe ? Constants.AtComp.chargeStationApproachPwr : 3.0;
+        double approachSpeed = Constants.AtHome.AreWe ? Constants.AtComp.chargeStationApproachPwr : 3.5;
         m_swerve.drive(approachSpeed * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }

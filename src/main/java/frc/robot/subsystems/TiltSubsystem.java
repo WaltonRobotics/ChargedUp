@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
@@ -30,7 +31,6 @@ public class TiltSubsystem extends SubsystemBase {
 	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
 	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
-	private final Timer m_resetTimer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
 	private double m_targetAngle = 0;
@@ -48,6 +48,8 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
+	private final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
+	
 	public TiltSubsystem() {
 		m_diskBrake.set(true);
 		m_absoluteEncoder.reset();
@@ -58,8 +60,6 @@ public class TiltSubsystem extends SubsystemBase {
 		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
 		DashboardManager.addTab(this);
-		m_resetTimer.reset();
-		m_resetTimer.start();
 	}
 
 	public CommandBase setTarget(double degrees) {
@@ -138,6 +138,16 @@ public class TiltSubsystem extends SubsystemBase {
 		m_motor.setVoltage(output);
 	}
 
+	public CommandBase autoHome() {
+		return Commands.sequence(
+			startEnd(() -> {
+				setVoltage(-1);
+			}, () -> {
+				setVoltage(0);
+			}).until(m_homeSwitchTrigger)
+		);
+	}
+
 	/**
 	 * disengageBrake
 	 * wait(n)
@@ -189,10 +199,10 @@ public class TiltSubsystem extends SubsystemBase {
 	public void periodic() {
 		if (!m_homeSwitch.get()) {
 			m_absoluteEncoder.reset();
-			if(m_resetTimer.hasElapsed(2.5)){
-				m_controller.reset(0);
-				m_resetTimer.reset();
-			}
+			// if(m_resetTimer.hasElapsed(2.5)){
+			// 	m_controller.reset(0);
+			// 	m_resetTimer.reset();
+			// }
 		}
 		setCoast(nte_coast.getBoolean(false));
 		updateShuffleBoard();

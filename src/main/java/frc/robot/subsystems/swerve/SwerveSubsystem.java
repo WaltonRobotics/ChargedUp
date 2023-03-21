@@ -46,6 +46,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -75,6 +76,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	protected final SwerveAutoBuilder autoBuilder;
     protected final LinearFilter m_dropFilter = LinearFilter.highPass(0.3, 0.02);
 	protected boolean m_startedBalance = false;
+	private final Tracer tracer = new Tracer();
 
 
 	public Timer m_timer = new Timer();
@@ -102,6 +104,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		Timer.delay(.250);
 		resetToAbsolute();
+		tracer.resetTimer();
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		// autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
@@ -442,7 +445,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				newTraj = Flipper.allianceFlip(trajectory);
 			}
 			return autoBuilder.fullAuto(newTraj);
-		});
+		}, this);
 	}
 
 	public CommandBase getTimedFullAuto(PathPlannerTrajectory trajectory) {
@@ -453,7 +456,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				newTraj = Flipper.allianceFlip(trajectory);
 			}
 			return autoBuilder.fullAuto(newTraj).withTimeout(trajectory.getTotalTimeSeconds());
-		}).withTimeout(4);
+		}, this).withTimeout(4);
 	}
 	// public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
 	// 	return autoBuilder.fullAuto(trajectoryList);
@@ -569,12 +572,12 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * updates field
 	 */
 	public void updateRobotPose() {
-
-		// m_odometry.update(getHeading(), getModulePositions());
-		// m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
-
+		var poseEstBegin = Timer.getFPGATimestamp();
 		m_poseEstimator.update(getHeading(), getModulePositions());
+		var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
 
+
+		var visionEstBegin = Timer.getFPGATimestamp();
 		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper
 				.leftLow_getEstPose(m_poseEstimator.getEstimatedPosition());
 
@@ -602,6 +605,11 @@ public class SwerveSubsystem extends SubsystemBase {
 		} else {
 			m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
 		}
+
+		var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
+
+		SmartDashboard.putNumber("OdoTimeSec", poseEstElapsed);
+		SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
 	}
 
 	public void lockModules() {
@@ -634,6 +642,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		for (var module : m_modules) {
 			module.periodic();
 		}
+		// tracer.addEpoch(DB_TAB_NAME);
 		updateRobotPose();
 
 		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
@@ -646,6 +655,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("HighPassPitch", filteredPitch);
         SmartDashboard.putBoolean("StartedBalance", m_startedBalance);
 	}
+
 
 	@Override
 	public void simulationPeriodic() {

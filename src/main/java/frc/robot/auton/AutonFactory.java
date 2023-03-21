@@ -100,7 +100,7 @@ public final class AutonFactory {
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
 
         return Commands.sequence(
-            superstructure.smartReset(),
+            tilt.autoHome().alongWith(elev.autoHome()),
             placeCmd,
             releaseCmd,
             Commands.waitSeconds(.6),
