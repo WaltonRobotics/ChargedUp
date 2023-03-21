@@ -263,6 +263,25 @@ public class SwerveSubsystem extends SubsystemBase {
 		return states;
 	}
 
+	public Command chargeStationBatteryFirstC() {
+		return Commands.sequence(
+			run(()-> drive(2, 0, 0, true, false))
+			.until(()->(Math.abs(getGyroPitch()) > 0.13))
+			.withTimeout(3),
+			Commands.either(
+				Commands.sequence(
+					run(()-> drive(1.5, 0, 0, true, false)).withTimeout(0.7),
+					run(()-> drive(0.7, 0, 0, true, false))
+						// .alongWith(Commands.run(()->LightS.getInstance().requestState(States.Climbing)))
+						.until(()-> Math.abs(getGyroPitch()) < 0.15),
+					run(()-> drive(-0.6, 0, 0, true, false)).withTimeout(1),
+					run(()-> drive(0, 0, 0.1, true, false))
+						.withTimeout(0.2)), 
+				Commands.none(), 
+				() -> (Math.abs(getGyroPitch()) > 0.05)
+			));
+	}
+
 	public SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] positions = new SwerveModulePosition[4];
 		for (SwerveModule mod : m_modules) {
