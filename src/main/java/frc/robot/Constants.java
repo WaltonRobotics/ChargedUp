@@ -36,10 +36,10 @@ public final class Constants {
 
     public static final class AtComp{
         public static final double chargeStationApproachPwr = 3;
-        public static final double forwardPitch = 8.75;
+        public static final double forwardPitch = 8;
         public static final double reversePitch = 4.5;
-        public static final double forwardPwr = 3;
-        public static final double reversePwr = 2.5;
+        public static final double forwardPwr = 2.15;
+       public static final double reversePwr = 2.15;
     }
 
     public static final class SwerveK {
@@ -330,7 +330,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.4185;
+        public static final double kSubstationHeightM = 0.4095;
         public static final double kExtendedSubstationHeightM = .46;
         public static final double kSubstationConeHeightM = 0;
 

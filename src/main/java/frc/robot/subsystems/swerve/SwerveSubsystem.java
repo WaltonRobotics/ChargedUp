@@ -1,14 +1,12 @@
 package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.auton.AutonFactory;
 import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.swerve.SwerveDriveState;
-import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
 import frc.robot.Constants;
@@ -21,7 +19,6 @@ import static frc.robot.Constants.SwerveK.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -50,7 +47,6 @@ import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.lib.vision.EstimatedRobotPose;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule flModule = new SwerveModule("FrontLeft", 0, Mod0.constants);

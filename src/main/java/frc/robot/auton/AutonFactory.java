@@ -43,24 +43,7 @@ public final class AutonFactory {
         );
     }
 
-    public static CommandBase twoElementPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var conePlaceCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone").andThen(claw.release());
-        var cubePlaceCmd = superstructure.toStateAuton(SuperState.TOPCUBE).withName("SS-Auto-TopCube");
-        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe2");
-        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoElement);
     
-        return Commands.sequence(
-            superstructure.smartReset(),
-            cubePlaceCmd,
-            Commands.waitSeconds(.75),
-            ssResetCmd,
-            pathCmd.alongWith(superstructure.toStateAuton(SuperState.GROUND_PICK_UP)),
-            conePlaceCmd,
-            Commands.waitSeconds(.75),
-            ssResetCmd2
-        );
-    }
     public static CommandBase threePiece(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var placeCone1Cmd = superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto_TopCone");
         var placeCone2Cmd = superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto_TopCone");
@@ -109,10 +92,27 @@ public final class AutonFactory {
             ssResetCmd,
             Commands.deadline(
                 pathCmd,
-                Commands.waitSeconds(1).andThen(groundPickUp)
-            ),
-            ssResetCmd2.alongWith(new AutoBalance(swerve, false))
+                Commands.waitSeconds(1).andThen(groundPickUp).andThen(Commands.waitSeconds(1.5).andThen(ssResetCmd2))),
+            new AutoBalance(swerve, false)
         );
+    }
+
+    public static CommandBase twoElementPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var conePlaceCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone").andThen(claw.release());
+        var cubePlaceCmd = superstructure.toStateAuton(SuperState.TOPCUBE).withName("SS-Auto-TopCube");
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe2");
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoElement);
+        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+    
+        return Commands.sequence(
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
+            cubePlaceCmd,
+            ssResetCmd,
+            Commands.parallel(
+                pathCmd,
+                Commands.waitSeconds(1).andThen(groundPickUp.andThen(Commands.waitSeconds(1.5).andThen(ssResetCmd2)))),
+            conePlaceCmd);
     }
 
     public static CommandBase simpleOneConeBack(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {

@@ -141,8 +141,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.swerve.resetToAbsolute();
    
     // m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
+    m_robotContainer.swerve.setYaw(0);
 
-    m_robotContainer.swerve.zeroGyro();
   }
 
   /** This function is called periodically during operator control. */

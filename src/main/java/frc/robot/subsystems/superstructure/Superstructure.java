@@ -14,6 +14,10 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.TiltSubsystem.TiltState;
+import frc.robot.subsystems.WristSubsystem.WristState;
+
 import static frc.robot.Constants.WristK.*;
 
 import java.util.function.BooleanSupplier;
@@ -92,10 +96,6 @@ public class Superstructure extends SubsystemBase {
 
 	public CommandBase cubeTossTop(TheClaw claw, boolean auton) {
 		return cubeToss(SuperState.TOPCUBE, claw, auton);
-	}
-
-	public CommandBase autoReset(){
-		return new SuperstructureToState(this, SuperState.SAFE).withTimeout(.5);
 	}
 
 	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {

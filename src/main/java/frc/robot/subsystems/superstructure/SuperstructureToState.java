@@ -112,7 +112,6 @@ public class SuperstructureToState extends SequentialCommandGroup {
             wristCmd = wristCmd.asProxy();
             elevCmd = elevCmd.asProxy();
             tiltCmd = tiltCmd.asProxy();
-            // clawCmd = clawCmd.asProxy();
         }
 
         addCommands(
@@ -121,7 +120,6 @@ public class SuperstructureToState extends SequentialCommandGroup {
                 wristCmd,
                 elevCmd,
                 tiltCmd,
-                // clawCmd,
                 dbgCmd
             )
         );

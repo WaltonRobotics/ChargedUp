@@ -104,7 +104,7 @@ public class TheClaw extends SubsystemBase {
 			case IGNORE: return Commands.none();
 			case OPEN: return release();
 			case CLOSE: return grab();
-			case AUTO: return autoGrab();
+			case AUTO: return Commands.waitSeconds(1).andThen(autoGrab());	//wait to prevent accidental close
 		}
 		return Commands.none();
 	}
