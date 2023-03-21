@@ -28,4 +28,11 @@ public enum SuperState {
         this.wrist = wrist;
         this.claw = claw;
     }
+
+    public boolean sameExceptClaw(SuperState otherState) {
+        return 
+            this.elev == otherState.elev && 
+            this.tilt == otherState.tilt && 
+            this.wrist == otherState.wrist;
+    }
 }

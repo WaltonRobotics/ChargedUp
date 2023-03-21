@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants.ElevatorK;
@@ -135,23 +136,25 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase autoSafe() {
-		var clawCmd = Commands.none();
-		var safeCmd = Commands.none();
+		return new DeferredCommand(() -> {
+			var clawCmd = m_claw.autoGrab(true);
+			var safeCmd = Commands.none();
 
-		if(m_claw.getClosed()) {
-			if((m_curState.elev == SuperState.GROUND_PICK_UP.elev && m_curState.tilt == SuperState.GROUND_PICK_UP.tilt && m_curState.wrist == SuperState.GROUND_PICK_UP.wrist) ||
-			(m_curState.elev == SuperState.SUBSTATION_PICK_UP.elev && m_curState.tilt == SuperState.SUBSTATION_PICK_UP.tilt && m_curState.wrist == SuperState.SUBSTATION_PICK_UP.wrist) ||
-			(m_curState.elev == SuperState.EXTENDED_SUBSTATION.elev && m_curState.tilt == SuperState.EXTENDED_SUBSTATION.tilt && m_curState.wrist == SuperState.EXTENDED_SUBSTATION.wrist)) {
-				safeCmd = toState(SuperState.SAFE);
-			} 
-		}else if(!m_claw.getClosed()) {
-			if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
-				safeCmd = toState(SuperState.SAFE);
+			if(m_claw.getClosed()) {
+				if(m_curState.sameExceptClaw(SuperState.GROUND_PICK_UP) || 
+					m_curState.sameExceptClaw(SuperState.SUBSTATION_PICK_UP) || 
+					m_curState.sameExceptClaw(SuperState.EXTENDED_SUBSTATION)) {
+					safeCmd = toState(SuperState.SAFE);
+				} 
+
+			}else if(!m_claw.getClosed()) {
+				if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
+					safeCmd = toState(SuperState.SAFE);
+				}
 			}
-			clawCmd = m_claw.autoGrab(true);
-		}
-		
-		return clawCmd.andThen(safeCmd);
+			
+			return clawCmd.andThen(safeCmd);
+		});
 	}
 	
 	// public CommandBase score(){
