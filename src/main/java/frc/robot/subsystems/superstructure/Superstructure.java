@@ -135,12 +135,23 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase autoSafe() {
-		if (m_claw.getClosed()) {
+		var clawCmd = Commands.none();
+		var safeCmd = Commands.none();
+
+		if(m_claw.getClosed()) {
+			if((m_curState.elev == SuperState.GROUND_PICK_UP.elev && m_curState.tilt == SuperState.GROUND_PICK_UP.tilt && m_curState.wrist == SuperState.GROUND_PICK_UP.wrist) ||
+			(m_curState.elev == SuperState.SUBSTATION_PICK_UP.elev && m_curState.tilt == SuperState.SUBSTATION_PICK_UP.tilt && m_curState.wrist == SuperState.SUBSTATION_PICK_UP.wrist) ||
+			(m_curState.elev == SuperState.EXTENDED_SUBSTATION.elev && m_curState.tilt == SuperState.EXTENDED_SUBSTATION.tilt && m_curState.wrist == SuperState.EXTENDED_SUBSTATION.wrist)) {
+				safeCmd = toState(SuperState.SAFE);
+			} 
+		}else if(!m_claw.getClosed()) {
 			if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
-				return new SuperstructureToState(this, SuperState.SAFE);
+				safeCmd = toState(SuperState.SAFE);
 			}
+			clawCmd = m_claw.autoGrab(true);
 		}
-		return Commands.none();
+		
+		return clawCmd.andThen(safeCmd);
 	}
 	
 	// public CommandBase score(){
