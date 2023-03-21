@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
@@ -21,10 +22,10 @@ public class SwerveAutoGo extends CommandBase {
 	private final Pose2d[] m_poses;
 	private final List<PathPoint> m_path;
 	private final Pose2d m_endPose;
+	private List<PathPoint> m_pathUsed = new ArrayList<>();
 
-	// private PathPlannerTrajectory m_traj1;
-	private PathPlannerTrajectory m_traj1;
-	private PathPlannerTrajectory m_traj2;
+	private PathPlannerTrajectory m_trajToStart;
+	private PathPlannerTrajectory m_trajToEnd;
 
     public SwerveAutoGo(Pose2d[] poses, List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
 		m_swerve = swerve;
@@ -35,15 +36,17 @@ public class SwerveAutoGo extends CommandBase {
 
 	@Override
 	public void initialize() {
-		// idek bruh
-		m_path.add(0, new PathPoint(m_swerve.getPose().getTranslation(), new Rotation2d(), m_swerve.getPose().getRotation()));
+		PathPoint current = PathPoint.fromCurrentHolonomicState(m_swerve.getPose(), m_swerve.getChassisSpeeds());
 		
-		m_traj1 = PathPlanner.generatePath(new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, 
-			AutoConstants.kMaxAccelerationMetersPerSecondSquared), m_path);
-		m_traj2 = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS()); 
+		m_pathUsed.add(current);
+		m_pathUsed.addAll(m_path);
 		
-		var followCmd = m_swerve.getFollowPathWithEvents(m_traj1);
-		var endCmd = m_swerve.getFollowPathWithEvents(m_traj2);
+		m_trajToStart = PathPlanner.generatePath(new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+			m_pathUsed);
+		m_trajToEnd = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
+
+		var followCmd = m_swerve.getFollowPathWithEvents(m_trajToStart);
+		var endCmd = m_swerve.getFollowPathWithEvents(m_trajToEnd);
 		
 		followCmd.andThen(endCmd).withName("SwerveAutoGoGo").schedule();
 	}
