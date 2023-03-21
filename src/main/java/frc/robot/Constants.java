@@ -26,7 +26,7 @@ public final class Constants {
     public static final String canbus = "Canivore";
     
     public static final class AtHome {
-        public static final boolean AreWe = true;
+        public static final boolean AreWe = false;
         public static final double chargeStationApproachPwr = 2.25;
         public static final double forwardPitch = 3;
         public static final double reversePitch = 6;
@@ -38,8 +38,8 @@ public final class Constants {
         public static final double chargeStationApproachPwr = 3;
         public static final double forwardPitch = 8.75;
         public static final double reversePitch = 4.5;
-        public static final double forwardPwr = 2.4;
-        public static final double reversePwr = 1.75;
+        public static final double forwardPwr = 3;
+        public static final double reversePwr = 2.5;
     }
 
     public static final class SwerveK {

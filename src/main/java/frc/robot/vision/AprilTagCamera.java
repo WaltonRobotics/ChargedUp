@@ -109,13 +109,8 @@ public class AprilTagCamera {
     }
 
     // unfiltered view of camera
-    public void toggleDriverMode() {
-        if (rightLowCam.getDriverMode()) {
-            rightLowCam.setDriverMode(false);
-        }
-
-        else {
-            rightLowCam.setDriverMode(true);
-        }
+    public void setDriverMode(boolean driverMode) {
+        leftLowCam.setDriverMode(driverMode);
+        rightLowCam.setDriverMode(driverMode);
     }
 }

@@ -571,12 +571,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * updates odometry & poseEstimator positions
 	 * updates field
 	 */
-	public void updateRobotPose() {
-	// 	var poseEstBegin = Timer.getFPGATimestamp();
-	// 	m_poseEstimator.update(getHeading(), getModulePositions());
-	// 	var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
-
-
+	// public void updateVision() {
 	// 	var visionEstBegin = Timer.getFPGATimestamp();
 	// 	Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper
 	// 			.leftLow_getEstPose(m_poseEstimator.getEstimatedPosition());
@@ -584,7 +579,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	// 	Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
 	// 			m_apriltagHelper.rightLow_getEstPose(m_poseEstimator.getEstimatedPosition());
 
-	// 	m_state.update(getPose(), getModuleStates(), m_field);
+		
 
 	// 	if (leftLowPoseOpt.isPresent()) {
 	// 		var leftLowPose = leftLowPoseOpt.get();
@@ -608,29 +603,37 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	// 	var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
 
-	// 	SmartDashboard.putNumber("OdoTimeSec", poseEstElapsed);
+		
 	// 	SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
 	// }
 
-	// public void lockModules() {
-	// 	for (SwerveModule module : m_modules) {
-	// 		module.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), false, true);
-	// 	}
-	// }
+	public void updateOdo(){
+		var poseEstBegin = Timer.getFPGATimestamp();
+		m_poseEstimator.update(getHeading(), getModulePositions());
+		m_state.update(getPose(), getModuleStates(), m_field);
+		var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
+		SmartDashboard.putNumber("OdoTimeSec", poseEstElapsed);
+	}
 
-	// public void autoReset() {
-	// 	if (m_timer.get() > 10) {
-	// 		m_timer.restart();
-	// 	} else {
-	// 		if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
-	// 			Timer.delay(1);
-	// 			if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
-	// 				for (SwerveModule module : m_modules) {
-	// 					module.resetToAbsolute();
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+	public void lockModules() {
+		for (SwerveModule module : m_modules) {
+			module.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), false, true);
+		}
+	}
+
+	public void autoReset() {
+		if (m_timer.get() > 10) {
+			m_timer.restart();
+		} else {
+			if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
+				Timer.delay(1);
+				if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
+					for (SwerveModule module : m_modules) {
+						module.resetToAbsolute();
+					}
+				}
+			}
+		}
 	}
 
 	public boolean atDistance(Translation2d initialPose, double target) {
@@ -643,7 +646,14 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		// tracer.addEpoch(DB_TAB_NAME);
-		updateRobotPose();
+		// if(DriverStation.isAutonomous()){
+		// 	updateVision();
+		// }
+
+		if(DriverStation.isTeleop()){
+			m_apriltagHelper.setDriverMode(true);
+		}
+		updateOdo();
 
 		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
 		SmartDashboard.putNumber("Pitch", getGyroPitch());

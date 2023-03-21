@@ -93,17 +93,19 @@ public final class AutonFactory {
 
     public static CommandBase coneOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
-        var releaseCmd = superstructure.releaseClaw();
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.coneOneHalf);
         var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
 
         return Commands.sequence(
+            // auto home
             tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
-            placeCmd,
-            releaseCmd,
-            Commands.waitSeconds(.6),
+            // move to drop gamepiece (inaccurate due to vision overruns, hence timeout)
+            placeCmd.withTimeout(2.5),
+            // actually drop, and wait 0.6sec to let it fall
+            claw.release().asProxy(), Commands.waitSeconds(.45),
+            // move to safe state and prepare to move + autoGrab
             ssResetCmd,
             Commands.deadline(
                 pathCmd,

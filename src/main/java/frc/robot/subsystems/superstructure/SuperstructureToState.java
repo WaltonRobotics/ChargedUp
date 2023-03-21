@@ -13,7 +13,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
     private BooleanSupplier m_wristWait = () -> true;
 	private BooleanSupplier m_elevWait = () -> true;
 	private BooleanSupplier m_tiltWait = () -> true;
-    private BooleanSupplier m_clawWait = () -> true;
+    // private BooleanSupplier m_clawWait = () -> true;
 
     private double wristAngle;
 
@@ -29,7 +29,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
         var tilt = m_superstructure.m_tilt;
         var elevator = m_superstructure.m_elevator;
         var wrist = m_superstructure.m_wrist;
-        var claw = m_superstructure.m_claw;
+        // var claw = m_superstructure.m_claw;
         
         wristAngle = m_targetState.wrist.angle;
 
@@ -54,10 +54,10 @@ public class SuperstructureToState extends SequentialCommandGroup {
             quirks += "-TG_MIDCONECUBE";
         }
 
-        if(m_targetState == SuperState.MIDCUBE || m_targetState == SuperState.TOPCUBE){
-            m_clawWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height *.25);
-            quirks += "-TG_CUBE";
-        }
+        // if(m_targetState == SuperState.MIDCUBE || m_targetState == SuperState.TOPCUBE){
+            // m_clawWait = () -> (elevator.getActualHeightMeters() >= m_targetState.elev.height *.25);
+            // quirks += "-TG_CUBE";
+        // }
 
         if(m_targetState == SuperState.SAFE){
             m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle - 25));
@@ -82,18 +82,18 @@ public class SuperstructureToState extends SequentialCommandGroup {
         if(m_targetState == SuperState.SUBSTATION_PICK_UP){
             // m_elevWait = () -> (wrist.getDegrees() >= (m_targetState.wrist.angle * 0.1));
             m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .25));
-            m_clawWait = ()-> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .25));
+            // m_clawWait = ()-> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .25));
             quirks += "-TG_SUB";
         }
 
         CommandBase wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle)).asProxy();
 		CommandBase elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
 		CommandBase tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
-		CommandBase clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
-        var toSafe = m_superstructure.autoSafe();
+		// CommandBase clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));
+        // var toSafe = m_superstructure.autoSafe();
 
 		if (m_targetState == SuperState.GROUND_PICK_UP || m_targetState == SuperState.SUBSTATION_PICK_UP || m_targetState == SuperState.EXTENDED_SUBSTATION) {
-			clawCmd = (Commands.waitUntil(m_clawWait).andThen(claw.release().andThen(claw.autoGrab(true))));
+			// clawCmd = (Commands.waitUntil(m_clawWait).andThen(claw.release().andThen(claw.autoGrab(true))));
 		} 
 
         // if(tilt.getDegrees() < 2 && (m_targetState == SuperState.SAFE || m_targetState == SuperState.GROUND_PICK_UP) || m_targetState == SuperState.SUBSTATION_PICK_UP){
@@ -112,7 +112,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
             wristCmd = wristCmd.asProxy();
             elevCmd = elevCmd.asProxy();
             tiltCmd = tiltCmd.asProxy();
-            clawCmd = clawCmd.asProxy();
+            // clawCmd = clawCmd.asProxy();
         }
 
         addCommands(
@@ -121,7 +121,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
                 wristCmd,
                 elevCmd,
                 tiltCmd,
-                clawCmd,
+                // clawCmd,
                 dbgCmd
             )
         );
