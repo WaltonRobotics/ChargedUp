@@ -572,65 +572,65 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * updates field
 	 */
 	public void updateRobotPose() {
-		var poseEstBegin = Timer.getFPGATimestamp();
-		m_poseEstimator.update(getHeading(), getModulePositions());
-		var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
+	// 	var poseEstBegin = Timer.getFPGATimestamp();
+	// 	m_poseEstimator.update(getHeading(), getModulePositions());
+	// 	var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
 
 
-		var visionEstBegin = Timer.getFPGATimestamp();
-		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper
-				.leftLow_getEstPose(m_poseEstimator.getEstimatedPosition());
+	// 	var visionEstBegin = Timer.getFPGATimestamp();
+	// 	Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper
+	// 			.leftLow_getEstPose(m_poseEstimator.getEstimatedPosition());
 
-		Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
-				m_apriltagHelper.rightLow_getEstPose(m_poseEstimator.getEstimatedPosition());
+	// 	Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
+	// 			m_apriltagHelper.rightLow_getEstPose(m_poseEstimator.getEstimatedPosition());
 
-		m_state.update(getPose(), getModuleStates(), m_field);
+	// 	m_state.update(getPose(), getModuleStates(), m_field);
 
-		if (leftLowPoseOpt.isPresent()) {
-			var leftLowPose = leftLowPoseOpt.get();
-			SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
+	// 	if (leftLowPoseOpt.isPresent()) {
+	// 		var leftLowPose = leftLowPoseOpt.get();
+	// 		SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
 
-			m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		}
+	// 		m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
+	// 		m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
+	// 	} else {
+	// 		m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+	// 	}
 
-		if (rightLowPoseOpt.isPresent()) {
-			var rightLowPose = rightLowPoseOpt.get();
-			SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
+	// 	if (rightLowPoseOpt.isPresent()) {
+	// 		var rightLowPose = rightLowPoseOpt.get();
+	// 		SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
 
-			m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		}
+	// 		m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
+	// 		m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
+	// 	} else {
+	// 		m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+	// 	}
 
-		var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
+	// 	var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
 
-		SmartDashboard.putNumber("OdoTimeSec", poseEstElapsed);
-		SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
-	}
+	// 	SmartDashboard.putNumber("OdoTimeSec", poseEstElapsed);
+	// 	SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
+	// }
 
-	public void lockModules() {
-		for (SwerveModule module : m_modules) {
-			module.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), false, true);
-		}
-	}
+	// public void lockModules() {
+	// 	for (SwerveModule module : m_modules) {
+	// 		module.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), false, true);
+	// 	}
+	// }
 
-	public void autoReset() {
-		if (m_timer.get() > 10) {
-			m_timer.restart();
-		} else {
-			if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
-				Timer.delay(1);
-				if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
-					for (SwerveModule module : m_modules) {
-						module.resetToAbsolute();
-					}
-				}
-			}
-		}
+	// public void autoReset() {
+	// 	if (m_timer.get() > 10) {
+	// 		m_timer.restart();
+	// 	} else {
+	// 		if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
+	// 			Timer.delay(1);
+	// 			if (getChassisSpeeds().vxMetersPerSecond == 0 && getChassisSpeeds().vyMetersPerSecond == 0) {
+	// 				for (SwerveModule module : m_modules) {
+	// 					module.resetToAbsolute();
+	// 				}
+	// 			}
+	// 		}
+	// 	}
 	}
 
 	public boolean atDistance(Translation2d initialPose, double target) {
