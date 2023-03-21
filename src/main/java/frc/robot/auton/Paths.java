@@ -15,7 +15,6 @@ import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondS
 import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
 import static frc.robot.Constants.SwerveK.kKinematics;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
