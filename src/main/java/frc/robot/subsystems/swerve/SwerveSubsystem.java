@@ -23,6 +23,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import javax.sound.sampled.Line;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
@@ -40,6 +42,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -261,19 +264,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		return states;
 	}
-
-	public Command chargeStationBatteryFirstC() {
-		return Commands.sequence(
-			run(()-> drive(3, 0, Rotation2d.fromDegrees(0), false))
-			.until(()->(Math.abs(getGyroPitch()) > 14)),
-			
-			run(()-> drive(1.8, 0, Rotation2d.fromDegrees(0), false))
-				.until(()-> Math.abs(getGyroPitch()) < 9.5),
-			run(()-> drive(-0.6, 0, Rotation2d.fromDegrees(0), false))
-			.withTimeout(1.175)
-			// .until(() -> Math.abs(getGyroPitch()) < 0.5)
-		)
-		.andThen(runOnce(this::stopWithX));
+	
+	public Command nowItsTimeToGetFunky() {
+		return new NewBalance(this);
 	}
 
 	// public Command chargeStationBatteryFirstC() {
@@ -333,6 +326,25 @@ public class SwerveSubsystem extends SubsystemBase {
 	protected double getGyroPitch() {
 		return m_pigeon.getRoll(); // CTRE is Dumb
 	}
+
+	protected double getGyroRollRate() {
+		double[] xyzDPS = new double[3];
+		m_pigeon.getRawGyro(xyzDPS);
+		return xyzDPS[1];
+	}
+
+	protected double getGyroPitchRate() {
+		double[] xyzDPS = new double[3];
+		m_pigeon.getRawGyro(xyzDPS);
+		return xyzDPS[0];
+	}
+
+	private final LinearFilter pitchRateFilter = LinearFilter.movingAverage(16);
+
+	protected double getFilteredGyroPitchRate() {
+		return pitchRateFilter.calculate(getGyroPitchRate());
+	}
+
 	// Side to side
 	public Rotation2d getHeading() {
 		return (kInvertGyro) ? Rotation2d.fromDegrees(360 - getGyroYaw())
@@ -666,9 +678,17 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		updateOdo();
 
+		double[] xyzDPS = new double[3];
+		m_pigeon.getRawGyro(xyzDPS);
+
 		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
 		SmartDashboard.putNumber("Pitch", getGyroPitch());
 		SmartDashboard.putNumber("Roll", getGyroRoll());
+
+		SmartDashboard.putNumber("YawRate", xyzDPS[2]);
+		SmartDashboard.putNumber("PitchRate", getGyroPitchRate());
+		SmartDashboard.putNumber("FiltPitchRate", getFilteredGyroPitchRate());
+		SmartDashboard.putNumber("RollRate", getGyroRollRate());
 
 		var filteredPitch = m_dropFilter.calculate(getGyroPitch());
 		m_startedBalance = filteredPitch >= -3;

@@ -85,7 +85,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(new InstantCommand(() -> swerve.teleOpReset()));
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(swerve.chargeStationBatteryFirstC());
+		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky());
 		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
 
 		// driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
