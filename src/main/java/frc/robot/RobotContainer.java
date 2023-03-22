@@ -111,9 +111,7 @@ public class RobotContainer {
 		// 	.whileTrue(swerve.autoScore(ScoringPoints.cone9));
 		
 
-		manipulator.start().onTrue(superstructure.overrideStates(
-			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
-		)); 
+		manipulator.start().toggleOnTrue(Commands.startEnd(leds::setCone, leds::setCube, leds));
 		manipulator.leftTrigger().whileTrue(claw.release().repeatedly());
 		manipulator.rightTrigger().onTrue(claw.grab());
 
