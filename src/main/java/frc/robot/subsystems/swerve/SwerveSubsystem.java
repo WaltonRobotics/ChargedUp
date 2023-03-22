@@ -513,13 +513,15 @@ public class SwerveSubsystem extends SubsystemBase {
 				this // Requires this drive subsystem
 			);
 			return resetCmd.andThen(pathCmd);
-		}, this);
+		}, this).withName("PPPathFollower");
 	}
 
 	public CommandBase getPPSwerveAutonCmd(List<PathPlannerTrajectory> trajList) {
 		if (trajList.size() == 0) {
 			throw new RuntimeException("Empty path group given!!!");
 		}
+
+		SmartDashboard.putNumber("PathGroup Segment", -1);
 
 		return new DeferredCommand(() -> {
 			if (trajList.size() == 0) return Commands.print("PPSwerve - Empty path group given!");
@@ -543,8 +545,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
 			List<CommandBase> pathCmds = new ArrayList<CommandBase>();
 
+			int pathIdx = 1;
 			for (var traj : newTrajList) {
-				pathCmds.add(new PPSwerveControllerCommand(
+				var pathCmd = new PPSwerveControllerCommand(
 					traj,
 					this::getPose, // Pose supplier
 					kKinematics, // SwerveDriveKinematics
@@ -555,12 +558,19 @@ public class SwerveSubsystem extends SubsystemBase {
 					false, // Should the path be automatically mirrored depending on alliance color.
 							// Optional, defaults to true
 					this // Requires this drive subsystem
-				));
+				);
+				final int thisIdx = pathIdx;
+				var logCmd = Commands.runOnce(() -> {
+					SmartDashboard.putNumber("PathGroup Segment", thisIdx);
+				});
+				pathIdx++;
+
+				pathCmds.add(logCmd.andThen(pathCmd));
 			}
 
 			CommandBase[] pathCmdsArr = pathCmds.toArray(new CommandBase[0]);
 			return resetCmd.andThen(pathCmdsArr);
-		}, this);
+		}, this).withName("PPPathGroupFollower");
 	}
 
 	public CommandBase getFollowPathWithEvents(PathPlannerTrajectory traj) {

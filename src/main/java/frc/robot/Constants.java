@@ -201,7 +201,7 @@ public final class Constants {
 
         public static double kPXController = 8; // 8
         public static double kPYController = 8; // 8
-        public static double kPThetaController = 5; // 1
+        public static double kPThetaController = 5.8; // 1
         public static final double kDThetaController = 0.1;
         public static final double kFThetaControllerAuto = 0;
         public static final double kFThetaController = 1;

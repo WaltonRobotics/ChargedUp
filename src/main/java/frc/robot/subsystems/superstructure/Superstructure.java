@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,7 +44,7 @@ public class Superstructure extends SubsystemBase {
 		m_leds = leds;
 
 		DashboardManager.addTab(this);
-		
+		SmartDashboard.putNumber("SSAutoState", -1);
 	}
 
 	/*
@@ -139,6 +140,7 @@ public class Superstructure extends SubsystemBase {
 			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
+		SmartDashboard.putNumber("SSAutoState", m_curState.idx);
 	}
 
 	public SuperState getPrevState() {

@@ -24,7 +24,7 @@ public class NewBalance extends SequentialCommandGroup {
     public NewBalance(SwerveSubsystem swerve) {
 
         CommandBase oneHopThisTime = Commands.run(
-            ()-> swerve.drive(2.15, 0, 0, false, false), swerve)
+            ()-> swerve.drive(2.3, 0, 0, false, false), swerve)
         .until(()-> Math.abs(swerve.getGyroPitch()) > 14 )
         .finallyDo((intr) -> {
             m_climbingSign = Math.signum(swerve.getGyroPitch());
