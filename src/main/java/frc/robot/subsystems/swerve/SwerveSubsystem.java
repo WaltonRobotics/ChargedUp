@@ -1,14 +1,12 @@
 package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.auton.AutonFactory;
 import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.swerve.SwerveDriveState;
-import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
 import frc.robot.Constants;
@@ -21,7 +19,6 @@ import static frc.robot.Constants.SwerveK.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -46,10 +43,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.lib.vision.EstimatedRobotPose;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule flModule = new SwerveModule("FrontLeft", 0, Mod0.constants);
@@ -75,6 +72,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	protected final SwerveAutoBuilder autoBuilder;
     protected final LinearFilter m_dropFilter = LinearFilter.highPass(0.3, 0.02);
 	protected boolean m_startedBalance = false;
+	private final Tracer tracer = new Tracer();
 
 
 	public Timer m_timer = new Timer();
@@ -102,6 +100,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		Timer.delay(.250);
 		resetToAbsolute();
+		tracer.resetTimer();
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		// autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
@@ -261,6 +260,25 @@ public class SwerveSubsystem extends SubsystemBase {
 			states[mod.moduleNumber] = mod.getState();
 		}
 		return states;
+	}
+
+	public Command chargeStationBatteryFirstC() {
+		return Commands.sequence(
+			run(()-> drive(2, 0, 0, true, false))
+			.until(()->(Math.abs(getGyroPitch()) > 0.13))
+			.withTimeout(3),
+			Commands.either(
+				Commands.sequence(
+					run(()-> drive(1.5, 0, 0, true, false)).withTimeout(0.7),
+					run(()-> drive(0.7, 0, 0, true, false))
+						// .alongWith(Commands.run(()->LightS.getInstance().requestState(States.Climbing)))
+						.until(()-> Math.abs(getGyroPitch()) < 0.15),
+					run(()-> drive(-0.6, 0, 0, true, false)).withTimeout(1),
+					run(()-> drive(0, 0, 0.1, true, false))
+						.withTimeout(0.2)), 
+				Commands.none(), 
+				() -> (Math.abs(getGyroPitch()) > 0.05)
+			));
 	}
 
 	public SwerveModulePosition[] getModulePositions() {
@@ -423,7 +441,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				newTraj = Flipper.allianceFlip(trajectory);
 			}
 			return autoBuilder.fullAuto(newTraj);
-		});
+		}, this);
 	}
 
 	public CommandBase getTimedFullAuto(PathPlannerTrajectory trajectory) {
@@ -434,7 +452,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				newTraj = Flipper.allianceFlip(trajectory);
 			}
 			return autoBuilder.fullAuto(newTraj).withTimeout(trajectory.getTotalTimeSeconds());
-		}).withTimeout(4);
+		}, this).withTimeout(4);
 	}
 	// public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
 	// 	return autoBuilder.fullAuto(trajectoryList);
@@ -549,40 +567,48 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * updates odometry & poseEstimator positions
 	 * updates field
 	 */
-	public void updateRobotPose() {
+	// public void updateVision() {
+	// 	var visionEstBegin = Timer.getFPGATimestamp();
+	// 	Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper
+	// 			.leftLow_getEstPose(m_poseEstimator.getEstimatedPosition());
 
-		// m_odometry.update(getHeading(), getModulePositions());
-		// m_field.getObject("WheelOdo Pos").setPose(m_odometry.getPoseMeters());
+	// 	Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
+	// 			m_apriltagHelper.rightLow_getEstPose(m_poseEstimator.getEstimatedPosition());
 
+		
+
+	// 	if (leftLowPoseOpt.isPresent()) {
+	// 		var leftLowPose = leftLowPoseOpt.get();
+	// 		SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
+
+	// 		m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
+	// 		m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
+	// 	} else {
+	// 		m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+	// 	}
+
+	// 	if (rightLowPoseOpt.isPresent()) {
+	// 		var rightLowPose = rightLowPoseOpt.get();
+	// 		SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
+
+	// 		m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
+	// 		m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
+	// 	} else {
+	// 		m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+	// 	}
+
+	// 	var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
+
+		
+	// 	SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
+	// }
+
+	public void updateOdo(){
+		var poseEstBegin = Timer.getFPGATimestamp();
 		m_poseEstimator.update(getHeading(), getModulePositions());
-
-		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper
-				.leftLow_getEstPose(m_poseEstimator.getEstimatedPosition());
-
-		Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
-				m_apriltagHelper.rightLow_getEstPose(m_poseEstimator.getEstimatedPosition());
-
 		m_state.update(getPose(), getModuleStates(), m_field);
-
-		if (leftLowPoseOpt.isPresent()) {
-			var leftLowPose = leftLowPoseOpt.get();
-			SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
-
-			m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		}
-
-		if (rightLowPoseOpt.isPresent()) {
-			var rightLowPose = rightLowPoseOpt.get();
-			SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
-
-			m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		}
+		var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
+		SmartDashboard.putNumber("OdoTimeSec", poseEstElapsed);
 	}
 
 	public void lockModules() {
@@ -615,7 +641,15 @@ public class SwerveSubsystem extends SubsystemBase {
 		for (var module : m_modules) {
 			module.periodic();
 		}
-		updateRobotPose();
+		// tracer.addEpoch(DB_TAB_NAME);
+		// if(DriverStation.isAutonomous()){
+		// 	updateVision();
+		// }
+
+		if(DriverStation.isTeleop()){
+			m_apriltagHelper.setDriverMode(true);
+		}
+		updateOdo();
 
 		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
 		SmartDashboard.putNumber("Pitch", getGyroPitch());
@@ -627,6 +661,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("HighPassPitch", filteredPitch);
         SmartDashboard.putBoolean("StartedBalance", m_startedBalance);
 	}
+
 
 	@Override
 	public void simulationPeriodic() {

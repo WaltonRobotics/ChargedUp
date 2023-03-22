@@ -43,10 +43,10 @@ public class RobotContainer {
 	public final TiltSubsystem tilt = new TiltSubsystem();
 	public final ElevatorSubsystem elevator = new ElevatorSubsystem();
 	public final WristSubsystem wrist = new WristSubsystem();
-	public final TheClaw claw = new TheClaw();
-
+	
 	/* Subsystems */
-	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, claw, leds);
+	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, leds);
+	public final TheClaw claw = new TheClaw(() -> superstructure.getCurState().claw);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -68,7 +68,6 @@ public class RobotContainer {
 		elevator.setDefaultCommand(elevator.teleopCmd(() -> -manipulator.getLeftY()));
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
-		claw.setDefaultCommand(claw.autoGrab(false));
 
 		DashboardManager.addTab("TeleSwerve");
 		configureButtonBindings();
@@ -120,35 +119,35 @@ public class RobotContainer {
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()
 		)); 
-		manipulator.leftTrigger().onTrue(superstructure.releaseClaw());
+		manipulator.leftTrigger().whileTrue(claw.release().repeatedly());
 		manipulator.rightTrigger().onTrue(claw.grab());
 
 		manipulator.povUp().onTrue(
-				superstructure.toState(SuperState.TOPCUBE));
+			superstructure.cubeTossTop(claw, false));
 
 		manipulator.povLeft().onTrue(
-				superstructure.toState(SuperState.MIDCUBE));
-
+			superstructure.cubeTossMid(claw, false));
+				
 		manipulator.y().onTrue(
-				superstructure.toState(SuperState.TOPCONE));
+			superstructure.toStateTeleop(SuperState.TOPCONE));
 
 		manipulator.x().onTrue(
-				superstructure.toState(SuperState.MIDCONE));
+			superstructure.toStateTeleop(SuperState.MIDCONE));
 
 		manipulator.a().onTrue(
-				superstructure.toState(SuperState.GROUND_PICK_UP));
+			superstructure.toStateTeleop(SuperState.GROUND_PICK_UP));
 		
 		manipulator.b().onTrue(
-				superstructure.toState(SuperState.EXTENDED_SUBSTATION));
+			superstructure.toStateTeleop(SuperState.EXTENDED_SUBSTATION));
 
 		manipulator.povDown().onTrue(
-				superstructure.toState(SuperState.GROUND_SCORE));
+			superstructure.toStateTeleop(SuperState.GROUND_SCORE));
 
 		manipulator.povRight().onTrue(
-				superstructure.toState(SuperState.SUBSTATION_PICK_UP));
+			superstructure.toStateTeleop(SuperState.SUBSTATION_PICK_UP));
 
 		manipulator.leftBumper().onTrue(
-				superstructure.toState(SuperState.SAFE));
+			superstructure.toStateTeleop(SuperState.SAFE).alongWith(claw.grab()));
 
 		/* Tuning buttons */
 		// manipulator.b().whileTrue(wrist.toAngle(70));

@@ -7,12 +7,9 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPointAccessor;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.lib.swerve.PathPointGetters;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.auton.Paths;
 
@@ -24,8 +21,9 @@ public class SwerveAutoGo extends CommandBase {
 	private final Pose2d m_endPose;
 	private List<PathPoint> m_pathUsed = new ArrayList<>();
 
-	private PathPlannerTrajectory m_trajToStart;
-	private PathPlannerTrajectory m_trajToEnd;
+	private PathPlannerTrajectory m_traj1;
+	private PathPlannerTrajectory m_traj2;
+	private PathPlannerTrajectory m_traj3;
 
     public SwerveAutoGo(Pose2d[] poses, List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
 		m_swerve = swerve;
@@ -36,18 +34,15 @@ public class SwerveAutoGo extends CommandBase {
 
 	@Override
 	public void initialize() {
-		PathPoint current = PathPoint.fromCurrentHolonomicState(m_swerve.getPose(), m_swerve.getChassisSpeeds());
-		
-		m_pathUsed.add(current);
-		m_pathUsed.addAll(m_path);
-		
-		m_trajToStart = PathPlanner.generatePath(new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
-			m_pathUsed);
-		m_trajToEnd = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj1 = Paths.generateTrajectoryToPose(m_swerve.getPose(), m_poses[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj2 = PathPlanner.generatePath(new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+			m_path);
+		m_traj3 = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
 
-		var followCmd = m_swerve.getFollowPathWithEvents(m_trajToStart);
-		var endCmd = m_swerve.getFollowPathWithEvents(m_trajToEnd);
+		var followCmd1 = m_swerve.getFollowPathWithEvents(m_traj1);
+		var followCmd2 = m_swerve.getFollowPathWithEvents(m_traj2);
+		var endCmd = m_swerve.getFollowPathWithEvents(m_traj3);
 		
-		followCmd.andThen(endCmd).withName("SwerveAutoGoGo").schedule();
+		followCmd1.andThen(followCmd2).andThen(endCmd).withName("SwerveAutoGoGo").schedule();
 	}
 }

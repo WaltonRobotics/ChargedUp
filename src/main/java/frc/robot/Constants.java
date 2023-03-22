@@ -26,7 +26,7 @@ public final class Constants {
     public static final String canbus = "Canivore";
     
     public static final class AtHome {
-        public static final boolean AreWe = true;
+        public static final boolean AreWe = false;
         public static final double chargeStationApproachPwr = 2.25;
         public static final double forwardPitch = 3;
         public static final double reversePitch = 6;
@@ -38,8 +38,8 @@ public final class Constants {
         public static final double chargeStationApproachPwr = 3;
         public static final double forwardPitch = 8;
         public static final double reversePitch = 4.5;
-        public static final double forwardPwr = 2.5;
-        public static final double reversePwr = 1.75;
+        public static final double forwardPwr = 2.15;
+       public static final double reversePwr = 2.15;
     }
 
     public static final class SwerveK {
@@ -306,14 +306,14 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kP = 22; //sysid 9.2597E-05
         public static final double kD = 0;
-        public static final double kS = 0.15253;
-        public static final double kV = 9.8382;
-        public static final double kA = 0.20343;
-        public static final double kG = 0.20488;
+        public static final double kS = 0.16114;
+        public static final double kV = 9.7833;
+        public static final double kA = 0.4375; // 0.41885 from Tyler
+        public static final double kG = 0.1744;
         
         public static final double kPHold = .7;
         public static final double kDHold = 0;
-        public static final double kHoldKs = .75;
+        public static final double kHoldKs = .705;
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
@@ -330,16 +330,19 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMidCubeHeightM = 0.36;
         public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
         public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.4185;
+        public static final double kSubstationHeightM = 0.4095;
         public static final double kExtendedSubstationHeightM = .46;
         public static final double kSubstationConeHeightM = 0;
 
-        public static final double kMaxVelocity = 2.85; // Meters Per Second
-        public static final double kMaxAcceleration = 2.85; // Meters Per Second Squared
+        public static final double kMaxVelocity = 2.75; // Meters Per Second
+        public static final double kMaxAcceleration = 2.60; // Meters Per Second Squared
+        public static final double kMaxAccelerationDown = 1.85;
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
                 kMaxAcceleration);      
+                public static final TrapezoidProfile.Constraints kConstraintsDown = new TrapezoidProfile.Constraints(kMaxVelocity,
+                kMaxAccelerationDown);      
     }
 
     public static final class WristK {

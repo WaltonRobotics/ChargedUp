@@ -15,8 +15,13 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.TiltSubsystem.TiltState;
+import frc.robot.subsystems.WristSubsystem.WristState;
+
 import static frc.robot.Constants.WristK.*;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.ElevatorK.*;
@@ -25,7 +30,7 @@ public class Superstructure extends SubsystemBase {
 	protected final TiltSubsystem m_tilt;
 	protected final ElevatorSubsystem m_elevator;
 	protected final WristSubsystem m_wrist;
-	protected final TheClaw m_claw;
+	// protected final TheClaw m_claw;
 	protected final LEDSubsystem m_leds;
 
 	// State management
@@ -35,11 +40,11 @@ public class Superstructure extends SubsystemBase {
 	private final GenericEntry nte_prevState = DashboardManager.addTabItem(this, "PrevState", "UNK");
 	protected final GenericEntry nte_stateQuirk = DashboardManager.addTabItem(this, "StateQuirk", "UNK");
 	
-	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw, LEDSubsystem leds) {
+	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
 		m_elevator = elevator;
 		m_wrist = wrist;
-		m_claw = claw;
+		// m_claw = claw;
 		m_leds = leds;
 
 		DashboardManager.addTab(this);
@@ -68,12 +73,30 @@ public class Superstructure extends SubsystemBase {
 		}
 	}
 
-	public CommandBase toState(SuperState state) {
-		return new SuperstructureToState(this, state);
+	public CommandBase toStateTeleop(SuperState state) {
+		return new SuperstructureToState(this, state, true);
 	}
 
-	public CommandBase autoReset(){
-		return new SuperstructureToState(this, SuperState.SAFE).withTimeout(.5);
+	public CommandBase toStateAuton(SuperState state) {
+		return new SuperstructureToState(this, state, false);
+	}
+
+	private CommandBase cubeToss(SuperState state, TheClaw claw, boolean auton) {
+		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height *.25);
+		var toStateCmd = auton ? toStateAuton(state) : toStateTeleop(state);
+
+		return Commands.parallel(
+			toStateCmd,
+			Commands.waitUntil(clawWait).andThen(claw.release())
+		);
+	}
+
+	public CommandBase cubeTossMid(TheClaw claw, boolean auton) {
+		return cubeToss(SuperState.MIDCUBE, claw, auton);
+	}
+
+	public CommandBase cubeTossTop(TheClaw claw, boolean auton) {
+		return cubeToss(SuperState.TOPCUBE, claw, auton);
 	}
 
 	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
@@ -96,9 +119,9 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase smartReset() {
-		var tiltCmd = m_tilt.getDegrees() < 2 ? Commands.none() : m_tilt.toAngle(TiltK.kBotAngleDegrees);
-		var elevCmd = m_elevator.getActualHeightMeters() < .05 ? Commands.none() : m_elevator.toHeight(ElevatorK.kBotHeightMeters);
-		var wristCmd = Math.abs(m_wrist.getDegrees() - WristK.kMaxDeg) < 2 ? Commands.none() : m_wrist.toAngle(WristK.kMaxDeg);
+		var tiltCmd = m_tilt.toAngle(TiltK.kBotAngleDegrees);
+		var elevCmd = m_elevator.toHeight(ElevatorK.kBotHeightMeters);
+		var wristCmd = m_wrist.toAngle(WristK.kMaxDeg);
 		return Commands.parallel(
             tiltCmd,	
             wristCmd,
@@ -131,31 +154,39 @@ public class Superstructure extends SubsystemBase {
 		return m_curState;
 	}
 	
-	public CommandBase releaseClaw() {
-		return m_claw.release();
-	}
+	// public CommandBase releaseClaw() {
+	// 	return m_claw.release();
+	// }
 
-	public CommandBase autoSafe() {
+	public CommandBase autoSafe(TheClaw claw) {
 		return new DeferredCommand(() -> {
-			var clawCmd = m_claw.autoGrab(true);
+			var clawCmd = claw.autoGrab();
 			var safeCmd = Commands.none();
 
-			if(m_claw.getClosed()) {
+			if(claw.getClosed()) {
 				if(m_curState.sameExceptClaw(SuperState.GROUND_PICK_UP) || 
 					m_curState.sameExceptClaw(SuperState.SUBSTATION_PICK_UP) || 
 					m_curState.sameExceptClaw(SuperState.EXTENDED_SUBSTATION)) {
-					safeCmd = toState(SuperState.SAFE);
+					safeCmd = toStateTeleop(SuperState.SAFE);
 				} 
 
-			}else if(!m_claw.getClosed()) {
+			}else if(!claw.getClosed()) {
 				if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
-					safeCmd = toState(SuperState.SAFE);
+					safeCmd = toStateTeleop(SuperState.SAFE);
 				}
 			}
 			
 			return clawCmd.andThen(safeCmd);
 		});
 	}
+	// public CommandBase autoSafe() {
+	// 	if (m_claw.getClosed()) {
+	// 		if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
+	// 			return new SuperstructureToState(this, SuperState.SAFE);
+	// 		}
+	// 	}
+	// 	return Commands.none();
+	// }
 	
 	// public CommandBase score(){
 	// }

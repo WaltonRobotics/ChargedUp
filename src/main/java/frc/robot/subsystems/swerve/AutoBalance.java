@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Constants.AtComp;
 import frc.robot.Constants.AtHome;
 
 public class AutoBalance extends CommandBase {
@@ -34,7 +35,7 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        double approachSpeed = Constants.AtHome.AreWe ? Constants.AtHome.chargeStationApproachPwr : 3.0;
+        double approachSpeed = Constants.AtHome.AreWe ? Constants.AtComp.chargeStationApproachPwr : 3.5;
         m_swerve.drive(approachSpeed * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
@@ -49,28 +50,28 @@ public class AutoBalance extends CommandBase {
 
         if (startedBalance) {
             if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-                if (m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
+                if (m_reverse && Math.abs(pitch) > AtComp.forwardPitch) {
                     m_reverse = false;
                 }
-                if (!m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
+                if (!m_reverse && Math.abs(pitch) > AtComp.reversePitch) {
                     m_reverse = true;
                 }   
             } else if(DriverStation.getAlliance().equals(Alliance.Red)) {
-                if (m_reverse && Math.abs(pitch) > AtHome.reversePitch) {
+                if (m_reverse && Math.abs(pitch) > AtComp.reversePitch) {
                     m_reverse = false;
                 }
-                if (!m_reverse && Math.abs(pitch) > AtHome.forwardPitch) {
+                if (!m_reverse && Math.abs(pitch) > AtComp.forwardPitch) {
                     m_reverse = true;
                 }
             }
 
-            if (m_reverse && Math.abs(pitch) < AtHome.reversePitch) { //3
+            if (m_reverse && Math.abs(pitch) < AtComp.reversePitch) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
                 done = true;
             } 
-            if (!m_reverse && Math.abs(pitch) < AtHome.forwardPitch) { //3
+            if (!m_reverse && Math.abs(pitch) < AtComp.forwardPitch) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
@@ -87,9 +88,9 @@ public class AutoBalance extends CommandBase {
                 // the pitch
                 // double output_percentage = std::clamp(((units::math::abs(pitch) - min_pitch)
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
-                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtHome.forwardPwr;
+                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtComp.forwardPwr;
                 if(m_reverse){
-                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtHome.reversePwr;
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtComp.reversePwr;
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);
