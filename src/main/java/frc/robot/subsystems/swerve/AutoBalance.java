@@ -49,22 +49,6 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-                if (m_reverse && Math.abs(pitch) > AtComp.forwardPitch) {
-                    m_reverse = false;
-                }
-                if (!m_reverse && Math.abs(pitch) > AtComp.reversePitch) {
-                    m_reverse = true;
-                }   
-            } else if(DriverStation.getAlliance().equals(Alliance.Red)) {
-                if (m_reverse && Math.abs(pitch) > AtComp.reversePitch) {
-                    m_reverse = false;
-                }
-                if (!m_reverse && Math.abs(pitch) > AtComp.forwardPitch) {
-                    m_reverse = true;
-                }
-            }
-
             if (m_reverse && Math.abs(pitch) < AtComp.reversePitch) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
