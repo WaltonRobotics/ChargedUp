@@ -110,8 +110,6 @@ public class RobotContainer {
 		// 	.and(driver.rightTrigger())
 		// 	.whileTrue(swerve.autoScore(ScoringPoints.cone9));
 		
-		driver.rightTrigger().onTrue(leds.setCube());
-		driver.leftTrigger().onTrue(leds.setCone());
 
 		manipulator.start().onTrue(superstructure.overrideStates(
 			() -> -manipulator.getLeftY(), () -> manipulator.getRightY(), () -> manipulator.getLeftX()

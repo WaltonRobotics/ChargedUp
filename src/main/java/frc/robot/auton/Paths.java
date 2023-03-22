@@ -68,11 +68,11 @@ public class Paths {
 		kPPConstraints, new PathConstraints(1, 1), kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> coneOneHalf = PathPlanner.loadPathGroup("coneOneHalf", 
-			kPPConstraints, new PathConstraints(1, 1.5), kPPConstraints);
+			kPPConstraints, new PathConstraints(1.35, 1.5), kPPConstraints);
 		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", 
 			kMaxSpeedMetersPerSecond,
 			kMaxAccelerationMetersPerSecondSquared);
-			
+
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
 				1.0,
 				3);
