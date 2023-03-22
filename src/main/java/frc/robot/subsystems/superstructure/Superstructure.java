@@ -14,10 +14,6 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
-import frc.robot.subsystems.TiltSubsystem.TiltState;
-import frc.robot.subsystems.WristSubsystem.WristState;
-
 import static frc.robot.Constants.WristK.*;
 
 import java.util.function.BooleanSupplier;

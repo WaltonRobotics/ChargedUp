@@ -93,7 +93,7 @@ public final class AutonFactory {
             Commands.deadline(
                 pathCmd,
                 Commands.waitSeconds(1).andThen(groundPickUp).andThen(Commands.waitSeconds(1.5).andThen(ssResetCmd2))),
-            new AutoBalance(swerve, false)
+            swerve.chargeStationBatteryFirstC()
         );
     }
 
