@@ -163,14 +163,14 @@ public class Superstructure extends SubsystemBase {
 			var clawCmd = claw.autoGrab();
 			var safeCmd = Commands.none();
 
-			if(claw.getClosed()) {
+			if(claw.closedTrig.getAsBoolean()) {
 				if(m_curState.sameExceptClaw(SuperState.GROUND_PICK_UP) || 
 					m_curState.sameExceptClaw(SuperState.SUBSTATION_PICK_UP) || 
 					m_curState.sameExceptClaw(SuperState.EXTENDED_SUBSTATION)) {
 					safeCmd = toStateTeleop(SuperState.SAFE);
 				} 
 
-			}else if(!claw.getClosed()) {
+			}else if(!claw.closedTrig.getAsBoolean()) {
 				if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
 					safeCmd = toStateTeleop(SuperState.SAFE);
 				}
