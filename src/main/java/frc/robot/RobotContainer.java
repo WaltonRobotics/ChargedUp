@@ -61,7 +61,7 @@ public class RobotContainer {
 				() -> driver.getLeftY(),
 				() -> driver.getLeftX(),
 				() -> -driver.getRightX(),
-				driver.leftBumper()::getAsBoolean,
+				() -> false,
 				() -> true // openLoop
 			)
 		);
@@ -88,30 +88,30 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(new InstantCommand(() -> swerve.teleOpReset()));
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(new AutoBalance(swerve, false));
+		driver.leftBumper().whileTrue(swerve.chargeStationBatteryFirstC());
 		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
 
-		driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
-		driver.y().whileTrue(swerve.autoScore(ScoringPoints.cube2));
-		driver.b().whileTrue(swerve.autoScore(ScoringPoints.cone3));
-		driver.x()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.coopCone4));
-		driver.y()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.coopCube5));
-		driver.b()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.coopCone6));
-		driver.x()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.cone7));
-		driver.y()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.cube8));
-		driver.b()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.cone9));
+		// driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
+		// driver.y().whileTrue(swerve.autoScore(ScoringPoints.cube2));
+		// driver.b().whileTrue(swerve.autoScore(ScoringPoints.cone3));
+		// driver.x()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(ScoringPoints.coopCone4));
+		// driver.y()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(ScoringPoints.coopCube5));
+		// driver.b()
+		// 	.and(driver.leftTrigger())
+		// 	.whileTrue(swerve.autoScore(ScoringPoints.coopCone6));
+		// driver.x()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(ScoringPoints.cone7));
+		// driver.y()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(ScoringPoints.cube8));
+		// driver.b()
+		// 	.and(driver.rightTrigger())
+		// 	.whileTrue(swerve.autoScore(ScoringPoints.cone9));
 		
 		driver.rightTrigger().onTrue(leds.setCube());
 		driver.leftTrigger().onTrue(leds.setCone());

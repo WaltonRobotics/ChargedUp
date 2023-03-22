@@ -2,13 +2,10 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AtComp;
-import frc.robot.Constants.AtHome;
 
 public class AutoBalance extends CommandBase {
     private double rampDeg = 14;
@@ -35,7 +32,7 @@ public class AutoBalance extends CommandBase {
             reverseMultiplier = -1;
         }
 
-        double approachSpeed = Constants.AtHome.AreWe ? Constants.AtComp.chargeStationApproachPwr : 3.5;
+        double approachSpeed = Constants.AtComp.chargeStationApproachPwr;
         m_swerve.drive(approachSpeed * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
@@ -56,7 +53,7 @@ public class AutoBalance extends CommandBase {
                 done = true;
             } 
             if (!m_reverse && Math.abs(pitch) < AtComp.forwardPitch) { //3
-                m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
+                m_swerve.drive(-.6, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
                 done = true;

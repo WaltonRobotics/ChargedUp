@@ -36,7 +36,7 @@ public final class Constants {
 
     public static final class AtComp{
         public static final double chargeStationApproachPwr = 3;
-        public static final double forwardPitch = 8;
+        public static final double forwardPitch = 4.5;
         public static final double reversePitch = 4.5;
         public static final double forwardPwr = 2.15;
        public static final double reversePwr = 2.15;
