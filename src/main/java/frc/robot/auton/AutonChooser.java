@@ -13,13 +13,17 @@ public class AutonChooser {
     public enum AutonOption {
         DO_NOTHING("do nothing"),
         CONE_ONE_HALF_PARK("cone, grab, park"),
-        ONE_CONE_PARK("drop cone then park"),
-        DROP_CONE_BACK("drop cone back"),
-        ONE_CUBE_AROUND("drop cube then go around and park"),
-        TWO_ELEMENT("cube then cone"),
-        THREE_PIECE("three piece scoring"),
         CONE_BACK_PARK("cone, taxi, park"),
-        CUBE_BACK_PARK("cube, taxi, park");
+        CUBE_BACK_PARK("cube, taxi, park"),
+        
+        TWO_ELEMENT("cube then cone"),
+
+        //NOT IN USE
+        ONE_CONE_PARK("drop cone then park"),
+        CONE_BACK("drop cone back"),
+        ONE_CUBE_AROUND("drop cube then go around and park"),
+        THREE_PIECE("three piece scoring");
+        
 
         public final String description;
 

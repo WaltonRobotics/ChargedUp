@@ -64,27 +64,15 @@ public class Paths {
 		public static final PathPlannerTrajectory oneConePark = PathPlanner.loadPath("oneConePark",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory twoElement = PathPlanner.loadPath("twoElement",
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
+		public static final List<PathPlannerTrajectory> twoElement = PathPlanner.loadPathGroup("twoElement",
+		kPPConstraints, new PathConstraints(1, 1), kPPConstraints);
+
 		public static final List<PathPlannerTrajectory> coneOneHalf = PathPlanner.loadPathGroup("coneOneHalf", 
 			kPPConstraints, new PathConstraints(1, 1.5), kPPConstraints);
 		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", 
 			kMaxSpeedMetersPerSecond,
 			kMaxAccelerationMetersPerSecondSquared);
-
-		public static final PathPlannerTrajectory threePiece1 = PathPlanner.loadPath("threePiece1",
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory threePiece2 = PathPlanner.loadPath("threePiece2",
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory threePiece3 = PathPlanner.loadPath("threePiece3",
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
-		public static final PathPlannerTrajectory threePiece4 = PathPlanner.loadPath("threePiece4",
-				kMaxSpeedMetersPerSecond,
-				kMaxAccelerationMetersPerSecondSquared);
+			
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
 				1.0,
 				3);
