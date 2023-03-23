@@ -478,9 +478,53 @@ public class SwerveSubsystem extends SubsystemBase {
 			return autoBuilder.fullAuto(newTraj).withTimeout(trajectory.getTotalTimeSeconds());
 		}, this).withTimeout(4);
 	}
-	// public CommandBase getFullAuto(List<PathPlannerTrajectory> trajectoryList) {
-	// 	return autoBuilder.fullAuto(trajectoryList);
-	// }
+
+	private CommandBase ppFollowerCmd(PathPlannerTrajectory traj) {
+		return new PPSwerveControllerCommand(
+			traj,
+			this::getPose, // Pose supplier
+			kKinematics, // SwerveDriveKinematics
+			xController,
+			yController,
+			autoThetaController,
+			(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
+			false, // Should the path be automatically mirrored depending on alliance color.
+					// Optional, defaults to true
+			this // Requires this drive subsystem
+		);
+	}
+
+	public CommandBase getPPGroupFollowerCmd(List<PathPlannerTrajectory> trajList) {
+		if (trajList.size() == 0) {
+			throw new RuntimeException("Empty path group given!!!");
+		}
+
+		return new DeferredCommand(() -> {
+			if (trajList.size() == 0) return Commands.print("PPSwerve - Empty path group given!");
+
+			PathPlannerTrajectory combinedTraj = trajList.get(0);
+			for (int i = 1; i < trajList.size(); i++) {
+				if (combinedTraj.getEndState().poseMeters == trajList.get(i).getInitialPose()) {
+					combinedTraj.concatenate(trajList.get(i));
+				} else {
+					System.out.println("========PPGroupFollower - bad concat!!!========");
+				}
+			}
+
+			if(Flipper.shouldFlip()){
+				combinedTraj = Flipper.allianceFlip(combinedTraj);
+			}
+			final var realTraj = combinedTraj;
+
+
+			var resetCmd = runOnce(() -> {
+				resetPose(realTraj.getInitialHolonomicPose());
+			});
+
+			return resetCmd.andThen(ppFollowerCmd(realTraj));
+		}).withName("PPPathGroupFollower");
+
+	}
 
 	public CommandBase getPPSwerveAutonCmd(PathPlannerTrajectory trajectory) {
 		if (trajectory.getStates().size() == 0) {
@@ -500,20 +544,9 @@ public class SwerveSubsystem extends SubsystemBase {
 				resetPose(actualNewTraj.getInitialHolonomicPose());
 			});
 			
-			var pathCmd = new PPSwerveControllerCommand(
-				newTraj,
-				this::getPose, // Pose supplier
-				kKinematics, // SwerveDriveKinematics
-				xController,
-				yController,
-				autoThetaController,
-				(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
-				false, // Should the path be automatically mirrored depending on alliance color.
-						// Optional, defaults to true
-				this // Requires this drive subsystem
-			);
-			return resetCmd.andThen(pathCmd);
-		}, this).withName("PPPathFollower");
+			
+			return resetCmd.andThen(ppFollowerCmd(newTraj));
+		}).withName("PPPathFollower");
 	}
 
 	public CommandBase getPPSwerveAutonCmd(List<PathPlannerTrajectory> trajList) {
@@ -547,18 +580,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 			int pathIdx = 1;
 			for (var traj : newTrajList) {
-				var pathCmd = new PPSwerveControllerCommand(
-					traj,
-					this::getPose, // Pose supplier
-					kKinematics, // SwerveDriveKinematics
-					xController,
-					yController,	
-					autoThetaController,
-					(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
-					false, // Should the path be automatically mirrored depending on alliance color.
-							// Optional, defaults to true
-					this // Requires this drive subsystem
-				);
+				var pathCmd = ppFollowerCmd(traj);
+
 				final int thisIdx = pathIdx;
 				var logCmd = Commands.runOnce(() -> {
 					SmartDashboard.putNumber("PathGroup Segment", thisIdx);
@@ -570,7 +593,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 			CommandBase[] pathCmdsArr = pathCmds.toArray(new CommandBase[0]);
 			return resetCmd.andThen(pathCmdsArr);
-		}, this).withName("PPPathGroupFollower");
+		}).withName("PPPathGroupFollower");
 	}
 
 	public CommandBase getFollowPathWithEvents(PathPlannerTrajectory traj) {

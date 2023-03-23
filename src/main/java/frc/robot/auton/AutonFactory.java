@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.auton.Paths.PPPaths;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.TheClaw;
@@ -91,13 +92,15 @@ public final class AutonFactory {
             logAutonState("twoElem", 0),
             tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             logAutonState("twoElem", 1),
-            // // move to drop gamepiece (inaccurate due to vision overruns, hence timeout)
             placeCmd.withTimeout(2.5),
             logAutonState("twoElem", 2),
             releaseCmd,
             logAutonState("twoElem", 3),
             // // move to safe state and prepare to move + autoGrab
-            ssResetCmd,
+            Commands.parallel(
+                ssResetCmd,
+                claw.grab()
+            ),
             logAutonState("twoElem", 4),
             Commands.deadline(
                 pathCmd,
