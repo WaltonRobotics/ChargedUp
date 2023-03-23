@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.775472590091089,
-        "y": 4.421778238574271
+        "x": 1.8,
+        "y": 5.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9540124396974807,
-        "y": 4.842942898697186
+        "x": 2.9142309926146033,
+        "y": 4.488249828318645
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -24,20 +24,20 @@
     },
     {
       "anchorPoint": {
-        "x": 4.923017959914925,
-        "y": 4.6
+        "x": 5.32,
+        "y": 4.5
       },
       "prevControl": {
-        "x": 4.152772718356826,
-        "y": 4.6
+        "x": 4.36525454062231,
+        "y": 4.5
       },
       "nextControl": {
-        "x": 5.448180723172937,
-        "y": 4.6
+        "x": 5.855413694692317,
+        "y": 4.5
       },
       "holonomicAngle": 0,
       "isReversal": false,
-      "velOverride": 1.0,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
@@ -53,14 +53,14 @@
         "y": 4.45
       },
       "prevControl": {
-        "x": 6.646012372807654,
-        "y": 4.440490799486938
+        "x": 5.894542685269931,
+        "y": 4.466911081115862
       },
       "nextControl": {
-        "x": 6.646012372807654,
-        "y": 4.440490799486938
+        "x": 5.894542685269931,
+        "y": 4.466911081115862
       },
-      "holonomicAngle": 0.0,
+      "holonomicAngle": 0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
@@ -74,12 +74,12 @@
     },
     {
       "anchorPoint": {
-        "x": 1.775472590091089,
-        "y": 5.011348670384174
+        "x": 1.8046161380698984,
+        "y": 4.4
       },
       "prevControl": {
-        "x": 3.8009322993734966,
-        "y": 4.592943847809403
+        "x": 2.793311425132167,
+        "y": 4.637621058738125
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -95,8 +95,5 @@
       }
     }
   ],
-  "maxVelocity": 3.0,
-  "maxAcceleration": 8.0,
-  "isReversed": null,
   "markers": []
 }

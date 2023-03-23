@@ -86,7 +86,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
             quirks += "-TG_SUB";
         }
 
-        CommandBase wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle)).asProxy();
+        CommandBase wristCmd = Commands.waitUntil(m_wristWait).andThen(wrist.toAngle(wristAngle));
 		CommandBase elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
 		CommandBase tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
 		// CommandBase clawCmd = Commands.waitUntil(m_clawWait).andThen(claw.getCmdForState(m_targetState.claw));

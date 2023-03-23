@@ -68,9 +68,12 @@ public class Paths {
 		public static final List<PathPlannerTrajectory> twoElement = PathPlanner.loadPathGroup("twoElement",
 		kPPConstraints, new PathConstraints(1, 1.25), kPPConstraints);
 
+		public static final List<PathPlannerTrajectory> twoEle = PathPlanner.loadPathGroup("twoEle",
+		kPPConstraints, new PathConstraints(1, 1.25), kPPConstraints);
+
 		public static final List<PathPlannerTrajectory> coneOneHalf = PathPlanner.loadPathGroup("coneOneHalf", 
 			kPPConstraints, new PathConstraints(1.35, 1.5), kPPConstraints);
-			
+
 		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", 
 			kMaxSpeedMetersPerSecond,
 			kMaxAccelerationMetersPerSecondSquared);
