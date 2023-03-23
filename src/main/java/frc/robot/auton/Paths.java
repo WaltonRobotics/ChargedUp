@@ -80,7 +80,7 @@ public class Paths {
 
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
 				1.0,
-				3);
+				1.5);
 	}
 
 	public static final class PPAutoscoreClass {
