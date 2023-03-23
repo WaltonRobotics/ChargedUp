@@ -6,6 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StringArraySubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,6 +35,11 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer = new RobotContainer();
 
+  private IntegerPublisher roboOutput;
+  private StringArraySubscriber roboInput;
+  private int nextBest = 0;
+
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -38,7 +47,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_modResetTimer.restart();
+    m_modResetTimer.reset();
     PathPlannerServer.startServer(5811);
     DriverStation.silenceJoystickConnectionWarning(true);
     // Instantiate our RobotContainer. This will perform all our button bindings,
@@ -46,6 +55,15 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
 
     addPeriodic(m_robotContainer.vision::periodic, .5);
+
+    CommandScheduler.getInstance().run();
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable table = inst.getTable("datatable");
+    roboOutput = table.getIntegerTopic("Robot Output").publish();
+    String[] defaultValue = {"0", "0"};
+    roboInput = table.getStringArrayTopic("Robot Input").subscribe(defaultValue);
+    inst.startClient4("roboClient");
+    inst.setServer("localhost");
   }
 
   /**
@@ -68,7 +86,17 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+
+
+    String[] feedBack = roboInput.get();
+    int position = Integer.parseInt(feedBack[0]);
+    int condition = Integer.parseInt(feedBack[1]);
+    //System.out.println( "pos: " + position + " condition: " + condition);
+    nextBest = frc.simAlgorithm.Main.calculateNextBest(position, condition);
+    //System.out.println("Next best place to score: " + nextBest);
+
+    roboOutput.set(nextBest);
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
