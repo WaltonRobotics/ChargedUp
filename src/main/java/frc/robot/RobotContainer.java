@@ -43,7 +43,7 @@ public class RobotContainer {
 	
 	/* Subsystems */
 	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, leds);
-	public final TheClaw claw = new TheClaw(() -> superstructure.getCurState().claw);
+	public final TheClaw claw = new TheClaw(() -> superstructure.getCurState().claw, ()-> wrist.getDegrees());
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
