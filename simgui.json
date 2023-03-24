@@ -29,6 +29,7 @@
       "/Shuffleboard/Elevator/Elevator": "Subsystem",
       "/Shuffleboard/Elevator/Lift Sim": "Mechanism2d",
       "/Shuffleboard/ElevatorSubsystem/ElevatorSubsystem": "Subsystem",
+      "/Shuffleboard/Superstructure/Superstructure": "Subsystem",
       "/Shuffleboard/Swerve/Swerve": "Subsystem",
       "/Shuffleboard/SwerveSubsystem/AutoThetaCtrl": "PIDController",
       "/Shuffleboard/SwerveSubsystem/Field2d": "Field2d",

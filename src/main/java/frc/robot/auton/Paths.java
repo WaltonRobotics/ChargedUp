@@ -23,6 +23,35 @@ public class Paths {
 		return Rotation2d.fromDegrees(deg);
 	}
 
+	public static PathPlannerTrajectory generateTrajectoryToPose(Pose2d robotPose, Pose2d target, Translation2d currentSpeedVectorMPS) {                
+		Rotation2d fieldRelativeTravelDirection = new Rotation2d(currentSpeedVectorMPS.getX(), currentSpeedVectorMPS.getY());
+		double travelSpeed = currentSpeedVectorMPS.getNorm();
+		Translation2d robotToTargetTranslation = target.getTranslation().minus(robotPose.getTranslation());
+		Rotation2d robotToTargetAngle = new Rotation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
+		Rotation2d travelOffsetFromTarget = 
+			robotToTargetAngle.minus(fieldRelativeTravelDirection);
+		travelSpeed = Math.max(0, travelSpeed * travelOffsetFromTarget.getCos());
+
+		if (robotToTargetTranslation.getNorm() > 0.1) {
+			PathPlannerTrajectory pathPlannerTrajectory = PathPlanner.generatePath(
+				new PathConstraints(2, 2), 
+				new PathPoint(
+					robotPose.getTranslation(),
+					robotToTargetAngle,
+					robotPose.getRotation(),
+					travelSpeed),
+				new PathPoint(
+					target.getTranslation(),
+					robotToTargetAngle,
+					target.getRotation())
+			);
+			
+			return pathPlannerTrajectory;
+		}
+
+		return new PathPlannerTrajectory();
+	}
+
 	// this is not needed for PPSwerve autons
 	public static final TrajectoryConfig config = new TrajectoryConfig(
 			kMaxSpeedMetersPerSecond,
@@ -32,9 +61,26 @@ public class Paths {
 			kMaxAccelerationMetersPerSecondSquared);
 
 	public static final class PPPaths {
-		public static final PathPlannerTrajectory testRot = PathPlanner.loadPath("testRot",
+		public static final PathPlannerTrajectory oneConePark = PathPlanner.loadPath("oneConePark",
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
+
+		public static final List<PathPlannerTrajectory> twoElement = PathPlanner.loadPathGroup("twoElement",
+		kPPConstraints, new PathConstraints(1, 1.25), kPPConstraints);
+
+		public static final List<PathPlannerTrajectory> twoEle = PathPlanner.loadPathGroup("twoEle",
+		kPPConstraints, new PathConstraints(1, 1.25), kPPConstraints);
+
+		public static final List<PathPlannerTrajectory> coneOneHalf = PathPlanner.loadPathGroup("coneOneHalf", 
+			kPPConstraints, new PathConstraints(1.35, 1.5), kPPConstraints);
+
+		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", 
+			kMaxSpeedMetersPerSecond,
+			kMaxAccelerationMetersPerSecondSquared);
+
+		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
+				1.2,
+				1.75);
 	}
 
 	public static final class PPAutoscoreClass {
@@ -85,9 +131,11 @@ public class Paths {
 		public static final Pose2d bumper1Pose = new Pose2d(new Translation2d(5.84, 0.75), rot2dDeg(180));
 		public static final Pose2d bumper2Pose = new Pose2d(new Translation2d(3.26, 0.75), rot2dDeg(180));
 
+		public static final Pose2d[] notBumperPoses = {notBumper1Pose, notBumper2Pose};
+
 		public static final PathPoint notBumper1 = new PathPoint(notBumper1Pose.getTranslation(), rot2dDeg(-165),
 				notBumper1Pose.getRotation());
-		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(-90),
+		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(0),
 				notBumper2Pose.getRotation());
 		public static final PathPoint bumper1 = new PathPoint(bumper1Pose.getTranslation(), rot2dDeg(180),
 				bumper1Pose.getRotation(), 2);
@@ -103,23 +151,23 @@ public class Paths {
 		}
 
 		public static class ScoringPoints {
-			public static final PathPoint cone1 =  
-				new PathPoint(new Translation2d(1.77, 0.50), rot2dDeg(-110), rot2dDeg(180));
-			public static final PathPoint cube2 = 
-				new PathPoint(new Translation2d(1.77, 1.06), rot2dDeg(-110), rot2dDeg(180));
-			public static final PathPoint cone3 = 
-				new PathPoint(new Translation2d(1.77, 1.62), rot2dDeg(-110), rot2dDeg(180));
-			public static final PathPoint coopCone4 = 
-				new PathPoint(new Translation2d(1.77, 2.18), rot2dDeg(-110), rot2dDeg(180));
-			public static final PathPoint coopCube5 = new PathPoint(new Translation2d(1.77, 2.74), rot2dDeg(90), rot2dDeg(180));
-			public static final PathPoint coopCone6 = 
-				new PathPoint(new Translation2d(1.77, 3.29), rot2dDeg(-110), rot2dDeg(180));
-			public static final PathPoint cone7 = 
-				new PathPoint(new Translation2d(1.77, 3.85), rot2dDeg(-110), rot2dDeg(180));
-			public static final PathPoint cube8 = 
-				new PathPoint(new Translation2d(1.77, 4.42), rot2dDeg(-110), rot2dDeg(180));
-			public static final PathPoint cone9 =
-				new PathPoint(new Translation2d(1.77, 4.98), rot2dDeg(-110), rot2dDeg(180));
+			public static final Pose2d cone1 =  
+				new Pose2d(new Translation2d(1.77, 0.50), rot2dDeg(180));
+			public static final Pose2d cube2 = 
+				new Pose2d(new Translation2d(1.77, 1.06), rot2dDeg(180));
+			public static final Pose2d cone3 = 
+				new Pose2d(new Translation2d(1.77, 1.62), rot2dDeg(180));
+			public static final Pose2d coopCone4 = 
+				new Pose2d(new Translation2d(1.77, 2.18), rot2dDeg(180));
+			public static final Pose2d coopCube5 = new Pose2d(new Translation2d(1.77, 2.74), rot2dDeg(180));
+			public static final Pose2d coopCone6 = 
+				new Pose2d(new Translation2d(1.77, 3.29), rot2dDeg(180));
+			public static final Pose2d cone7 = 
+				new Pose2d(new Translation2d(1.77, 3.85), rot2dDeg(180));
+			public static final Pose2d cube8 = 
+				new Pose2d(new Translation2d(1.77, 4.42), rot2dDeg(180));
+			public static final Pose2d cone9 =
+				new Pose2d(new Translation2d(1.77, 4.98), rot2dDeg(180));
 
 			public static final Pose2d substationPose = new Pose2d(new Translation2d(15.9, 6.68), rot2dDeg(0));
 			public static final Pose2d portalPose = new Pose2d(new Translation2d(13.63, 7.62), rot2dDeg(90));

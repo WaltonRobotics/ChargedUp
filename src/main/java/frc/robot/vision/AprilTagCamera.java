@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.vision.EstimatedRobotPose;
 // import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -11,32 +12,31 @@ import frc.lib.vision.PhotonPoseEstimator;
 import frc.lib.vision.PhotonPoseEstimator.PoseStrategy;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AprilTagCamera {
-    public final PhotonCamera highCam = new PhotonCamera("LeftHighCam");
-    public final PhotonCamera lowCam = new PhotonCamera("LeftLowCam"); // TODO: name the camera (will do when we have the actual camera)
-    // distance from robot to camera
-    private final Transform3d robotToCam1 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(11), Units.inchesToMeters(1.25), Units.inchesToMeters(42.5)), // camera placement on robot
-            new Rotation3d(0, Units.degreesToRadians(0), 0));
+    public final PhotonCamera rightLowCam = new PhotonCamera("RightCornerLow");
+    public final PhotonCamera leftLowCam = new PhotonCamera("LeftCornerLow");
 
-    private final Transform3d robotToCam2 = new Transform3d(
-                new Translation3d(Units.inchesToMeters(9.5), Units.inchesToMeters(8.183), Units.inchesToMeters(7.25)), // camera placement on robot
-                new Rotation3d(0, Units.degreesToRadians(14), 0));
+    private final Transform3d rightLowRobotToCamera = new Transform3d(
+        new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(-9.279), Units.inchesToMeters(8.845)),
+        new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(39.6)));
+    // private final Transform3d rightLowCameraToRobot = rightLowRobotToCamera.inverse();
 
-    AprilTagFieldLayout aprilTagFieldLayout;    
-    ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
-    PhotonPoseEstimator poseEstimator1;
-    PhotonPoseEstimator poseEstimator2;
-
-    private boolean m_highCamDisabled = false;
+    private final Transform3d leftLowRobotToCamera = new Transform3d(
+        new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
+        new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(-47.5)));
+    // private final Transform3d leftLowCameraToRobot = leftLowRobotToCamera.inverse();
+    
+    AprilTagFieldLayout aprilTagFieldLayout;
+    PhotonPoseEstimator leftLowPoseEstimator;
+    PhotonPoseEstimator rightLowPoseEstimator;
 
     public AprilTagCamera() {
         init();
@@ -59,30 +59,20 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(highCam, robotToCam1));
-        poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, highCam,
-                robotToCam1);
+        leftLowPoseEstimator = new PhotonPoseEstimator(
+            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP,
+            leftLowCam, leftLowRobotToCamera);
 
-        camList.add(new Pair<PhotonCamera, Transform3d>(lowCam, robotToCam2));
-        poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, lowCam,
-                        robotToCam2);
+        rightLowPoseEstimator = new PhotonPoseEstimator(
+            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP,
+            rightLowCam, rightLowRobotToCamera);
+
+        SmartDashboard.putNumberArray("LeftLowCam_RobotToCam", AdvantageScopeUtils.toDoubleArr(leftLowRobotToCamera));
+        SmartDashboard.putNumberArray("RightLowCam_RobotToCam", AdvantageScopeUtils.toDoubleArr(rightLowRobotToCamera));
+
     }
 
     public void periodic() {
-        // //reverses based on PathPlanner coordinates
-		// if(DriverStation.getAlliance() == Alliance.Blue){
-		// 	poseEstimator1.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-        //     poseEstimator2.getFieldTags().setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-		// }
-		// else{
-		// 	poseEstimator1.getFieldTags().setOrigin(new Pose3d(
-        //         new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
-        //         new Rotation3d(0, 0, 0)));
-        //     poseEstimator2.getFieldTags().setOrigin(
-        //         new Pose3d(
-        //             new Translation3d(Units.inchesToMeters(651.25), Units.inchesToMeters(315.5), 0),
-        //             new Rotation3d(0, 0, 0)));
-		// }
     }
 
     /**
@@ -106,33 +96,21 @@ public class AprilTagCamera {
     //     return estimatedGlobalPoses;
     // }
 
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose1(Pose2d prevEstimatedRobotPose) {
-        poseEstimator1.setReferencePose(prevEstimatedRobotPose);
-        poseEstimator1.setLastPose(prevEstimatedRobotPose);
-        return poseEstimator1.update();
+    public Optional<EstimatedRobotPose> leftLow_getEstPose(Pose2d prevEstimatedRobotPose) {
+        leftLowPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        leftLowPoseEstimator.setLastPose(prevEstimatedRobotPose);
+        return leftLowPoseEstimator.update();
     }
     
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose2(Pose2d prevEstimatedRobotPose) {
-        if (m_highCamDisabled) {
-            return null;
-        }
-        poseEstimator2.setReferencePose(prevEstimatedRobotPose);
-        poseEstimator2.setLastPose(prevEstimatedRobotPose);
-        return poseEstimator2.update();
-    }
-
-    public void setHighCamDisabled(boolean disabled) {
-        m_highCamDisabled = disabled;
+    public Optional<EstimatedRobotPose> rightLow_getEstPose(Pose2d prevEstimatedRobotPose) {
+        rightLowPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        rightLowPoseEstimator.setLastPose(prevEstimatedRobotPose);
+        return rightLowPoseEstimator.update();
     }
 
     // unfiltered view of camera
-    public void toggleDriverMode() {
-        if (highCam.getDriverMode()) {
-            highCam.setDriverMode(false);
-        }
-
-        else {
-            highCam.setDriverMode(true);
-        }
+    public void setDriverMode(boolean driverMode) {
+        leftLowCam.setDriverMode(driverMode);
+        rightLowCam.setDriverMode(driverMode);
     }
 }

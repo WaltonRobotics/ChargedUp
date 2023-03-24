@@ -4,6 +4,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.Constants.AtComp;
 
 public class AutoBalance extends CommandBase {
     private double rampDeg = 14;
@@ -24,13 +26,14 @@ public class AutoBalance extends CommandBase {
     public void initialize() {
         startedBalance = false;
         done = false;
-        targetYaw = m_swerve.getGyroYaw();
+        targetYaw = 180;    //may be zero, set to get Yaw if doesn't work
         m_swerve.getThetaController().setTolerance(Math.toRadians(5));
         if (m_reverse) {
             reverseMultiplier = -1;
         }
 
-        m_swerve.drive(3 * reverseMultiplier, 0, 0, false, true);
+        double approachSpeed = Constants.AtComp.chargeStationApproachPwr;
+        m_swerve.drive(approachSpeed * reverseMultiplier, 0, 0, false, true);
         // m_swerve.drive(0, 1.0, new Rotation2d(0,0), true);
     }
 
@@ -43,14 +46,14 @@ public class AutoBalance extends CommandBase {
         }
 
         if (startedBalance) {
-            if (m_reverse && Math.abs(pitch) < 4.5) { //3
+            if (m_reverse && Math.abs(pitch) < AtComp.reversePitch) { //3
                 m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
                 done = true;
             } 
-            if (!m_reverse && Math.abs(pitch) < 8) { //3
-                m_swerve.drive(0, 0, new Rotation2d(0, 0), true);
+            if (!m_reverse && Math.abs(pitch) < AtComp.forwardPitch) { //3
+                m_swerve.drive(-.6, 0, new Rotation2d(0, 0), true);
                 m_swerve.stopWithX();
                 startedBalance = false;
                 done = true;
@@ -66,9 +69,9 @@ public class AutoBalance extends CommandBase {
                 // the pitch
                 // double output_percentage = std::clamp(((units::math::abs(pitch) - min_pitch)
                 // / (max_pitch - min_pitch)).value(), -1.0, 1.0) * -wpi::sgn(pitch);
-                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 2.5;
+                double percentage = MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtComp.forwardPwr;
                 if(m_reverse){
-                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * 1.75;
+                    percentage =  MathUtil.clamp(Math.abs(pitch) / maxPitch, 0.0, 0.65) * AtComp.reversePwr;
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);
@@ -86,6 +89,7 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        
         m_swerve.stopWithX();
     }
 }

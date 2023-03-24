@@ -12,17 +12,21 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
 import frc.robot.CTREConfigs;
-
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.*;
@@ -30,6 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_left = new WPI_TalonFX(kLeftCANID, canbus);
 	private final WPI_TalonFX m_right = new WPI_TalonFX(kRightCANID, canbus);
 	private final DigitalInput m_lowerLimit = new DigitalInput(kLowerLimitSwitchPort);
+	private final Trigger m_lowerLimitTrigger = new Trigger(m_lowerLimit::get).negate();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
@@ -52,22 +57,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "Total Effort", -1, 1);
 	private final GenericEntry nte_targetHeight = DashboardManager.addTabNumberBar(this, "Target Height Meters",
 			kMinHeightMeters, kMaxHeightMeters);
+	private final GenericEntry nte_profileTargetHeight = DashboardManager.addTabNumberBar(this, "Prfoile Target Height Meters",
+	kMinHeightMeters, kMaxHeightMeters);
 	private final GenericEntry nte_actualHeight = DashboardManager.addTabNumberBar(this, "Actual Height Meters",
 			kMinHeightMeters, kMaxHeightMeters);
 	private final GenericEntry nte_actualHeightRaw = DashboardManager.addTabNumberBar(this, "Actual Height Raw", 0,
 			10000);
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
 	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
-	private final GenericEntry nte_pdVelo = DashboardManager.addTabDial(this, "PD Velo", -100, 100);
+	private final GenericEntry nte_profileVelo = DashboardManager.addTabDial(this, "PD Velo", -100, 100);
 	private final GenericEntry nte_actualVelo = DashboardManager.addTabNumberBar(this, "ActualVelo Mps",
 			-10, 10);
 
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
-		m_left.configFactoryDefault();
 		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
-
-		m_right.configFactoryDefault();
 		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -79,7 +83,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_left.follow(m_right);
 		m_left.setInverted(TalonFXInvertType.OpposeMaster);
-		m_controller.setTolerance(.02);
+		// m_controller.setTolerance(.05);
+
+		m_right.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
+		m_right.configVelocityMeasurementWindow(16);
 	}
 
 	/*
@@ -128,14 +135,22 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return mps;
 	}
 
+	public CommandBase autoHome() {
+		return Commands.sequence(
+			startEnd(() -> {
+				m_right.setVoltage(-1);
+			}, () -> {
+				m_right.setVoltage(0);
+			}).until(m_lowerLimitTrigger)
+		);
+	}
+
 	/**
 	 * @return A cmd to move the elevator via stick
 	 * sets elevator to target height if no input
 	 */
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
-			// double fromBottom = (getActualHeightMeters() - kMinHeightMeters) / kMaxHeightMeters;
-			// double fromTop = (kMaxHeightMeters - getActualHeightMeters()) / kMaxHeightMeters;
 			double dir = Math.signum(power.getAsDouble());
 			double output = 0;
 			
@@ -144,15 +159,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 			} else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
-			// if (fromBottom <= 0.1 || fromTop <= 0.1) {
-			// 	output *= 1 - m_dampener;
-			// }
 
-			m_targetHeight += output*.02;
+			m_targetHeight += output * .02;
 			double effort = getEffortForTarget(m_targetHeight);
-			m_right.setVoltage(effort);
+			double holdEffort = getEffortToHold(m_targetHeight);
+			
+			if(output > 0){
+				m_right.setVoltage(effort);
+			} else {
+				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
+				m_right.setVoltage(holdEffort);
+			}
 		})
-				.withName("TeleManual");
+		.withName("TeleManual");
 	}
 
 	/*
@@ -200,11 +219,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 			m_ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
 		}
 		double totalEffort = m_ffEffort + m_pdEffort;
+		
+		// logging
 		nte_ffEffort.setDouble(m_ffEffort);
 		nte_pdEffort.setDouble(m_pdEffort);
 		nte_totalEffort.setDouble(totalEffort);
-		nte_pdVelo.setDouble(pdSetpoint.velocity);
+		nte_profileVelo.setDouble(pdSetpoint.velocity);
+		nte_profileTargetHeight.setDouble(pdSetpoint.position);
 		nte_actualVelo.setDouble(getActualVelocityMps());
+
 		return totalEffort;
 	}
 
@@ -213,7 +236,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		m_holdFfEffort = 0;
 		var pdSetpoint = m_holdController.getSetpoint();
 		if (pdSetpoint != 0) {
-			m_ffEffort = kFeedforward.calculate(pdSetpoint);
+			m_holdFfEffort = kHoldKs;
 		}
 		double totalEffort = m_holdFfEffort + m_holdPdEffort;
 		return totalEffort;
@@ -224,13 +247,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @param heightMeters The height to move to
 	 */
 	public CommandBase toHeight(double heightMeters) {
-		// if (Math.abs(getActualHeightMeters() - heightMeters) <= 0.02) {
-		// 	return Commands.none().until(() -> Math.abs(getActualHeightMeters() - m_targetHeight) > 0.02).andThen(toHeight(m_targetHeight));
-		// }
-		
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
 			i_setTarget(heightMeters);
+			if(heightMeters < getActualHeightMeters()){
+				m_controller.setConstraints(kConstraintsDown);
+			}
+			else{
+				m_controller.setConstraints(kConstraints);
+			}
 		})
 				.andThen(run(() -> {
 					var effort = 
@@ -242,7 +267,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.until(() -> {
 					return m_controller.atGoal();
 				})
-				.withTimeout(1.65)
 				.finallyDo((intr) -> {
 					m_right.set(ControlMode.PercentOutput, 0);
 				})
@@ -266,7 +290,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		TOPCUBE(kTopCubeHeightM),
 		MIDCONE(kMidConeHeightM),
 		MIDCUBE(kMidCubeHeightM),
-		MIN(kMinHeightMeters);
+		MIN(kMinHeightMeters),
+		EXTENDED_SUBSTATION(kExtendedSubstationHeightM);
 
 		public double height;
 
@@ -279,9 +304,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public void periodic() {
 		if (!m_lowerLimit.get()) {
 			m_right.setSelectedSensorPosition(0);
+			// if(m_resetTimer.hasElapsed(2.5)){
+			// 	m_controller.reset(0);
+			// 	m_resetTimer.reset();
+			// }
 		}
+
 		updateShuffleBoard();
 		setCoast(nte_coast.getBoolean(false));
+		SmartDashboard.putNumber("HOLD P Effort", m_holdPdEffort);
+		SmartDashboard.putNumber("HOLD FF Effort", m_holdFfEffort);
 	}
 
 	/*

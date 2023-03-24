@@ -6,12 +6,15 @@ package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.superstructure.SuperState;
+import io.github.oblarg.oblog.Logger;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,7 +26,6 @@ import frc.robot.subsystems.superstructure.SuperState;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static CTREConfigs ctreConfigs;
 
   private final Timer m_modResetTimer = new Timer();
 
@@ -39,13 +41,17 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_modResetTimer.restart();
-    PathPlannerServer.startServer(5811);
+    if (!DriverStation.isFMSAttached()) {
+      // Only run at home!
+      PathPlannerServer.startServer(5811);
+    }
     DriverStation.silenceJoystickConnectionWarning(true);
-    // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
-
     addPeriodic(m_robotContainer.vision::periodic, .5);
+
+
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
+    Logger.configureLoggingAndConfig(this, true);
   }
 
   /**
@@ -69,6 +75,9 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    Logger.updateEntries();
+    FieldConstants.updateAprilTags(m_robotContainer.swerve, m_robotContainer.vision.leftLowCam, m_robotContainer.vision.rightLowCam);
+    NetworkTableInstance.getDefault().flush();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -90,11 +99,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // m_robotContainer.superstructure.reset();
     m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
-    m_robotContainer.swerve.resetToAbsolute();
-    // m_robotContainer.swerve.resetGyro();
     m_robotContainer.superstructure.initState();
+
+    var initPoseOpt = m_robotContainer.getAutonomousInitPose();
+    if (initPoseOpt.isPresent()) {
+      m_robotContainer.swerve.resetPose(initPoseOpt.get());
+    }
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -106,7 +117,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    // m_robotContainer.superstructure.calculateControllers(m_robotContainer.superstructure.getCurState());
+    m_robotContainer.superstructure.calculateControllers(m_robotContainer.superstructure.getCurState());
   }
 
   @Override
@@ -119,14 +130,18 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    
+    m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
     m_robotContainer.superstructure.initState();
     //add if no fms, smartreset superstrucute
+    if(!DriverStation.isFMSAttached()){
+      m_robotContainer.superstructure.smartReset();
+    }
+    m_robotContainer.superstructure.smartReset();
     m_robotContainer.swerve.resetToAbsolute();
-    m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
-    m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
+   
+    // m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
+    m_robotContainer.swerve.setYaw(0);
 
-    m_robotContainer.swerve.zeroGyro();
   }
 
   /** This function is called periodically during operator control. */

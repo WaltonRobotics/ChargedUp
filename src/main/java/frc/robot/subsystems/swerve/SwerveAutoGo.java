@@ -1,64 +1,46 @@
 package frc.robot.subsystems.swerve;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPointAccessor;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.auton.Paths.ReferencePoints;
+import frc.robot.auton.Paths;
 
 public class SwerveAutoGo extends CommandBase {
 
 	private final SwerveSubsystem m_swerve;
+	private final Pose2d[] m_poses;
 	private final List<PathPoint> m_path;
-	private final PathPoint m_endPose;
+	private final Pose2d m_endPose;
 
-	private PathPlannerTrajectory m_traj;
+	private PathPlannerTrajectory m_traj1;
+	private PathPlannerTrajectory m_traj2;
+	private PathPlannerTrajectory m_traj3;
 
-    public SwerveAutoGo(List<PathPoint> path, PathPoint endPose, SwerveSubsystem swerve) {
+    public SwerveAutoGo(Pose2d[] poses, List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
 		m_swerve = swerve;
+		m_poses = poses;
 		m_path = path;
 		m_endPose = endPose;
     }
 
 	@Override
 	public void initialize() {
-		ReferencePoints.currentPoint = PathPoint.fromCurrentHolonomicState(
-			m_swerve.getPose(),
-			m_swerve.getChassisSpeeds());
-		List<PathPoint> allPoints = new ArrayList<>();
-		allPoints.add(ReferencePoints.currentPoint);
-		double currentX = PathPointAccessor.poseFromPathPointHolo(ReferencePoints.currentPoint).getX();
+		m_traj1 = Paths.generateTrajectoryToPose(m_swerve.getPose(), m_poses[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj2 = PathPlanner.generatePath(new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+			m_path);
+		m_traj3 = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
 
-		for (PathPoint addedPP : m_path) {
-			double addedX = PathPointAccessor.poseFromPathPointHolo(addedPP).getX();
-			// if (onRed && currentX < addedX) {
-			// 	allPoints.add(addedPP);
-			// } else if (!onRed && currentX > addedX) {
-			// 	allPoints.add(addedPP);
-			// }
-			if(currentX > addedX) {
-				allPoints.add(addedPP);
-			}
-		}
-
-		allPoints.add(m_endPose);
+		var followCmd1 = m_swerve.getFollowPathWithEvents(m_traj1);
+		var followCmd2 = m_swerve.getFollowPathWithEvents(m_traj2);
+		var endCmd = m_swerve.getFollowPathWithEvents(m_traj3);
 		
-		m_traj = PathPlanner.generatePath(
-			new PathConstraints(
-				AutoConstants.kMaxSpeedMetersPerSecond,
-				AutoConstants.kMaxAccelerationMetersPerSecondSquared),
-			allPoints
-		);
-
-		var followCmd = m_swerve.getFullAuto(m_traj);	
-		var endCmd = m_swerve.goToChosenPoint(m_endPose);
-		followCmd.andThen(endCmd).withName("SwerveAutoGoGo").schedule();
+		followCmd1.andThen(followCmd2).andThen(endCmd).withName("SwerveAutoGoGo").schedule();
 	}
 }

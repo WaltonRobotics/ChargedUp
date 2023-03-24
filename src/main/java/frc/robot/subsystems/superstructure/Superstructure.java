@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure;
-
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -10,11 +11,13 @@ import frc.robot.Constants.ElevatorK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import static frc.robot.Constants.WristK.*;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.ElevatorK.*;
@@ -23,19 +26,25 @@ public class Superstructure extends SubsystemBase {
 	protected final TiltSubsystem m_tilt;
 	protected final ElevatorSubsystem m_elevator;
 	protected final WristSubsystem m_wrist;
-	protected final TheClaw m_claw;
+	// protected final TheClaw m_claw;
+	protected final LEDSubsystem m_leds;
 
 	// State management
-	private SuperState m_prevState = SuperState.SAFE;
+	SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-
-	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, TheClaw claw) {
+	private final GenericEntry nte_currState = DashboardManager.addTabItem(this, "CurrState", "UNK");
+	private final GenericEntry nte_prevState = DashboardManager.addTabItem(this, "PrevState", "UNK");
+	protected final GenericEntry nte_stateQuirk = DashboardManager.addTabItem(this, "StateQuirk", "UNK");
+	
+	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
 		m_elevator = elevator;
 		m_wrist = wrist;
-		m_claw = claw;
+		// m_claw = claw;
+		m_leds = leds;
 
 		DashboardManager.addTab(this);
+		SmartDashboard.putNumber("SSAutoState", -1);
 	}
 
 	/*
@@ -60,12 +69,30 @@ public class Superstructure extends SubsystemBase {
 		}
 	}
 
-	public CommandBase toState(SuperState state) {
-		return new SuperstructureToState(this, state);
+	public CommandBase toStateTeleop(SuperState state) {
+		return new SuperstructureToState(this, state, true);
 	}
 
-	public CommandBase autoReset(){
-		return new SuperstructureToState(this, SuperState.SAFE).withTimeout(.5);
+	public CommandBase toStateAuton(SuperState state) {
+		return new SuperstructureToState(this, state, false);
+	}
+
+	private CommandBase cubeToss(SuperState state, TheClaw claw, boolean auton) {
+		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height *.25);
+		var toStateCmd = auton ? toStateAuton(state) : toStateTeleop(state);
+
+		return Commands.parallel(
+			toStateCmd,
+			Commands.waitUntil(clawWait).andThen(claw.release())
+		);
+	}
+
+	public CommandBase cubeTossMid(TheClaw claw, boolean auton) {
+		return cubeToss(SuperState.MIDCUBE, claw, auton);
+	}
+
+	public CommandBase cubeTossTop(TheClaw claw, boolean auton) {
+		return cubeToss(SuperState.TOPCUBE, claw, auton);
 	}
 
 	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
@@ -88,10 +115,13 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase smartReset() {
+		var tiltCmd = m_tilt.toAngle(TiltK.kBotAngleDegrees);
+		var elevCmd = m_elevator.toHeight(ElevatorK.kBotHeightMeters);
+		var wristCmd = m_wrist.toAngle(WristK.kMaxDeg);
 		return Commands.parallel(
-            m_tilt.toAngle(TiltK.kBotAngleDegrees),
-            m_wrist.toAngle(WristK.kMaxDeg),
-            m_elevator.toHeight(ElevatorK.kBotHeightMeters)
+            tiltCmd,	
+            wristCmd,
+            elevCmd
         );
 	}
 
@@ -110,6 +140,7 @@ public class Superstructure extends SubsystemBase {
 			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
+		SmartDashboard.putNumber("SSAutoState", m_curState.idx);
 	}
 
 	public SuperState getPrevState() {
@@ -119,47 +150,27 @@ public class Superstructure extends SubsystemBase {
 	public SuperState getCurState() {
 		return m_curState;
 	}
+	
+	// public CommandBase releaseClaw() {
+	// 	return m_claw.release();
+	// }
 
-	// aka autoScore
-	// TODO: pass in swerve subsystem, it's not included in this class
-	/**
-	 * @param state   high, mid, or low
-	 * @param place   where to score :D (also includes cone/cube mode)
-	 * @param isBumpy if it is bumpy or not
-	 * @return command to autoscore
-	 */
-	// public CommandBase win(ScoringStates state, Paths.ScoringPoints.ScoringPlaces
-	// place, boolean isBumpy) {
-	// var leds = runOnce(() -> m_leds.handleLED(place.coneOrCube));
-	// var autoScore = runOnce(() -> {
-	// if(isBumpy) {
-	// if(DriverStation.getAlliance().equals(Alliance.Red)) {
-	// m_swerve.autoScore(PPAutoscoreClass.redBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
+	// public CommandBase autoSafe() {
+	// 	if (m_claw.getClosed()) {
+	// 		if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
+	// 			return new SuperstructureToState(this, SuperState.SAFE);
+	// 		}
+	// 	}
+	// 	return Commands.none();
 	// }
-	// else {
-	// m_swerve.autoScore(PPAutoscoreClass.blueBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
+	
+	// public CommandBase score(){
 	// }
-	// }
-	// else {
-	// if(DriverStation.getAlliance().equals(Alliance.Red)) {
-	// m_swerve.autoScore(PPAutoscoreClass.redNotBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// else {
-	// m_swerve.autoScore(PPAutoscoreClass.blueNotBumpy,
-	// ScoringPoints.toPathPoint(place.redPt));
-	// }
-	// }
-	// });
-	// var elevatorHeight = runOnce(() -> {
-	// m_elevator.setState(state.elevatorHeight);
-	// });
-	// var finalPos = runOnce(() -> {
-	// m_tilt.setTiltTarget(state.elevatorTilt.angle); // finish later maybe?
-	// m_wrist.toPosition(.5, state.wristTilt);
-	// });
-	// return leds.andThen(autoScore).andThen(elevatorHeight).andThen(finalPos);
-	// }
+
+	@Override
+	public void periodic() {
+		nte_currState.setString(m_curState.toString());
+		nte_prevState.setString(m_prevState.toString());
+
+	}
 }

@@ -25,7 +25,7 @@ import frc.robot.Constants.WristK;
 public class WristSubsystem extends SubsystemBase {
   private final CANSparkMax m_motor = new CANSparkMax(kCANID, MotorType.kBrushless);
   private final SparkMaxAbsoluteEncoder m_absEncoder = m_motor.getAbsoluteEncoder(Type.kDutyCycle);
-  private double m_targetAngle = 0;
+  private double m_targetAngle = kMaxDeg;
   private double m_ffEffort = 0;
   private double m_pdEffort = 0;
   private double m_totalEffort = 0;
@@ -61,7 +61,7 @@ public class WristSubsystem extends SubsystemBase {
     m_absEncoder.setPositionConversionFactor(360);
     m_motor.burnFlash();
 
-    m_controller.setTolerance(1);
+    m_controller.setTolerance(1.5);
   }
 
   /*
@@ -133,10 +133,10 @@ public class WristSubsystem extends SubsystemBase {
 
     if (atMinLimit() && dir == -1) {
       output = 0;
-      System.out.println("BotLimit!!!");
+      // System.out.println("BotLimit!!!");
     } else if (atMaxLimit() && dir == 1) {
       output = 0;
-      System.out.println("TopLimit!!!");
+      // System.out.println("TopLimit!!!");
     }
     if (voltage) {
       m_motor.setVoltage(output);
@@ -166,7 +166,7 @@ public class WristSubsystem extends SubsystemBase {
     m_ffEffort = 0;
     var pdSetpoint = m_holdController.getSetpoint();
     if (pdSetpoint != 0) {
-      // m_ffEffort = kFeedforward.calculate(Units.degreesToRadians(pdSetpoint), kMaxVelocity);
+      m_ffEffort = kHoldKs;
     }
     double totalEffort = m_ffEffort + m_pdEffort;
     return totalEffort;
@@ -219,10 +219,10 @@ public class WristSubsystem extends SubsystemBase {
         .until(() -> {
           return m_controller.atGoal();
         })
-        .withTimeout(1.8)
         .finallyDo((intr) -> {
           m_motor.set(0);
         })
+        .withTimeout(1.6)
         .withName("ToAngle");
   }
 
@@ -261,7 +261,8 @@ public class WristSubsystem extends SubsystemBase {
     MIDCONE(kMidConeDeg, 0),
     MIDCUBE(kMidCubeDeg, 1),
     PICKUP(kPickupDeg, 0),
-    MIN(kMinDeg, 0);
+    MIN(kMinDeg, 0),
+    EXTENDED_SUBSTATION(kExtendedSubstationDeg,0);
 
     public final double angle;
     public final int isCube;

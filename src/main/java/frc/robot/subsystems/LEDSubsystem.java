@@ -17,6 +17,7 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean m_chaseUp = false;
     private boolean m_blinkState = false;
     private int m_blinkCount = 0;
+    public boolean isCone = false;
 
     public LEDSubsystem() {
         m_leds.setLength(m_ledBuffer.getLength());
@@ -46,6 +47,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     public CommandBase setCube() {
         return run(() ->  { 
+            isCone = false;
             Color col = Color.kPurple;
             for (int i = 0; i < kNumLeds; i++) {
                 m_ledBuffer.setLED(i, col);
@@ -56,6 +58,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     public CommandBase setCone() {
         return run(() ->  { 
+            isCone = true;
             Color col = Color.kYellow;
             for (int i = 0; i < kNumLeds; i++) {
                 m_ledBuffer.setLED(i, col);
@@ -71,6 +74,16 @@ public class LEDSubsystem extends SubsystemBase {
         .ignoringDisable(true)
         .andThen(Commands.waitSeconds(0.5))
         .repeatedly();
+    }
+
+    public CommandBase scoreOk() {
+        return runOnce(() -> {
+            setIdle();
+        })
+        .ignoringDisable(true)
+        .andThen(Commands.waitSeconds(0.125))
+        .repeatedly()
+        .withTimeout(2);
     }
 
     public CommandBase grabOk() {

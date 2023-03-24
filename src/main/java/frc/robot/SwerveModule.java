@@ -8,6 +8,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
@@ -33,6 +34,9 @@ public class SwerveModule {
     private WPI_TalonFX m_driveMotor;
     private CANCoder m_angleEncoder;
 
+    private SwerveModuleState m_latestDesiredState = new SwerveModuleState();
+    private double m_latestCmdedDriveVelo = 0;
+
     // Physics
 
     // Simulation
@@ -48,8 +52,14 @@ public class SwerveModule {
     private double m_driveMotorSimDistance;
     private double m_steerMotorSimDistance;
 
-    private final GenericEntry nte_driveTemp, nte_steerTemp, nte_cancoderAngle, nte_modVelocity,
-            nte_cancoderIntegratedAngle;
+    private final GenericEntry 
+        nte_driveTemp,
+        nte_steerTemp,
+        nte_cancoderAngle,
+        nte_modVelocity,
+        nte_cancoderIntegratedAngle;
+    private final GenericEntry nte_desiredStateVelocity, nte_desiredStateRotation,
+        nte_actualStateVelocity, nte_actualStateRotation, nte_driveMotorVeloCmd;
 
     public SwerveModule(String name, int moduleNumber, SwerveModuleConstants moduleConstants) {
         moduleName = name;
@@ -62,6 +72,12 @@ public class SwerveModule {
         nte_modVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ModuleVelocity", 0);
         nte_cancoderIntegratedAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME,
                 moduleName + "/CancoderIntegratedAngle", 0);
+
+        nte_desiredStateVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/DesState/Velocity", 0);
+        nte_desiredStateRotation = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/DesState/Rotation", 0);
+        nte_actualStateVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ActState/Velocity", 0);
+        nte_actualStateRotation = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ActState/Rotation", 0);
+        nte_driveMotorVeloCmd = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/DriveMotorVeloCmd", 0);
 
         /* Angle Encoder Config */
         m_angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
@@ -84,6 +100,16 @@ public class SwerveModule {
         nte_cancoderAngle.setDouble(m_angleEncoder.getAbsolutePosition());
         nte_modVelocity.setDouble(getState().speedMetersPerSecond);
         nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
+
+        // log states
+        var curState = getState();
+        nte_actualStateVelocity.setDouble(curState.speedMetersPerSecond);
+        nte_actualStateRotation.setDouble(curState.angle.getDegrees());
+        
+        nte_desiredStateVelocity.setDouble(m_latestDesiredState.speedMetersPerSecond);
+        nte_desiredStateRotation.setDouble(m_latestDesiredState.angle.getDegrees());
+
+        nte_driveMotorVeloCmd.setDouble(m_latestCmdedDriveVelo);
     }
 
     public double makePositiveDegrees(double angle) {
@@ -143,6 +169,8 @@ public class SwerveModule {
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
         setAngle(desiredState, steerInPlace);
         setSpeed(desiredState, isOpenLoop);
+
+        m_latestDesiredState = desiredState;
     }
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -152,8 +180,9 @@ public class SwerveModule {
         } else {
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, kWheelCircumference,
                     kDriveGearRatio);
+            m_latestCmdedDriveVelo = velocity;
             m_driveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward,
-                    kDriveFF.calculate(desiredState.speedMetersPerSecond));
+                kDriveFF.calculate(desiredState.speedMetersPerSecond));
         }
     }
 
@@ -184,8 +213,12 @@ public class SwerveModule {
     }
 
     public void resetToAbsolute() {
+        double absPosDeg = 
+            getCanCoder().getDegrees() < 0 ?
+            makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees() - 360 :
+            makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees();
         double absolutePosition = Conversions.degreesToFalcon(
-                makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees(), kAngleGearRatio);
+                absPosDeg, kAngleGearRatio);
         m_steerMotor.setSelectedSensorPosition(absolutePosition);
     }
 
@@ -211,6 +244,7 @@ public class SwerveModule {
         m_steerMotor.configAllSettings(CTREConfigs.Get().swerveAngleFXConfig);
         m_steerMotor.setInverted(kInvertAngleMotor);
         m_steerMotor.setNeutralMode(kAngleNeutralMode);
+        Timer.delay(0.1);
         resetToAbsolute();
     }
 

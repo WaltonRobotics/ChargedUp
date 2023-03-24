@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
@@ -29,7 +30,6 @@ public class TiltSubsystem extends SubsystemBase {
 	private final Encoder m_quadratureEncoder = new Encoder(kQuadEncoderA, kQuadEncoderB);
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
 	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
-	// private Timer m_timer = new Timer();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
 	private double m_targetAngle = 0;
@@ -40,13 +40,15 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "FFEffort", -1, 1);
 	private final GenericEntry nte_motorTotalEffort = DashboardManager.addTabDial(this, "TotalEffort", -1, 1);
 	private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "TargetAngle",
-			kMinAngleDegrees, kMaxAngleDegrees);
+			kMinAngleDegrees, 35);
 	private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 35);
 	private final GenericEntry nte_rawAbsVal = DashboardManager.addTabNumberBar(this, "RawAbs", 0, 1);
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
 	private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
+	private final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
+	
 	public TiltSubsystem() {
 		m_diskBrake.set(true);
 		m_absoluteEncoder.reset();
@@ -56,7 +58,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// reset relative encoder on switch activation
 		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
-		m_controller.setTolerance(1);
+		DashboardManager.addTab(this);
 	}
 
 	public CommandBase setTarget(double degrees) {
@@ -102,14 +104,6 @@ public class TiltSubsystem extends SubsystemBase {
 															// rotation)
 	}
 
-	public void disengageBrake() {
-		m_diskBrake.set(false);
-	}
-
-	public void engageBrake() {
-		m_diskBrake.set(true);
-	}
-
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
@@ -143,6 +137,16 @@ public class TiltSubsystem extends SubsystemBase {
 		m_motor.setVoltage(output);
 	}
 
+	public CommandBase autoHome() {
+		return Commands.sequence(
+			startEnd(() -> {
+				setVoltage(-1);
+			}, () -> {
+				setVoltage(0);
+			}).until(m_homeSwitchTrigger)
+		);
+	}
+
 	/**
 	 * disengageBrake
 	 * wait(n)
@@ -162,7 +166,6 @@ public class TiltSubsystem extends SubsystemBase {
 			}
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
-			// disengageBrake();
 		});
 
 		var moveCmd = run(() -> {
@@ -172,15 +175,11 @@ public class TiltSubsystem extends SubsystemBase {
 		.until(() -> {
 			return m_controller.atGoal();
 		})
-		.withTimeout(1.8)
 		.finallyDo((intr) -> {
 			m_motor.set(0);
 		})
+		.withTimeout(1.6)
 		.withName("ToAngle");
-				
-		// var brakeCmd = runOnce(() -> {
-			// engageBrake();
-		// });
 
 		return Commands.sequence(
 			setupCmd,
@@ -199,6 +198,10 @@ public class TiltSubsystem extends SubsystemBase {
 	public void periodic() {
 		if (!m_homeSwitch.get()) {
 			m_absoluteEncoder.reset();
+			// if(m_resetTimer.hasElapsed(2.5)){
+			// 	m_controller.reset(0);
+			// 	m_resetTimer.reset();
+			// }
 		}
 		setCoast(nte_coast.getBoolean(false));
 		updateShuffleBoard();
@@ -227,7 +230,8 @@ public class TiltSubsystem extends SubsystemBase {
 		TOPCUBE(kTopCubeAngleDegrees, 1),
 		MIDCONE(kMidConeAngleDegrees, 0),
 		MIDCUBE(kMidCubeAngleDegrees, 1),
-		BOTTOMMOST(kMinAngleDegrees, 0);
+		BOTTOMMOST(kMinAngleDegrees, 0),
+		EXTENDED_SUBSTATION(kExtendedSubstationAngleDegrees,0);
 
 		public final double angle;
 		public final int isCube;

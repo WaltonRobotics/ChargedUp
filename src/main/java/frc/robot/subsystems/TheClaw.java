@@ -4,56 +4,111 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
-
 import static frc.robot.Constants.TheClawK.*;
+
+import java.util.function.Supplier;
 
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
-	private final DigitalInput leftEye = new DigitalInput(kLeftEyeID);
-	private final DigitalInput rightEye = new DigitalInput(kRightEyeID);
+	private final DigitalInput clawSensor = new DigitalInput(kClawSensor);
 	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
-	private final GenericEntry nte_leftEye = DashboardManager.addTabBooleanBox(this, "Left Eye");
-	private final GenericEntry nte_rightEye = DashboardManager.addTabBooleanBox(this, "Right Eye");
+	private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
+	private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
+
+	private final Supplier<ClawState> m_autoStateSupplier;
+
+	private final Timer m_lastActuationTimer = new Timer();
+	private final Timer m_substationDelayTimer = new Timer();
+
+	private static final double kSubstationSensorCheckDelay = .75;
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
 	
-	public final Trigger leftEyeTrig = new Trigger(leftEye::get);
-	public final Trigger rightEyeTrig = new Trigger(rightEye::get);
+	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
+	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
-	
-	
+	private final Trigger stateAutoGrabTrig;
+	private final Trigger substationStateAutoGrabTrig;
+	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(0.5));
+	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay + .5));
 
-	public TheClaw() {
-		// DashboardManager.addTab(this);
+	public TheClaw(Supplier<ClawState> autoStateSupplier) {
+		m_autoStateSupplier = autoStateSupplier;
+		DashboardManager.addTab(this);
+		m_lastActuationTimer.restart();
+		m_substationDelayTimer.restart();
 
+
+		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
+		substationStateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.SUBSTATIONAUTO);
+
+		stateAutoGrabTrig.onTrue(
+			release()
+			.andThen(runOnce(() -> m_grabOk = false)));
+			
+		stateAutoGrabTrig
+		.and(sensorTrig)
+		.and(sensorCheckValidTrig)
+			.onTrue(
+				Commands.runOnce(() -> m_grabOk = true)
+				.andThen(grab()).withName("internalAutoGrab")
+		);
+
+		substationStateAutoGrabTrig.onTrue(
+			Commands.sequence(
+				Commands.runOnce(()-> m_substationDelayTimer.restart()),
+				Commands.waitSeconds(kSubstationSensorCheckDelay),
+				release(),
+				Commands.runOnce(() -> m_grabOk = false).withName("internalAutoGrabSSReset")
+			)
+		);
+		substationStateAutoGrabTrig
+		.and(sensorTrig)
+		.and(substationDelayTrig)
+		.and(closedTrig.negate())
+		.onTrue(
+			Commands.runOnce(() -> m_grabOk = true)
+			.andThen(grab()).withName("internalAutoGrabSSAct")
+		);
+		
+
+		// setDefaultCommand(autoGrab());
 	}
 
-	/*
-	 * @return Cmd to automatically close claw on eye sight
-	 */
-	public CommandBase autoGrab(boolean autoRelease) {
+	private void setClosed(boolean closed) {
+		m_lastActuationTimer.restart();
+		m_substationDelayTimer.restart();
+		claw.set(!closed);
+		m_isClosed = closed;
+	}
 
-		return runOnce(() ->  {
-				m_grabOk = false;
-				claw.set(true); 
-				m_isClosed = !claw.get();  // open claw
-			})
-			.andThen(new WaitCommand(leftEyeTrig.and(rightEyeTrig).getAsBoolean() ? 1.2 : 1.2)) // wait 0.8sec before sensor
-			.andThen(
-				startEnd(() -> {}, 
-					() -> {
-						claw.set(false); 
-						m_isClosed = !claw.get();
-					})
-					.until(leftEyeTrig.and(rightEyeTrig)))
-					.finallyDo((intr) -> m_grabOk = true);
+	public CommandBase autoGrab() {
+		return Commands.none();
+		// return run(()-> {
+		// 	if(m_autoStateSupplier.get() == ClawState.AUTO){
+		// 		setClosed(false);
+		// 	}
+
+		// 	m_grabOk = false;
+		// 	if (!m_isClosed && m_lastCloseTimer.hasElapsed(0.5)) {
+		// 		if (sensorTrig.getAsBoolean()){
+		// 			setClosed(true);
+		// 		}
+		// 	}
+		// })
+		// .until(() -> m_isClosed)
+		// .andThen(() -> {
+		// 	m_grabOk = true;
+		// })
+		// .repeatedly()
+		// .withName("DefaultAutoGrab");
 	}
 
 	/*
@@ -61,38 +116,33 @@ public class TheClaw extends SubsystemBase {
 	 */
 	public CommandBase release() {
 		return runOnce(() -> {
-			m_isClosed = false;
-			claw.set(true);
+			setClosed(false);
 		} );
-		
 	}
+
 
 	public CommandBase grab() {
 		return runOnce(() -> {
-			m_isClosed = true;
-			claw.set(false);
+			setClosed(true);
 		});
 	}
 
-	public CommandBase getCmdForState(ClawState state){
-		switch(state){
-			case IGNORE: return Commands.none();
-			case OPEN: return release();
-			case CLOSE: return grab();
-			case AUTO: return autoGrab(m_isClosed);
-		}
-		return Commands.none();
+	public boolean getClosed() {
+		return m_isClosed;
 	}
+
 	public enum ClawState{
 		IGNORE, 
 		OPEN,
 		CLOSE,
-		AUTO
+		AUTO,
+		SUBSTATIONAUTO
 	}
+
 	@Override
 	public void periodic() {
 		nte_isClosed.setBoolean(m_isClosed);
-		nte_leftEye.setBoolean(leftEye.get());
-		nte_rightEye.setBoolean(rightEye.get());
+		nte_clawSensor.setBoolean(sensorTrig.getAsBoolean());
+		nte_superstate.setString(m_autoStateSupplier.get().toString());
 	}
 }
