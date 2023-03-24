@@ -24,6 +24,9 @@ public class TheClaw extends SubsystemBase {
 	private final Supplier<ClawState> m_autoStateSupplier;
 
 	private final Timer m_lastActuationTimer = new Timer();
+	private final Timer m_substationDelayTimer = new Timer();
+
+	private static final double kSubstationSensorCheckDelay = .75;
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
@@ -32,21 +35,47 @@ public class TheClaw extends SubsystemBase {
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	private final Trigger stateAutoGrabTrig;
+	private final Trigger substationStateAutoGrabTrig;
 	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(0.5));
+	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay + .5));
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier) {
 		m_autoStateSupplier = autoStateSupplier;
 		DashboardManager.addTab(this);
-		m_lastActuationTimer.reset();
-		m_lastActuationTimer.start();
+		m_lastActuationTimer.restart();
+		m_substationDelayTimer.restart();
 
 
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
+		substationStateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.SUBSTATIONAUTO);
 
-		stateAutoGrabTrig.onTrue(release().andThen(runOnce(() -> m_grabOk = false)));
-		stateAutoGrabTrig.and(sensorTrig.and(sensorCheckValidTrig)).onTrue(
-			runOnce(() -> m_grabOk = true)
-			.andThen(grab()).withName("internalAutoGrab")
+		stateAutoGrabTrig.onTrue(
+			release()
+			.andThen(runOnce(() -> m_grabOk = false)));
+			
+		stateAutoGrabTrig
+		.and(sensorTrig)
+		.and(sensorCheckValidTrig)
+			.onTrue(
+				Commands.runOnce(() -> m_grabOk = true)
+				.andThen(grab()).withName("internalAutoGrab")
+		);
+
+		substationStateAutoGrabTrig.onTrue(
+			Commands.sequence(
+				Commands.runOnce(()-> m_substationDelayTimer.restart()),
+				Commands.waitSeconds(kSubstationSensorCheckDelay),
+				release(),
+				Commands.runOnce(() -> m_grabOk = false).withName("internalAutoGrabSSReset")
+			)
+		);
+		substationStateAutoGrabTrig
+		.and(sensorTrig)
+		.and(substationDelayTrig)
+		.and(closedTrig.negate())
+		.onTrue(
+			Commands.runOnce(() -> m_grabOk = true)
+			.andThen(grab()).withName("internalAutoGrabSSAct")
 		);
 		
 
@@ -55,6 +84,7 @@ public class TheClaw extends SubsystemBase {
 
 	private void setClosed(boolean closed) {
 		m_lastActuationTimer.restart();
+		m_substationDelayTimer.restart();
 		claw.set(!closed);
 		m_isClosed = closed;
 	}
@@ -97,16 +127,6 @@ public class TheClaw extends SubsystemBase {
 		});
 	}
 
-	public CommandBase getCmdForState(ClawState state){
-		switch(state){
-			case IGNORE: return Commands.none();
-			case OPEN: return release();
-			case CLOSE: return grab();
-			case AUTO: return Commands.waitSeconds(1).andThen(autoGrab());	//wait to prevent accidental close
-		}
-		return Commands.none();
-	}
-
 	public boolean getClosed() {
 		return m_isClosed;
 	}
@@ -115,7 +135,8 @@ public class TheClaw extends SubsystemBase {
 		IGNORE, 
 		OPEN,
 		CLOSE,
-		AUTO
+		AUTO,
+		SUBSTATIONAUTO
 	}
 
 	@Override

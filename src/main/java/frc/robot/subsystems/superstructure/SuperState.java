@@ -11,7 +11,7 @@ public enum SuperState {
     GROUND_PICK_UP(1,
         ElevatorState.MIN, TiltState.BOTTOMMOST, WristState.PICKUP, ClawState.AUTO),
     SUBSTATION_PICK_UP(2, 
-        ElevatorState.SUBSTATION, TiltState.SUBSTATION, WristState.SUBSTATION, ClawState.AUTO),
+        ElevatorState.SUBSTATION, TiltState.SUBSTATION, WristState.SUBSTATION, ClawState.SUBSTATIONAUTO),
     TOPCONE(3, 
         ElevatorState.TOPCONE, TiltState.TOPCONE, WristState.TOPCONE, ClawState.IGNORE),
     TOPCUBE(4, 

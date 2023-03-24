@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.auton.Paths.PPPaths;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.TheClaw;
@@ -140,7 +139,7 @@ public final class AutonFactory {
             ssResetCmd,
             pathCmd,
             swerve.nowItsTimeToGetFunky()
-        ).withName("OneConeBack");
+        ).withName("OneCubeBack");
     }
 
     public static CommandBase coneBackPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
@@ -153,7 +152,7 @@ public final class AutonFactory {
         return Commands.sequence(
             tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
             placeCmd,
-            claw.release().asProxy(), Commands.waitSeconds(.45),
+            claw.release(), Commands.waitSeconds(.45),
             ssResetCmd,
             pathCmd,
             swerve.nowItsTimeToGetFunky()
