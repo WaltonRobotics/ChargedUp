@@ -711,6 +711,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		double[] xyzDPS = new double[3];
 		m_pigeon.getRawGyro(xyzDPS);
 
+		// TODO: Convert to WaltLogger calls
 		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
 		SmartDashboard.putNumber("Pitch", getGyroPitch());
 		SmartDashboard.putNumber("Roll", getGyroRoll());

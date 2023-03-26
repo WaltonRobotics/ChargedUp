@@ -6,13 +6,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.lib.WaltLogger;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
-import frc.lib.util.DashboardManager;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Constants.SwerveK;
 
@@ -52,32 +52,29 @@ public class SwerveModule {
     private double m_driveMotorSimDistance;
     private double m_steerMotorSimDistance;
 
-    private final GenericEntry 
-        nte_driveTemp,
-        nte_steerTemp,
-        nte_cancoderAngle,
-        nte_modVelocity,
-        nte_cancoderIntegratedAngle;
-    private final GenericEntry nte_desiredStateVelocity, nte_desiredStateRotation,
-        nte_actualStateVelocity, nte_actualStateRotation, nte_driveMotorVeloCmd;
+    private final DoublePublisher 
+        log_driveTemp, log_steerTemp, log_cancoderAngle, log_modVelocity,
+        log_steerInternalAngle, log_desiredStateVelocity, log_desiredStateRotation,
+        log_actualStateVelocity, log_actualStateRotation, log_driveMotorVeloCmd;
 
     public SwerveModule(String name, int moduleNumber, SwerveModuleConstants moduleConstants) {
         moduleName = name;
         this.moduleNumber = moduleNumber;
         this.m_angleOffset = moduleConstants.angleOffset;
+        final String topicPrefix = SwerveK.DB_TAB_NAME + "/" + moduleName;
 
-        nte_driveTemp = DashboardManager.addTabDial(SwerveK.DB_TAB_NAME, moduleName + "/DriveTemp", 0, 100);
-        nte_steerTemp = DashboardManager.addTabDial(SwerveK.DB_TAB_NAME, moduleName + "/SteerTemp", 0, 100);
-        nte_cancoderAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/CancoderAngle", 0);
-        nte_modVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ModuleVelocity", 0);
-        nte_cancoderIntegratedAngle = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME,
-                moduleName + "/CancoderIntegratedAngle", 0);
+        log_driveTemp = WaltLogger.makeDoubleTracePub(topicPrefix + "/DriveTemp");
+        log_steerTemp = WaltLogger.makeDoubleTracePub(topicPrefix + "/SteerTemp");
+        log_cancoderAngle = WaltLogger.makeDoubleTracePub(topicPrefix + "/CancoderAngle");
+        log_modVelocity = WaltLogger.makeDoubleTracePub(topicPrefix + "/ModuleVelocity");
+        log_steerInternalAngle = WaltLogger.makeDoubleTracePub(topicPrefix + "/SteerInternalAngle");
+        log_desiredStateVelocity = WaltLogger.makeDoubleTracePub(topicPrefix + "/DesState/Velocity");
+        log_desiredStateRotation = WaltLogger.makeDoubleTracePub(topicPrefix + "/DesState/Rotation");
+        log_actualStateVelocity = WaltLogger.makeDoubleTracePub(topicPrefix + "/ActState/Velocity");
+        log_actualStateRotation = WaltLogger.makeDoubleTracePub(topicPrefix + "/ActState/Rotation");
+        log_driveMotorVeloCmd = WaltLogger.makeDoubleTracePub(topicPrefix + "/DriveVeloCmd");
 
-        nte_desiredStateVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/DesState/Velocity", 0);
-        nte_desiredStateRotation = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/DesState/Rotation", 0);
-        nte_actualStateVelocity = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ActState/Velocity", 0);
-        nte_actualStateRotation = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/ActState/Rotation", 0);
-        nte_driveMotorVeloCmd = DashboardManager.addTabItem(SwerveK.DB_TAB_NAME, moduleName + "/DriveMotorVeloCmd", 0);
+
 
         /* Angle Encoder Config */
         m_angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
@@ -95,21 +92,21 @@ public class SwerveModule {
     }
 
     public void periodic() {
-        nte_driveTemp.setDouble(m_driveMotor.getTemperature());
-        nte_steerTemp.setDouble(m_steerMotor.getTemperature());
-        nte_cancoderAngle.setDouble(m_angleEncoder.getAbsolutePosition());
-        nte_modVelocity.setDouble(getState().speedMetersPerSecond);
-        nte_cancoderIntegratedAngle.setDouble(getPosition().angle.getDegrees());
+        log_driveTemp.accept(m_driveMotor.getTemperature());
+        log_steerTemp.accept(m_steerMotor.getTemperature());
+        log_cancoderAngle.accept(m_angleEncoder.getAbsolutePosition());
+        log_modVelocity.accept(getState().speedMetersPerSecond);
+        log_steerInternalAngle.accept(getPosition().angle.getDegrees());
 
         // log states
         var curState = getState();
-        nte_actualStateVelocity.setDouble(curState.speedMetersPerSecond);
-        nte_actualStateRotation.setDouble(curState.angle.getDegrees());
+        log_actualStateVelocity.accept(curState.speedMetersPerSecond);
+        log_actualStateRotation.accept(curState.angle.getDegrees());
         
-        nte_desiredStateVelocity.setDouble(m_latestDesiredState.speedMetersPerSecond);
-        nte_desiredStateRotation.setDouble(m_latestDesiredState.angle.getDegrees());
+        log_desiredStateVelocity.accept(m_latestDesiredState.speedMetersPerSecond);
+        log_desiredStateRotation.accept(m_latestDesiredState.angle.getDegrees());
 
-        nte_driveMotorVeloCmd.setDouble(m_latestCmdedDriveVelo);
+        log_driveMotorVeloCmd.accept(m_latestCmdedDriveVelo);
     }
 
     public double makePositiveDegrees(double angle) {
