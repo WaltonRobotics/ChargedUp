@@ -47,7 +47,6 @@ public class Superstructure {
 		log_currState.setDefault("UNK");
 		log_prevState.setDefault("UNK");
 		log_stateQuirk.setDefault("UNK");
-
 	}
 
 	/*
@@ -98,17 +97,6 @@ public class Superstructure {
 		return cubeToss(SuperState.TOPCUBE, claw, auton);
 	}
 
-	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
-		return Commands.runOnce(() -> {
-			CommandScheduler.getInstance().cancel(
-				m_elevator.getCurrentCommand(), m_tilt.getCurrentCommand(), m_wrist.getCurrentCommand());
-			
-			m_elevator.teleopCmd(elevPow);
-			m_tilt.teleopCmd(tiltPow);
-			m_wrist.teleopCmd(wristPow);
-		});
-	}
-
 	public void initState() {
 		m_prevState = SuperState.SAFE;
 		m_curState = SuperState.SAFE;
@@ -145,22 +133,6 @@ public class Superstructure {
 	public SuperState getCurState() {
 		return m_curState;
 	}
-	
-	// public CommandBase releaseClaw() {
-	// 	return m_claw.release();
-	// }
-
-	// public CommandBase autoSafe() {
-	// 	if (m_claw.getClosed()) {
-	// 		if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
-	// 			return new SuperstructureToState(this, SuperState.SAFE);
-	// 		}
-	// 	}
-	// 	return Commands.none();
-	// }
-	
-	// public CommandBase score(){
-	// }
 
 	public void periodicTelemetry() {
 		log_currState.accept(m_curState.toString());
