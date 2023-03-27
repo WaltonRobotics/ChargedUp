@@ -8,6 +8,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.WaltLogger;
@@ -228,12 +229,10 @@ public class SwerveModule {
         m_angleEncoder.configAllSettings(CTREConfigs.Get().swerveCanCoderConfig);
     }
 
-    public void brakeSteerMotor() {
-        m_steerMotor.setNeutralMode(NeutralMode.Brake);
-    }
+    public void setOdoTestMode(boolean test) {
+        m_steerMotor.setNeutralMode(test ? NeutralMode.Brake : NeutralMode.Coast);
+        m_driveMotor.setNeutralMode(test ? NeutralMode.Coast : NeutralMode.Brake);
 
-    public void coastDriveMotor() {
-        m_driveMotor.setNeutralMode(NeutralMode.Coast);
     }
 
     private void configAngleMotor() {
@@ -275,11 +274,11 @@ public class SwerveModule {
         m_steerMotorSim.setInputVoltage(steerVolts);
         m_driveMotorSim.setInputVoltage(driveVolts);
 
-        m_steerMotorSim.update(0.02);
-        m_driveMotorSim.update(0.02);
+        m_steerMotorSim.update(TimedRobot.kDefaultPeriod);
+        m_driveMotorSim.update(TimedRobot.kDefaultPeriod);
 
-        double steerDegreesIncr = Units.radiansToDegrees(m_steerMotorSim.getAngularVelocityRadPerSec() * 0.02);
-        double driveDegreesIncr = Units.radiansToDegrees(m_driveMotorSim.getAngularVelocityRadPerSec() * 0.02);
+        double steerDegreesIncr = Units.radiansToDegrees(m_steerMotorSim.getAngularVelocityRadPerSec() * TimedRobot.kDefaultPeriod);
+        double driveDegreesIncr = Units.radiansToDegrees(m_driveMotorSim.getAngularVelocityRadPerSec() * TimedRobot.kDefaultPeriod);
 
         m_steerMotorSimDistance += steerDegreesIncr;
         m_driveMotorSimDistance += driveDegreesIncr;

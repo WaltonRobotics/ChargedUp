@@ -5,9 +5,7 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.WaltLogger;
-import frc.lib.util.DashboardManager;
 import frc.robot.Constants.ElevatorK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
@@ -23,7 +21,7 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.ElevatorK.*;
 
-public class Superstructure extends SubsystemBase {
+public class Superstructure {
 	protected final TiltSubsystem m_tilt;
 	protected final ElevatorSubsystem m_elevator;
 	protected final WristSubsystem m_wrist;
@@ -33,9 +31,10 @@ public class Superstructure extends SubsystemBase {
 	// State management
 	SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-
-	private final DoublePublisher log_ssAutoState;
-	public final StringPublisher log_currState, log_prevState, log_stateQuirk;
+	private final DoublePublisher log_autoState = WaltLogger.makeDoublePub("State", "Superstructure/AutonState");
+	protected final StringPublisher log_currState = WaltLogger.makeStringPub("State", "Superstructure/CurrState");
+	protected final StringPublisher log_prevState = WaltLogger.makeStringPub("State", "Superstructure/PrevState");
+	protected final StringPublisher log_stateQuirk = WaltLogger.makeStringPub("State", "Superstructure/StateQuirk");
 	
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
@@ -44,17 +43,11 @@ public class Superstructure extends SubsystemBase {
 		// m_claw = claw;
 		m_leds = leds;
 
-		DashboardManager.addTab(this);
-		final String topicPrefix = this.getName();
-
-		log_ssAutoState = WaltLogger.makeDoubleTracePub(topicPrefix + "/AutoState");
-		log_ssAutoState.accept(-1);
-		log_currState = WaltLogger.makeStringTracePub(topicPrefix + "/CurrentState");
+		log_autoState.accept(-1);
 		log_currState.setDefault("UNK");
-		log_prevState = WaltLogger.makeStringTracePub(topicPrefix + "/PreviousState");
 		log_prevState.setDefault("UNK");
-		log_stateQuirk = WaltLogger.makeStringTracePub(topicPrefix + "/StateQuirk");
 		log_stateQuirk.setDefault("UNK");
+
 	}
 
 	/*
@@ -106,7 +99,7 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
-		return runOnce(() -> {
+		return Commands.runOnce(() -> {
 			CommandScheduler.getInstance().cancel(
 				m_elevator.getCurrentCommand(), m_tilt.getCurrentCommand(), m_wrist.getCurrentCommand());
 			
@@ -135,14 +128,6 @@ public class Superstructure extends SubsystemBase {
         );
 	}
 
-	public CommandBase calculateControllers(SuperState targetState){
-		return runOnce(()->{
-			m_elevator.getEffortForTarget(targetState.elev.height);
-			m_tilt.getEffortForTarget(targetState.tilt.angle);
-			m_wrist.getEffortForTarget(targetState.wrist.angle);
-		});
-	}
-
 	protected void updateState(SuperState newState) {
 		System.out.println(
 			"[SS] upateState - WAS " + m_prevState +
@@ -150,7 +135,7 @@ public class Superstructure extends SubsystemBase {
 			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
-		log_ssAutoState.accept(m_curState.idx);
+		log_autoState.accept(m_curState.idx);
 	}
 
 	public SuperState getPrevState() {
@@ -177,10 +162,8 @@ public class Superstructure extends SubsystemBase {
 	// public CommandBase score(){
 	// }
 
-	@Override
-	public void periodic() {
+	public void periodicTelemetry() {
 		log_currState.accept(m_curState.toString());
 		log_prevState.accept(m_prevState.toString());
-
 	}
 }

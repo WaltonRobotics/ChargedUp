@@ -27,7 +27,7 @@ public class AutoBalance extends CommandBase {
         startedBalance = false;
         done = false;
         targetYaw = 180;    //may be zero, set to get Yaw if doesn't work
-        m_swerve.getThetaController().setTolerance(Math.toRadians(5));
+        m_swerve.autoThetaController.setTolerance(Math.toRadians(5));
         if (m_reverse) {
             reverseMultiplier = -1;
         }
@@ -61,7 +61,7 @@ public class AutoBalance extends CommandBase {
             else {
                 double powerSign = pitch > 0 ? 1 : -1;
                 double maxPitch = 30;
-                double thetaEffort = m_swerve.getThetaController().calculate(Math.toRadians(m_swerve.getGyroYaw()),
+                double thetaEffort = m_swerve.autoThetaController.calculate(Math.toRadians(m_swerve.getGyroYaw()),
                         Math.toRadians(targetYaw));
 
                 // Calculate a value between -1 and 1 based on the value of the min/max pitch

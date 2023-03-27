@@ -83,10 +83,10 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		/* Driver Buttons */
-		driver.back().onTrue(new InstantCommand(() -> swerve.teleOpReset()));
+		driver.back().onTrue(swerve.teleOpReset());
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
 		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky());
-		driver.rightBumper().onTrue(new InstantCommand(()-> swerve.stopWithX()));
+		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
 		// driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
 		// driver.y().whileTrue(swerve.autoScore(ScoringPoints.cube2));

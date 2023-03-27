@@ -25,7 +25,6 @@ public class SuperstructureToState extends SequentialCommandGroup {
         m_superstructure = superstructure;
         m_targetState = targetState;
 
-        addRequirements(m_superstructure);
         var tilt = m_superstructure.m_tilt;
         var elevator = m_superstructure.m_elevator;
         var wrist = m_superstructure.m_wrist;

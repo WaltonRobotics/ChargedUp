@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
     }
     DriverStation.silenceJoystickConnectionWarning(true);
     addPeriodic(m_robotContainer.vision::periodic, .5);
-
+    addPeriodic(m_robotContainer.superstructure::periodicTelemetry, kDefaultPeriod);
 
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
@@ -99,7 +99,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
     m_robotContainer.superstructure.initState();
 
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
@@ -117,7 +116,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_robotContainer.superstructure.calculateControllers(m_robotContainer.superstructure.getCurState());
   }
 
   @Override
@@ -130,7 +128,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.superstructure.calculateControllers(SuperState.SAFE);
     m_robotContainer.superstructure.initState();
     //add if no fms, smartreset superstrucute
     if(!DriverStation.isFMSAttached()){
@@ -139,15 +136,12 @@ public class Robot extends TimedRobot {
     m_robotContainer.superstructure.smartReset();
     m_robotContainer.swerve.resetToAbsolute();
    
-    // m_robotContainer.superstructure.toState(SuperState.SAFE).schedule();
-    m_robotContainer.swerve.setYaw(0);
-
+    m_robotContainer.swerve.setYaw(0); // Why?
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.superstructure.calculateControllers(m_robotContainer.superstructure.getCurState());
   }
 
   @Override

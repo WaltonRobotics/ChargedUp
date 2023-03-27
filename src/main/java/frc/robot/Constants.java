@@ -54,7 +54,6 @@ public final class Constants {
         public static final boolean kUseInternalEncoder = false;
 
         public static final int kPigeonCANID = 1;
-        public static final boolean kInvertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         public static final COTSFalconSwerveConstants kSwerveModule = COTSFalconSwerveConstants
                 .SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
