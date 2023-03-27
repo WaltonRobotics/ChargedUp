@@ -28,7 +28,7 @@ public class TheClaw extends SubsystemBase {
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
 
-	private static final double kSubstationSensorCheckDelay = .5;
+	private static final double kSubstationSensorCheckDelay = .25;
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
@@ -48,7 +48,7 @@ public class TheClaw extends SubsystemBase {
 		DashboardManager.addTab(this);
 		m_lastActuationTimer.restart();
 		m_substationDelayTimer.restart();
-		wristAngleTrig = new Trigger(() -> m_wristDegSupplier.get().doubleValue() <= 42);
+		wristAngleTrig = new Trigger(() -> m_wristDegSupplier.get().doubleValue() <= 50);
 
 
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
@@ -90,10 +90,10 @@ public class TheClaw extends SubsystemBase {
 	}
 
 	private void setClosed(boolean closed) {
-		claw.set(!closed);
-		m_isClosed = closed;
 		m_lastActuationTimer.restart();
 		m_substationDelayTimer.restart();
+		claw.set(!closed);
+		m_isClosed = closed;
 	}
 
 	public CommandBase autoGrab() {
