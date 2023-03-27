@@ -1,16 +1,17 @@
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.lib.WaltLogger;
 
 public class NewBalance extends SequentialCommandGroup {
 
     private CommandBase logBalanceState(int state) {
 		return Commands.runOnce(() -> {
-			SmartDashboard.putNumber("BalanceState", state);
+			log_balState.accept(state);
 		});
 	}
 
@@ -19,9 +20,11 @@ public class NewBalance extends SequentialCommandGroup {
 
     private double m_climbingSign = 0.0;
     private final Timer m_climbTimer = new Timer();
+    private final DoublePublisher log_balState;
 
 
     public NewBalance(SwerveSubsystem swerve) {
+        log_balState = WaltLogger.makeDoubleTracePub("BalanceState");
 
         CommandBase oneHopThisTime = Commands.run(
             ()-> swerve.drive(2.3, 0, 0, false, false), swerve)

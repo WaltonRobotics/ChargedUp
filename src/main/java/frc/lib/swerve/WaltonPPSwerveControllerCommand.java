@@ -12,11 +12,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.lib.WaltLogger;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -40,8 +41,9 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
   private static Consumer<PathPlannerTrajectory> logActiveTrajectory = null;
   private static Consumer<Pose2d> logTargetPose = null;
   private static Consumer<ChassisSpeeds> logSetpoint = null;
-  private static BiConsumer<Translation2d, Rotation2d> logError =
-      WaltonPPSwerveControllerCommand::defaultLogError;
+  private BiConsumer<Translation2d, Rotation2d> logError =
+      this::defaultLogError;
+  private final DoublePublisher log_xError, log_yError, log_rotError;
 
   /**
    * Constructs a new PPSwerveControllerCommand that when executed will follow the provided
@@ -80,6 +82,12 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
     this.kinematics = null;
     this.useKinematics = false;
     this.useAllianceColor = useAllianceColor;
+
+    final String topicPrefix = "PPSwerveControllerCommand";
+
+    log_xError = WaltLogger.makeDoubleTracePub(topicPrefix + "/xErrorMeters");
+    log_yError = WaltLogger.makeDoubleTracePub(topicPrefix + "/yErrorMeters");
+    log_rotError = WaltLogger.makeDoubleTracePub(topicPrefix + "/rotationErrorDegrees");
 
     addRequirements(requirements);
 
@@ -172,6 +180,12 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
     this.outputChassisSpeeds = null;
     this.useKinematics = true;
     this.useAllianceColor = useAllianceColor;
+
+    final String topicPrefix = "PPSwerveControllerCommand";
+
+    log_xError = WaltLogger.makeDoubleTracePub(topicPrefix + "/xErrorMeters");
+    log_yError = WaltLogger.makeDoubleTracePub(topicPrefix + "/yErrorMeters");
+    log_rotError = WaltLogger.makeDoubleTracePub(topicPrefix + "/rotationErrorDegrees");
 
     addRequirements(requirements);
 
@@ -320,11 +334,10 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
     return this.timer.hasElapsed(transformedTrajectory.getTotalTimeSeconds());
   }
 
-  private static void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
-    SmartDashboard.putNumber("PPSwerveControllerCommand/xErrorMeters", translationError.getX());
-    SmartDashboard.putNumber("PPSwerveControllerCommand/yErrorMeters", translationError.getY());
-    SmartDashboard.putNumber(
-        "PPSwerveControllerCommand/rotationErrorDegrees", rotationError.getDegrees());
+  private void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
+    log_xError.accept(translationError.getX());
+    log_yError.accept(translationError.getY());
+    log_rotError.accept(rotationError.getDegrees());
   }
 
   /**
@@ -340,7 +353,7 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
    * @param logError BiConsumer that accepts a Translation2d and Rotation2d representing the error
    *     while path following
    */
-  public static void setLoggingCallbacks(
+  public void setLoggingCallbacks(
       Consumer<PathPlannerTrajectory> logActiveTrajectory,
       Consumer<Pose2d> logTargetPose,
       Consumer<ChassisSpeeds> logSetpoint,
@@ -348,6 +361,6 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
     WaltonPPSwerveControllerCommand.logActiveTrajectory = logActiveTrajectory;
     WaltonPPSwerveControllerCommand.logTargetPose = logTargetPose;
     WaltonPPSwerveControllerCommand.logSetpoint = logSetpoint;
-    WaltonPPSwerveControllerCommand.logError = logError;
+    this.logError = logError;
   }
 }

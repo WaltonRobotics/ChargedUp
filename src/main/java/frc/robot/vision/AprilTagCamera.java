@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import frc.lib.WaltLogger;
 import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.vision.EstimatedRobotPose;
 // import org.photonvision.EstimatedRobotPose;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -38,9 +40,13 @@ public class AprilTagCamera {
     PhotonPoseEstimator leftLowPoseEstimator;
     PhotonPoseEstimator rightLowPoseEstimator;
 
+    private final DoubleArrayPublisher log_leftRobotToCam, log_rightRobotToCam;
+
     public AprilTagCamera() {
         init();
         PhotonCamera.setVersionCheckEnabled(false);
+        log_leftRobotToCam = WaltLogger.makeDoubleArrTracePub("LeftLowCam_RobotToCam");
+        log_rightRobotToCam = WaltLogger.makeDoubleArrTracePub("RightLowCam_RobotToCam");
     }
 
     public void updateField2d(Field2d field) {
@@ -67,8 +73,8 @@ public class AprilTagCamera {
             aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP,
             rightLowCam, rightLowRobotToCamera);
 
-        SmartDashboard.putNumberArray("LeftLowCam_RobotToCam", AdvantageScopeUtils.toDoubleArr(leftLowRobotToCamera));
-        SmartDashboard.putNumberArray("RightLowCam_RobotToCam", AdvantageScopeUtils.toDoubleArr(rightLowRobotToCamera));
+        log_leftRobotToCam.accept(AdvantageScopeUtils.toDoubleArr(leftLowRobotToCamera));
+        log_rightRobotToCam.accept(AdvantageScopeUtils.toDoubleArr(rightLowRobotToCamera));
 
     }
 

@@ -6,6 +6,7 @@ import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
+import frc.lib.WaltLogger;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
@@ -40,6 +41,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -74,6 +77,9 @@ public class SwerveSubsystem extends SubsystemBase {
 	protected boolean m_startedBalance = false;
 	private final Tracer tracer = new Tracer();
 
+	private final DoublePublisher log_pathGroupSegment, log_yaw, log_pitch, log_roll, log_yawRate, log_pitchRate, log_filtPitchRate, log_rollRate,
+									log_highPassPitch, log_odoTime;
+	private final BooleanPublisher log_startedBalance;
 
 	public Timer m_timer = new Timer();
 
@@ -126,6 +132,19 @@ public class SwerveSubsystem extends SubsystemBase {
 		DashboardManager.addTabSendable(this, "XCtrl", xController);
 		DashboardManager.addTabSendable(this, "YCtrl", yController);
 		DashboardManager.addTabSendable(this, "AutoThetaCtrl", autoThetaController);
+
+		log_pathGroupSegment = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PathGroupSegment");
+		log_yaw = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/Yaw");
+		log_pitch = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/Pitch");
+		log_roll = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/Roll");
+		log_yawRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/YawRate");
+		log_pitchRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PitchRate");
+		log_filtPitchRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/FilteredPitchRate");
+		log_rollRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/RollRate");
+		log_highPassPitch = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/HighPassPitch");
+		log_odoTime = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/OdoTimeSec");
+
+		log_startedBalance = WaltLogger.makeBoolTracePub(DB_TAB_NAME + "/StartedBalance");
 	}
 
 	public void setChassisSpeeds(ChassisSpeeds targetChassisSpeeds, boolean openLoop, boolean steerInPlace) {
@@ -554,7 +573,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			throw new RuntimeException("Empty path group given!!!");
 		}
 
-		SmartDashboard.putNumber("PathGroup Segment", -1);
+		log_pathGroupSegment.accept(-1);
 
 		return new DeferredCommand(() -> {
 			if (trajList.size() == 0) return Commands.print("PPSwerve - Empty path group given!");
@@ -584,7 +603,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 				final int thisIdx = pathIdx;
 				var logCmd = Commands.runOnce(() -> {
-					SmartDashboard.putNumber("PathGroup Segment", thisIdx);
+					log_pathGroupSegment.accept(thisIdx);
 				});
 				pathIdx++;
 
@@ -665,7 +684,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_poseEstimator.update(getHeading(), getModulePositions());
 		m_state.update(getPose(), getModuleStates(), m_field);
 		var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
-		SmartDashboard.putNumber("OdoTimeSec", poseEstElapsed);
+		log_odoTime.accept(poseEstElapsed);
 	}
 
 	public void lockModules() {
@@ -711,21 +730,20 @@ public class SwerveSubsystem extends SubsystemBase {
 		double[] xyzDPS = new double[3];
 		m_pigeon.getRawGyro(xyzDPS);
 
-		// TODO: Convert to WaltLogger calls
-		SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
-		SmartDashboard.putNumber("Pitch", getGyroPitch());
-		SmartDashboard.putNumber("Roll", getGyroRoll());
+		log_yaw.accept(m_pigeon.getYaw());
+		log_pitch.accept(getGyroPitch());
+		log_roll.accept(getGyroRoll());
 
-		SmartDashboard.putNumber("YawRate", xyzDPS[2]);
-		SmartDashboard.putNumber("PitchRate", getGyroPitchRate());
-		SmartDashboard.putNumber("FiltPitchRate", getFilteredGyroPitchRate());
-		SmartDashboard.putNumber("RollRate", getGyroRollRate());
+		log_yawRate.accept(xyzDPS[2]);
+		log_pitchRate.accept(getGyroPitchRate());
+		log_filtPitchRate.accept(getFilteredGyroPitchRate());
+		log_rollRate.accept(getGyroRollRate());
 
 		var filteredPitch = m_dropFilter.calculate(getGyroPitch());
 		m_startedBalance = filteredPitch >= -3;
 
-		SmartDashboard.putNumber("HighPassPitch", filteredPitch);
-        SmartDashboard.putBoolean("StartedBalance", m_startedBalance);
+		log_highPassPitch.accept(filteredPitch);
+        log_startedBalance.accept(m_startedBalance);
 	}
 
 

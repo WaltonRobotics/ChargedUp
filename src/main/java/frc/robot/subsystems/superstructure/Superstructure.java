@@ -1,11 +1,12 @@
 package frc.robot.subsystems.superstructure;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.WaltLogger;
 import frc.lib.util.DashboardManager;
 import frc.robot.Constants.ElevatorK;
 import frc.robot.Constants.TiltK;
@@ -32,9 +33,9 @@ public class Superstructure extends SubsystemBase {
 	// State management
 	SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-	private final GenericEntry nte_currState = DashboardManager.addTabItem(this, "CurrState", "UNK");
-	private final GenericEntry nte_prevState = DashboardManager.addTabItem(this, "PrevState", "UNK");
-	protected final GenericEntry nte_stateQuirk = DashboardManager.addTabItem(this, "StateQuirk", "UNK");
+
+	private final DoublePublisher log_ssAutoState;
+	private final StringPublisher log_currState, log_prevState, log_stateQuirk;
 	
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
@@ -44,7 +45,16 @@ public class Superstructure extends SubsystemBase {
 		m_leds = leds;
 
 		DashboardManager.addTab(this);
-		SmartDashboard.putNumber("SSAutoState", -1);
+		final String topicPrefix = this.getName();
+
+		log_ssAutoState = WaltLogger.makeDoubleTracePub(topicPrefix + "/AutoState");
+		log_ssAutoState.accept(-1);
+		log_currState = WaltLogger.makeStringTracePub(topicPrefix + "/CurrentState");
+		log_currState.setDefault("UNK");
+		log_prevState = WaltLogger.makeStringTracePub(topicPrefix + "/PreviousState");
+		log_prevState.setDefault("UNK");
+		log_stateQuirk = WaltLogger.makeStringTracePub(topicPrefix + "/StateQuirk");
+		log_stateQuirk.setDefault("UNK");
 	}
 
 	/*
@@ -140,7 +150,7 @@ public class Superstructure extends SubsystemBase {
 			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
-		SmartDashboard.putNumber("SSAutoState", m_curState.idx);
+		log_ssAutoState.accept(m_curState.idx);
 	}
 
 	public SuperState getPrevState() {
@@ -169,8 +179,8 @@ public class Superstructure extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		nte_currState.setString(m_curState.toString());
-		nte_prevState.setString(m_prevState.toString());
+		log_currState.accept(m_curState.toString());
+		log_prevState.accept(m_prevState.toString());
 
 	}
 }

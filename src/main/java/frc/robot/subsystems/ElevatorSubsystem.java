@@ -17,13 +17,15 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.WaltLogger;
 import frc.lib.math.Conversions;
 import frc.lib.util.DashboardManager;
 import frc.robot.CTREConfigs;
@@ -52,22 +54,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private double m_holdFfEffort = 0;
 	// private boolean m_isCoast = false;
 
-	private final GenericEntry nte_ffEffort = DashboardManager.addTabDial(this, "FF Effort", -1, 1);
-	private final GenericEntry nte_pdEffort = DashboardManager.addTabDial(this, "PD Effort", -1, 1);
-	private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "Total Effort", -1, 1);
-	private final GenericEntry nte_targetHeight = DashboardManager.addTabNumberBar(this, "Target Height Meters",
-			kMinHeightMeters, kMaxHeightMeters);
-	private final GenericEntry nte_profileTargetHeight = DashboardManager.addTabNumberBar(this, "Prfoile Target Height Meters",
-	kMinHeightMeters, kMaxHeightMeters);
-	private final GenericEntry nte_actualHeight = DashboardManager.addTabNumberBar(this, "Actual Height Meters",
-			kMinHeightMeters, kMaxHeightMeters);
-	private final GenericEntry nte_actualHeightRaw = DashboardManager.addTabNumberBar(this, "Actual Height Raw", 0,
-			10000);
+	private final DoublePublisher log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight, 
+									log_actualHeight, log_actualHeightRaw, log_profileVelo, log_actualVelo, 
+									log_holdPdEffort, log_holdFfEffort;
+	private final BooleanPublisher log_atLowerLimit;
+
 	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
-	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
-	private final GenericEntry nte_profileVelo = DashboardManager.addTabDial(this, "PD Velo", -100, 100);
-	private final GenericEntry nte_actualVelo = DashboardManager.addTabNumberBar(this, "ActualVelo Mps",
-			-10, 10);
 
 	public ElevatorSubsystem() {
 		DashboardManager.addTab(this);
@@ -87,6 +79,20 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_right.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
 		m_right.configVelocityMeasurementWindow(16);
+
+		log_ffEffort = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/FFEffort");
+		log_pdEffort = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PDEffort");
+		log_totalEffort = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/TotalEffort");
+		log_targetHeight = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/TargetHeightMeters");
+		log_profileTargetHeight = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/ProfileTargetHeightMeters");
+		log_actualHeight = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/ActualHeightMeters");
+		log_actualHeightRaw = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/ActualHeightRaw");
+		log_profileVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PDVelo");
+		log_actualVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/ActualVeloMPS");
+		log_holdPdEffort = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/HoldPEffort");
+		log_holdFfEffort = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/HoldFFEffort");
+
+		log_atLowerLimit = WaltLogger.makeBoolTracePub(DB_TAB_NAME + "/AtLowerLimit");
 	}
 
 	/*
@@ -221,12 +227,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 		double totalEffort = m_ffEffort + m_pdEffort;
 		
 		// logging
-		nte_ffEffort.setDouble(m_ffEffort);
-		nte_pdEffort.setDouble(m_pdEffort);
-		nte_totalEffort.setDouble(totalEffort);
-		nte_profileVelo.setDouble(pdSetpoint.velocity);
-		nte_profileTargetHeight.setDouble(pdSetpoint.position);
-		nte_actualVelo.setDouble(getActualVelocityMps());
+		log_ffEffort.accept(m_ffEffort);
+		log_pdEffort.accept(m_pdEffort);
+		log_totalEffort.accept(totalEffort);
+		log_profileVelo.accept(pdSetpoint.velocity);
+		log_profileTargetHeight.accept(pdSetpoint.position);
+		log_actualVelo.accept(getActualVelocityMps());
 
 		return totalEffort;
 	}
@@ -312,20 +318,20 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		updateShuffleBoard();
 		setCoast(nte_coast.getBoolean(false));
-		SmartDashboard.putNumber("HOLD P Effort", m_holdPdEffort);
-		SmartDashboard.putNumber("HOLD FF Effort", m_holdFfEffort);
+		log_holdPdEffort.accept(m_holdPdEffort);
+		log_holdFfEffort.accept(m_holdFfEffort);
 	}
 
 	/*
 	 * Updates nte values
 	 */
 	public void updateShuffleBoard() {
-		nte_actualHeightRaw.setDouble(getActualHeightRaw());
-		nte_actualHeight.setDouble(getActualHeightMeters());
-		nte_ffEffort.setDouble(m_ffEffort);
-		nte_pdEffort.setDouble(m_pdEffort);
-		nte_totalEffort.setDouble(m_totalEffort);
-		nte_targetHeight.setDouble(getTargetHeightMeters());
-		nte_atLowerLimit.setBoolean(isFullyRetracted());
+		log_actualHeightRaw.accept(getActualHeightRaw());
+		log_actualHeight.accept(getActualHeightMeters());
+		log_ffEffort.accept(m_ffEffort);
+		log_pdEffort.accept(m_pdEffort);
+		log_totalEffort.accept(m_totalEffort);
+		log_targetHeight.accept(getTargetHeightMeters());
+		log_atLowerLimit.accept(isFullyRetracted());
 	}
 }
