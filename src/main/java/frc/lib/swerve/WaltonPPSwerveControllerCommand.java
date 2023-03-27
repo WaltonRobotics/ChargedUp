@@ -41,9 +41,9 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
   private static Consumer<PathPlannerTrajectory> logActiveTrajectory = null;
   private static Consumer<Pose2d> logTargetPose = null;
   private static Consumer<ChassisSpeeds> logSetpoint = null;
-  private BiConsumer<Translation2d, Rotation2d> logError =
-      this::defaultLogError;
-  private final DoublePublisher log_xError, log_yError, log_rotError;
+  private static BiConsumer<Translation2d, Rotation2d> logError =
+      WaltonPPSwerveControllerCommand::defaultLogError;
+  private static DoublePublisher log_xError, log_yError, log_rotError;
 
   /**
    * Constructs a new PPSwerveControllerCommand that when executed will follow the provided
@@ -334,7 +334,7 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
     return this.timer.hasElapsed(transformedTrajectory.getTotalTimeSeconds());
   }
 
-  private void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
+  private static void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
     log_xError.accept(translationError.getX());
     log_yError.accept(translationError.getY());
     log_rotError.accept(rotationError.getDegrees());
@@ -353,7 +353,7 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
    * @param logError BiConsumer that accepts a Translation2d and Rotation2d representing the error
    *     while path following
    */
-  public void setLoggingCallbacks(
+  public static void setLoggingCallbacks(
       Consumer<PathPlannerTrajectory> logActiveTrajectory,
       Consumer<Pose2d> logTargetPose,
       Consumer<ChassisSpeeds> logSetpoint,
@@ -361,6 +361,6 @@ public class WaltonPPSwerveControllerCommand extends CommandBase {
     WaltonPPSwerveControllerCommand.logActiveTrajectory = logActiveTrajectory;
     WaltonPPSwerveControllerCommand.logTargetPose = logTargetPose;
     WaltonPPSwerveControllerCommand.logSetpoint = logSetpoint;
-    this.logError = logError;
+    WaltonPPSwerveControllerCommand.logError = logError;
   }
 }

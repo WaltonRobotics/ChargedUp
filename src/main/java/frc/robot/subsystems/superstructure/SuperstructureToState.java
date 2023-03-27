@@ -105,7 +105,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
         final String fnQuirks = quirks;
 
         var dbgCmd = Commands.runOnce(() -> {
-            superstructure.nte_stateQuirk.setString(fromStr + "-" + toStr + "-" + fnQuirks);
+            superstructure.log_stateQuirk.accept(fromStr + "-" + toStr + "-" + fnQuirks);
         });
 
         if (proxyInternal) {

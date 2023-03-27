@@ -35,7 +35,7 @@ public class Superstructure extends SubsystemBase {
 	private SuperState m_curState = SuperState.SAFE;
 
 	private final DoublePublisher log_ssAutoState;
-	private final StringPublisher log_currState, log_prevState, log_stateQuirk;
+	public final StringPublisher log_currState, log_prevState, log_stateQuirk;
 	
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
