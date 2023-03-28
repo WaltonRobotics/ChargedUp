@@ -395,8 +395,8 @@ public class SwerveSubsystem extends SubsystemBase {
             this);
     }
 
-	public Command nowItsTimeToGetFunky() {
-		return new NewBalance(this);
+	public Command nowItsTimeToGetFunky(boolean reverse) {
+		return new NewBalance(this, reverse);
 	}
 
 	public CommandBase autoScore(Pose2d endPose) {
