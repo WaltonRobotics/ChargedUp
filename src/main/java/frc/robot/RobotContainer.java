@@ -85,7 +85,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(swerve.teleOpReset());
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky());
+		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky(true)); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
 		// driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));

@@ -75,7 +75,7 @@ public final class AutonFactory {
                         pathCmd,
                         Commands.waitSeconds(1).andThen(groundPickUp)
                                 .andThen(Commands.waitSeconds(1.4).andThen(ssResetCmd2))),
-                swerve.nowItsTimeToGetFunky());
+                swerve.nowItsTimeToGetFunky(false));
     }
 
     public static CommandBase cubeOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
@@ -194,7 +194,7 @@ public final class AutonFactory {
                 Commands.sequence(
                     Commands.waitSeconds(1.0),
                     path2Cmd.asProxy(),
-                    swerve.nowItsTimeToGetFunky().asProxy()
+                    swerve.nowItsTimeToGetFunky(false).asProxy()
                 )
             )
         );
@@ -212,7 +212,7 @@ public final class AutonFactory {
                 placeCmd,
                 ssResetCmd,
                 pathCmd,
-                swerve.nowItsTimeToGetFunky()).withName("OneCubeBack");
+                swerve.nowItsTimeToGetFunky(false)).withName("OneCubeBack");
     }
 
     public static CommandBase coneBackPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
@@ -229,7 +229,7 @@ public final class AutonFactory {
                 claw.release(), Commands.waitSeconds(.45),
                 ssResetCmd,
                 pathCmd,
-                swerve.nowItsTimeToGetFunky()).withName("OneConeBack");
+                swerve.nowItsTimeToGetFunky(false)).withName("OneConeBack");
     }
 
     // public static CommandBase oneCubeAround(SwerveSubsystem swerve,
