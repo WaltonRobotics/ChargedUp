@@ -158,8 +158,12 @@ public class RobotContainer {
 		// 	AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist),
 		// 	PPPaths.oneConePark.getInitialHolonomicPose()
 		// );
-		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElement(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.twoEle.get(0).getInitialHolonomicPose());
+
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.twoEle.get(0).getInitialHolonomicPose());
+
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
 		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist),
