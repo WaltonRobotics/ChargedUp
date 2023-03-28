@@ -15,10 +15,11 @@ public class AutonChooser {
         CONE_ONE_HALF_PARK("cone, pickup, balance"),
         CONE_BACK_PARK("cone, leave, balance"),
         CUBE_BACK_PARK("cube, leave, balance"),
+        TWO_ELEMENT("cone-cube-nopark"),
         
         
         //NOT IN USE
-        TWO_ELEMENT("cone-cube-nopark"),
+        
         ONE_CONE_PARK("drop cone then park"),
         CONE_BACK("drop cone back"),
         ONE_CUBE_AROUND("drop cube then go around and park"),

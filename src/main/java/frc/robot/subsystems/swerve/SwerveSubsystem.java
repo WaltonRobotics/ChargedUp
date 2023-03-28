@@ -96,6 +96,16 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final DoublePublisher log_rollRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/RollRate");
 	private final DoublePublisher log_pathGroupSegment = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PathGroupSeg");
 	private final DoublePublisher log_odoTime = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/OdoTime");
+	private final DoublePublisher log_autoXVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXVelo");
+	private final DoublePublisher log_autoYVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYVelo");
+	private final DoublePublisher log_autoXPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXPos");
+	private final DoublePublisher log_autoYPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYPos");
+	private final DoublePublisher log_autoXDesiredVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXDesiredVelo");
+	private final DoublePublisher log_autoYDesiredVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYDesiredVelo");
+	private final DoublePublisher log_autoXDesiredPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXDesiredPos");
+	private final DoublePublisher log_autoYDesiredPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYDesiredPos");
+	private final DoublePublisher log_autoTheta = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoThetaDesired");
+	private final DoublePublisher log_autoThetaPosError = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoThetaPosError");
 
 	private final LinearFilter m_pitchRateFilter = LinearFilter.movingAverage(16);
 
@@ -576,16 +586,16 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void periodic() {
 		var curSpeeds = getChassisSpeeds();
 		if (curSpeeds.vxMetersPerSecond == 0 && curSpeeds.vyMetersPerSecond == 0) {
-			autoReseed();
+			// autoReseed();
 		}
 
 		for (var module : m_modules) {
 			module.periodic();
 		}
 		
-		// if(DriverStation.isAutonomous()){
-		// 	updateVision();
-		// }
+		if(DriverStation.isAutonomous()){
+			updateVision();
+		}
 
 		if(DriverStation.isTeleop()){
 			m_apriltagHelper.setDriverMode(true);
@@ -602,6 +612,18 @@ public class SwerveSubsystem extends SubsystemBase {
 		log_pitchRate.accept(getGyroPitchRate());
 		log_pitchRateFiltered.accept(getFilteredGyroPitchRate());
 		log_rollRate.accept(getGyroRollRate());
+
+		var chassisSpeeds = getChassisSpeeds();
+		log_autoXVelo.accept(getChassisSpeeds().vxMetersPerSecond);
+		log_autoYVelo.accept(getChassisSpeeds().vyMetersPerSecond);
+		// log_autoXDesiredVelo.accept();
+		// log_autoYDesiredVelo.accept(yController);
+		log_autoXPos.accept(getPose().getX());
+		log_autoYPos.accept(getPose().getY());
+		log_autoXDesiredPos.accept(xController.getSetpoint());
+		log_autoYDesiredPos.accept(yController.getSetpoint());
+		log_autoTheta.accept(autoThetaController.getSetpoint());
+		log_autoThetaPosError.accept(autoThetaController.getPositionError());
 	}
 
 

@@ -91,37 +91,40 @@ public final class AutonFactory {
 
         return Commands.sequence(
             logAutonState("twoElem", 0),
-            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
+            tilt.autoHome().asProxy().alongWith(elev.autoHome()).asProxy().withTimeout(1.75),
             logAutonState("twoElem", 1),
-            placeCmd.withTimeout(2.5),
+            placeCmd.asProxy().withTimeout(2.0),
             logAutonState("twoElem", 2),
-            releaseCmd,
+            releaseCmd.asProxy(),
             logAutonState("twoElem", 3),
             // // move to safe state and prepare to move + autoGrab
             Commands.parallel(
-                ssResetCmd,
-                claw.grab()
+                ssResetCmd.asProxy().withTimeout(1.5),
+                claw.grab().asProxy()
             ),
             logAutonState("twoElem", 4),
             Commands.deadline(
-                pathCmd,
+                pathCmd.asProxy(),
                 Commands.sequence(
                     logAutonState("twoElem", 4.1),
-                    Commands.waitSeconds(1),
+                    Commands.waitSeconds(1.5),
                     logAutonState("twoElem", 4.2),
-                    groundPickUp,
+                    groundPickUp.asProxy(),
                     logAutonState("twoElem", 4.3),
-                    Commands.waitSeconds(1.85),
+                    Commands.waitSeconds(1.6),
                     logAutonState("twoElem", 4.4),
-                    ssResetCmd2,
+                    ssResetCmd2.asProxy(),
                     logAutonState("twoElem", 4.5)
                 )
             ),
             logAutonState("twoElem", 5),
-            cubePlaceCmd.withTimeout(2.5),
+            cubePlaceCmd.asProxy().withTimeout(2.0),
             logAutonState("twoElem", 6),
 
-            ssResetCmd3,
+            Commands.parallel(
+                ssResetCmd3.asProxy(),
+                claw.grab().asProxy()
+            ),
             logAutonState("twoElem", 7)
 
         );

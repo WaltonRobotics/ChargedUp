@@ -22,11 +22,12 @@ public class TheClaw extends SubsystemBase {
 	private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
 
 	private final Supplier<ClawState> m_autoStateSupplier;
+	private final Supplier<Double> m_wristDegSupplier;
 
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
 
-	private static final double kSubstationSensorCheckDelay = .75;
+	private static final double kSubstationSensorCheckDelay = .5;
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
@@ -36,14 +37,17 @@ public class TheClaw extends SubsystemBase {
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	private final Trigger stateAutoGrabTrig;
 	private final Trigger substationStateAutoGrabTrig;
-	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(0.5));
-	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay + .5));
+	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(1.25));
+	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay));
+	private final Trigger wristAngleTrig;
 
-	public TheClaw(Supplier<ClawState> autoStateSupplier) {
+	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
 		m_autoStateSupplier = autoStateSupplier;
 		DashboardManager.addTab(this);
 		m_lastActuationTimer.restart();
+		m_wristDegSupplier = wristDegSupplier;
 		m_substationDelayTimer.restart();
+		wristAngleTrig = new Trigger(() -> m_wristDegSupplier.get().doubleValue() <= 50);
 
 
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
@@ -64,8 +68,9 @@ public class TheClaw extends SubsystemBase {
 		substationStateAutoGrabTrig.onTrue(
 			Commands.sequence(
 				Commands.runOnce(()-> m_substationDelayTimer.restart()),
-				Commands.waitSeconds(kSubstationSensorCheckDelay),
+				Commands.waitUntil(wristAngleTrig),
 				release(),
+				Commands.runOnce(()-> m_substationDelayTimer.restart()),
 				Commands.runOnce(() -> m_grabOk = false).withName("internalAutoGrabSSReset")
 			)
 		);

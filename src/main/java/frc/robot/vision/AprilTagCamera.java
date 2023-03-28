@@ -40,13 +40,13 @@ public class AprilTagCamera {
     PhotonPoseEstimator leftLowPoseEstimator;
     PhotonPoseEstimator rightLowPoseEstimator;
 
-    private final DoubleArrayPublisher log_leftRobotToCam, log_rightRobotToCam;
+    // private final DoubleArrayPublisher log_leftRobotToCam, log_rightRobotToCam;
 
     public AprilTagCamera() {
         init();
         PhotonCamera.setVersionCheckEnabled(false);
-        log_leftRobotToCam = WaltLogger.makeDoubleArrTracePub("LeftLowCam_RobotToCam");
-        log_rightRobotToCam = WaltLogger.makeDoubleArrTracePub("RightLowCam_RobotToCam");
+        // log_leftRobotToCam = WaltLogger.makeDoubleArrTracePub("LeftLowCam_RobotToCam");
+        // log_rightRobotToCam = WaltLogger.makeDoubleArrTracePub("RightLowCam_RobotToCam");
     }
 
     public void updateField2d(Field2d field) {
@@ -73,8 +73,8 @@ public class AprilTagCamera {
             aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP,
             rightLowCam, rightLowRobotToCamera);
 
-        log_leftRobotToCam.accept(AdvantageScopeUtils.toDoubleArr(leftLowRobotToCamera));
-        log_rightRobotToCam.accept(AdvantageScopeUtils.toDoubleArr(rightLowRobotToCamera));
+        // log_leftRobotToCam.accept(AdvantageScopeUtils.toDoubleArr(leftLowRobotToCamera));
+        // log_rightRobotToCam.accept(AdvantageScopeUtils.toDoubleArr(rightLowRobotToCamera));
 
     }
 

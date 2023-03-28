@@ -43,7 +43,7 @@ public class RobotContainer {
 	
 	/* Subsystems */
 	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, leds);
-	public final TheClaw claw = new TheClaw(() -> superstructure.getCurState().claw);
+	public final TheClaw claw = new TheClaw(() -> superstructure.getCurState().claw, ()-> wrist.getDegrees());
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -158,8 +158,8 @@ public class RobotContainer {
 		// 	AutonFactory.oneConePark(swerve, superstructure, claw, elevator, tilt, wrist),
 		// 	PPPaths.oneConePark.getInitialHolonomicPose()
 		// );
-		// AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
-		// PPPaths.twoEle.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.twoEle.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
 		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist),

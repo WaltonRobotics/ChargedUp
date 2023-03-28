@@ -186,10 +186,10 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 4;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 7;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 3*Math.PI;
+        public static final double kMaxSpeedMetersPerSecond = 3.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2.85;  
+        public static final double kMaxAngularSpeedRadiansPerSecond = 9.6;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 24;
 
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
@@ -198,9 +198,9 @@ public final class Constants {
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 8; // 8
-        public static double kPYController = 8; // 8
-        public static double kPThetaController = 5.8; // 1
+        public static double kPXController = 16.5; // 8
+        public static double kPYController = 25.5; // 26  30+ jitters
+        public static double kPThetaController = 9; // 1
         public static final double kDThetaController = 0.1;
         public static final double kFThetaControllerAuto = 0;
         public static final double kFThetaController = 1;
@@ -248,7 +248,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         
         public static final double kTopAngleDegrees = 15;
         public static final double kTopConeAngleDegrees = 29.1;
-        public static final double kTopCubeAngleDegrees = 29.1;
+        public static final double kTopCubeAngleDegrees = 25;
         public static final double kMidConeAngleDegrees = 22.118;
         public static final double kMidCubeAngleDegrees = 22.041;
         public static final double kMidAngleDegrees = 29.1;
@@ -323,7 +323,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSafeHeight = kElevatorHeightOffset; // where wrist is free to move
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
-        public static final double kTopCubeHeightM = 0.615;
+        public static final double kTopCubeHeightM = 0.59;
         public static final double kTopConeHeightM = 0.68;
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.36;
@@ -335,7 +335,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kMaxVelocity = 2.75; // Meters Per Second
         public static final double kMaxAcceleration = 2.60; // Meters Per Second Squared
-        public static final double kMaxAccelerationDown = 1.85;
+        public static final double kMaxAccelerationDown = 2.5;
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
