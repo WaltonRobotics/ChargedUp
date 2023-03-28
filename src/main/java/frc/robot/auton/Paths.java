@@ -65,6 +65,10 @@ public class Paths {
 				kMaxSpeedMetersPerSecond,
 				kMaxAccelerationMetersPerSecondSquared);
 
+		public static final PathPlannerTrajectory cubeOneHalf = PathPlanner.loadPath("cubeOneHalf",
+				kMaxSpeedMetersPerSecond,
+				kMaxAccelerationMetersPerSecondSquared);
+
 		public static final List<PathPlannerTrajectory> twoElement = PathPlanner.loadPathGroup("twoElement",
 		kPPConstraints, new PathConstraints(1.5, 1.5), kPPConstraints);
 

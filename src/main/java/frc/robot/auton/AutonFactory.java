@@ -78,6 +78,29 @@ public final class AutonFactory {
                 swerve.nowItsTimeToGetFunky());
     }
 
+    public static CommandBase cubeOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+    var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
+    var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+    var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
+    var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+    var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+
+    return Commands.sequence(
+        Commands.parallel(
+            tilt.autoHome().asProxy(),
+            elev.autoHome().asProxy()
+        ).withTimeout(1.0),
+        placeCmd.withTimeout(2.0),
+        claw.release().asProxy(),
+        ssResetCmd,
+        Commands.deadline(
+                pathCmd,
+                Commands.waitSeconds(1).andThen(groundPickUp)
+                        .andThen(Commands.waitSeconds(1.4).andThen(ssResetCmd2))),
+        swerve.nowItsTimeToGetFunky());
+}
+
     public static CommandBase twoElement(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
             ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
