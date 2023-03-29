@@ -316,7 +316,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
-        public static final double kElevatorHeightOffset = 0.015; // offset in meters
+        public static final double kElevatorHeightOffset = 0.0; // offset in meters
         public static final double kCarriageMassKg = Units.lbsToKilograms(40);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
@@ -327,11 +327,9 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kTopConeHeightM = 0.68;
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.30;
-        public static final double kMidHeightMeters = Units.inchesToMeters(30);
         public static final double kBotHeightMeters = 0;
         public static final double kSubstationHeightM = 0.4095;
         public static final double kExtendedSubstationHeightM = .485;
-        public static final double kSubstationConeHeightM = 0;
 
         public static final double kMaxVelocity = 2.75; // Meters Per Second
         public static final double kMaxAcceleration = 2.75; // Meters Per Second Squared
