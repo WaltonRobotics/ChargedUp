@@ -20,9 +20,8 @@ public class SwerveAutoGo extends CommandBase {
 	private final Pose2d[] m_poses;
 	private final List<PathPoint> m_path;
 	private final Pose2d m_endPose;
-	private final Pose2d m_startPose = new Pose2d(new Translation2d(2.32, 4.96), new Rotation2d());
+	private final Pose2d m_startPose;
 
-	private PathPlannerTrajectory m_traj;
 	private PathPlannerTrajectory m_traj1;
 	private PathPlannerTrajectory m_traj2;
 	private PathPlannerTrajectory m_traj3;
@@ -32,22 +31,30 @@ public class SwerveAutoGo extends CommandBase {
 		m_poses = poses;
 		m_path = path;
 		m_endPose = endPose;
+		m_startPose = m_swerve.getPose();
     }
 
 	public SwerveAutoGo(Pose2d endPose, SwerveSubsystem swerve) {
 		m_endPose = endPose;
 		m_swerve = swerve;
+		m_startPose = m_swerve.getPose();
 		m_path = null;
 		m_poses = null;
 	}
 
 	@Override
 	public void initialize() {
-		m_traj = Paths.generateTrajectoryToPose(m_startPose, m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj1 = Paths.generateTrajectoryToPose(m_startPose, m_poses[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
+		m_traj2 = PathPlanner.generatePath(
+			new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+			m_path);
+		m_traj3 = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
 
-		var followCmd = m_swerve.getPPSwerveAutonCmd(m_traj);
+		var followCmd1 = m_swerve.getPPSwerveAutonCmd(m_traj1);
+		var followCmd2 = m_swerve.getPPSwerveAutonCmd(m_traj2);
+		var followCmd3 = m_swerve.getPPSwerveAutonCmd(m_traj3);
 
-		followCmd.withName("SwerveAutoGo").schedule();
+		followCmd1.andThen(followCmd2).andThen(followCmd3).withName("SwerveAutoGo").schedule();
 		
 		// m_traj1 = Paths.generateTrajectoryToPose(m_swerve.getPose(), m_poses[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
 		// m_traj2 = PathPlanner.generatePath(new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
