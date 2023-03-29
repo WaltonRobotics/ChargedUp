@@ -27,7 +27,7 @@ public class TheClaw extends SubsystemBase {
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
 
-	private static final double kSubstationSensorCheckDelay = .25;
+	private static final double kSubstationSensorCheckDelay = .75;
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
@@ -38,7 +38,7 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger stateAutoGrabTrig;
 	private final Trigger substationStateAutoGrabTrig;
 	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(1.25));
-	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay));
+	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(0.45));
 	private final Trigger wristAngleTrig;
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
@@ -47,6 +47,7 @@ public class TheClaw extends SubsystemBase {
 		m_lastActuationTimer.restart();
 		m_wristDegSupplier = wristDegSupplier;
 		m_substationDelayTimer.restart();
+		m_substationDelayTimer.stop();
 		wristAngleTrig = new Trigger(() -> m_wristDegSupplier.get().doubleValue() <= 50);
 
 
@@ -67,7 +68,7 @@ public class TheClaw extends SubsystemBase {
 
 		substationStateAutoGrabTrig.onTrue(
 			Commands.sequence(
-				Commands.runOnce(()-> m_substationDelayTimer.restart()),
+				Commands.runOnce(()->m_substationDelayTimer.start()),
 				Commands.waitUntil(wristAngleTrig),
 				release(),
 				Commands.runOnce(()-> m_substationDelayTimer.restart()),
