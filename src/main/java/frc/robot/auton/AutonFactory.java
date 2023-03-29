@@ -98,7 +98,7 @@ public final class AutonFactory {
                 pathCmd,
                 Commands.waitSeconds(1).andThen(groundPickUp)
                         .andThen(Commands.waitSeconds(1.4).andThen(ssResetCmd2))),
-        swerve.nowItsTimeToGetFunky());
+        swerve.nowItsTimeToGetFunky(false));
 }
 
     public static CommandBase twoElement(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
