@@ -38,7 +38,7 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger stateAutoGrabTrig;
 	private final Trigger substationStateAutoGrabTrig;
 	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(1.25));
-	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay));
+	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay+1.25));
 	private final Trigger wristAngleTrig;
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {

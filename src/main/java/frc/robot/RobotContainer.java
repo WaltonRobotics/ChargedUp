@@ -85,7 +85,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(swerve.teleOpReset());
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky(true)); // TODO: change reverse condition
+		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
 		// driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
@@ -166,6 +166,9 @@ public class RobotContainer {
 
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
+
+		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK, AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.cubeOneHalf.get(0).getInitialHolonomicPose());
 		// AutonChooser.AssignAutonCommand(AutonOption.ONE_CUBE_AROUND, AutonFactory.oneCubeAround(swerve, superstructure, claw, elevator, tilt, wrist),
 		// PPPaths.oneCubePark.getInitialHolonomicPose());
 		// AutonChooser.AssignAutonCommand(AutonOption.THREE_PIECE, AutonFactory.threePiece(swerve, superstructure, claw, elevator, tilt, wrist),
