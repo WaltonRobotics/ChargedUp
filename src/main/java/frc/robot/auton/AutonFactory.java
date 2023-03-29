@@ -286,44 +286,4 @@ public final class AutonFactory {
     // ).withName("OneConeBack");
     // }
 
-    // public static CommandBase threePiece(SwerveSubsystem swerve, Superstructure
-    // superstructure, TheClaw claw, ElevatorSubsystem elev, TiltSubsystem tilt,
-    // WristSubsystem wrist) {
-    // var placeCone1Cmd =
-    // superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto_TopCone");
-    // var placeCone2Cmd =
-    // superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(2).andThen(claw.release()).withName("SS-Auto_TopCone");
-    // var reset1Cmd =
-    // superstructure.toStateAuton(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-    // var reset2Cmd =
-    // superstructure.toStateAuton(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-    // var reset3Cmd =
-    // superstructure.toStateAuton(SuperState.SAFE).withTimeout(2).withName("SS-Auto-Safe");
-    // var groundPickUp1Cmd =
-    // superstructure.toStateAuton(SuperState.GROUND_PICK_UP).withTimeout(2);
-    // var groundPickUp2Cmd =
-    // superstructure.toStateAuton(SuperState.GROUND_PICK_UP).withTimeout(2);
-    // var placeCubeCmd =
-    // superstructure.toStateAuton(SuperState.TOPCUBE).withTimeout(2).andThen(claw.release()).withName("SS-Auto-TopCube");
-
-    // return Commands.sequence(
-    // tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
-    // placeCone1Cmd,
-    // Commands.waitSeconds(1),
-    // reset1Cmd,
-    // swerve.getPPSwerveAutonCmd(PPPaths.threePiece1),
-    // groundPickUp1Cmd,
-    // swerve.getPPSwerveAutonCmd(PPPaths.threePiece2),
-    // placeCubeCmd,
-    // Commands.waitSeconds(1),
-    // reset2Cmd,
-    // swerve.getPPSwerveAutonCmd(PPPaths.threePiece3),
-    // groundPickUp2Cmd,
-    // swerve.getPPSwerveAutonCmd(PPPaths.threePiece4),
-    // placeCone2Cmd,
-    // Commands.waitSeconds(1),
-    // reset3Cmd
-    // );
-    // }
-
 }
