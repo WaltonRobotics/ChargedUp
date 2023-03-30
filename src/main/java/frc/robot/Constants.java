@@ -266,6 +266,13 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kP = .75;
         public static final double kD = 0.0;
         public static final double kS = 1.5;
+
+        public static final double kPHold = .7;
+        public static final double kDHold = 0;
+        public static final double kHoldKs = .705;
+
+        public static final double kVoltageCompSaturationVolts = 12.0;
+
         public static final double kGearRatio = ((49.0 / 1.0) * (37.0 / 21.0));
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;

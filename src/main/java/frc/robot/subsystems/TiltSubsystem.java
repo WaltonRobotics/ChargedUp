@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
@@ -32,10 +33,13 @@ public class TiltSubsystem extends SubsystemBase {
 	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
+	private final PIDController m_holdController = new PIDController(kPHold, 0, kDHold);
 	private double m_targetAngle = 0;
 	private double m_ffEffort = 0;
 	private double m_pdEffort = 0;
 	private double m_totalEffort = 0;
+	private double m_holdPdEffort = 0;
+	private double m_holdFfEffort = 0;
 	private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "PDEffort", -1, 1);
 	private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "FFEffort", -1, 1);
 	private final GenericEntry nte_motorTotalEffort = DashboardManager.addTabDial(this, "TotalEffort", -1, 1);
@@ -98,6 +102,27 @@ public class TiltSubsystem extends SubsystemBase {
 		return m_pdEffort;
 	}
 
+	private double getEffortToHold(double degrees) {
+		m_holdPdEffort = m_holdController.calculate(getDegrees(), degrees);
+		m_holdFfEffort = 0;
+		var pdSetpoint = m_holdController.getSetpoint();
+		if (pdSetpoint != 0) {
+			m_holdFfEffort = kHoldKs;
+		}
+		double totalEffort = m_holdFfEffort + m_holdPdEffort;
+		return totalEffort;
+	}
+
+	public CommandBase holdAngle() {
+		return run(()->{
+			var holdEffort = 
+					MathUtil.clamp(getEffortToHold(m_targetAngle), -kVoltageCompSaturationVolts,
+							kVoltageCompSaturationVolts);
+			setVoltage(holdEffort / kVoltageCompSaturationVolts);
+		})
+		.withName("Hold Angle");
+	}
+
 	public double getDegrees() {
 		var rawDeg = (m_absoluteEncoder.get() * 360);
 		return MathUtil.clamp(rawDeg, 0, kMaxAngleDegrees); // get returns rotations, so rotations * (360 degrees / 1
@@ -109,6 +134,14 @@ public class TiltSubsystem extends SubsystemBase {
 			double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			m_targetAngle += powerVal * 1.2;
 			double effort = getEffortForTarget(m_targetAngle);
+			double holdEffort = getEffortToHold(m_targetAngle);
+			
+			if(powerVal > 0){
+				setVoltage(effort);
+			} else {
+				powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
+				setVoltage(holdEffort);
+			}
 			setVoltage(effort);
 		});
 	}
