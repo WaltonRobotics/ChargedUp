@@ -161,6 +161,9 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElement(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.twoEle.get(0).getInitialHolonomicPose());
 
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BUMPY, AutonFactory.twoElementBumpy(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.twoEleBumpy.get(0).getInitialHolonomicPose());
+
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.twoEle.get(0).getInitialHolonomicPose());
 

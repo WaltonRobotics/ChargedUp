@@ -16,6 +16,7 @@ public class AutonChooser {
         CONE_BACK_PARK("cone, leave, balance"),
         CUBE_BACK_PARK("cube, leave, balance"),
         TWO_ELEMENT("cone-cube-nopark"),
+        TWO_ELEMENT_BUMPY("cone-cube-nopark on bumpy side"),
         TWO_ELEMENT_PARK("cone-cube-park"),
         CUBE_ONE_HALF_PARK("cube, pickup, balance"),        
         
