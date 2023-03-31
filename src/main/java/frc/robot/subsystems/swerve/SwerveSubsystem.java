@@ -594,12 +594,15 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		
 		if(DriverStation.isAutonomous()){
+			m_apriltagHelper.setDriverMode(true);
 			updateVision();
 		}
 
 		if(DriverStation.isTeleop()){
-			m_apriltagHelper.setDriverMode(true);
+			m_apriltagHelper.setDriverMode(false);
+			updateVision();
 		}
+		updateVision();
 		updateOdo();
 
 		m_pigeon.getRawGyro(m_xyzDPS);

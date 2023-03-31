@@ -200,9 +200,9 @@ public final class Constants {
 
         public static double kPXController = 16.5; // 8
         public static double kPYController = 29; // 26  30+ jitters
-        public static double kPThetaController = 7; // 1
+        public static double kPThetaController = 7.0; // 1
         public static final double kDThetaController = 0.5;
-        public static final double kFThetaControllerAuto = 0;
+        public static final double kFThetaControllerAuto = 0;   
         public static final double kFThetaController = 1;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);

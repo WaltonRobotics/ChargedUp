@@ -165,6 +165,7 @@ public final class AutonFactory {
         var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle2);
         var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
         var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
 
         return Commands.sequence(
@@ -193,9 +194,9 @@ public final class AutonFactory {
                     Commands.sequence(
                         Commands.waitSeconds(1.45),  //Time before pickup
                         groundPickUp.asProxy(), //PICKUP
-                        // Commands.waitSeconds(.85),  //time before SAFE
-                        // ssResetCmd2.asProxy(), //SAFE
-                        Commands.waitSeconds(1.65),  //time before cube throw
+                        Commands.waitSeconds(.4),  //time before SAFE
+                        ssResetCmd2.asProxy(), //SAFE
+                        // Commands.waitSeconds(1.0),  //time before cube throw
                         cubePlaceCmd.asProxy().withTimeout(1.675)    //cube throw
                     )
                 )
@@ -220,8 +221,8 @@ public static CommandBase twoElementParkAlt(SwerveSubsystem swerve, Superstructu
         var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
         var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
-        var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle2);
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEleAlt);
+        var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEleAlt2);
         var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
         var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);

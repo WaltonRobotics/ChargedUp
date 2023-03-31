@@ -52,7 +52,7 @@ public class SwerveAutoGo extends CommandBase {
 		temp.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(-90)));
 		
 		m_traj = PathPlanner.generatePath(
-			new PathConstraints(2, 3),
+			new PathConstraints(1, 2),
 			temp);
 
 		// if (DriverStation.getAlliance().equals(Alliance.Red)) {
