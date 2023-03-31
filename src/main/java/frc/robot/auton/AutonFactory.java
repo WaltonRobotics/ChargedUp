@@ -83,7 +83,6 @@ public final class AutonFactory {
     var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
     var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
     var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
-    var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
     var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
 
     return Commands.sequence(
@@ -92,15 +91,13 @@ public final class AutonFactory {
             elev.autoHome().asProxy()
         ).withTimeout(1.0),
 
-        cubePlaceCmd.asProxy().withTimeout(1.7),
-        ssResetCmd.asProxy().withTimeout(1.55),
+        cubePlaceCmd.asProxy().withTimeout(1.55),
+        ssResetCmd.asProxy().withTimeout(1.35),
         Commands.deadline(
             pathCmd.asProxy(),
             Commands.sequence(
-                Commands.waitSeconds(5.5),
-                groundPickUp.asProxy(),
-                Commands.waitSeconds(1.0),
-                ssResetCmd2.asProxy()
+                Commands.waitSeconds(4.25),
+                groundPickUp.asProxy()
             )
         ),
         swerve.nowItsTimeToGetFunky().asProxy()
@@ -167,7 +164,6 @@ public final class AutonFactory {
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
         var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle2);
         var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
-        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
         var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
 
@@ -200,7 +196,7 @@ public final class AutonFactory {
                         // Commands.waitSeconds(.85),  //time before SAFE
                         // ssResetCmd2.asProxy(), //SAFE
                         Commands.waitSeconds(1.65),  //time before cube throw
-                        cubePlaceCmd.asProxy().withTimeout(1.85)    //cube throw
+                        cubePlaceCmd.asProxy().withTimeout(1.675)    //cube throw
                     )
                 )
             ),
@@ -211,7 +207,7 @@ public final class AutonFactory {
                 claw.grab().asProxy(),
 
                 Commands.sequence(
-                    Commands.waitSeconds(.5),   //time before balance
+                    Commands.waitSeconds(.975),   //time before balance
                     path2Cmd.asProxy(), //path to balance
                     swerve.nowItsTimeToGetFunky().asProxy()
                 )
