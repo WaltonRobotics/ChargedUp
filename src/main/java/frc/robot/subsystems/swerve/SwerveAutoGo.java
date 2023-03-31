@@ -11,6 +11,7 @@ import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.lib.util.Flipper;
 import frc.robot.Constants.AutoConstants;
 
 public class SwerveAutoGo extends CommandBase {
@@ -36,7 +37,9 @@ public class SwerveAutoGo extends CommandBase {
 	@Override
 	public void initialize() {
 		List<PathPoint> finalPath = new ArrayList<>();
-		finalPath.add(new PathPoint(m_swerve.getPose().getTranslation(), m_swerve.getPose().getRotation(), new Rotation2d()));
+		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose());
+		
+		finalPath.add(new PathPoint(currentPose.getTranslation(), currentPose.getRotation(), new Rotation2d()));
 		finalPath.addAll(m_path);
 		finalPath.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(90)));
 		
