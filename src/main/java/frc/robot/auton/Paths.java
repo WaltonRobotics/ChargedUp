@@ -76,6 +76,9 @@ public class Paths {
 		public static final List<PathPlannerTrajectory> twoEle = PathPlanner.loadPathGroup("twoEle",
 		kPPConstraints, kPPConstraints, kPPConstraints);
 
+		public static final List<PathPlannerTrajectory> twoEleAlt = PathPlanner.loadPathGroup("twoEleAlt",
+		kPPConstraints, kPPConstraints, kPPConstraints);
+
 		public static final List<PathPlannerTrajectory> twoEleBumpy = PathPlanner.loadPathGroup("twoEleBumpy",
 		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
 
@@ -83,6 +86,8 @@ public class Paths {
 		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
 
 		public static final PathPlannerTrajectory twoEle2 = PathPlanner.loadPath("twoEle2", kPPConstraints);
+
+		public static final PathPlannerTrajectory twoEleAlt2 = PathPlanner.loadPath("twoEleAlt2", kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> coneOneHalf = PathPlanner.loadPathGroup("coneOneHalf", 
 			kPPConstraints, new PathConstraints(1.35, 1.5), kPPConstraints);

@@ -177,6 +177,9 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.twoEle.get(0).getInitialHolonomicPose());
 
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK_ALT, AutonFactory.twoElementParkAlt(swerve, superstructure, claw, elevator, tilt, wrist),
+		PPPaths.twoEleAlt.get(0).getInitialHolonomicPose());
+
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_POINT_FIVE, AutonFactory.twoPointFive(swerve, superstructure, claw, elevator, tilt, wrist),
 		PPPaths.twoEleBumpy.get(0).getInitialHolonomicPose());
 
