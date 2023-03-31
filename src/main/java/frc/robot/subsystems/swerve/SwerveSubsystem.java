@@ -400,7 +400,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoScore(Pose2d endPose) {
-		return new SwerveAutoGo(ReferencePoints.notBumperPoses, PPAutoscoreClass.notBumpy, endPose, this);
+		return chasePoseCmd(()-> new Pose2d(
+			endPose.getX(),
+			getPose().getY(),
+			endPose.getRotation()));
 	}
 
 	/**
