@@ -40,6 +40,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    m_robotContainer.wrist.setCoast(false);
+    m_robotContainer.elevator.setCoast(false);
+    m_robotContainer.tilt.setCoast(false);
+
     m_modResetTimer.restart();
     if (!DriverStation.isFMSAttached()) {
       // Only run at home!
