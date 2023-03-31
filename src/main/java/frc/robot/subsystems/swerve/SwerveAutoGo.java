@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
@@ -9,62 +10,42 @@ import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.auton.Paths;
 
 public class SwerveAutoGo extends CommandBase {
 
 	private final SwerveSubsystem m_swerve;
-	private final Pose2d[] m_poses;
 	private final List<PathPoint> m_path;
 	private final Pose2d m_endPose;
-	private final Pose2d m_startPose;
 
-	private PathPlannerTrajectory m_traj1;
-	private PathPlannerTrajectory m_traj2;
-	private PathPlannerTrajectory m_traj3;
+	private PathPlannerTrajectory m_traj;
 
-    public SwerveAutoGo(Pose2d[] poses, List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
+    public SwerveAutoGo(List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
 		m_swerve = swerve;
-		m_poses = poses;
 		m_path = path;
 		m_endPose = endPose;
-		m_startPose = m_swerve.getPose();
     }
 
 	public SwerveAutoGo(Pose2d endPose, SwerveSubsystem swerve) {
 		m_endPose = endPose;
 		m_swerve = swerve;
-		m_startPose = m_swerve.getPose();
 		m_path = null;
-		m_poses = null;
 	}
 
 	@Override
 	public void initialize() {
-		m_traj1 = Paths.generateTrajectoryToPose(m_startPose, m_poses[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
-		m_traj2 = PathPlanner.generatePath(
+		List<PathPoint> finalPath = new ArrayList<>();
+		finalPath.add(new PathPoint(m_swerve.getPose().getTranslation(), m_swerve.getPose().getRotation(), new Rotation2d()));
+		finalPath.addAll(m_path);
+		finalPath.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(90)));
+		
+		m_traj = PathPlanner.generatePath(
 			new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
-			m_path);
-		m_traj3 = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
+			finalPath);
 
-		var followCmd1 = m_swerve.getPPSwerveAutonCmd(m_traj1);
-		var followCmd2 = m_swerve.getPPSwerveAutonCmd(m_traj2);
-		var followCmd3 = m_swerve.getPPSwerveAutonCmd(m_traj3);
+		var followCmd = m_swerve.getPPSwerveAutonCmd(m_traj);
 
-		followCmd1.andThen(followCmd2).andThen(followCmd3).withName("SwerveAutoGo").schedule();
-		
-		// m_traj1 = Paths.generateTrajectoryToPose(m_swerve.getPose(), m_poses[0], m_swerve.getFieldRelativeLinearSpeedsMPS());
-		// m_traj2 = PathPlanner.generatePath(new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
-		// 	m_path);
-		// m_traj3 = Paths.generateTrajectoryToPose(m_poses[1], m_endPose, m_swerve.getFieldRelativeLinearSpeedsMPS());
-
-		// var followCmd1 = m_swerve.getPPSwerveAutonCmd(m_traj1);
-		// var followCmd2 = m_swerve.getPPSwerveAutonCmd(m_traj2);
-		// var endCmd = m_swerve.getPPSwerveAutonCmd(m_traj3);
-		
-		// followCmd1.andThen(followCmd2).andThen(endCmd).withName("SwerveAutoGoGo").schedule();
+		followCmd.withName("SwerveAutoGo").schedule();
 	}
 }

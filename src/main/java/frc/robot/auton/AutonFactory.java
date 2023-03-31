@@ -199,7 +199,7 @@ public final class AutonFactory {
                         groundPickUp.asProxy(), //PICKUP
                         // Commands.waitSeconds(.85),  //time before SAFE
                         // ssResetCmd2.asProxy(), //SAFE
-                        Commands.waitSeconds(2.0),  //time before cube throw
+                        Commands.waitSeconds(1.65),  //time before cube throw
                         cubePlaceCmd.asProxy().withTimeout(1.85)    //cube throw
                     )
                 )
