@@ -18,6 +18,8 @@ import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPPaths;
+import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
+
 import static frc.robot.auton.AutonFactory.autonEventMap;
 
 import java.util.Optional;
@@ -96,7 +98,7 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
-		// driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
+		driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
 		// driver.y().whileTrue(swerve.autoScore(ScoringPoints.cube2));
 		// driver.b().whileTrue(swerve.autoScore(ScoringPoints.cone3));
 		// driver.x()

@@ -136,8 +136,8 @@ public class Robot extends TimedRobot {
     if(!DriverStation.isFMSAttached()){
       m_robotContainer.superstructure.smartReset();
     }
-    m_robotContainer.tilt.autoHome();
-    m_robotContainer.elevator.autoHome();
+    // m_robotContainer.tilt.autoHome();
+    // m_robotContainer.elevator.autoHome();
     m_robotContainer.swerve.resetToAbsolute();
    
     m_robotContainer.swerve.setYaw(0); // Why?
