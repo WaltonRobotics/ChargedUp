@@ -25,7 +25,6 @@ public class Superstructure {
 	protected final TiltSubsystem m_tilt;
 	protected final ElevatorSubsystem m_elevator;
 	protected final WristSubsystem m_wrist;
-	// protected final TheClaw m_claw;
 	protected final LEDSubsystem m_leds;
 
 	// State management

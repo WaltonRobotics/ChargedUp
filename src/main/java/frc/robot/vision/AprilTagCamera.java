@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import frc.lib.WaltLogger;
-import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.vision.EstimatedRobotPose;
 // import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -18,9 +16,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AprilTagCamera {
     public final PhotonCamera rightLowCam = new PhotonCamera("RightCornerLow");

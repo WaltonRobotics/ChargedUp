@@ -72,10 +72,10 @@ public class Paths {
 		new PathConstraints(1.5, 2));
 
 		public static final List<PathPlannerTrajectory> twoElement = PathPlanner.loadPathGroup("twoElement",
-		kPPConstraints, new PathConstraints(1.0, 1.5), kPPConstraints);
+		kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> twoEle = PathPlanner.loadPathGroup("twoEle",
-		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
+		kPPConstraints, kPPConstraints, kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> twoEleBumpy = PathPlanner.loadPathGroup("twoEleBumpy",
 		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);

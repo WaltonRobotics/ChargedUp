@@ -27,7 +27,7 @@ public class TheClaw extends SubsystemBase {
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
 
-	private static final double kSubstationSensorCheckDelay = .25;
+	private static final double kSensorCheckDelay = .24;
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
@@ -37,8 +37,8 @@ public class TheClaw extends SubsystemBase {
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	private final Trigger stateAutoGrabTrig;
 	private final Trigger substationStateAutoGrabTrig;
-	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(1.25));
-	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSubstationSensorCheckDelay+1.25));
+	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(kSensorCheckDelay));
+	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger wristAngleTrig;
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
@@ -134,6 +134,10 @@ public class TheClaw extends SubsystemBase {
 
 	public boolean getClosed() {
 		return m_isClosed;
+	}
+
+	public boolean getIsOkToGrab(){
+		return m_grabOk;
 	}
 
 	public enum ClawState{
