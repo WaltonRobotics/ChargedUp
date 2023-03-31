@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.superstructure.SuperState;
 import io.github.oblarg.oblog.Logger;
 
 /**
@@ -137,7 +136,8 @@ public class Robot extends TimedRobot {
     if(!DriverStation.isFMSAttached()){
       m_robotContainer.superstructure.smartReset();
     }
-    m_robotContainer.superstructure.smartReset();
+    m_robotContainer.tilt.autoHome();
+    m_robotContainer.elevator.autoHome();
     m_robotContainer.swerve.resetToAbsolute();
    
     m_robotContainer.swerve.setYaw(0); // Why?

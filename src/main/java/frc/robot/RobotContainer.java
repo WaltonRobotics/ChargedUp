@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,6 +12,7 @@ import frc.lib.LoggedCommandXboxController;
 import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
@@ -43,7 +45,7 @@ public class RobotContainer {
 	public final ElevatorSubsystem elevator = new ElevatorSubsystem();
 	public final WristSubsystem wrist = new WristSubsystem();
 	
-	/* Subsystems */
+	/* Subsystems */	
 	public final Superstructure superstructure = new Superstructure(tilt, elevator, wrist, leds);
 	public final TheClaw claw = new TheClaw(() -> superstructure.getCurState().claw, ()-> wrist.getDegrees());
 
@@ -72,7 +74,13 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// LED triggering
-		// claw.grabOkTrig.onTrue(leds.grabOk());
+		claw.grabOkTrig.onTrue(leds.grabOk());
+		if(DriverStation.isTeleop()){
+			claw.grabOkTrig.onTrue(Commands.waitSeconds(.1).andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));
+		}
+		if(DriverStation.isAutonomous()){
+			claw.grabOkTrig.onTrue(Commands.waitSeconds(.1).andThen(new SuperstructureToState(superstructure, SuperState.SAFE).asProxy()));
+		}
 	}
 
 	/**
