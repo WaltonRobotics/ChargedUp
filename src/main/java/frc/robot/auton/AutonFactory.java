@@ -196,7 +196,7 @@ public final class AutonFactory {
                         // Commands.waitSeconds(.85),  //time before SAFE
                         // ssResetCmd2.asProxy(), //SAFE
                         Commands.waitSeconds(1.65),  //time before cube throw
-                        cubePlaceCmd.asProxy().withTimeout(1.7)    //cube throw
+                        cubePlaceCmd.asProxy().withTimeout(1.675)    //cube throw
                     )
                 )
             ),
@@ -207,7 +207,7 @@ public final class AutonFactory {
                 claw.grab().asProxy(),
 
                 Commands.sequence(
-                    Commands.waitSeconds(.5),   //time before balance
+                    Commands.waitSeconds(.975),   //time before balance
                     path2Cmd.asProxy(), //path to balance
                     swerve.nowItsTimeToGetFunky().asProxy()
                 )
