@@ -38,7 +38,7 @@ public class SwerveAutoGo extends CommandBase {
 		List<PathPoint> finalPath = new ArrayList<>();
 		finalPath.add(new PathPoint(m_swerve.getPose().getTranslation(), m_swerve.getPose().getRotation(), new Rotation2d()));
 		finalPath.addAll(m_path);
-		finalPath.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), new Rotation2d()));
+		finalPath.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(90)));
 		
 		m_traj = PathPlanner.generatePath(
 			new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared),
