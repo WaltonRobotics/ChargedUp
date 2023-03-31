@@ -55,9 +55,9 @@ public class SwerveAutoGo extends CommandBase {
 			new PathConstraints(2, 3),
 			temp);
 
-		if (DriverStation.getAlliance().equals(Alliance.Red)) {
-			m_traj = Flipper.allianceFlip(m_traj);
-		}
+		// if (DriverStation.getAlliance().equals(Alliance.Red)) {
+		// 	m_traj = Flipper.allianceFlip(m_traj);
+		// }
 
 		// PathPlannerTrajectory goToStart = 
 		// 	Paths.generateTrajectoryToPose(currentPose, m_traj.getInitialHolonomicPose(), m_swerve.getFieldRelativeLinearSpeedsMPS());
