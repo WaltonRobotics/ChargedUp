@@ -43,8 +43,11 @@ public class SwerveAutoGo extends CommandBase {
 	@Override
 	public void initialize() {
 		List<PathPoint> temp = new ArrayList<>();
-		Pose2d currentPose = m_swerve.getPose(); // TODO: figure out how to flip
-		
+		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose()); // TODO: figure out how to flip
+
+		PathPoint currentPoint = new PathPoint(currentPose.getTranslation(), Rotation2d.fromDegrees(90), currentPose.getRotation());
+	
+		temp.add(currentPoint);
 		temp.addAll(m_path);
 		temp.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(-90)));
 		
@@ -52,15 +55,14 @@ public class SwerveAutoGo extends CommandBase {
 			new PathConstraints(2, 3),
 			temp);
 
-
-		PathPlannerTrajectory goToStart = 
-			Paths.generateTrajectoryToPose(currentPose, m_traj.getInitialHolonomicPose(), m_swerve.getFieldRelativeLinearSpeedsMPS());
-		
 		if (DriverStation.getAlliance().equals(Alliance.Red)) {
-			goToStart = Flipper.allianceFlip(goToStart);
+			m_traj = Flipper.allianceFlip(m_traj);
 		}
 
-		var followCmd = m_swerve.getPPSwerveAutonCmd(List.of(goToStart, m_traj));
+		// PathPlannerTrajectory goToStart = 
+		// 	Paths.generateTrajectoryToPose(currentPose, m_traj.getInitialHolonomicPose(), m_swerve.getFieldRelativeLinearSpeedsMPS());
+
+		var followCmd = m_swerve.getPPSwerveAutonCmd(m_traj);
 
 		followCmd.withName("SwerveAutoGo").schedule();
 	}
