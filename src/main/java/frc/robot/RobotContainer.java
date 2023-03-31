@@ -70,7 +70,7 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// LED triggering
-		claw.grabOkTrig.onTrue(leds.grabOk());
+		// claw.grabOkTrig.onTrue(leds.grabOk());
 	}
 
 	/**
