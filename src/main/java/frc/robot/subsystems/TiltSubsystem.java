@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
@@ -61,7 +60,7 @@ public class TiltSubsystem extends SubsystemBase {
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
 
 		// reset relative encoder on switch activation
-		// m_quadratureEncoder.setIndexSource(m_homeSwitch);
+		m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
 		DashboardManager.addTab(this);
 	}
@@ -178,7 +177,6 @@ public class TiltSubsystem extends SubsystemBase {
 			}, () -> {
 				setVoltage(0);
 			}).until(m_homeSwitchTrigger)
-			.andThen(m_homeSwitch.get() ? new InstantCommand(() -> m_absoluteEncoder.reset()) : Commands.none())
 		);
 	}
 
