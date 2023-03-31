@@ -1,5 +1,7 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -25,17 +27,17 @@ public class NewBalance extends SequentialCommandGroup {
 
     public NewBalance(SwerveSubsystem swerve) {
         log_balState = WaltLogger.makeDoubleTracePub("BalanceState");
-
+        DoubleSupplier thetaSupplier = () -> swerve.autoThetaController.calculate(swerve.getGyroYaw(), 0);
         CommandBase oneHopThisTime =
             Commands.run(
-                ()-> swerve.drive(3.25, 0, 0, false, false), swerve)
+                ()-> swerve.drive(3.25, 0, thetaSupplier.getAsDouble(), false, false), swerve)
         .until(()-> Math.abs(swerve.getGyroPitch()) > 14)
         .finallyDo((intr) -> {
             m_climbingSign = Math.signum(swerve.getGyroPitch());
         });
 		
 		CommandBase slideToTheFront = Commands.run(()-> { // or slide to the back?
-                swerve.drive(0.75, 0, 0, false, false);
+                swerve.drive(0.75, 0, thetaSupplier.getAsDouble(), false, false);
         }, swerve)
         .until(() -> {
             var curPitchRate = swerve.getFilteredGyroPitchRate();
