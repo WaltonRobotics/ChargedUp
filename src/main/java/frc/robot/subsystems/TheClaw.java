@@ -22,6 +22,7 @@ public class TheClaw extends SubsystemBase {
 	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
 	private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
 	private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
+	private final GenericEntry nte_withinRange = DashboardManager.addTabBooleanBox(this, "within range");
 	
 	private final TimeOfFlight timeOfFlight = new TimeOfFlight(kTimeOfFlightID);
 
@@ -164,5 +165,6 @@ public class TheClaw extends SubsystemBase {
 		nte_isClosed.setBoolean(m_isClosed);
 		nte_clawSensor.setBoolean(sensorTrig.getAsBoolean());
 		nte_superstate.setString(m_autoStateSupplier.get().toString());
+		nte_withinRange.setBoolean(withinRange());
 	}
 }
