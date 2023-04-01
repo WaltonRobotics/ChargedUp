@@ -15,38 +15,37 @@ import frc.lib.util.Flipper;
 public class SwerveAutoGo extends CommandBase {
 
 	private final SwerveSubsystem m_swerve;
-	private final List<PathPoint> m_path;
+	private final PathPoint m_side;
 	private final Pose2d m_endPose;
 
 	private PathPlannerTrajectory m_traj;
-	private List<PathPoint> m_path2;
 
-    public SwerveAutoGo(List<PathPoint> path, Pose2d endPose, SwerveSubsystem swerve) {
+    public SwerveAutoGo(PathPoint side, Pose2d endPose, SwerveSubsystem swerve) {
 		m_swerve = swerve;
-		m_path = path;
+		m_side = side;
 		m_endPose = endPose;
     }
 
 	public SwerveAutoGo(Pose2d endPose, SwerveSubsystem swerve) {
 		m_endPose = endPose;
 		m_swerve = swerve;
-		m_path = null;
+		m_side = null;
 	}
 
 	@Override
 	public void initialize() {
-		List<PathPoint> temp = new ArrayList<>();
+		List<PathPoint> path = new ArrayList<>();
 		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose()); // TODO: figure out how to flip
 
 		PathPoint currentPoint = new PathPoint(currentPose.getTranslation(), Rotation2d.fromDegrees(90), currentPose.getRotation());
 	
-		temp.add(currentPoint);
-		temp.addAll(m_path);
-		temp.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(-90)));
+		path.add(currentPoint);
+		path.add(m_side);
+		path.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(-90)));
 		
 		m_traj = PathPlanner.generatePath(
 			new PathConstraints(1, 2),
-			temp);
+			path);
 
 		// if (DriverStation.getAlliance().equals(Alliance.Red)) {
 		// 	m_traj = Flipper.allianceFlip(m_traj);

@@ -4,6 +4,7 @@ import frc.robot.SwerveModule;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.PPAutoscoreClass;
+import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.WaltLogger;
 import frc.lib.swerve.SwerveDriveState;
@@ -399,7 +400,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoScore(Pose2d endPose) {
-		return new SwerveAutoGo(PPAutoscoreClass.notBumpy, endPose, this);
+		return new SwerveAutoGo(ReferencePoints.notBumper2, endPose, this);
 	}
 
 	/**
