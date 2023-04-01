@@ -393,6 +393,8 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final int kTheID = 0;
         public static final int kClawSensor = 0;
+
+        public static final int kTimeOfFlightID = 1;
     }
 
        // in meters

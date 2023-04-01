@@ -14,12 +14,16 @@ import static frc.robot.Constants.TheClawK.*;
 
 import java.util.function.Supplier;
 
+import com.playingwithfusion.TimeOfFlight;
+
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
 	private final DigitalInput clawSensor = new DigitalInput(kClawSensor);
 	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
 	private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
 	private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
+	
+	private final TimeOfFlight timeOfFlight = new TimeOfFlight(kTimeOfFlightID);
 
 	private final Supplier<ClawState> m_autoStateSupplier;
 	private final Supplier<Double> m_wristDegSupplier;

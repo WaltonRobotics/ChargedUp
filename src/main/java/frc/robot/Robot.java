@@ -39,10 +39,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_robotContainer.wrist.setCoast(false);
-    m_robotContainer.elevator.setCoast(false);
-    m_robotContainer.tilt.setCoast(false);
-
     m_modResetTimer.restart();
     if (!DriverStation.isFMSAttached()) {
       // Only run at home!
@@ -102,6 +98,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_robotContainer.wrist.setCoast(false);
+    m_robotContainer.elevator.setCoast(false);
+    m_robotContainer.tilt.setCoast(false);
     m_robotContainer.superstructure.initState();
 
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
@@ -130,6 +129,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.wrist.setCoast(false);
+    m_robotContainer.elevator.setCoast(false);
+    m_robotContainer.tilt.setCoast(false);
 
     m_robotContainer.superstructure.initState();
     //add if no fms, smartreset superstrucute
