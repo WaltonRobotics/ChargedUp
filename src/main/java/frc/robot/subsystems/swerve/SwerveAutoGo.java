@@ -7,17 +7,10 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPointAccessor;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.lib.swerve.PathPointGetters;
 import frc.lib.util.Flipper;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.auton.Paths;
 
 public class SwerveAutoGo extends CommandBase {
 
