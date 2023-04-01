@@ -20,7 +20,8 @@ public class AutonChooser {
         TWO_ELEMENT_PARK("cone-cube-park"),
         TWO_ELEMENT_PARK_ALT("cube-cone-park"),
         TWO_POINT_FIVE("cone-cube-get-another"),
-        CUBE_ONE_HALF_PARK("cube, pickup, balance"),        
+        CUBE_ONE_HALF_PARK("cube, pickup, balance"),     
+        ONE_CONE_OUT("cone, drive out of community"),   
         
         //NOT IN USE
         

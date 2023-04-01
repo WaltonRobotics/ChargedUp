@@ -425,6 +425,23 @@ ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
                 swerve.nowItsTimeToGetFunky()).withName("OneConeBack");
     }
 
+    public static CommandBase coneBackOut(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(2.5);
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE)
+                .withTimeout(2)
+                .withName("SS-Auto-Safe");
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConeOut);
+
+        return Commands.sequence(
+                tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
+                placeCmd,
+                claw.release(), Commands.waitSeconds(0.45),
+                ssResetCmd,
+                pathCmd,
+                swerve.nowItsTimeToGetFunky()).withName("OneConeBack");
+    }
+
     // public static CommandBase oneCubeAround(SwerveSubsystem swerve,
     // Superstructure superstructure, TheClaw claw, ElevatorSubsystem elev,
     // TiltSubsystem tilt, WristSubsystem wrist) {

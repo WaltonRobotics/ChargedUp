@@ -95,6 +95,10 @@ public class Paths {
 		public static final PathPlannerTrajectory oneCubePark = PathPlanner.loadPath("oneCubePark", 
 			kMaxSpeedMetersPerSecond,
 			kMaxAccelerationMetersPerSecondSquared);
+		
+		public static final PathPlannerTrajectory oneConeOut = PathPlanner.loadPath("oneConeOut",
+			kMaxSpeedMetersPerSecond,
+			kMaxAccelerationMetersPerSecondSquared);
 
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
 				1.2,
