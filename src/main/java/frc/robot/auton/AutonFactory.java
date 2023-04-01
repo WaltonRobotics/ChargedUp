@@ -46,11 +46,11 @@ public final class AutonFactory {
 
         return Commands.sequence(
                 tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
-                placeCmd,
-                clawCmd,
+                placeCmd.asProxy(),
+                clawCmd.asProxy(),
                 Commands.waitSeconds(.5),
-                ssResetCmd,
-                pathCmd,
+                ssResetCmd.asProxy(),
+                pathCmd.asProxy(),
                 new AutoBalance(swerve, true).withName("autobalance"));
     }
 
