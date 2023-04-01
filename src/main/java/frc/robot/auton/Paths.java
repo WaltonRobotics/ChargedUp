@@ -158,7 +158,7 @@ public class Paths {
 		public static final PathPoint notBumper1 = new PathPoint(notBumper1Pose.getTranslation(), rot2dDeg(-165),
 				notBumper1Pose.getRotation());
 		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(90),
-				notBumper2Pose.getRotation());
+				rot2dDeg(180));
 		public static final PathPoint bumper1 = new PathPoint(bumper1Pose.getTranslation(), rot2dDeg(180),
 				bumper1Pose.getRotation(), 2);
 		public static final PathPoint bumper2 = new PathPoint(bumper2Pose.getTranslation(), rot2dDeg(175),

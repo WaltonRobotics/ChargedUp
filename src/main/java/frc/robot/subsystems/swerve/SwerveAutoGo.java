@@ -37,7 +37,7 @@ public class SwerveAutoGo extends CommandBase {
 		List<PathPoint> path = new ArrayList<>();
 		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose()); // TODO: figure out how to flip
 
-		PathPoint currentPoint = new PathPoint(currentPose.getTranslation(), Rotation2d.fromDegrees(90), currentPose.getRotation());
+		PathPoint currentPoint = new PathPoint(currentPose.getTranslation(), Rotation2d.fromDegrees(0), currentPose.getRotation());
 	
 		path.add(currentPoint);
 		path.add(m_side);
