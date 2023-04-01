@@ -22,6 +22,7 @@ public class TheClaw extends SubsystemBase {
 	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
 	private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
 	private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
+	private final GenericEntry nte_withinRange = DashboardManager.addTabBooleanBox(this, "within range");
 	
 	private final TimeOfFlight timeOfFlight = new TimeOfFlight(kTimeOfFlightID);
 
@@ -37,6 +38,7 @@ public class TheClaw extends SubsystemBase {
 	private boolean m_grabOk = false;
 	
 	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
+	public final Trigger timeOfFlightTrig = new Trigger(this::withinRange);
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	private final Trigger stateAutoGrabTrig;
@@ -63,6 +65,7 @@ public class TheClaw extends SubsystemBase {
 			
 		stateAutoGrabTrig
 		.and(sensorTrig)
+		.and(timeOfFlightTrig)
 		.and(sensorCheckValidTrig)
 			.onTrue(
 				Commands.runOnce(() -> m_grabOk = true)
@@ -80,7 +83,8 @@ public class TheClaw extends SubsystemBase {
 		);
 		substationStateAutoGrabTrig
 		.and(sensorTrig)
-		.and(substationDelayTrig)
+		.and(timeOfFlightTrig)
+		// .and(substationDelayTrig)
 		.and(closedTrig.negate())
 		.onTrue(
 			Commands.runOnce(() -> m_grabOk = true)
@@ -96,6 +100,10 @@ public class TheClaw extends SubsystemBase {
 		m_substationDelayTimer.restart();
 		claw.set(!closed);
 		m_isClosed = closed;
+	}
+
+	private boolean withinRange() {
+		return timeOfFlight.getRange() < 177.8;
 	}
 
 	public CommandBase autoGrab() {
@@ -157,5 +165,6 @@ public class TheClaw extends SubsystemBase {
 		nte_isClosed.setBoolean(m_isClosed);
 		nte_clawSensor.setBoolean(sensorTrig.getAsBoolean());
 		nte_superstate.setString(m_autoStateSupplier.get().toString());
+		nte_withinRange.setBoolean(withinRange());
 	}
 }
