@@ -3,7 +3,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.WaltLogger;
 import frc.robot.Constants.ElevatorK;
@@ -17,8 +16,6 @@ import frc.robot.subsystems.WristSubsystem;
 import static frc.robot.Constants.WristK.*;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import static frc.robot.Constants.ElevatorK.*;
 
 public class Superstructure {

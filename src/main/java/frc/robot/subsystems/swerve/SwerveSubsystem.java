@@ -4,7 +4,6 @@ import frc.robot.SwerveModule;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.PPAutoscoreClass;
-import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.WaltLogger;
 import frc.lib.swerve.SwerveDriveState;
@@ -598,10 +597,10 @@ public class SwerveSubsystem extends SubsystemBase {
 			updateVision();
 		}
 
-		if(DriverStation.isTeleop()){
-			m_apriltagHelper.setDriverMode(false);
-			updateVision();
-		}
+		// if(DriverStation.isTeleop()){
+		// 	m_apriltagHelper.setDriverMode(false);
+		// 	updateVision();
+		// }
 		updateVision();
 		updateOdo();
 
