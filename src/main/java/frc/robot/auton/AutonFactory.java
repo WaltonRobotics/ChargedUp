@@ -80,62 +80,12 @@ public final class AutonFactory {
 
     public static CommandBase cubeOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
         ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
-        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
-        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+    var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
+    var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+    var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
+    var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
 
-        return Commands.sequence(
-            Commands.parallel(
-                tilt.autoHome().asProxy(),
-                elev.autoHome().asProxy()
-            ).withTimeout(1.0),
-
-            cubePlaceCmd.asProxy().withTimeout(1.55),
-            ssResetCmd.asProxy().withTimeout(1.35),
-            Commands.deadline(
-                pathCmd.asProxy(),
-                Commands.sequence(
-                    Commands.waitSeconds(4.25),
-                    groundPickUp.asProxy()
-                )
-            ),
-            swerve.nowItsTimeToGetFunky().asProxy()
-        );
-    }
-
-    public static CommandBase coneOneHalfMidPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var placeCmd = superstructure.toStateAuton(SuperState.MIDCONE).withName("SS-Auto-TopCone");
-        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.coneOneHalf);
-        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
-
-        return Commands.sequence(
-                // auto home
-                tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
-                // move to drop gamepiece (inaccurate due to vision overruns, hence timeout)
-                placeCmd.withTimeout(2.5),
-                // actually drop, and wait 0.6sec to let it fall
-                claw.release().asProxy(), Commands.waitSeconds(.4),
-                // move to safe state and prepare to move + autoGrab
-                ssResetCmd,
-                Commands.deadline(
-                        pathCmd,
-                        Commands.waitSeconds(1).andThen(groundPickUp)
-                                .andThen(Commands.waitSeconds(1.4).andThen(ssResetCmd2))),
-                swerve.nowItsTimeToGetFunky());
-    }
-
-    public static CommandBase cubeOneHalfMidPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var cubePlaceCmd = superstructure.cubeTossMid(claw, true);
-        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
-        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
-
-        return Commands.sequence(
+    return Commands.sequence(
         Commands.parallel(
             tilt.autoHome().asProxy(),
             elev.autoHome().asProxy()
@@ -151,8 +101,8 @@ public final class AutonFactory {
             )
         ),
         swerve.nowItsTimeToGetFunky().asProxy()
-        );
-    }
+    );
+}
 
     public static CommandBase twoElement(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
             ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
