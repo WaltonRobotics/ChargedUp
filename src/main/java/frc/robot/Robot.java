@@ -79,7 +79,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     Logger.updateEntries();
-    FieldConstants.updateAprilTags(m_robotContainer.swerve, m_robotContainer.vision.leftLowCam, m_robotContainer.vision.rightLowCam);
+    // FieldConstants.updateAprilTags(m_robotContainer.swerve, m_robotContainer.vision.leftLowCamRunner, m_robotContainer.vision.rightLowCamRunner);
     NetworkTableInstance.getDefault().flush();
   }
 

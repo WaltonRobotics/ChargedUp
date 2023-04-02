@@ -11,7 +11,7 @@ import frc.lib.swerve.SwerveDriveState;
 import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
-import frc.lib.vision.EstimatedRobotPose;
+// import frc.lib.vision.EstimatedRobotPose;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -26,6 +26,8 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
@@ -526,12 +528,13 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * updates field
 	 */
 	public void updateVision() {
+		
 		var visionEstBegin = Timer.getFPGATimestamp();
-		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper
-				.leftLow_getEstPose(m_poseEstimator.getEstimatedPosition());
+		
+		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper.leftLowCamRunner.getLatestEstimatedPose();
 
 		Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
-				m_apriltagHelper.rightLow_getEstPose(m_poseEstimator.getEstimatedPosition());
+				m_apriltagHelper.rightLowCamRunner.getLatestEstimatedPose();
 
 		
 
@@ -593,15 +596,15 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.periodic();
 		}
 		
-		if(DriverStation.isAutonomous()){
-			m_apriltagHelper.setDriverMode(true);
-			updateVision();
-		}
+		// if(DriverStation.isAutonomous()){
+		// 	m_apriltagHelper.setDriverMode(true);
+		// 	updateVision();
+		// }
 
-		if(DriverStation.isTeleop()){
-			m_apriltagHelper.setDriverMode(false);
-			updateVision();
-		}
+		// if(DriverStation.isTeleop()){
+		// 	m_apriltagHelper.setDriverMode(false);
+		// 	updateVision();
+		// }
 		updateVision();
 		updateOdo();
 
