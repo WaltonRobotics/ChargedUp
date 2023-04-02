@@ -12,7 +12,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.WristK.*;
 
@@ -53,6 +55,8 @@ public class WristSubsystem extends SubsystemBase {
   private final GenericEntry nte_maxLimit = DashboardManager.addTabBooleanBox(this, "At Top Limit");
   private final GenericEntry nte_stickVoltage = DashboardManager.addTabDial(this, "Stick Voltage", -15, 15);
 
+  private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
+
   public WristSubsystem() {
     m_motor.setIdleMode(IdleMode.kBrake); // ANTI-DROOPY
     m_motor.setInverted(true);
@@ -62,7 +66,15 @@ public class WristSubsystem extends SubsystemBase {
     m_motor.burnFlash();
 
     m_controller.setTolerance(1.5);
+
+    m_dashboardCoastTrigger
+			.onTrue(setIdle(true))
+			.onFalse(setIdle(false));
   }
+
+  private CommandBase setIdle(boolean coast) {
+		return Commands.runOnce(() -> m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake));
+	}
 
   /*
    * @param coast Whether or not to set motor to coast/brake
@@ -235,7 +247,6 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateShuffleBoard();
-    setCoast(nte_coast.getBoolean(false));
   }
 
   /*

@@ -53,6 +53,8 @@ public class TiltSubsystem extends SubsystemBase {
 	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	private final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
+	private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
+
 	
 	public TiltSubsystem() {
 		m_diskBrake.set(true);
@@ -64,6 +66,18 @@ public class TiltSubsystem extends SubsystemBase {
 		// m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
 		DashboardManager.addTab(this);
+
+		m_homeSwitchTrigger.onTrue(Commands.runOnce(() -> {
+			m_absoluteEncoder.reset();
+		}));
+
+		m_dashboardCoastTrigger
+			.onTrue(setIdle(true))
+			.onFalse(setIdle(false));
+	}
+
+	private CommandBase setIdle(boolean coast) {
+		return Commands.runOnce(() -> m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake));
 	}
 
 	public CommandBase setTarget(double degrees) {
@@ -231,14 +245,6 @@ public class TiltSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		if (!m_homeSwitch.get()) {
-			m_absoluteEncoder.reset();
-			// if(m_resetTimer.hasElapsed(2.5)){
-			// 	m_controller.reset(0);
-			// 	m_resetTimer.reset();
-			// }
-		}
-		setCoast(nte_coast.getBoolean(false));
 		updateShuffleBoard();
 	}
 

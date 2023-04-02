@@ -91,8 +91,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_actualVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/ActualVeloMPS");
 		log_holdPdEffort = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/HoldPEffort");
 		log_holdFfEffort = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/HoldFFEffort");
-
 		log_atLowerLimit = WaltLogger.makeBoolTracePub(DB_TAB_NAME + "/AtLowerLimit");
+
+		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
+			m_right.setSelectedSensorPosition(0);
+		}));
 	}
 
 	/*
@@ -308,14 +311,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		if (!m_lowerLimit.get()) {
-			m_right.setSelectedSensorPosition(0);
-			// if(m_resetTimer.hasElapsed(2.5)){
-			// 	m_controller.reset(0);
-			// 	m_resetTimer.reset();
-			// }
-		}
-
 		updateShuffleBoard();
 		setCoast(nte_coast.getBoolean(false));
 		log_holdPdEffort.accept(m_holdPdEffort);
