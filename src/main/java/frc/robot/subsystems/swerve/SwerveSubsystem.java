@@ -1,15 +1,12 @@
 package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.auton.Paths;
-import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
-import frc.lib.logging.NTPublisherFactory;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.lib.swerve.SwerveDriveState;
-import frc.lib.util.AdvantageScopeUtils;
-import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
 // import frc.lib.vision.EstimatedRobotPose;
 import frc.robot.Constants;
@@ -22,12 +19,9 @@ import static frc.robot.Constants.SwerveK.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
-import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
@@ -45,8 +39,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -89,30 +81,32 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final AprilTagCamera m_apriltagHelper;
 
-	private final DoublePublisher log_yaw = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/Yaw");
-	private final DoublePublisher log_yawRate = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/YawRate");
-	private final DoublePublisher log_pitch = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/Pitch");
-	private final DoublePublisher log_pitchRate = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/PitchRate");
-	private final DoublePublisher log_pitchRateFiltered = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/PitchRateFiltered");
-	private final DoublePublisher log_roll = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/Roll");
-	private final DoublePublisher log_rollRate = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/RollRate");
-	private final DoublePublisher log_pathGroupSegment = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/PathGroupSeg");
-	private final DoublePublisher log_odoTime = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/OdoTime");
-	private final DoublePublisher log_autoXVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXVelo");
-	private final DoublePublisher log_autoYVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYVelo");
-	private final DoublePublisher log_autoXPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXPos");
-	private final DoublePublisher log_autoYPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYPos");
-	private final DoublePublisher log_autoXDesiredVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXDesiredVelo");
-	private final DoublePublisher log_autoYDesiredVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYDesiredVelo");
-	private final DoublePublisher log_autoXDesiredPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXDesiredPos");
-	private final DoublePublisher log_autoYDesiredPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYDesiredPos");
-	private final DoublePublisher log_autoTheta = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoThetaDesired");
-	private final DoublePublisher log_autoThetaPosError = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoThetaPosError");
+	private final DoubleLogger log_yaw = WaltLogger.logDouble(DB_TAB_NAME, "Yaw");
+	private final DoubleLogger log_yawRate = WaltLogger.logDouble(DB_TAB_NAME, "YawRate");
+	private final DoubleLogger log_pitch = WaltLogger.logDouble(DB_TAB_NAME, "Pitch");
+	private final DoubleLogger log_pitchRate = WaltLogger.logDouble(DB_TAB_NAME, "PitchRate");
+	private final DoubleLogger log_pitchRateFiltered = WaltLogger.logDouble(DB_TAB_NAME, "PitchRateFiltered");
+	private final DoubleLogger log_roll = WaltLogger.logDouble(DB_TAB_NAME, "Roll");
+	private final DoubleLogger log_rollRate = WaltLogger.logDouble(DB_TAB_NAME, "RollRate");
+	private final DoubleLogger log_odoTime = WaltLogger.logDouble(DB_TAB_NAME, "OdoTime");
+	private final DoubleLogger log_autoXVelo = WaltLogger.logDouble(DB_TAB_NAME, "AutoXVelo");
+	private final DoubleLogger log_autoYVelo = WaltLogger.logDouble(DB_TAB_NAME, "AutoYVelo");
+	private final DoubleLogger log_autoXPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoXPos");
+	private final DoubleLogger log_autoYPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoYPos");
+	private final DoubleLogger log_autoXDesiredVelo = WaltLogger.logDouble(DB_TAB_NAME, "AutoXDesiredVelo");
+	private final DoubleLogger log_autoYDesiredVelo = WaltLogger.logDouble(DB_TAB_NAME, "AutoYDesiredVelo");
+	private final DoubleLogger log_autoXDesiredPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoXDesiredPos");
+	private final DoubleLogger log_autoYDesiredPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoYDesiredPos");
+	private final DoubleLogger log_autoTheta = WaltLogger.logDouble(DB_TAB_NAME, "AutoThetaDesired");
+	private final DoubleLogger log_autoThetaPosError = WaltLogger.logDouble(DB_TAB_NAME, "AutoThetaPosError");
 
 	private final LinearFilter m_pitchRateFilter = LinearFilter.movingAverage(16);
 
+	private int m_periodicCallCount = 0;
+	private int m_lastPigeonGyroReq = 0;
+
 	private double m_simYaw = 0;
-	private double[] m_xyzDPS = new double[3];
+	private double[] m_pigeonGyroRateDPS = new double[3];
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
@@ -151,6 +145,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		m_cancoderReseedTimer.restart();
 		m_lastMotionStoppedTimer.restart();
+	}
+
+	private void updatePigeonGyroRate() {
+		if (m_periodicCallCount > m_lastPigeonGyroReq) {
+			m_lastPigeonGyroReq++;
+			m_pigeon.getRawGyro(m_pigeonGyroRateDPS);
+		}
 	}
 
 	public void setChassisSpeeds(ChassisSpeeds targetChassisSpeeds, boolean openLoop, boolean steerInPlace) {
@@ -286,21 +287,15 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	protected double getGyroYawRate() {
-		double[] xyzDPS = new double[3];
-		m_pigeon.getRawGyro(xyzDPS);
-		return xyzDPS[2];
+		return m_pigeonGyroRateDPS[2];
 	}
 
 	protected double getGyroRollRate() {
-		double[] xyzDPS = new double[3];
-		m_pigeon.getRawGyro(xyzDPS);
-		return xyzDPS[1];
+		return m_pigeonGyroRateDPS[1];
 	}
 
 	protected double getGyroPitchRate() {
-		double[] xyzDPS = new double[3];
-		m_pigeon.getRawGyro(xyzDPS);
-		return xyzDPS[0];
+		return m_pigeonGyroRateDPS[0];
 	}
 
 	protected double getFilteredGyroPitchRate() {
@@ -464,8 +459,6 @@ public class SwerveSubsystem extends SubsystemBase {
 			throw new RuntimeException("Empty path group given!!!");
 		}
 
-		// log_pathGroupSegment.accept(-1);
-
 		return new DeferredCommand(() -> {
 			if (trajList.size() == 0) return Commands.print("PPSwerve - Empty path group given!");
 
@@ -488,17 +481,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
 			List<CommandBase> pathCmds = new ArrayList<CommandBase>();
 
-			int pathIdx = 1;
 			for (var traj : newTrajList) {
 				var pathCmd = ppFollowerCmd(traj);
-
-				final int thisIdx = pathIdx;
-				var logCmd = Commands.runOnce(() -> {
-					// log_pathGroupSegment.accept(thisIdx);
-				});
-				pathIdx++;
-
-				pathCmds.add(logCmd.andThen(pathCmd));
+				pathCmds.add(pathCmd);
 			}
 
 			CommandBase[] pathCmdsArr = pathCmds.toArray(new CommandBase[0]);
@@ -569,7 +554,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_poseEstimator.update(getHeading(), getModulePositions());
 		m_state.update(getPose(), getModuleStates(), m_field);
 		var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
-		// log_odoTime.accept(poseEstElapsed);
+		log_odoTime.accept(poseEstElapsed);
 	}
 
 	public void autoReseed() {
@@ -587,6 +572,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		m_periodicCallCount++;
+		updatePigeonGyroRate();
+
 		var curSpeeds = getChassisSpeeds();
 		if (curSpeeds.vxMetersPerSecond == 0 && curSpeeds.vyMetersPerSecond == 0) {
 			// autoReseed();
@@ -608,28 +596,28 @@ public class SwerveSubsystem extends SubsystemBase {
 		updateVision();
 		updateOdo();
 
-		m_pigeon.getRawGyro(m_xyzDPS);
 
-		// log_yaw.accept(m_pigeon.getYaw());
-		// log_pitch.accept(getGyroPitch());
-		// log_roll.accept(getGyroRoll());
+		log_yaw.accept(getGyroYaw());
+		log_pitch.accept(getGyroPitch());
+		log_roll.accept(getGyroRoll());
 
-		// log_yawRate.accept(getGyroYawRate());
-		// log_pitchRate.accept(getGyroPitchRate());
-		// log_pitchRateFiltered.accept(getFilteredGyroPitchRate());
-		// log_rollRate.accept(getGyroRollRate());
+		log_yawRate.accept(getGyroYawRate());
+		log_pitchRate.accept(getGyroPitchRate());
+		log_pitchRateFiltered.accept(getFilteredGyroPitchRate());
+		log_rollRate.accept(getGyroRollRate());
 
-		// var chassisSpeeds = getChassisSpeeds();
-		// log_autoXVelo.accept(getChassisSpeeds().vxMetersPerSecond);
-		// log_autoYVelo.accept(getChassisSpeeds().vyMetersPerSecond);
-		// // log_autoXDesiredVelo.accept();
-		// // log_autoYDesiredVelo.accept(yController);
-		// log_autoXPos.accept(getPose().getX());
-		// log_autoYPos.accept(getPose().getY());
-		// log_autoXDesiredPos.accept(xController.getSetpoint());
-		// log_autoYDesiredPos.accept(yController.getSetpoint());
-		// log_autoTheta.accept(autoThetaController.getSetpoint());
-		// log_autoThetaPosError.accept(autoThetaController.getPositionError());
+		var chassisSpeeds = getChassisSpeeds();
+		log_autoXVelo.accept(chassisSpeeds.vxMetersPerSecond);
+		log_autoYVelo.accept(chassisSpeeds.vyMetersPerSecond);
+		// log_autoXDesiredVelo.accept();
+		// log_autoYDesiredVelo.accept(yController);
+		var pose = getPose();
+		log_autoXPos.accept(pose.getX());
+		log_autoYPos.accept(pose.getY());
+		log_autoXDesiredPos.accept(xController.getSetpoint());
+		log_autoYDesiredPos.accept(yController.getSetpoint());
+		log_autoTheta.accept(autoThetaController.getSetpoint());
+		log_autoThetaPosError.accept(autoThetaController.getPositionError());
 	}
 
 

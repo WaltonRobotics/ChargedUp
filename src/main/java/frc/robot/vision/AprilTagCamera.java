@@ -66,9 +66,6 @@ public class AprilTagCamera {
         field.getObject("April Tags").setPoses(poseList);
     }
 
-    public void periodic() {
-    }
-
 
     // unfiltered view of camera
     // public void setDriverMode(boolean driverMode) {

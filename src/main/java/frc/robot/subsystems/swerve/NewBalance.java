@@ -1,17 +1,17 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.lib.logging.NTPublisherFactory;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
 
 public class NewBalance extends SequentialCommandGroup {
 
-    private CommandBase logBalanceState(int state) {
+    private CommandBase logBalanceState(double state) {
 		return Commands.runOnce(() -> {
-			// log_balState.accept(state);
+			log_balState.accept(state);
 		});
 	}
 
@@ -20,11 +20,10 @@ public class NewBalance extends SequentialCommandGroup {
 
     private double m_climbingSign = 0.0;
     private final Timer m_climbTimer = new Timer();
-    private final DoublePublisher log_balState;
+    private final DoubleLogger log_balState = WaltLogger.logDouble("Command", "BalanceState");
 
 
     public NewBalance(SwerveSubsystem swerve) {
-        log_balState = NTPublisherFactory.makeDoublePub("BalanceState");
         // DoubleSupplier thetaSupplier = () -> swerve.autoThetaController.calculate(swerve.getGyroYaw(), 0);
         CommandBase oneHopThisTime =
             Commands.run(

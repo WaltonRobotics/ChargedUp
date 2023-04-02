@@ -1,10 +1,10 @@
 package frc.robot.subsystems.superstructure;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.logging.NTPublisherFactory;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
+import frc.lib.logging.WaltLogger.StringLogger;
 import frc.robot.Constants.ElevatorK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
@@ -27,10 +27,10 @@ public class Superstructure {
 	// State management
 	SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-	private final DoublePublisher log_autoState = NTPublisherFactory.makeDoublePub("State", "Superstructure/AutonState");
-	protected final StringPublisher log_currState = NTPublisherFactory.makeStringPub("State", "Superstructure/CurrState");
-	protected final StringPublisher log_prevState = NTPublisherFactory.makeStringPub("State", "Superstructure/PrevState");
-	protected final StringPublisher log_stateQuirk = NTPublisherFactory.makeStringPub("State", "Superstructure/StateQuirk");
+	private final DoubleLogger log_autoState = WaltLogger.logDouble("Superstructure", "AutonState");
+	protected final StringLogger log_currState = WaltLogger.logString("Superstructure", "CurrState");
+	protected final StringLogger log_prevState = WaltLogger.logString("Superstructure", "PrevState");
+	protected final StringLogger log_stateQuirk = WaltLogger.logString("Superstructure", "StateQuirk");
 	
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
@@ -39,10 +39,10 @@ public class Superstructure {
 		// m_claw = claw;
 		m_leds = leds;
 
-		// log_autoState.accept(-1);
-		// log_currState.setDefault("UNK");
-		// log_prevState.setDefault("UNK");
-		// log_stateQuirk.setDefault("UNK");
+		log_autoState.accept(-1.0);
+		log_currState.accept("UNK");
+		log_prevState.accept("UNK");
+		log_stateQuirk.accept("UNK");
 	}
 
 	/*
@@ -119,7 +119,7 @@ public class Superstructure {
 			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
-		// log_autoState.accept(m_curState.idx);
+		log_autoState.accept((double)m_curState.idx);
 	}
 
 	public SuperState getPrevState() {
@@ -131,7 +131,7 @@ public class Superstructure {
 	}
 
 	public void periodicTelemetry() {
-		// log_currState.accept(m_curState.toString());
-		// log_prevState.accept(m_prevState.toString());
+		log_currState.accept(m_curState.toString());
+		log_prevState.accept(m_prevState.toString());
 	}
 }

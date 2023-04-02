@@ -1,7 +1,6 @@
 package frc.lib.logging;
 
 import java.util.function.Consumer;
-
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.util.datalog.*;
 import edu.wpi.first.wpilibj.DataLogManager;

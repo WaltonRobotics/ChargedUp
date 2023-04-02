@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
     
     
     m_robotContainer = new RobotContainer();
-    addPeriodic(m_robotContainer.vision::periodic, .5);
     addPeriodic(m_robotContainer.superstructure::periodicTelemetry, kDefaultPeriod);
   }
 

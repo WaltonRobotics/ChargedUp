@@ -3,8 +3,6 @@ package frc.robot.vision;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.swing.text.html.Option;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -13,10 +11,10 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import frc.lib.logging.NTPublisherFactory;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
 
 
 public class PhotonRunner {
@@ -28,7 +26,7 @@ public class PhotonRunner {
 
     private Optional<EstimatedRobotPose> latestEstPose = Optional.empty();
 
-    private final DoublePublisher log_estTimeSec;
+    private final DoubleLogger log_estTimeSec;
 
     public PhotonRunner(
         String cameraName,
@@ -44,15 +42,14 @@ public class PhotonRunner {
 
         final String entryPrefix = "PhotonRunner/" + cameraName + "/";
 
-        log_estTimeSec = NTPublisherFactory.makeDoublePub(entryPrefix + "estTimeSec");
+        log_estTimeSec = WaltLogger.logDouble(entryPrefix, "estTimeSec");
     }
 
     private void run() {
         var estBegin = Timer.getFPGATimestamp();
         latestEstPose = getEstimatedPose(robotPoseSupplier.get());
         var estElapsed = Timer.getFPGATimestamp() - estBegin;
-
-        // log_estTimeSec.accept(estElapsed);
+        log_estTimeSec.accept(estElapsed);
     }
 
     private Optional<EstimatedRobotPose> getEstimatedPose(Pose2d prevEstRobotPose) {
