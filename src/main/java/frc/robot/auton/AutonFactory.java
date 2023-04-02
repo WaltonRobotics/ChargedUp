@@ -85,7 +85,7 @@ public final class AutonFactory {
         Commands.deadline(
             pathCmd.asProxy(),
             Commands.sequence(
-                Commands.waitSeconds(4.25),
+                Commands.waitSeconds(3.25),
                 groundPickUp.asProxy()
             )
         ),

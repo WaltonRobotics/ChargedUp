@@ -195,7 +195,7 @@ public final class Constants {
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
         public static final Matrix<N3, N1> kOdoStdDevs_DefaultTrust = VecBuilder.fill(0.1, 0.1, 0.025);
-        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 100000);
+        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 10);
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
