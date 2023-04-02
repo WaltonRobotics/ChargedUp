@@ -32,12 +32,12 @@ deploy {
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
                     // Enable visualvm
-                    // jvmArgs.add("-Dcom.sun.management.jmxremote=true")
-                    // jvmArgs.add("-Dcom.sun.management.jmxremote.port=1099")
-                    // jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
-                    // jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
-                    // jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
-                    // jvmArgs.add("-Djava.rmi.server.hostname=10.29.74.2")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.port=1099")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+                    jvmArgs.add("-Djava.rmi.server.hostname=10.29.74.2")
                 }
 
                 // Static files artifact

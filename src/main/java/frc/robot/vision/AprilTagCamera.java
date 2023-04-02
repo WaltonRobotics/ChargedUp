@@ -31,7 +31,7 @@ public class AprilTagCamera {
 
     // private final DoubleArrayPublisher log_leftRobotToCam, log_rightRobotToCam;
 
-    // public final PhotonRunner rightLowCamRunner, leftLowCamRunner;
+    public final PhotonRunner rightLowCamRunner, leftLowCamRunner;
 
     public AprilTagCamera() {
         try {
@@ -40,19 +40,19 @@ public class AprilTagCamera {
             e.printStackTrace();
         }
 
-        // rightLowCamRunner = new PhotonRunner(
-        //     "RightCornerLow",
-        //     rightLowRobotToCamera,
-        //     aprilTagFieldLayout,
-        //     () -> new Pose2d()
-        // );
+        rightLowCamRunner = new PhotonRunner(
+            "RightCornerLow",
+            rightLowRobotToCamera,
+            aprilTagFieldLayout,
+            () -> new Pose2d()
+        );
 
-        // leftLowCamRunner = new PhotonRunner(
-        //     "LeftCornerLow",
-        //     leftLowRobotToCamera,
-        //     aprilTagFieldLayout,
-        //     () -> new Pose2d()
-        // );
+        leftLowCamRunner = new PhotonRunner(
+            "LeftCornerLow",
+            leftLowRobotToCamera,
+            aprilTagFieldLayout,
+            () -> new Pose2d()
+        );
 
         PhotonCamera.setVersionCheckEnabled(false);
     }

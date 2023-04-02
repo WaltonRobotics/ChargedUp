@@ -262,6 +262,11 @@ public class WristSubsystem extends SubsystemBase {
     // nte_motorTemp.setDouble(m_motor.getMotorTemperature());
     // nte_minLimit.setBoolean(atMinLimit());
     // nte_maxLimit.setBoolean(atMaxLimit());
+    // if (kDebugLoggingEnabled) {
+		// 	m_dashboardCoastTrigger
+		// 		.onTrue(setIdle(true))
+		// 		.onFalse(setIdle(false));
+		// }
   }
 
   public static enum WristState {

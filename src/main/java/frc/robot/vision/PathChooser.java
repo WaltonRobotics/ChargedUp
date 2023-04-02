@@ -41,9 +41,9 @@ public class PathChooser {
             PathOption.class);
     private static final SendableChooser<PathOption> PathNTChooser = new SendableChooser<PathOption>();
 
-    static {
-        SmartDashboard.putData("Path Chooser", PathNTChooser);
-    }
+    // static {
+    //     SmartDashboard.putData("Path Chooser", PathNTChooser);
+    // }
 
     public static void AssignTrajectory(PathOption path, List<PathPoint> trajectory) {
         pathChooserMap.put(path, trajectory);

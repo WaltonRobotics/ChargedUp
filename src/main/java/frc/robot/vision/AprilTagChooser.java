@@ -39,9 +39,9 @@ public class AprilTagChooser {
             AprilTagOption.class);
     private static final SendableChooser<AprilTagOption> AprilTagNTChooser = new SendableChooser<AprilTagOption>();
 
-    static {
-        SmartDashboard.putData("AprilTag Chooser", AprilTagNTChooser);
-    }
+    // static {
+    //     SmartDashboard.putData("AprilTag Chooser", AprilTagNTChooser);
+    // }
 
     public static void AssignPoint(AprilTagOption tag, PathPoint point) {
         AprilTagChooserMap.put(tag, point);

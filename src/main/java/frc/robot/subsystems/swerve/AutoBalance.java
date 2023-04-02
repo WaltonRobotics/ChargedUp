@@ -75,7 +75,7 @@ public class AutoBalance extends CommandBase {
                 }
                 // double percentage = std::clamp((units::math::abs(pitch) / maxPitch).value(),
                 // 0.0, 0.5);
-                SmartDashboard.putNumber("AutoBal-Pct", percentage);
+                // SmartDashboard.putNumber("AutoBal-Pct", percentage);
                 // drivetrain.DriveRelative(percentage * powerSign);
                 m_swerve.drive(percentage * powerSign, 0, thetaEffort, false, true);
             }

@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.util.DashboardManager;
+
 // import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
@@ -71,9 +73,11 @@ public class TiltSubsystem extends SubsystemBase {
 			m_absoluteEncoder.reset();
 		}));
 
-		// m_dashboardCoastTrigger
-		// 	.onTrue(setIdle(true))
-		// 	.onFalse(setIdle(false));
+		// if (kDebugLoggingEnabled) {
+		// 	m_dashboardCoastTrigger
+		// 		.onTrue(setIdle(true))
+		// 		.onFalse(setIdle(false));
+		// }
 	}
 
 	private CommandBase setIdle(boolean coast) {

@@ -17,12 +17,14 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.math.Conversions;
+import frc.lib.util.DashboardManager;
 import frc.robot.CTREConfigs;
 import java.util.function.DoubleSupplier;
 
@@ -59,6 +61,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final BooleanLogger log_atLowerLimit;
 
 	// private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
+	// private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
 
 	public ElevatorSubsystem() {
 		// DashboardManager.addTab(this);
@@ -193,9 +196,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 	/*
 	 * Sets both elevator motors to coast/brake
 	 */
-	public void setCoast(boolean coast) {
-		m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
-		m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+	public CommandBase setCoast(boolean coast) {
+		return runOnce(()-> { 
+			m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+			m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+		});
 	}
 
 	/*
@@ -324,6 +329,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_targetHeight.accept(getTargetHeightMeters());
 		log_atLowerLimit.accept(isFullyRetracted());
 		log_actualVelo.accept(getActualVelocityMps());
-
+		// if (kDebugLoggingEnabled) {
+		// 	m_dashboardCoastTrigger
+		// 		.onTrue(setCoast(true))
+		// 		.onFalse(setCoast(false));
+		// }
 	}
 }

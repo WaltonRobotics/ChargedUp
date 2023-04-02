@@ -1,12 +1,15 @@
 package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.lib.swerve.SwerveDriveState;
+import frc.lib.util.AdvantageScopeUtils;
+import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
 // import frc.lib.vision.EstimatedRobotPose;
 import frc.robot.Constants;
@@ -19,9 +22,12 @@ import static frc.robot.Constants.SwerveK.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
@@ -516,37 +522,37 @@ public class SwerveSubsystem extends SubsystemBase {
 		
 		var visionEstBegin = Timer.getFPGATimestamp();
 		
-		// Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper.leftLowCamRunner.getLatestEstimatedPose();
+		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper.leftLowCamRunner.getLatestEstimatedPose();
 
-		// Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
-		// 		m_apriltagHelper.rightLowCamRunner.getLatestEstimatedPose();
+		Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
+				m_apriltagHelper.rightLowCamRunner.getLatestEstimatedPose();
 
 		
 
-		// if (leftLowPoseOpt.isPresent()) {
-		// 	var leftLowPose = leftLowPoseOpt.get();
+		if (leftLowPoseOpt.isPresent()) {
+			var leftLowPose = leftLowPoseOpt.get();
 		// 	SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
 
-		// 	m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
-		// 	m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
-		// } else {
-		// 	m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		// }
+			m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
+			m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
+		} else {
+			m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+		}
 
-		// if (rightLowPoseOpt.isPresent()) {
-		// 	var rightLowPose = rightLowPoseOpt.get();
+		if (rightLowPoseOpt.isPresent()) {
+			var rightLowPose = rightLowPoseOpt.get();
 		// 	SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
 
-		// 	m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
-		// 	m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
-		// } else {
-		// 	m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		// }
+			m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
+			m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
+		} else {
+			m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+		}
 
-		var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
+		// var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
 
 		
-		SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
+		// SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
 	}
 
 	public void updateOdo(){
