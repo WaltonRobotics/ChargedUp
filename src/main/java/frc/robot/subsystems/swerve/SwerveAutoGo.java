@@ -35,13 +35,13 @@ public class SwerveAutoGo extends CommandBase {
 	@Override
 	public void initialize() {
 		List<PathPoint> path = new ArrayList<>();
-		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose()); // TODO: figure out how to flip
+		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose()); 
 
 		PathPoint currentPoint = new PathPoint(currentPose.getTranslation(), Rotation2d.fromDegrees(0), currentPose.getRotation());
 	
 		path.add(currentPoint);
 		path.add(m_side);
-		path.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(-90)));
+		path.add(new PathPoint(m_endPose.getTranslation(), m_endPose.getRotation(), Rotation2d.fromDegrees(-120)));
 		
 		m_traj = PathPlanner.generatePath(
 			new PathConstraints(1, 2),

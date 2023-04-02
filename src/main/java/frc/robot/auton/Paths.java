@@ -174,22 +174,22 @@ public class Paths {
 
 		public static class ScoringPoints {
 			public static final Pose2d cone1 =  
-				new Pose2d(new Translation2d(1.77, 0.50), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 0.50), rot2dDeg(180));
 			public static final Pose2d cube2 = 
-				new Pose2d(new Translation2d(1.77, 1.06), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 1.06), rot2dDeg(180));
 			public static final Pose2d cone3 = 
-				new Pose2d(new Translation2d(1.77, 1.62), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 1.62), rot2dDeg(180));
 			public static final Pose2d coopCone4 = 
-				new Pose2d(new Translation2d(1.77, 2.18), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 2.18), rot2dDeg(180));
 			public static final Pose2d coopCube5 = new Pose2d(new Translation2d(1.77, 2.74), rot2dDeg(180));
 			public static final Pose2d coopCone6 = 
-				new Pose2d(new Translation2d(1.77, 3.29), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 3.29), rot2dDeg(180));
 			public static final Pose2d cone7 = 
-				new Pose2d(new Translation2d(1.77, 3.85), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 3.85), rot2dDeg(180));
 			public static final Pose2d cube8 = 
-				new Pose2d(new Translation2d(1.77, 4.42), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 4.42), rot2dDeg(180));
 			public static final Pose2d cone9 =
-				new Pose2d(new Translation2d(1.77, 4.98), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 4.98), rot2dDeg(180));
 
 			public static final Pose2d substationPose = new Pose2d(new Translation2d(15.9, 6.68), rot2dDeg(0));
 			public static final Pose2d portalPose = new Pose2d(new Translation2d(13.63, 7.62), rot2dDeg(90));
