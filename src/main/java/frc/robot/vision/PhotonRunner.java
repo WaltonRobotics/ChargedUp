@@ -52,7 +52,7 @@ public class PhotonRunner {
         latestEstPose = getEstimatedPose(robotPoseSupplier.get());
         var estElapsed = Timer.getFPGATimestamp() - estBegin;
 
-        log_estTimeSec.accept(estElapsed);
+        // log_estTimeSec.accept(estElapsed);
     }
 
     private Optional<EstimatedRobotPose> getEstimatedPose(Pose2d prevEstRobotPose) {

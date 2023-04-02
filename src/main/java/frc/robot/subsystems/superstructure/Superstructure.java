@@ -39,10 +39,10 @@ public class Superstructure {
 		// m_claw = claw;
 		m_leds = leds;
 
-		log_autoState.accept(-1);
-		log_currState.setDefault("UNK");
-		log_prevState.setDefault("UNK");
-		log_stateQuirk.setDefault("UNK");
+		// log_autoState.accept(-1);
+		// log_currState.setDefault("UNK");
+		// log_prevState.setDefault("UNK");
+		// log_stateQuirk.setDefault("UNK");
 	}
 
 	/*
@@ -119,7 +119,7 @@ public class Superstructure {
 			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
-		log_autoState.accept(m_curState.idx);
+		// log_autoState.accept(m_curState.idx);
 	}
 
 	public SuperState getPrevState() {
@@ -131,7 +131,7 @@ public class Superstructure {
 	}
 
 	public void periodicTelemetry() {
-		log_currState.accept(m_curState.toString());
-		log_prevState.accept(m_prevState.toString());
+		// log_currState.accept(m_curState.toString());
+		// log_prevState.accept(m_prevState.toString());
 	}
 }

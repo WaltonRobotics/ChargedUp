@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.util.DashboardManager;
+// import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
 import static frc.robot.Constants.*;
@@ -41,19 +41,19 @@ public class TiltSubsystem extends SubsystemBase {
 	private double m_totalEffort = 0;
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
-	private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "PDEffort", -1, 1);
-	private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "FFEffort", -1, 1);
-	private final GenericEntry nte_motorTotalEffort = DashboardManager.addTabDial(this, "TotalEffort", -1, 1);
-	private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "TargetAngle",
-			kMinAngleDegrees, 35);
-	private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 35);
-	private final GenericEntry nte_rawAbsVal = DashboardManager.addTabNumberBar(this, "RawAbs", 0, 1);
-	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
-	private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
-	private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
+	// private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "PDEffort", -1, 1);
+	// private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "FFEffort", -1, 1);
+	// private final GenericEntry nte_motorTotalEffort = DashboardManager.addTabDial(this, "TotalEffort", -1, 1);
+	// private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "TargetAngle",
+	// 		kMinAngleDegrees, 35);
+	// private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 35);
+	// private final GenericEntry nte_rawAbsVal = DashboardManager.addTabNumberBar(this, "RawAbs", 0, 1);
+	// private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
+	// private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
+	// private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
 	private final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
-	private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
+	// private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
 
 	
 	public TiltSubsystem() {
@@ -65,15 +65,15 @@ public class TiltSubsystem extends SubsystemBase {
 		// reset relative encoder on switch activation
 		// m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
-		DashboardManager.addTab(this);
+		// DashboardManager.addTab(this);
 
 		m_homeSwitchTrigger.onTrue(Commands.runOnce(() -> {
 			m_absoluteEncoder.reset();
 		}));
 
-		m_dashboardCoastTrigger
-			.onTrue(setIdle(true))
-			.onFalse(setIdle(false));
+		// m_dashboardCoastTrigger
+		// 	.onTrue(setIdle(true))
+		// 	.onFalse(setIdle(false));
 	}
 
 	private CommandBase setIdle(boolean coast) {
@@ -250,14 +250,14 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public void updateShuffleBoard() {
 		// Push telemetry
-		nte_actualAngle.setDouble(getDegrees());
-		nte_rawAbsVal.setDouble(m_absoluteEncoder.get());
-		nte_motorFFEffort.setDouble(m_ffEffort);
-		nte_motorPDEffort.setDouble(m_pdEffort);
-		nte_motorTotalEffort.setDouble(m_totalEffort);
-		nte_targetAngle.setDouble(m_targetAngle);
-		nte_homeSwitch.setBoolean(atReverseLimit());
-		nte_forwardLimit.setBoolean(atForwardLimit());
+		// nte_actualAngle.setDouble(getDegrees());
+		// nte_rawAbsVal.setDouble(m_absoluteEncoder.get());
+		// nte_motorFFEffort.setDouble(m_ffEffort);
+		// nte_motorPDEffort.setDouble(m_pdEffort);
+		// nte_motorTotalEffort.setDouble(m_totalEffort);
+		// nte_targetAngle.setDouble(m_targetAngle);
+		// nte_homeSwitch.setBoolean(atReverseLimit());
+		// nte_forwardLimit.setBoolean(atForwardLimit());
 	}
 
 	public CommandBase toState(TiltState state) {

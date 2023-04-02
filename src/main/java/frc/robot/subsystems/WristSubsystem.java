@@ -41,21 +41,21 @@ public class WristSubsystem extends SubsystemBase {
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
 
   // FFEffort = feedforward; PDEffort = proportional-derivative
-  private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "FF Effort", -15, 15);
-  private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "PD Effort", -15, 15);
-  private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "Total Effort", -15, 15);
-  private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "Target Angle",
-      WristK.kMinDeg, WristK.kMaxDeg);
-  private final GenericEntry nte_rawAbsEncoder = DashboardManager.addTabDial(this, "Raw Abs Encoder", 0, 1);
-  private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "Actual Angle",
-      WristK.kMinDeg, WristK.kMaxDeg);
-  private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
-  private final GenericEntry nte_motorTemp = DashboardManager.addTabNumberBar(this, "Motor Temp", 0, 100);
-  private final GenericEntry nte_minLimit = DashboardManager.addTabBooleanBox(this, "At Bot Limit");
-  private final GenericEntry nte_maxLimit = DashboardManager.addTabBooleanBox(this, "At Top Limit");
-  private final GenericEntry nte_stickVoltage = DashboardManager.addTabDial(this, "Stick Voltage", -15, 15);
+  // private final GenericEntry nte_motorFFEffort = DashboardManager.addTabDial(this, "FF Effort", -15, 15);
+  // private final GenericEntry nte_motorPDEffort = DashboardManager.addTabDial(this, "PD Effort", -15, 15);
+  // private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "Total Effort", -15, 15);
+  // private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "Target Angle",
+  //     WristK.kMinDeg, WristK.kMaxDeg);
+  // private final GenericEntry nte_rawAbsEncoder = DashboardManager.addTabDial(this, "Raw Abs Encoder", 0, 1);
+  // private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "Actual Angle",
+  //     WristK.kMinDeg, WristK.kMaxDeg);
+  // private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
+  // private final GenericEntry nte_motorTemp = DashboardManager.addTabNumberBar(this, "Motor Temp", 0, 100);
+  // private final GenericEntry nte_minLimit = DashboardManager.addTabBooleanBox(this, "At Bot Limit");
+  // private final GenericEntry nte_maxLimit = DashboardManager.addTabBooleanBox(this, "At Top Limit");
+  // private final GenericEntry nte_stickVoltage = DashboardManager.addTabDial(this, "Stick Voltage", -15, 15);
 
-  private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
+  // private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
 
   public WristSubsystem() {
     m_motor.setIdleMode(IdleMode.kBrake); // ANTI-DROOPY
@@ -67,9 +67,9 @@ public class WristSubsystem extends SubsystemBase {
 
     m_controller.setTolerance(1.5);
 
-    m_dashboardCoastTrigger
-			.onTrue(setIdle(true))
-			.onFalse(setIdle(false));
+    // m_dashboardCoastTrigger
+		// 	.onTrue(setIdle(true))
+		// 	.onFalse(setIdle(false));
   }
 
   private CommandBase setIdle(boolean coast) {
@@ -191,7 +191,7 @@ public class WristSubsystem extends SubsystemBase {
   public CommandBase teleopCmd(DoubleSupplier power) {
     return run(() -> {
       var volts = power.getAsDouble() * m_motor.getBusVoltage();
-      nte_stickVoltage.setDouble(volts);
+      // nte_stickVoltage.setDouble(volts);
       double powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
       m_targetAngle += powerVal;
       double effort = powerVal == 0 ? getEffortToHold(m_targetAngle) : getEffortForTarget(m_targetAngle);
@@ -253,15 +253,15 @@ public class WristSubsystem extends SubsystemBase {
    * Updates nte values
    */
   public void updateShuffleBoard() {
-    nte_totalEffort.setDouble(m_totalEffort);
-    nte_motorFFEffort.setDouble(m_ffEffort);
-    nte_motorPDEffort.setDouble(m_pdEffort);
-    nte_actualAngle.setDouble(getDegrees());
-    nte_rawAbsEncoder.setDouble(m_absEncoder.getPosition());
-    nte_targetAngle.setDouble(m_targetAngle);
-    nte_motorTemp.setDouble(m_motor.getMotorTemperature());
-    nte_minLimit.setBoolean(atMinLimit());
-    nte_maxLimit.setBoolean(atMaxLimit());
+    // nte_totalEffort.setDouble(m_totalEffort);
+    // nte_motorFFEffort.setDouble(m_ffEffort);
+    // nte_motorPDEffort.setDouble(m_pdEffort);
+    // nte_actualAngle.setDouble(getDegrees());
+    // nte_rawAbsEncoder.setDouble(m_absEncoder.getPosition());
+    // nte_targetAngle.setDouble(m_targetAngle);
+    // nte_motorTemp.setDouble(m_motor.getMotorTemperature());
+    // nte_minLimit.setBoolean(atMinLimit());
+    // nte_maxLimit.setBoolean(atMaxLimit());
   }
 
   public static enum WristState {

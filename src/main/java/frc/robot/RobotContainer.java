@@ -70,7 +70,7 @@ public class RobotContainer {
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
 
-		DashboardManager.addTab("TeleSwerve");
+		// DashboardManager.addTab("TeleSwerve");
 		configureButtonBindings();
 
 		// LED triggering

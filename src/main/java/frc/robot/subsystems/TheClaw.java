@@ -20,11 +20,11 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
 	private final DigitalInput clawSensor = new DigitalInput(kClawSensor);
-	private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
-	private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
-	private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
-	private final GenericEntry nte_withinRange = DashboardManager.addTabBooleanBox(this, "within range");
-	private final GenericEntry nte_range = DashboardManager.addTabNumberBar(this, "time of flight range", 0, 1300);
+	// private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
+	// private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
+	// private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
+	// private final GenericEntry nte_withinRange = DashboardManager.addTabBooleanBox(this, "within range");
+	// private final GenericEntry nte_range = DashboardManager.addTabNumberBar(this, "time of flight range", 0, 1300);
 	private final TimeOfFlight timeOfFlight = new TimeOfFlight(kTimeOfFlightID);
 
 	private final Supplier<ClawState> m_autoStateSupplier;
@@ -52,7 +52,7 @@ public class TheClaw extends SubsystemBase {
 		timeOfFlight.setRangingMode(RangingMode.Short, 24);
 		// timeOfFlight.setRangeOfInterest(8, 8, 12, 12);
 		m_autoStateSupplier = autoStateSupplier;
-		DashboardManager.addTab(this);
+		// DashboardManager.addTab(this);
 		m_lastActuationTimer.restart();
 		m_wristDegSupplier = wristDegSupplier;
 		m_substationDelayTimer.restart();
@@ -165,11 +165,11 @@ public class TheClaw extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		nte_isClosed.setBoolean(m_isClosed);
-		nte_clawSensor.setBoolean(sensorTrig.getAsBoolean());
-		nte_superstate.setString(m_autoStateSupplier.get().toString());
-		nte_withinRange.setBoolean(withinRange());
-		nte_range.setDouble(timeOfFlight.getRange());
+		// nte_isClosed.setBoolean(m_isClosed);
+		// nte_clawSensor.setBoolean(sensorTrig.getAsBoolean());
+		// nte_superstate.setString(m_autoStateSupplier.get().toString());
+		// nte_withinRange.setBoolean(withinRange());
+		// nte_range.setDouble(timeOfFlight.getRange());
 		timeOfFlight.identifySensor();
 	}
 }

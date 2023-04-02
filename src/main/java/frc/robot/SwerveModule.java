@@ -93,21 +93,21 @@ public class SwerveModule {
     }
 
     public void periodic() {
-        log_driveTemp.accept(m_driveMotor.getTemperature());
-        log_steerTemp.accept(m_steerMotor.getTemperature());
-        log_cancoderAngle.accept(m_angleEncoder.getAbsolutePosition());
-        log_modVelocity.accept(getState().speedMetersPerSecond);
-        log_steerInternalAngle.accept(getPosition().angle.getDegrees());
+        // log_driveTemp.accept(m_driveMotor.getTemperature());
+        // log_steerTemp.accept(m_steerMotor.getTemperature());
+        // log_cancoderAngle.accept(m_angleEncoder.getAbsolutePosition());
+        // log_modVelocity.accept(getState().speedMetersPerSecond);
+        // log_steerInternalAngle.accept(getPosition().angle.getDegrees());
 
-        // log states
-        var curState = getState();
-        log_actualStateVelocity.accept(curState.speedMetersPerSecond);
-        log_actualStateRotation.accept(curState.angle.getDegrees());
+        // // log states
+        // var curState = getState();
+        // log_actualStateVelocity.accept(curState.speedMetersPerSecond);
+        // log_actualStateRotation.accept(curState.angle.getDegrees());
         
-        log_desiredStateVelocity.accept(m_latestDesiredState.speedMetersPerSecond);
-        log_desiredStateRotation.accept(m_latestDesiredState.angle.getDegrees());
+        // log_desiredStateVelocity.accept(m_latestDesiredState.speedMetersPerSecond);
+        // log_desiredStateRotation.accept(m_latestDesiredState.angle.getDegrees());
 
-        log_driveMotorVeloCmd.accept(m_latestCmdedDriveVelo);
+        // log_driveMotorVeloCmd.accept(m_latestCmdedDriveVelo);
     }
 
     public double makePositiveDegrees(double angle) {

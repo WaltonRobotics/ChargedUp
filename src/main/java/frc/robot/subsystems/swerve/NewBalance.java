@@ -11,7 +11,7 @@ public class NewBalance extends SequentialCommandGroup {
 
     private CommandBase logBalanceState(int state) {
 		return Commands.runOnce(() -> {
-			log_balState.accept(state);
+			// log_balState.accept(state);
 		});
 	}
 

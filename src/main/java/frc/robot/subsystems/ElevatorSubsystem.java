@@ -59,10 +59,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 									log_holdPdEffort, log_holdFfEffort;
 	private final BooleanPublisher log_atLowerLimit;
 
-	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
+	// private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
 
 	public ElevatorSubsystem() {
-		DashboardManager.addTab(this);
+		// DashboardManager.addTab(this);
 		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
@@ -230,12 +230,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 		double totalEffort = m_ffEffort + m_pdEffort;
 		
 		// logging
-		log_ffEffort.accept(m_ffEffort);
-		log_pdEffort.accept(m_pdEffort);
-		log_totalEffort.accept(totalEffort);
-		log_profileVelo.accept(pdSetpoint.velocity);
-		log_profileTargetHeight.accept(pdSetpoint.position);
-		log_actualVelo.accept(getActualVelocityMps());
+		// log_ffEffort.accept(m_ffEffort);
+		// log_pdEffort.accept(m_pdEffort);
+		// log_totalEffort.accept(totalEffort);
+		// log_profileVelo.accept(pdSetpoint.velocity);
+		// log_profileTargetHeight.accept(pdSetpoint.position);
+		// log_actualVelo.accept(getActualVelocityMps());
 
 		return totalEffort;
 	}
@@ -312,21 +312,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateShuffleBoard();
-		setCoast(nte_coast.getBoolean(false));
-		log_holdPdEffort.accept(m_holdPdEffort);
-		log_holdFfEffort.accept(m_holdFfEffort);
+		// setCoast(nte_coast.getBoolean(false));
+		// log_holdPdEffort.accept(m_holdPdEffort);
+		// log_holdFfEffort.accept(m_holdFfEffort);
 	}
 
 	/*
 	 * Updates nte values
 	 */
 	public void updateShuffleBoard() {
-		log_actualHeightRaw.accept(getActualHeightRaw());
-		log_actualHeight.accept(getActualHeightMeters());
-		log_ffEffort.accept(m_ffEffort);
-		log_pdEffort.accept(m_pdEffort);
-		log_totalEffort.accept(m_totalEffort);
-		log_targetHeight.accept(getTargetHeightMeters());
-		log_atLowerLimit.accept(isFullyRetracted());
+		// log_actualHeightRaw.accept(getActualHeightRaw());
+		// log_actualHeight.accept(getActualHeightMeters());
+		// log_ffEffort.accept(m_ffEffort);
+		// log_pdEffort.accept(m_pdEffort);
+		// log_totalEffort.accept(m_totalEffort);
+		// log_targetHeight.accept(getTargetHeightMeters());
+		// log_atLowerLimit.accept(isFullyRetracted());
 	}
 }

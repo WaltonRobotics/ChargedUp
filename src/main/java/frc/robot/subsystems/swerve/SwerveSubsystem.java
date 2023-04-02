@@ -116,7 +116,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
 		m_apriltagHelper = apriltagHelper;
-		DashboardManager.addTab(this);
+		// DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
 		m_pigeon.zeroGyroBiasNow();
 		// zeroGyro();
@@ -131,7 +131,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		m_state.update(getPose(), getModuleStates(), m_field);
 		m_apriltagHelper.updateField2d(m_field);
-		DashboardManager.addTabSendable(this, "Field2d", m_field);
+		// DashboardManager.addTabSendable(this, "Field2d", m_field);
 
 		autoBuilder = new SwerveAutoBuilder(
 				this::getPose, // Pose2d supplier
@@ -145,9 +145,9 @@ public class SwerveSubsystem extends SubsystemBase {
 				false,
 				this);
 
-		DashboardManager.addTabSendable(this, "XCtrl", xController);
-		DashboardManager.addTabSendable(this, "YCtrl", yController);
-		DashboardManager.addTabSendable(this, "AutoThetaCtrl", autoThetaController);
+		// DashboardManager.addTabSendable(this, "XCtrl", xController);
+		// DashboardManager.addTabSendable(this, "YCtrl", yController);
+		// DashboardManager.addTabSendable(this, "AutoThetaCtrl", autoThetaController);
 
 		m_cancoderReseedTimer.restart();
 		m_lastMotionStoppedTimer.restart();
@@ -464,7 +464,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			throw new RuntimeException("Empty path group given!!!");
 		}
 
-		log_pathGroupSegment.accept(-1);
+		// log_pathGroupSegment.accept(-1);
 
 		return new DeferredCommand(() -> {
 			if (trajList.size() == 0) return Commands.print("PPSwerve - Empty path group given!");
@@ -494,7 +494,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 				final int thisIdx = pathIdx;
 				var logCmd = Commands.runOnce(() -> {
-					log_pathGroupSegment.accept(thisIdx);
+					// log_pathGroupSegment.accept(thisIdx);
 				});
 				pathIdx++;
 
@@ -531,32 +531,32 @@ public class SwerveSubsystem extends SubsystemBase {
 		
 		var visionEstBegin = Timer.getFPGATimestamp();
 		
-		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper.leftLowCamRunner.getLatestEstimatedPose();
+		// Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper.leftLowCamRunner.getLatestEstimatedPose();
 
-		Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
-				m_apriltagHelper.rightLowCamRunner.getLatestEstimatedPose();
+		// Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
+		// 		m_apriltagHelper.rightLowCamRunner.getLatestEstimatedPose();
 
 		
 
-		if (leftLowPoseOpt.isPresent()) {
-			var leftLowPose = leftLowPoseOpt.get();
-			SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
+		// if (leftLowPoseOpt.isPresent()) {
+		// 	var leftLowPose = leftLowPoseOpt.get();
+		// 	SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
 
-			m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		}
+		// 	m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
+		// 	m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
+		// } else {
+		// 	m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+		// }
 
-		if (rightLowPoseOpt.isPresent()) {
-			var rightLowPose = rightLowPoseOpt.get();
-			SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
+		// if (rightLowPoseOpt.isPresent()) {
+		// 	var rightLowPose = rightLowPoseOpt.get();
+		// 	SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
 
-			m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		}
+		// 	m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
+		// 	m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
+		// } else {
+		// 	m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+		// }
 
 		var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
 
@@ -569,7 +569,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		m_poseEstimator.update(getHeading(), getModulePositions());
 		m_state.update(getPose(), getModuleStates(), m_field);
 		var poseEstElapsed = Timer.getFPGATimestamp() - poseEstBegin;
-		log_odoTime.accept(poseEstElapsed);
+		// log_odoTime.accept(poseEstElapsed);
 	}
 
 	public void autoReseed() {
@@ -610,26 +610,26 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		m_pigeon.getRawGyro(m_xyzDPS);
 
-		log_yaw.accept(m_pigeon.getYaw());
-		log_pitch.accept(getGyroPitch());
-		log_roll.accept(getGyroRoll());
+		// log_yaw.accept(m_pigeon.getYaw());
+		// log_pitch.accept(getGyroPitch());
+		// log_roll.accept(getGyroRoll());
 
-		log_yawRate.accept(getGyroYawRate());
-		log_pitchRate.accept(getGyroPitchRate());
-		log_pitchRateFiltered.accept(getFilteredGyroPitchRate());
-		log_rollRate.accept(getGyroRollRate());
+		// log_yawRate.accept(getGyroYawRate());
+		// log_pitchRate.accept(getGyroPitchRate());
+		// log_pitchRateFiltered.accept(getFilteredGyroPitchRate());
+		// log_rollRate.accept(getGyroRollRate());
 
-		var chassisSpeeds = getChassisSpeeds();
-		log_autoXVelo.accept(getChassisSpeeds().vxMetersPerSecond);
-		log_autoYVelo.accept(getChassisSpeeds().vyMetersPerSecond);
-		// log_autoXDesiredVelo.accept();
-		// log_autoYDesiredVelo.accept(yController);
-		log_autoXPos.accept(getPose().getX());
-		log_autoYPos.accept(getPose().getY());
-		log_autoXDesiredPos.accept(xController.getSetpoint());
-		log_autoYDesiredPos.accept(yController.getSetpoint());
-		log_autoTheta.accept(autoThetaController.getSetpoint());
-		log_autoThetaPosError.accept(autoThetaController.getPositionError());
+		// var chassisSpeeds = getChassisSpeeds();
+		// log_autoXVelo.accept(getChassisSpeeds().vxMetersPerSecond);
+		// log_autoYVelo.accept(getChassisSpeeds().vyMetersPerSecond);
+		// // log_autoXDesiredVelo.accept();
+		// // log_autoYDesiredVelo.accept(yController);
+		// log_autoXPos.accept(getPose().getX());
+		// log_autoYPos.accept(getPose().getY());
+		// log_autoXDesiredPos.accept(xController.getSetpoint());
+		// log_autoYDesiredPos.accept(yController.getSetpoint());
+		// log_autoTheta.accept(autoThetaController.getSetpoint());
+		// log_autoThetaPosError.accept(autoThetaController.getPositionError());
 	}
 
 

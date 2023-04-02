@@ -35,7 +35,7 @@ public final class AutonFactory {
     private static CommandBase logAutonState(String auto, double state) {
         return Commands.runOnce(() -> {
             log_autoState = WaltLogger.makeDoubleTracePub("AutoState -" + auto);
-            log_autoState.accept(state);
+            // log_autoState.accept(state);
         });
     }
 
