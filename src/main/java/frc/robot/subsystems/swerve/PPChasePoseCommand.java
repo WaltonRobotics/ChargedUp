@@ -14,8 +14,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * A command that uses two PID controllers ({@link PIDController}) and a
@@ -39,8 +37,7 @@ import io.github.oblarg.oblog.annotations.Log;
  * This class is provided by the NewCommands VendorDep
  */
 @SuppressWarnings("MemberName")
-public class PPChasePoseCommand extends CommandBase implements Loggable {
-    @Log(methodName = "get")
+public class PPChasePoseCommand extends CommandBase {
     private final Timer m_timer = new Timer();
     private Supplier<Pose2d> m_targetPose;
     private PathPlannerTrajectory m_trajectory;

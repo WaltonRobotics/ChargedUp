@@ -1,9 +1,16 @@
-package frc.lib;
+package frc.lib.logging;
+
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.util.datalog.*;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.Constants;
 
-public final class WaltLogger {
+public final class NTPublisherFactory {
     private static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
     private static final NetworkTable traceTable = inst.getTable("Trace");
 
@@ -16,7 +23,7 @@ public final class WaltLogger {
         return makeDoublePub(inst.getTable(table), name, options);
     }
 
-    public static DoublePublisher makeDoubleTracePub(String name) {
+    public static DoublePublisher makeDoublePub(String name) {
         return makeDoublePub(traceTable, name, PubSubOption.periodic(TimedRobot.kDefaultPeriod));
     }
 
@@ -45,7 +52,7 @@ public final class WaltLogger {
     public static BooleanPublisher makeBoolTracePub(String name) {
         return makeBoolPub(traceTable, name, PubSubOption.periodic(TimedRobot.kDefaultPeriod));
     }
-    
+
     public static StringPublisher makeStringPub(NetworkTable table, String name, PubSubOption... options) {
         StringTopic topic = table.getStringTopic(name);
         return topic.publish(options);

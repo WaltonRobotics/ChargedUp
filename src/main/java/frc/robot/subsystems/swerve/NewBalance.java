@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.lib.WaltLogger;
+import frc.lib.logging.NTPublisherFactory;
 
 public class NewBalance extends SequentialCommandGroup {
 
@@ -24,7 +24,7 @@ public class NewBalance extends SequentialCommandGroup {
 
 
     public NewBalance(SwerveSubsystem swerve) {
-        log_balState = WaltLogger.makeDoubleTracePub("BalanceState");
+        log_balState = NTPublisherFactory.makeDoublePub("BalanceState");
         // DoubleSupplier thetaSupplier = () -> swerve.autoThetaController.calculate(swerve.getGyroYaw(), 0);
         CommandBase oneHopThisTime =
             Commands.run(

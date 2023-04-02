@@ -6,12 +6,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import frc.lib.WaltLogger;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.SwerveModuleConstants;
@@ -53,7 +53,7 @@ public class SwerveModule {
     private double m_driveMotorSimDistance;
     private double m_steerMotorSimDistance;
 
-    private final DoublePublisher 
+    private final DoubleLogger 
         log_driveTemp, log_steerTemp, log_cancoderAngle, log_modVelocity,
         log_steerInternalAngle, log_desiredStateVelocity, log_desiredStateRotation,
         log_actualStateVelocity, log_actualStateRotation, log_driveMotorVeloCmd;
@@ -64,18 +64,16 @@ public class SwerveModule {
         this.m_angleOffset = moduleConstants.angleOffset;
         final String topicPrefix = SwerveK.DB_TAB_NAME + "/" + moduleName;
 
-        log_driveTemp = WaltLogger.makeDoubleTracePub(topicPrefix + "/DriveTemp");
-        log_steerTemp = WaltLogger.makeDoubleTracePub(topicPrefix + "/SteerTemp");
-        log_cancoderAngle = WaltLogger.makeDoubleTracePub(topicPrefix + "/CancoderAngle");
-        log_modVelocity = WaltLogger.makeDoubleTracePub(topicPrefix + "/ModuleVelocity");
-        log_steerInternalAngle = WaltLogger.makeDoubleTracePub(topicPrefix + "/SteerInternalAngle");
-        log_desiredStateVelocity = WaltLogger.makeDoubleTracePub(topicPrefix + "/DesState/Velocity");
-        log_desiredStateRotation = WaltLogger.makeDoubleTracePub(topicPrefix + "/DesState/Rotation");
-        log_actualStateVelocity = WaltLogger.makeDoubleTracePub(topicPrefix + "/ActState/Velocity");
-        log_actualStateRotation = WaltLogger.makeDoubleTracePub(topicPrefix + "/ActState/Rotation");
-        log_driveMotorVeloCmd = WaltLogger.makeDoubleTracePub(topicPrefix + "/DriveVeloCmd");
-
-
+        log_driveTemp = WaltLogger.logDouble(topicPrefix, "DriveTemp");
+        log_steerTemp = WaltLogger.logDouble(topicPrefix, "SteerTemp");
+        log_cancoderAngle = WaltLogger.logDouble(topicPrefix, "CancoderAngle");
+        log_modVelocity = WaltLogger.logDouble(topicPrefix, "ModuleVelocity");
+        log_steerInternalAngle = WaltLogger.logDouble(topicPrefix, "SteerInternalAngle");
+        log_desiredStateVelocity = WaltLogger.logDouble(topicPrefix, "DesState/Velocity");
+        log_desiredStateRotation = WaltLogger.logDouble(topicPrefix, "DesState/Rotation");
+        log_actualStateVelocity = WaltLogger.logDouble(topicPrefix, "ActState/Velocity");
+        log_actualStateRotation = WaltLogger.logDouble(topicPrefix, "ActState/Rotation");
+        log_driveMotorVeloCmd = WaltLogger.logDouble(topicPrefix, "DriveVeloCmd");
 
         /* Angle Encoder Config */
         m_angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
@@ -93,21 +91,21 @@ public class SwerveModule {
     }
 
     public void periodic() {
-        // log_driveTemp.accept(m_driveMotor.getTemperature());
-        // log_steerTemp.accept(m_steerMotor.getTemperature());
-        // log_cancoderAngle.accept(m_angleEncoder.getAbsolutePosition());
-        // log_modVelocity.accept(getState().speedMetersPerSecond);
-        // log_steerInternalAngle.accept(getPosition().angle.getDegrees());
+        log_driveTemp.accept(m_driveMotor.getTemperature());
+        log_steerTemp.accept(m_steerMotor.getTemperature());
+        log_cancoderAngle.accept(m_angleEncoder.getAbsolutePosition());
+        log_modVelocity.accept(getState().speedMetersPerSecond);
+        log_steerInternalAngle.accept(getPosition().angle.getDegrees());
 
-        // // log states
-        // var curState = getState();
-        // log_actualStateVelocity.accept(curState.speedMetersPerSecond);
-        // log_actualStateRotation.accept(curState.angle.getDegrees());
+        // log states
+        var curState = getState();
+        log_actualStateVelocity.accept(curState.speedMetersPerSecond);
+        log_actualStateRotation.accept(curState.angle.getDegrees());
         
-        // log_desiredStateVelocity.accept(m_latestDesiredState.speedMetersPerSecond);
-        // log_desiredStateRotation.accept(m_latestDesiredState.angle.getDegrees());
+        log_desiredStateVelocity.accept(m_latestDesiredState.speedMetersPerSecond);
+        log_desiredStateRotation.accept(m_latestDesiredState.angle.getDegrees());
 
-        // log_driveMotorVeloCmd.accept(m_latestCmdedDriveVelo);
+        log_driveMotorVeloCmd.accept(m_latestCmdedDriveVelo);
     }
 
     public double makePositiveDegrees(double angle) {
@@ -211,10 +209,11 @@ public class SwerveModule {
     }
 
     public void resetToAbsolute() {
+        double cancoderDeg = getCanCoder().getDegrees();
         double absPosDeg = 
-            getCanCoder().getDegrees() < 0 ?
-            makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees() - 360 :
-            makePositiveDegrees(getCanCoder().getDegrees()) - m_angleOffset.getDegrees();
+            cancoderDeg < 0 ?
+            makePositiveDegrees(cancoderDeg) - m_angleOffset.getDegrees() - 360 :
+            makePositiveDegrees(cancoderDeg) - m_angleOffset.getDegrees();
         double absolutePosition = Conversions.degreesToFalcon(
                 absPosDeg, kAngleGearRatio);
         m_steerMotor.setSelectedSensorPosition(absolutePosition);

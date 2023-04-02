@@ -16,7 +16,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import frc.lib.WaltLogger;
+import frc.lib.logging.NTPublisherFactory;
 
 
 public class PhotonRunner {
@@ -44,7 +44,7 @@ public class PhotonRunner {
 
         final String entryPrefix = "PhotonRunner/" + cameraName + "/";
 
-        log_estTimeSec = WaltLogger.makeDoubleTracePub(entryPrefix + "estTimeSec");
+        log_estTimeSec = NTPublisherFactory.makeDoublePub(entryPrefix + "estTimeSec");
     }
 
     private void run() {

@@ -1,11 +1,9 @@
 package frc.robot.auton;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.WaltLogger;
 import frc.robot.auton.Paths.PPPaths;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.TheClaw;
@@ -18,25 +16,14 @@ import frc.robot.subsystems.superstructure.SuperState;
 
 import java.util.HashMap;
 
-import com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer;
-
 public final class AutonFactory {
     public static HashMap<String, Command> autonEventMap = new HashMap<>();
     public static final CommandBase DoNothingAuto = Commands.print("Doing Nothing!!!!!!!!!!!");
     public static Translation2d position = new Translation2d();
 
-    private static DoublePublisher log_autoState = WaltLogger.makeDoubleTracePub("AutoState");
-
     public static CommandBase testAuto(SwerveSubsystem swerve) {
         var driveCmd = swerve.getPPSwerveAutonCmd(Paths.PPPaths.oneConePark);
         return driveCmd;
-    }
-
-    private static CommandBase logAutonState(String auto, double state) {
-        return Commands.runOnce(() -> {
-            log_autoState = WaltLogger.makeDoubleTracePub("AutoState -" + auto);
-            // log_autoState.accept(state);
-        });
     }
 
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,

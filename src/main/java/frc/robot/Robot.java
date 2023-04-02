@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import io.github.oblarg.oblog.Logger;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,7 +29,23 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
 
-  private final RobotContainer m_robotContainer = new RobotContainer();
+  private final RobotContainer m_robotContainer;
+
+  public Robot() {
+    if (!DriverStation.isFMSAttached()) {
+      // Only run at home!
+      PathPlannerServer.startServer(5811);
+    }
+    DriverStation.silenceJoystickConnectionWarning(true);
+    
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
+    
+    
+    m_robotContainer = new RobotContainer();
+    addPeriodic(m_robotContainer.vision::periodic, .5);
+    addPeriodic(m_robotContainer.superstructure::periodicTelemetry, kDefaultPeriod);
+  }
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -40,17 +55,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_modResetTimer.restart();
-    if (!DriverStation.isFMSAttached()) {
-      // Only run at home!
-      PathPlannerServer.startServer(5811);
-    }
-    DriverStation.silenceJoystickConnectionWarning(true);
-    addPeriodic(m_robotContainer.vision::periodic, .5);
-    addPeriodic(m_robotContainer.superstructure::periodicTelemetry, kDefaultPeriod);
-
-    DataLogManager.start();
-    DriverStation.startDataLog(DataLogManager.getLog());
-    Logger.configureLoggingAndConfig(this, true);
   }
 
   /**

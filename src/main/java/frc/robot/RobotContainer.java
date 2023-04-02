@@ -7,9 +7,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auton.*;
-import frc.lib.LoggedCommandXboxController;
-import frc.lib.util.DashboardManager;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureToState;
@@ -35,8 +34,8 @@ import java.util.Optional;
  */
 public class RobotContainer {
 	/* Controllers */
-	private final LoggedCommandXboxController driver = new LoggedCommandXboxController(0, "driver");
-	private final LoggedCommandXboxController manipulator = new LoggedCommandXboxController(1, "manipulator");
+	private final CommandXboxController driver = new CommandXboxController(0);
+	private final CommandXboxController manipulator = new CommandXboxController(1);
 
 	public final LEDSubsystem leds = new LEDSubsystem();
 	public final AprilTagCamera vision = new AprilTagCamera();

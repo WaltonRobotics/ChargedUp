@@ -6,7 +6,7 @@ import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.PPAutoscoreClass;
 import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.AprilTagCamera;
-import frc.lib.WaltLogger;
+import frc.lib.logging.NTPublisherFactory;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.util.AdvantageScopeUtils;
 import frc.lib.util.DashboardManager;
@@ -89,25 +89,25 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private final AprilTagCamera m_apriltagHelper;
 
-	private final DoublePublisher log_yaw = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/Yaw");
-	private final DoublePublisher log_yawRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/YawRate");
-	private final DoublePublisher log_pitch = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/Pitch");
-	private final DoublePublisher log_pitchRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PitchRate");
-	private final DoublePublisher log_pitchRateFiltered = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PitchRateFiltered");
-	private final DoublePublisher log_roll = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/Roll");
-	private final DoublePublisher log_rollRate = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/RollRate");
-	private final DoublePublisher log_pathGroupSegment = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/PathGroupSeg");
-	private final DoublePublisher log_odoTime = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/OdoTime");
-	private final DoublePublisher log_autoXVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXVelo");
-	private final DoublePublisher log_autoYVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYVelo");
-	private final DoublePublisher log_autoXPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXPos");
-	private final DoublePublisher log_autoYPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYPos");
-	private final DoublePublisher log_autoXDesiredVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXDesiredVelo");
-	private final DoublePublisher log_autoYDesiredVelo = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYDesiredVelo");
-	private final DoublePublisher log_autoXDesiredPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoXDesiredPos");
-	private final DoublePublisher log_autoYDesiredPos = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoYDesiredPos");
-	private final DoublePublisher log_autoTheta = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoThetaDesired");
-	private final DoublePublisher log_autoThetaPosError = WaltLogger.makeDoubleTracePub(DB_TAB_NAME + "/AutoThetaPosError");
+	private final DoublePublisher log_yaw = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/Yaw");
+	private final DoublePublisher log_yawRate = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/YawRate");
+	private final DoublePublisher log_pitch = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/Pitch");
+	private final DoublePublisher log_pitchRate = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/PitchRate");
+	private final DoublePublisher log_pitchRateFiltered = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/PitchRateFiltered");
+	private final DoublePublisher log_roll = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/Roll");
+	private final DoublePublisher log_rollRate = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/RollRate");
+	private final DoublePublisher log_pathGroupSegment = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/PathGroupSeg");
+	private final DoublePublisher log_odoTime = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/OdoTime");
+	private final DoublePublisher log_autoXVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXVelo");
+	private final DoublePublisher log_autoYVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYVelo");
+	private final DoublePublisher log_autoXPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXPos");
+	private final DoublePublisher log_autoYPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYPos");
+	private final DoublePublisher log_autoXDesiredVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXDesiredVelo");
+	private final DoublePublisher log_autoYDesiredVelo = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYDesiredVelo");
+	private final DoublePublisher log_autoXDesiredPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoXDesiredPos");
+	private final DoublePublisher log_autoYDesiredPos = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoYDesiredPos");
+	private final DoublePublisher log_autoTheta = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoThetaDesired");
+	private final DoublePublisher log_autoThetaPosError = NTPublisherFactory.makeDoublePub(DB_TAB_NAME + "/AutoThetaPosError");
 
 	private final LinearFilter m_pitchRateFilter = LinearFilter.movingAverage(16);
 

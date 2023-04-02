@@ -4,7 +4,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.WaltLogger;
+import frc.lib.logging.NTPublisherFactory;
 import frc.robot.Constants.ElevatorK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
@@ -27,10 +27,10 @@ public class Superstructure {
 	// State management
 	SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-	private final DoublePublisher log_autoState = WaltLogger.makeDoublePub("State", "Superstructure/AutonState");
-	protected final StringPublisher log_currState = WaltLogger.makeStringPub("State", "Superstructure/CurrState");
-	protected final StringPublisher log_prevState = WaltLogger.makeStringPub("State", "Superstructure/PrevState");
-	protected final StringPublisher log_stateQuirk = WaltLogger.makeStringPub("State", "Superstructure/StateQuirk");
+	private final DoublePublisher log_autoState = NTPublisherFactory.makeDoublePub("State", "Superstructure/AutonState");
+	protected final StringPublisher log_currState = NTPublisherFactory.makeStringPub("State", "Superstructure/CurrState");
+	protected final StringPublisher log_prevState = NTPublisherFactory.makeStringPub("State", "Superstructure/PrevState");
+	protected final StringPublisher log_stateQuirk = NTPublisherFactory.makeStringPub("State", "Superstructure/StateQuirk");
 	
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
