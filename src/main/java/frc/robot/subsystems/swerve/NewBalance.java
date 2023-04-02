@@ -35,7 +35,7 @@ public class NewBalance extends SequentialCommandGroup {
         });
 		
 		CommandBase slideToTheFront = Commands.run(()-> { // or slide to the back?
-                swerve.drive(0.75, 0,0, false, false);
+                swerve.drive(0.5, 0,0, false, false);
         }, swerve)
         .until(() -> {
             var curPitchRate = swerve.getFilteredGyroPitchRate();

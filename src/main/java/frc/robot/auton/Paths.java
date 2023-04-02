@@ -77,13 +77,13 @@ public class Paths {
 		kPPConstraints, kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> twoEleAlt = PathPlanner.loadPathGroup("twoEleAlt",
-		kPPConstraints, kPPConstraints, kPPConstraints);
+		kPPConstraints, new PathConstraints(2.5, 2.5));
 
 		public static final List<PathPlannerTrajectory> twoEleBumpy = PathPlanner.loadPathGroup("twoEleBumpy",
 		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
 
-		public static final List<PathPlannerTrajectory> twoPointFive = PathPlanner.loadPathGroup("twoPointFive",
-		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
+		public static final PathPlannerTrajectory twoPointFive = PathPlanner.loadPath("twoPointFive",
+		kPPConstraints);
 
 		public static final PathPlannerTrajectory twoEle2 = PathPlanner.loadPath("twoEle2", kPPConstraints);
 

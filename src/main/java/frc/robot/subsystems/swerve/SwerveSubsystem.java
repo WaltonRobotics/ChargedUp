@@ -602,7 +602,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		// 	m_apriltagHelper.setDriverMode(false);
 		// 	updateVision();
 		// }
-		updateVision();
+		// updateVision();
 		updateOdo();
 
 		m_pigeon.getRawGyro(m_xyzDPS);

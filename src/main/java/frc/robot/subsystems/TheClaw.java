@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -10,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.WaltLogger;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TheClawK.*;
 
 import java.util.function.Supplier;
 
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
@@ -50,6 +49,8 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger wristAngleTrig;
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
+		timeOfFlight.setRangingMode(RangingMode.Short, 24);
+		// timeOfFlight.setRangeOfInterest(8, 8, 12, 12);
 		m_autoStateSupplier = autoStateSupplier;
 		DashboardManager.addTab(this);
 		m_lastActuationTimer.restart();
@@ -86,7 +87,7 @@ public class TheClaw extends SubsystemBase {
 		substationStateAutoGrabTrig
 		.and(sensorTrig)
 		.and(timeOfFlightTrig)
-		// .and(substationDelayTrig)
+		.and(substationDelayTrig)
 		.and(closedTrig.negate())
 		.onTrue(
 			Commands.runOnce(() -> m_grabOk = true)
@@ -105,7 +106,7 @@ public class TheClaw extends SubsystemBase {
 	}
 
 	private boolean withinRange() {
-		return timeOfFlight.getRange() < 177.8;
+		return timeOfFlight.getRange() <= 177.8;
 	}
 
 	public CommandBase autoGrab() {
@@ -169,5 +170,6 @@ public class TheClaw extends SubsystemBase {
 		nte_superstate.setString(m_autoStateSupplier.get().toString());
 		nte_withinRange.setBoolean(withinRange());
 		nte_range.setDouble(timeOfFlight.getRange());
+		timeOfFlight.identifySensor();
 	}
 }
