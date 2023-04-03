@@ -338,7 +338,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSafeHeight = kElevatorHeightOffset; // where wrist is free to move
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41);
-        public static final double kTopCubeHeightM = 0.46;
+        public static final double kTopCubeHeightM = 0.485;
         public static final double kTopConeHeightM = 0.68;
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.30;

@@ -15,6 +15,7 @@ import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.AprilTagCamera;
+import frc.robot.vision.VisionManager;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPPaths;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
@@ -38,7 +39,7 @@ public class RobotContainer {
 	private final CommandXboxController manipulator = new CommandXboxController(1);
 
 	public final LEDSubsystem leds = new LEDSubsystem();
-	public final AprilTagCamera vision = new AprilTagCamera();
+	public final VisionManager vision = new VisionManager();
 	public final SwerveSubsystem swerve = new SwerveSubsystem(autonEventMap, vision);
 	public final TiltSubsystem tilt = new TiltSubsystem();
 	public final ElevatorSubsystem elevator = new ElevatorSubsystem();

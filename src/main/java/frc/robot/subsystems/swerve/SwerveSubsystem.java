@@ -569,7 +569,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		// 	m_apriltagHelper.setDriverMode(false);
 		// 	updateVision();
 		// }
-		// updateVision();
+		updateVision();
 		updateOdo();
 
 
