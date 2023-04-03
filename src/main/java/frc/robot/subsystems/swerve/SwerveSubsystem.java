@@ -1,17 +1,15 @@
 package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
-import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.VisionK;
 import frc.robot.auton.Paths;
 import frc.robot.auton.Paths.ReferencePoints;
-import frc.robot.vision.AprilTagCamera;
+import frc.robot.vision.VisionManager;
+import frc.robot.vision.VisionManager.VisionMeasurement;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.lib.swerve.SwerveDriveState;
-import frc.lib.util.AdvantageScopeUtils;
-import frc.lib.util.DashboardManager;
 import frc.lib.util.Flipper;
-// import frc.lib.vision.EstimatedRobotPose;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -47,7 +45,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -83,9 +80,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			getModulePositions(),
 			new Pose2d(),
 			new Matrix<>(kOdoStdDevs_DefaultTrust),
-			new Matrix<>(kVisionStdDevs_DefaultTrust));
+			VisionK.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
 
-	private final AprilTagCamera m_apriltagHelper;
+	private final VisionManager m_visionManager;
 
 	private final DoubleLogger log_yaw = WaltLogger.logDouble(DB_TAB_NAME, "Yaw");
 	private final DoubleLogger log_yawRate = WaltLogger.logDouble(DB_TAB_NAME, "YawRate");
@@ -114,8 +111,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	private double m_simYaw = 0;
 	private double[] m_pigeonGyroRateDPS = new double[3];
 
-	public SwerveSubsystem(HashMap<String, Command> autoEventMap, AprilTagCamera apriltagHelper) {
-		m_apriltagHelper = apriltagHelper;
+	public SwerveSubsystem(HashMap<String, Command> autoEventMap, VisionManager visionManager) {
+		m_visionManager = visionManager;
 		// DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
 		m_pigeon.zeroGyroBiasNow();
@@ -130,7 +127,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		// thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 
 		m_state.update(getPose(), getModuleStates(), m_field);
-		m_apriltagHelper.updateField2d(m_field);
+		// m_apriltagHelper.updateField2d(m_field);
 		// DashboardManager.addTabSendable(this, "Field2d", m_field);
 
 		autoBuilder = new SwerveAutoBuilder(
@@ -519,40 +516,13 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * updates field
 	 */
 	public void updateVision() {
-		
-		var visionEstBegin = Timer.getFPGATimestamp();
-		
-		Optional<EstimatedRobotPose> leftLowPoseOpt = m_apriltagHelper.leftLowCamRunner.getLatestEstimatedPose();
-
-		Optional<EstimatedRobotPose> rightLowPoseOpt = // Optional.empty();
-				m_apriltagHelper.rightLowCamRunner.getLatestEstimatedPose();
-
-		
-
-		if (leftLowPoseOpt.isPresent()) {
-			var leftLowPose = leftLowPoseOpt.get();
-		// 	SmartDashboard.putNumberArray("LeftLowCamPose3d", AdvantageScopeUtils.toDoubleArr(leftLowPose.estimatedPose));
-
-			m_field.getObject("LeftLowCamPose").setPose(leftLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(leftLowPose.estimatedPose.toPose2d(), leftLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("LeftLowCamPose").setPose(VisionConstants.kWayOutTherePose);
+		VisionMeasurement measurement;
+		while ((measurement = m_visionManager.drainVisionMeasurement()) != null) {
+		m_poseEstimator.addVisionMeasurement(
+			measurement.estimation().estimatedPose.toPose2d(),
+			measurement.estimation().timestampSeconds,
+			measurement.confidence());
 		}
-
-		if (rightLowPoseOpt.isPresent()) {
-			var rightLowPose = rightLowPoseOpt.get();
-		// 	SmartDashboard.putNumberArray("RightLowCamPose3d", AdvantageScopeUtils.toDoubleArr(rightLowPose.estimatedPose));
-
-			m_field.getObject("RightLowCamPose").setPose(rightLowPose.estimatedPose.toPose2d());
-			m_poseEstimator.addVisionMeasurement(rightLowPose.estimatedPose.toPose2d(), rightLowPose.timestampSeconds);
-		} else {
-			m_field.getObject("RightLowCamPose").setPose(VisionConstants.kWayOutTherePose);
-		}
-
-		// var visionEstElapsed = Timer.getFPGATimestamp() - visionEstBegin;
-
-		
-		// SmartDashboard.putNumber("VisionTimeSec", visionEstElapsed);
 	}
 
 	public void updateOdo(){
@@ -599,7 +569,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		// 	m_apriltagHelper.setDriverMode(false);
 		// 	updateVision();
 		// }
-		// updateVision();
+		updateVision();
 		updateOdo();
 
 

@@ -14,8 +14,6 @@ import static frc.robot.Constants.TheClawK.*;
 
 import java.util.function.Supplier;
 
-import com.playingwithfusion.TimeOfFlight;
-import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
@@ -25,7 +23,6 @@ public class TheClaw extends SubsystemBase {
 	// private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
 	// private final GenericEntry nte_withinRange = DashboardManager.addTabBooleanBox(this, "within range");
 	// private final GenericEntry nte_range = DashboardManager.addTabNumberBar(this, "time of flight range", 0, 1300);
-	private final TimeOfFlight timeOfFlight = new TimeOfFlight(kTimeOfFlightID);
 
 	private final Supplier<ClawState> m_autoStateSupplier;
 	private final Supplier<Double> m_wristDegSupplier;
@@ -170,6 +167,5 @@ public class TheClaw extends SubsystemBase {
 		// nte_superstate.setString(m_autoStateSupplier.get().toString());
 		// nte_withinRange.setBoolean(withinRange());
 		// nte_range.setDouble(timeOfFlight.getRange());
-		timeOfFlight.identifySensor();
 	}
 }

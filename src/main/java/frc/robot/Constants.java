@@ -1,16 +1,23 @@
 package frc.robot;
 
+import java.util.List;
+import java.util.Set;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -331,7 +338,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSafeHeight = kElevatorHeightOffset; // where wrist is free to move
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41);
-        public static final double kTopCubeHeightM = 0.46;
+        public static final double kTopCubeHeightM = 0.485;
         public static final double kTopConeHeightM = 0.68;
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.30;
@@ -398,13 +405,83 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final int kTimeOfFlightID = 0;
     }
 
-       // in meters
-       public static final class VisionConstants {
-        //TODO: update these values once we get them
-        public static final double kCameraHeight = 0.88265;
-        public static final double kCameraX = 0;
-        public static final double kCameraY = 0.1524;
-        public static final double kTargetHeight = 1; // TODO: update value
+    public static final class VisionK {
+        public static record VisionSource(String name, Transform3d robotToCamera) {}
+
+        private static final Transform3d leftCornerLow_RobotToCamera = new Transform3d(
+            new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
+            new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(-50.5)));
+
+        private static final Transform3d rightCornerLow_RobotToCamera = new Transform3d(
+            new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(-9.279), Units.inchesToMeters(8.845)),
+            new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(39.6)));
+    
+        public static final List<VisionSource> VISION_SOURCES = List.of(
+            new VisionSource("LeftCornerLow", leftCornerLow_RobotToCamera),
+            new VisionSource("RightCornerLow", rightCornerLow_RobotToCamera)
+        );
+
+        /**
+         * Standard deviations of the vision measurements. Increase these numbers to trust global
+         * measurements from vision less. This matrix is in the form [x, y, theta]ᵀ, with units in
+         * meters and radians.
+         *
+         * <p>These are not actually used anymore, but the constructor for the pose estimator wants
+         * them. This value is calculated dynamically using the below list.
+         */
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
+        Matrix.mat(Nat.N3(), Nat.N1())
+            .fill(
+                // if these numbers are less than one, multiplying will do bad things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+                );
+
+        public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS = List.of(
+            Set.of(1, 2, 3, 4), Set.of(5, 6, 7, 8));
+
+        public static final int MAX_FRAME_FIDS = 4;
+
+        public static final double POSE_AMBIGUITY_CUTOFF = .05;
+
+        public static record UnitDeviationParams(double distanceMultiplier, double eulerMultiplier, double minimum) {
+            private double computeUnitDeviation(double averageDistance) {
+                return Math.max(minimum, eulerMultiplier * Math.exp(averageDistance * distanceMultiplier));
+            }
+        }
+
+        public static record TagCountDeviation(UnitDeviationParams xParams, UnitDeviationParams yParams, UnitDeviationParams thetaParams) {
+            public Matrix<N3, N1> computeDeviation(double averageDistance) {
+                return Matrix.mat(Nat.N3(), Nat.N1())
+                    .fill(
+                        xParams.computeUnitDeviation(averageDistance),
+                        yParams.computeUnitDeviation(averageDistance),
+                        thetaParams.computeUnitDeviation(averageDistance));
+            }
+    
+            public TagCountDeviation(UnitDeviationParams xyParams, UnitDeviationParams thetaParams) {
+                this(xyParams, xyParams, thetaParams);
+            }
+      }
+
+        public static final List<TagCountDeviation> TAG_COUNT_DEVIATION_PARAMS =
+        List.of(
+            // 1 tag
+            new TagCountDeviation(
+                new UnitDeviationParams(.25, .4, .9),
+                new UnitDeviationParams(.35, .5, 1.2),
+                new UnitDeviationParams(.5, .7, 1.5)),
+
+            // 2 tags
+            new TagCountDeviation(
+                new UnitDeviationParams(.35, .1, .4), new UnitDeviationParams(.5, .7, 1.5)),
+
+            // 3+ tags
+            new TagCountDeviation(
+                new UnitDeviationParams(.25, .07, .25), new UnitDeviationParams(.15, 1, 1.5)));
+
+        public static final int THREAD_SLEEP_DURATION_MS = 5;
         public static final Pose2d kWayOutTherePose = new Pose2d(-1000, -1000, Rotation2d.fromDegrees(0));
     }
 
