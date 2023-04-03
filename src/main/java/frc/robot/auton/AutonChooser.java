@@ -12,23 +12,23 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class AutonChooser {
     public enum AutonOption {
         DO_NOTHING("do nothing"),
-        CONE_ONE_HALF_PARK("cone, pickup, balance"),
-        CONE_BACK_PARK("cone, leave, balance"),
-        CUBE_BACK_PARK("cube, leave, balance"),
-        TWO_ELEMENT("cone-cube-nopark"),
-        TWO_ELEMENT_BUMPY("cone-cube-nopark on bumpy side"),
-        TWO_ELEMENT_PARK("cone-cube-park"),
-        TWO_ELEMENT_PARK_ALT("cube-cone-park"),
-        TWO_POINT_FIVE("cone-cube-get-another"),
-        CUBE_ONE_HALF_PARK("cube, pickup, balance"),     
-        ONE_CONE_OUT("cone, drive out of community"),   
+        CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),
+        CONE_BACK_PARK("1 - cone w/ balance"),
+        CUBE_BACK_PARK("1 - cube w/ balance"),
+        TWO_ELEMENT("2 - cone, cube w/o balance)"),
+        TWO_ELEMENT_BUMPY("2 - cone, cube w/o balance over bump"),
+        TWO_ELEMENT_PARK("2 - cone, cube w/ balance"),
+        TWO_ELEMENT_PARK_ALT("2 - cube, cone w/ balance"),
+        TWO_POINT_FIVE("3 - cone, cube, cone"),
+        CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),     
+        ONE_CONE_OUT("1 - cone w/o balance"),   
         
         //NOT IN USE
         
-        ONE_CONE_PARK("drop cone then park"),
-        CONE_BACK("drop cone back"),
-        ONE_CUBE_AROUND("drop cube then go around and park"),
-        THREE_PIECE("three piece scoring");
+        ONE_CONE_PARK("NOT IN USE: drop cone then park"),
+        CONE_BACK("NOT IN USE: drop cone back"),
+        ONE_CUBE_AROUND("NOT IN USE: drop cube then go around and park"),
+        THREE_PIECE("NOT IN USE: three piece scoring");
         
 
         public final String description;

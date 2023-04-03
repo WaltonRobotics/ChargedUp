@@ -302,12 +302,12 @@ Commands.parallel(
         ),
 
         Commands.sequence(
-            Commands.waitSeconds(2),  //Time before pickup
+            Commands.waitSeconds(1.45),  //Time before pickup
             groundPickUp.asProxy(), //PICKUP
-            Commands.waitSeconds(.25),  //time before SAFE
+            Commands.waitSeconds(0.6),  //time before SAFE
             ssResetCmd2.asProxy(), //SAFE
             // Commands.waitSeconds(.25),  //time before cube throw
-            cubePlaceCmd.asProxy().withTimeout(1.65)    //cube throw
+            cubePlaceCmd.asProxy().withTimeout(1.75)    //cube throw
         )
     )
 ),
@@ -323,7 +323,7 @@ Commands.parallel(
     ),
 
     Commands.sequence(
-        Commands.waitSeconds(2.25), // prob will change later ;-;
+        Commands.waitSeconds(3), // prob will change later ;-;
         groundPickUp2.asProxy(),
         // Commands.waitSeconds(.25),  //time before SAFE
         ssResetCmd4.asProxy() //SAFE
