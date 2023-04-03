@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.elevator.setCoast(false);
     m_robotContainer.tilt.setCoast(false);
     m_robotContainer.superstructure.initState();
+    m_robotContainer.tilt.resetEncoder();
 
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
     if (initPoseOpt.isPresent()) {

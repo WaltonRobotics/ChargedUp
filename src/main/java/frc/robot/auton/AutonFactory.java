@@ -297,17 +297,17 @@ Commands.parallel(
     Commands.parallel(
         //path while going to SAFE
         Commands.sequence(
-            Commands.waitSeconds(.15), 
+            Commands.waitSeconds(.5), 
             pathCmd.asProxy()
         ),
 
         Commands.sequence(
-            Commands.waitSeconds(1.5),  //Time before pickup
+            Commands.waitSeconds(2),  //Time before pickup
             groundPickUp.asProxy(), //PICKUP
             Commands.waitSeconds(.25),  //time before SAFE
             ssResetCmd2.asProxy(), //SAFE
             // Commands.waitSeconds(.25),  //time before cube throw
-            cubePlaceCmd.asProxy().withTimeout(1.85)    //cube throw
+            cubePlaceCmd.asProxy().withTimeout(1.65)    //cube throw
         )
     )
 ),
@@ -318,14 +318,14 @@ Commands.parallel(
     claw.grab().asProxy(),
 
     Commands.sequence(
-        Commands.waitSeconds(.25),   //time before path
+        Commands.waitSeconds(.5),   //time before path
         path2Cmd.asProxy() // path to pick up :D
     ),
 
     Commands.sequence(
-        Commands.waitSeconds(1.45), // prob will change later ;-;
+        Commands.waitSeconds(2.25), // prob will change later ;-;
         groundPickUp2.asProxy(),
-        Commands.waitSeconds(.25),  //time before SAFE
+        // Commands.waitSeconds(.25),  //time before SAFE
         ssResetCmd4.asProxy() //SAFE
     )
 ),
