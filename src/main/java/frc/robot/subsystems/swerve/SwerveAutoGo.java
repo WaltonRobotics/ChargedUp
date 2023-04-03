@@ -9,8 +9,12 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.util.Flipper;
+import frc.robot.auton.Paths;
 
 public class SwerveAutoGo extends CommandBase {
 
@@ -35,26 +39,28 @@ public class SwerveAutoGo extends CommandBase {
 	@Override
 	public void initialize() {
 		List<PathPoint> path = new ArrayList<>();
-		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose()); 
+		Pose2d currentPose = Flipper.flipIfShould(m_swerve.getPose());
+		Pose2d currentPose2 = m_swerve.getPose();
+		Pose2d endPose = Flipper.flipIfShould(m_endPose);
 
-		PathPoint currentPoint = new PathPoint(currentPose.getTranslation(), Rotation2d.fromDegrees(0), m_swerve.getGyroYaw());
-	
+		PathPoint currentPoint = new PathPoint(currentPose.getTranslation(), Flipper.flipIfShould(new Rotation2d(-90)), Flipper.flipIfShould(new Rotation2d(m_swerve.getGyroYaw())));
 		path.add(currentPoint);
-		path.add(m_side);
-		path.add(new PathPoint(m_endPose.getTranslation(),Rotation2d.fromDegrees(-50) , m_endPose.getRotation()));
+		// path.add(m_side);
+		// path.add(new PathPoint(new Translation2d(currentPose.get, null), null))
+		path.add(new PathPoint(m_endPose.getTranslation(),Flipper.flipIfShould(new Rotation2d(-90)), Flipper.flipIfShould(Rotation2d.fromDegrees(0))));
 		
 		m_traj = PathPlanner.generatePath(
-			new PathConstraints(1, 2),
+			new PathConstraints(2, 3.5),
 			path);
 
-		// if (DriverStation.getAlliance().equals(Alliance.Red)) {
-		// 	m_traj = Flipper.allianceFlip(m_traj);
-		// }
+		if(Flipper.shouldFlip()) {
+			m_traj = Flipper.allianceFlip(m_traj);
+		}
 
-		// PathPlannerTrajectory goToStart = 
-		// 	Paths.generateTrajectoryToPose(currentPose, m_traj.getInitialHolonomicPose(), m_swerve.getFieldRelativeLinearSpeedsMPS());
+		PathPlannerTrajectory goToStart = 
+			Paths.generateTrajectoryToPose(currentPose, m_traj.getInitialHolonomicPose(), m_swerve.getFieldRelativeLinearSpeedsMPS());
 
-		var followCmd = m_swerve.getPPSwerveAutonCmd(m_traj);
+		var followCmd = m_swerve.ppFollowerCmd(m_traj);
 
 		followCmd.withName("SwerveAutoGo").schedule();
 	}

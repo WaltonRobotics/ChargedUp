@@ -422,7 +422,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
 	}
 
-	private CommandBase ppFollowerCmd(PathPlannerTrajectory traj) {
+	protected CommandBase ppFollowerCmd(PathPlannerTrajectory traj) {
 		return new PPSwerveControllerCommand(
 			traj,
 			this::getPose, // Pose supplier
@@ -599,7 +599,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		// 	m_apriltagHelper.setDriverMode(false);
 		// 	updateVision();
 		// }
-		updateVision();
+		// updateVision();
 		updateOdo();
 
 

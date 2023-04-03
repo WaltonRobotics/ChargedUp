@@ -37,7 +37,7 @@ public class PhotonRunner {
         camera = new PhotonCamera(cameraName);
         robotToCamTransform = robotToCam;
         poseEstimator = new PhotonPoseEstimator(atfl, PoseStrategy.MULTI_TAG_PNP, camera, robotToCamTransform);
-        camNotifier.startPeriodic(0.02);
+        // camNotifier.startPeriodic(0.02);
         robotPoseSupplier = robotPoseSup;
 
         final String entryPrefix = "PhotonRunner/" + cameraName + "/";

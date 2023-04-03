@@ -66,7 +66,7 @@ public class Paths {
 				kMaxAccelerationMetersPerSecondSquared);
 
 		public static final List<PathPlannerTrajectory> cubeOneHalf = PathPlanner.loadPathGroup("cubeOneHalf",
-		new PathConstraints(1.25, 1.5), 
+		new PathConstraints(2, 2), 
 		kPPConstraints, 
 		kPPConstraints);
 
@@ -149,15 +149,16 @@ public class Paths {
 				tag8Pose.getRotation());
 		
 		public static final Pose2d notBumper1Pose = new Pose2d(new Translation2d(5.84, 4.75), rot2dDeg(180));
-		public static final Pose2d notBumper2Pose = new Pose2d(new Translation2d(2.05, 4.68), rot2dDeg(180));
+		public static final Pose2d notBumper2Pose = new Pose2d(new Translation2d(2.5, 4.75), rot2dDeg(180));
 		public static final Pose2d bumper1Pose = new Pose2d(new Translation2d(5.84, 0.75), rot2dDeg(180));
 		public static final Pose2d bumper2Pose = new Pose2d(new Translation2d(3.26, 0.75), rot2dDeg(180));
 
 		public static final Pose2d[] notBumperPoses = {notBumper1Pose, notBumper2Pose};
 
+		// pathpoints are translation, heading, holonomic rotation
 		public static final PathPoint notBumper1 = new PathPoint(notBumper1Pose.getTranslation(), rot2dDeg(-165),
 				notBumper1Pose.getRotation());
-		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(-25),
+		public static final PathPoint notBumper2 = new PathPoint(notBumper2Pose.getTranslation(), rot2dDeg(90),
 				rot2dDeg(180));
 		public static final PathPoint bumper1 = new PathPoint(bumper1Pose.getTranslation(), rot2dDeg(180),
 				bumper1Pose.getRotation(), 2);
