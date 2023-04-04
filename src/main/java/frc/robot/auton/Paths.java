@@ -67,7 +67,7 @@ public class Paths {
 				kMaxAccelerationMetersPerSecondSquared);
 
 		public static final List<PathPlannerTrajectory> cubeOneHalf = PathPlanner.loadPathGroup("cubeOneHalf",
-		new PathConstraints(1.0, 1), 
+		new PathConstraints(1.25, 1), 
 		kPPConstraints, 
 		kPPConstraints);
 
@@ -210,7 +210,7 @@ public class Paths {
 			public static final Pose2d cone1 =  
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 4.93), rot2dDeg(0)));
 			public static final Pose2d cube2 = 
-				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 4.34), rot2dDeg(0)));
+				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 4.36), rot2dDeg(0)));
 			public static final Pose2d cone3 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 3.775), rot2dDeg(0)));
 			public static final Pose2d coopCone4 = 
@@ -218,7 +218,7 @@ public class Paths {
 			public static final Pose2d coopCube5 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 2.715), rot2dDeg(0)));
 			public static final Pose2d coopCone6 = 
-				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 2.12), rot2dDeg(0)));
+				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 2.14), rot2dDeg(0)));
 			public static final Pose2d cone7 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 1.55), rot2dDeg(0)));
 			public static final Pose2d cube8 = 
