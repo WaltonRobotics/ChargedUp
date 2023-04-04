@@ -425,7 +425,7 @@ public final class AutonFactory {
             ),
 
             Commands.sequence(
-                Commands.waitSeconds(2.5), // prob will change later ;-;
+                Commands.waitSeconds(2.2), // prob will change later ;-;
                 groundPickUp2.asProxy(),
                 // Commands.waitSeconds(.25),  //time before SAFE
                 ssResetCmd4.asProxy() //SAFE

@@ -74,6 +74,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
 	protected final SwerveAutoBuilder autoBuilder;
+	
 
 	private final Timer m_cancoderReseedTimer = new Timer();
 	private final Timer m_lastMotionStoppedTimer = new Timer();
@@ -287,8 +288,11 @@ public class SwerveSubsystem extends SubsystemBase {
 		return positions;
 	}
 
+	
+
 	public void zeroGyro() {
 		m_pigeon.setYaw(180);
+		m_pigeon.addYaw(0);
 	}
 
 	public void setYaw(double angle) {
@@ -441,6 +445,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			Pose2d actualEndPose = Flipper.flipIfShould(endPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
 				actualEndPose.getY());
+			System.out.println("going to " + endPose.toString());
 			
 			noTagDrive(translationVal, yRate, new Rotation2d(0));
 		});

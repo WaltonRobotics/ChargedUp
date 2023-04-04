@@ -97,17 +97,20 @@ public class Robot extends TimedRobot {
     m_robotContainer.wrist.setCoast(false);
     m_robotContainer.elevator.setCoast(false);
     m_robotContainer.tilt.setCoast(false);
-    m_robotContainer.swerve.resetPose(new Pose2d(m_robotContainer.swerve.getPose().getTranslation(), 
-      Rotation2d.fromDegrees(180)));
+    m_robotContainer.tilt.autoHome();
+    m_robotContainer.elevator.autoHome();
+    // m_robotContainer.swerve.resetPose(new Pose2d(m_robotContainer.swerve.getPose().getTranslation(), 
+    //   Rotation2d.fromDegrees(0)));
 
     m_robotContainer.superstructure.initState();
     if(!DriverStation.isFMSAttached()){
       m_robotContainer.superstructure.smartReset();
     }
-    m_robotContainer.tilt.autoHome();
-    m_robotContainer.elevator.autoHome();
+    
     m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.tilt.resetEncoder();
+
+    m_robotContainer.swerve.teleOpReset();
 
   }
 

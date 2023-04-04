@@ -345,7 +345,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.30;
         public static final double kBotHeightMeters = 0;
-        public static final double kSubstationHeightM = 0.4095;
+        public static final double kSubstationHeightM = 0.4603;
         public static final double kExtendedSubstationHeightM = .485;
 
         public static final double kMaxVelocity = 2.75; // Meters Per Second
