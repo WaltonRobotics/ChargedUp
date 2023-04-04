@@ -3,7 +3,6 @@ package frc.robot.subsystems.swerve;
 import frc.robot.SwerveModule;
 import frc.robot.Constants.VisionK;
 import frc.robot.auton.Paths;
-import frc.robot.auton.Paths.ReferencePoints;
 import frc.robot.vision.VisionManager;
 import frc.robot.vision.VisionManager.VisionMeasurement;
 import frc.lib.logging.WaltLogger;
@@ -21,12 +20,9 @@ import static frc.robot.auton.Paths.ReferencePoints.ScoringPoints.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
-import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
@@ -74,6 +70,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final Field2d m_field = new Field2d();
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
 	protected final SwerveAutoBuilder autoBuilder;
+	private double teleOpGyroZero = 0;
 	
 
 	private final Timer m_cancoderReseedTimer = new Timer();
@@ -250,6 +247,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	private void stop() {
 		drive(0, 0, Rotation2d.fromDegrees(0), true);
+	}
+
+	public void setTeleOpGyroZero(double angle){
+		teleOpGyroZero = angle;
+	}
+
+	public double getTeleOpGyroZero(){
+		return teleOpGyroZero;
 	}
 
 	public ChassisSpeeds getChassisSpeeds() {
@@ -453,6 +458,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return follow;
 	}
 
+
 	public CommandBase goToConeOrCube(DoubleSupplier translation, boolean isCone) {
 		Pose2d closestPose = isCone ? conesPoses[0] : cubesPoses[0];
 		double lastPoseDiff = isCone ? Math.abs(getPose().getY() - conesPoses[0].getY()) 
@@ -620,16 +626,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		for (var module : m_modules) {
 			module.periodic();
 		}
-		
-		// if(DriverStation.isAutonomous()){
-		// 	m_apriltagHelper.setDriverMode(true);
-		// 	updateVision();
-		// }
-
-		// if(DriverStation.isTeleop()){
-		// 	m_apriltagHelper.setDriverMode(false);
-		// 	updateVision();
-		// }
 		updateVision();
 		updateOdo();
 

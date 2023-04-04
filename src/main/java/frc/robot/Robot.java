@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.FMSCacher;
+import frc.lib.util.Flipper;
 
 public class Robot extends TimedRobot {
 
@@ -71,10 +72,12 @@ public class Robot extends TimedRobot {
     m_robotContainer.tilt.setCoast(false);
     m_robotContainer.superstructure.initState();
     m_robotContainer.tilt.resetEncoder();
+   
 
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
     if (initPoseOpt.isPresent()) {
       m_robotContainer.swerve.resetPose(initPoseOpt.get());
+      m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
     }
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -99,18 +102,16 @@ public class Robot extends TimedRobot {
     m_robotContainer.tilt.setCoast(false);
     m_robotContainer.tilt.autoHome();
     m_robotContainer.elevator.autoHome();
-    // m_robotContainer.swerve.resetPose(new Pose2d(m_robotContainer.swerve.getPose().getTranslation(), 
-    //   Rotation2d.fromDegrees(0)));
 
     m_robotContainer.superstructure.initState();
     if(!DriverStation.isFMSAttached()){
       m_robotContainer.superstructure.smartReset();
     }
     
+    m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
     m_robotContainer.swerve.resetToAbsolute();
-    m_robotContainer.tilt.resetEncoder();
+    // m_robotContainer.tilt.resetEncoder();
 
-    m_robotContainer.swerve.teleOpReset();
 
   }
 

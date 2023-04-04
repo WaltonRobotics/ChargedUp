@@ -99,6 +99,30 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
+		if(DriverStation.isFMSAttached()){
+			driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.cone1));
+		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.cube2));
+		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.cone3));
+		driver.x()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.coopCone4));
+		driver.y()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.coopCube5));
+		driver.b()
+			.and(driver.leftTrigger())
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.coopCone6));
+		driver.x()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.cone7));
+		driver.y()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.cube8));
+		driver.b()
+			.and(driver.rightTrigger())
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(), ScoringPoints.cone9));
+		}
+
 		driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cone1));
 		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cube2));
 		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cone3));

@@ -185,7 +185,7 @@ public class Paths {
 			public static final Pose2d cube2 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 4.42), rot2dDeg(0)));
 			public static final Pose2d cone3 = 
-				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 3.85), rot2dDeg(0)));
+				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 3.86), rot2dDeg(0)));
 			public static final Pose2d coopCone4 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 3.29), rot2dDeg(0)));
 			public static final Pose2d coopCube5 = 
