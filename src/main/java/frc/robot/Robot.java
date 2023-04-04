@@ -43,6 +43,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_modResetTimer.restart();
     // CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320, 240, 120);
+    if (DriverStation.isFMSAttached()) {
+      Constants.kDebugLoggingEnabled = false;
+    }
   }
 
   @Override
