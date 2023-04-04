@@ -455,11 +455,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		if(isCone) {
 			for (int i = 1; i < conesPoses.length; i++) {
 				double currentPoseDiff = Math.abs(getPose().getY() - conesPoses[i].getY());
-				if (currentPoseDiff > lastPoseDiff) {
-					break;
+				if (currentPoseDiff < lastPoseDiff) {
+					closestPose = conesPoses[i];
+					lastPoseDiff = currentPoseDiff;
 				}
-				closestPose = conesPoses[i];
-				lastPoseDiff = currentPoseDiff;
 			}
 			final Pose2d closestCone = closestPose;
 			return goToChosenPoint(translation, closestCone);
@@ -467,10 +466,9 @@ public class SwerveSubsystem extends SubsystemBase {
 			for (int i = 1; i < cubesPoses.length; i++) {
 				double currentPoseDiff = Math.abs(getPose().getY() - cubesPoses[i].getY());
 				if (currentPoseDiff > lastPoseDiff) {
-					break;
+					closestPose = cubesPoses[i];
+					lastPoseDiff = currentPoseDiff;
 				}
-				closestPose = cubesPoses[i];
-				lastPoseDiff = currentPoseDiff;
 			}
 			final Pose2d closestCube = closestPose;
 			return goToChosenPoint(translation, closestCube);
