@@ -69,88 +69,84 @@ public final class AutonFactory {
 
     public static CommandBase cubeOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
         ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-    var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
-    var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-    var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
-    var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
-    var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
+        var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
+        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
 
-    return Commands.sequence(
-        Commands.parallel(
-            tilt.autoHome().asProxy(),
-            elev.autoHome().asProxy()
-        ).withTimeout(1.0),
+        return Commands.sequence(
+            Commands.parallel(
+                tilt.autoHome().asProxy(),
+                elev.autoHome().asProxy()
+            ).withTimeout(1.0),
 
-        cubePlaceCmd.asProxy().withTimeout(1.55),
-        ssResetCmd.asProxy().withTimeout(1.35),
-        Commands.deadline(
-            pathCmd.asProxy(),
-            Commands.sequence(
-                Commands.waitSeconds(4.0),
-                groundPickUp.asProxy()
-            )
-        ),
-        Commands.parallel(
-            ssResetCmd2.asProxy(),
+            cubePlaceCmd.asProxy().withTimeout(1.55),
+            ssResetCmd.asProxy().withTimeout(1.35),
+            Commands.deadline(
+                pathCmd.asProxy(),
+                Commands.sequence(
+                    Commands.waitSeconds(4.00),
+                    groundPickUp.asProxy()
+                )
+            ),
             swerve.nowItsTimeToGetFunky().asProxy()
-        )
-    );
-}
+        );
+    }
 
     public static CommandBase twoElement(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-            ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-                var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
-                var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
-                var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-                var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
-                // var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle2);
-                var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
-                var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
-                var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
-                var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
-        
-                return Commands.sequence(
-                    Commands.parallel(
-                        tilt.autoHome().asProxy(),
-                        elev.autoHome().asProxy()
-                    ).withTimeout(1.0),
-                    placeCmd.asProxy().withTimeout(1.75),
-                    releaseCmd.asProxy(),
-                    // // move to safe state and prepare to move + autoGrab
-                    Commands.parallel(
-                        ssResetCmd.asProxy().withTimeout(1.5),
-                        claw.grab().asProxy(),
-                        // path after place timeout
-                        Commands.deadline(
-                            Commands.sequence(
-                                Commands.waitSeconds(1.75), //possible wait until safe
-                                pathCmd.asProxy()
-                            ),
-                            // autograb during path 
-                            Commands.sequence(
-                                Commands.waitSeconds(1.25), 
-                                groundPickUp.asProxy(), //down
-                                Commands.waitSeconds(2.4)
-                            )
-                        )
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
+        var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
+        // var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle2);
+        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
+        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
+        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+        var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
+
+        return Commands.sequence(
+            Commands.parallel(
+                tilt.autoHome().asProxy(),
+                elev.autoHome().asProxy()
+            ).withTimeout(1.0),
+            placeCmd.asProxy().withTimeout(1.75),
+            releaseCmd.asProxy(),
+            // // move to safe state and prepare to move + autoGrab
+            Commands.parallel(
+                ssResetCmd.asProxy().withTimeout(1.5),
+                claw.grab().asProxy(),
+                // path after place timeout
+                Commands.deadline(
+                    Commands.sequence(
+                        Commands.waitSeconds(1.75), //possible wait until safe
+                        pathCmd.asProxy()
                     ),
-                    cubePlaceCmd.asProxy().withTimeout(2.0), //maybe place in parallel w/ wait
-        
-                    Commands.parallel(
-                        ssResetCmd3.asProxy().withTimeout(1.5),
-                        claw.grab().asProxy()
-                        //path to balance timeout
-                        // Commands.sequence(
-                        //     Commands.waitSeconds(1.0)
-                            // path2Cmd.asProxy()
-                            // swerve.nowItsTimeToGetFunky(false).asProxy()
-                        // )
+                    // autograb during path 
+                    Commands.sequence(
+                        Commands.waitSeconds(1.25), 
+                        groundPickUp.asProxy(), //down
+                        Commands.waitSeconds(2.4)
                     )
-                );
+                )
+            ),
+            cubePlaceCmd.asProxy().withTimeout(2.0), //maybe place in parallel w/ wait
+
+            Commands.parallel(
+                ssResetCmd3.asProxy().withTimeout(1.5),
+                claw.grab().asProxy()
+                //path to balance timeout
+                // Commands.sequence(
+                //     Commands.waitSeconds(1.0)
+                    // path2Cmd.asProxy()
+                    // swerve.nowItsTimeToGetFunky(false).asProxy()
+                // )
+            )
+        );
     }
 
     public static CommandBase twoElementPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-            ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
         var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
@@ -207,10 +203,10 @@ public final class AutonFactory {
                 )
             )
         );
-}
+    }
 
-public static CommandBase twoElementParkAlt(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-            ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+    public static CommandBase twoElementParkAlt(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
         var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
@@ -264,142 +260,142 @@ public static CommandBase twoElementParkAlt(SwerveSubsystem swerve, Superstructu
                 )
             )
         );
-}
+    }
 
-public static CommandBase twoPointFive(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
-var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
-var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
-var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoPointFive);
-var releaseCmd = claw.release().andThen(Commands.waitSeconds(.195));
-var releaseCmd2 = claw.release().andThen(Commands.waitSeconds(.195));
-var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
-var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
-var groundPickUp2 = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
-var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
-var placeCmd2 = superstructure.toStateAuton(SuperState.TOPCONE);
-var ssResetCmd4 = superstructure.toStateAuton(SuperState.SAFE);
-var ssResetCmd5 = superstructure.toStateAuton(SuperState.SAFE);
+    public static CommandBase threeElement(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
+        var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
+        var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.three);
+        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.175));
+        var releaseCmd2 = claw.release().andThen(Commands.waitSeconds(.175));
+        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
+        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+        var groundPickUp2 = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+        var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
+        var placeCmd2 = superstructure.toStateAuton(SuperState.TOPCONE);
+        var ssResetCmd4 = superstructure.toStateAuton(SuperState.SAFE);
+        var ssResetCmd5 = superstructure.toStateAuton(SuperState.SAFE);
 
-return Commands.sequence(
-//reset
-Commands.parallel(
-    tilt.autoHome().asProxy(),
-    elev.autoHome().asProxy()
-).withTimeout(1.0),
-
-placeCmd.asProxy().withTimeout(1.65),    //to top cone
-releaseCmd.asProxy(),   //release claw
-//SAFE
-Commands.parallel(
-    ssResetCmd.asProxy().withTimeout(1.8),
-    claw.grab().asProxy(),
-
-    // path after place timeout
-    Commands.parallel(
-        //path while going to SAFE
-        Commands.sequence(
-            Commands.waitSeconds(.5), 
-            pathCmd.asProxy()
-        ),
-
-        Commands.sequence(
-            Commands.waitSeconds(1.45),  //Time before pickup
-            groundPickUp.asProxy(), //PICKUP
-            // Commands.waitSeconds(0.6),  //time before SAFE
-            // ssResetCmd2.asProxy(), //SAFE
-            Commands.waitSeconds(1.5),  //time before cube throw
-            cubePlaceCmd.asProxy().withTimeout(1.75)    //cube throw
-        )
-    )
-),
-
-//SAFE
-Commands.parallel(
-    ssResetCmd3.asProxy().withTimeout(1.5),
-    claw.grab().asProxy(),
-
-    Commands.sequence(
-        Commands.waitSeconds(.5),   //time before path
-        path2Cmd.asProxy() // path to pick up :D
-    ),
-
-    Commands.sequence(
-        Commands.waitSeconds(3), // prob will change later ;-;
-        groundPickUp2.asProxy(),
-        Commands.waitSeconds(2.25),  //time before SAFE
-        ssResetCmd4.asProxy() //SAFE
-    )
-),
-Commands.sequence(
-    placeCmd2.asProxy().withTimeout(1.75),    //to top cone
-    releaseCmd2.asProxy(),   //release claw
-    Commands.waitSeconds(.01)   //give claw time to release
-),
-Commands.parallel(
-    ssResetCmd5.asProxy().withTimeout(1.8),
-    claw.grab().asProxy()
-));
-}
-
-public static CommandBase twoElementBumpy(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-    var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
-    var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
-    var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-    var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEleBumpy);
-    // var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle2);
-    var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
-    var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
-    var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
-    var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
-
-    return Commands.sequence(
+        return Commands.sequence(
+        //reset
         Commands.parallel(
             tilt.autoHome().asProxy(),
             elev.autoHome().asProxy()
         ).withTimeout(1.0),
-        placeCmd.asProxy().withTimeout(1.75),
-        releaseCmd.asProxy(),
-        // // move to safe state and prepare to move + autoGrab
+
+        placeCmd.asProxy().withTimeout(1.65),    //to top cone
+        releaseCmd.asProxy(),   //release claw
+        //SAFE
         Commands.parallel(
-            ssResetCmd.asProxy().withTimeout(1.5),
+            ssResetCmd.asProxy().withTimeout(1.8),
             claw.grab().asProxy(),
+
             // path after place timeout
-            Commands.deadline(
+            Commands.parallel(
+                //path while going to SAFE
                 Commands.sequence(
-                    Commands.waitSeconds(1.75), //possible wait until safe
+                    Commands.waitSeconds(.5), 
                     pathCmd.asProxy()
                 ),
-                // autograb during path 
+
                 Commands.sequence(
-                    Commands.waitSeconds(1.25), 
-                    groundPickUp.asProxy(), //down
-                    Commands.waitSeconds(1.85), 
-                    ssResetCmd2.asProxy() //up
+                    Commands.waitSeconds(1.45),  //Time before pickup
+                    groundPickUp.asProxy(), //PICKUP
+                    Commands.waitSeconds(0.6),  //time before SAFE
+                    ssResetCmd2.asProxy(), //SAFE
+                    // Commands.waitSeconds(.25),  //time before cube throw
+                    cubePlaceCmd.asProxy().withTimeout(1.75)    //cube throw
                 )
             )
         ),
-        cubePlaceCmd.asProxy().withTimeout(2.0), //maybe place in parallel w/ wait
 
+        //SAFE
         Commands.parallel(
             ssResetCmd3.asProxy().withTimeout(1.5),
+            claw.grab().asProxy(),
+
+            Commands.sequence(
+                Commands.waitSeconds(.5),   //time before path
+                path2Cmd.asProxy() // path to pick up :D
+            ),
+
+            Commands.sequence(
+                Commands.waitSeconds(3), // prob will change later ;-;
+                groundPickUp2.asProxy(),
+                // Commands.waitSeconds(.25),  //time before SAFE
+                ssResetCmd4.asProxy() //SAFE
+            )
+        ),
+        Commands.sequence(
+            placeCmd2.asProxy().withTimeout(1.75),    //to top cone
+            releaseCmd2.asProxy(),   //release claw
+            Commands.waitSeconds(.01)   //give claw time to release
+        ),
+        Commands.parallel(
+            ssResetCmd5.asProxy().withTimeout(1.8),
             claw.grab().asProxy()
-            //path to balance timeout
-            // Commands.sequence(
-            //     Commands.waitSeconds(1.0)
-                // path2Cmd.asProxy()
-                // swerve.nowItsTimeToGetFunky(false).asProxy()
-            // )
-        )
-    );
-}
+        ));
+    }
+
+    // public static CommandBase twoElementBumpy(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+    //     ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+    //     var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
+    //     var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
+    //     var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+    //     var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEleBumpy);
+    //     // var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle2);
+    //     var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
+    //     var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
+    //     var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+    //     var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
+
+    //     return Commands.sequence(
+    //         Commands.parallel(
+    //             tilt.autoHome().asProxy(),
+    //             elev.autoHome().asProxy()
+    //         ).withTimeout(1.0),
+    //         placeCmd.asProxy().withTimeout(1.75),
+    //         releaseCmd.asProxy(),
+    //         // // move to safe state and prepare to move + autoGrab
+    //         Commands.parallel(
+    //             ssResetCmd.asProxy().withTimeout(1.5),
+    //             claw.grab().asProxy(),
+    //             // path after place timeout
+    //             Commands.deadline(
+    //                 Commands.sequence(
+    //                     Commands.waitSeconds(1.75), //possible wait until safe
+    //                     pathCmd.asProxy()
+    //                 ),
+    //                 // autograb during path 
+    //                 Commands.sequence(
+    //                     Commands.waitSeconds(1.25), 
+    //                     groundPickUp.asProxy(), //down
+    //                     Commands.waitSeconds(1.85), 
+    //                     ssResetCmd2.asProxy() //up
+    //                 )
+    //             )
+    //         ),
+    //         cubePlaceCmd.asProxy().withTimeout(2.0), //maybe place in parallel w/ wait
+
+    //         Commands.parallel(
+    //             ssResetCmd3.asProxy().withTimeout(1.5),
+    //             claw.grab().asProxy()
+    //             //path to balance timeout
+    //             // Commands.sequence(
+    //             //     Commands.waitSeconds(1.0)
+    //                 // path2Cmd.asProxy()
+    //                 // swerve.nowItsTimeToGetFunky(false).asProxy()
+    //             // )
+    //         )
+    //     );
+    // }
 
 
     public static CommandBase cubeBackPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-            ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var placeCmd = superstructure.cubeTossTop(claw, true);
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE)
                 .withTimeout(2);
@@ -414,7 +410,7 @@ ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
     }
 
     public static CommandBase coneBackPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-            ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(2.5);
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE)
                 .withTimeout(2)
@@ -446,5 +442,4 @@ ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
                 pathCmd.asProxy()
         );
     }
-
 }
