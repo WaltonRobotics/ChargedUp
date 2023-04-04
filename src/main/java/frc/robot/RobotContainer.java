@@ -164,26 +164,36 @@ public class RobotContainer {
 	public void mapAutonCommands() {
 		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
 		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_OUT, AutonFactory.coneBackOut(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.backPark.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_BACK_PARK, AutonFactory.coneBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.backPark.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BACK_PARK, AutonFactory.cubeBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.backPark.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK, AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.cubeOneHalf.get(0).getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, AutonFactory.twoElement(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.twoEle.get(0).getInitialHolonomicPose());
-		// AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BUMPY, AutonFactory.twoElementBumpy(swerve, superstructure, claw, elevator, tilt, wrist),
-		// PPPaths.twoEleBumpy.get(0).getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.twoEle.get(0).getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK_ALT, AutonFactory.twoElementParkAlt(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.twoEleAlt.get(0).getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.THREE_ELEMENT, AutonFactory.threeElement(swerve, superstructure, claw, elevator, tilt, wrist),
-		PPPaths.twoEle.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_OUT, 
+			AutonFactory.coneBackOut(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.backPark.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CONE_BACK_PARK, 
+			AutonFactory.coneBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.backPark.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BACK_PARK, 
+			AutonFactory.cubeBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.backPark.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, 
+			AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK, 
+			AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.cubeOneHalf.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, 
+			AutonFactory.twoElement(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoEle.get(0).getInitialHolonomicPose());
+		// AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BUMPY, 
+		// 	AutonFactory.twoElementBumpy(swerve, superstructure, claw, elevator, tilt, wrist),
+		// 	PPPaths.twoEleBumpy.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, 
+			AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoEle.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK_ALT, 
+			AutonFactory.twoElementParkAlt(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoEleAlt.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.THREE_ELEMENT, 
+			AutonFactory.threeElement(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoEle.get(0).getInitialHolonomicPose());
 }
 
 	public void mapAutonEvents() {
