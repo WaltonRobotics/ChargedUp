@@ -29,7 +29,7 @@ import frc.lib.util.LedUtils;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-    public static final boolean kDebugLoggingEnabled = false;
+    public static final boolean kDebugLoggingEnabled = true;
     public static final double stickDeadband = 0.1;
     public static final String canbus = "Canivore";
     
@@ -202,12 +202,14 @@ public final class Constants {
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
         public static final Matrix<N3, N1> kOdoStdDevs_DefaultTrust = VecBuilder.fill(0.1, 0.1, 0.025);
-        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 1);
+        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 10000000);
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 16.5; // 8
-        public static double kPYController = 29; // 26  30+ jitters
+        public static double kPXController = 3; // 8
+        public static double kPYController = 3; // 26  30+ jitters
+        public static double kPAutoGoYController = 5;
+        public static double kPAutoGoThetaController = 8;
         public static double kPThetaController = 7.0; // 1
         public static final double kDThetaController = 0.5;
         public static final double kFThetaControllerAuto = 0;   

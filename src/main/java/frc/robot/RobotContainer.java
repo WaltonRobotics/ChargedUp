@@ -98,27 +98,27 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
-		driver.x().whileTrue(swerve.autoScore(ScoringPoints.cone1));
-		driver.y().whileTrue(swerve.autoScore(ScoringPoints.cube2));
-		driver.b().whileTrue(swerve.autoScore(ScoringPoints.cone3));
+		driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone1));
+		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cube2));
+		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.coopCone4));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.coopCone4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.coopCube5));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.coopCube5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.coopCone6));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.coopCone6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.cone7));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.cube8));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cube8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.autoScore(ScoringPoints.cone9));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone9));
 		
 
 		manipulator.start().toggleOnTrue(Commands.startEnd(leds::setCone, leds::setCube, leds));

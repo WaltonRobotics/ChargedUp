@@ -45,6 +45,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -65,6 +66,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	protected final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
+	private final PIDController autoGoYController = new PIDController(kPAutoGoThetaController, 0, 0);
+	private final PIDController autoGoThetaController = new PIDController(kPAutoGoThetaController, 0, 0);
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
 
 	private final Field2d m_field = new Field2d();
@@ -102,6 +105,10 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final DoubleLogger log_autoYDesiredPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoYDesiredPos");
 	private final DoubleLogger log_autoTheta = WaltLogger.logDouble(DB_TAB_NAME, "AutoThetaDesired");
 	private final DoubleLogger log_autoThetaPosError = WaltLogger.logDouble(DB_TAB_NAME, "AutoThetaPosError");
+	private final DoubleLogger log_autoGoYPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoGoYPos");
+	private final DoubleLogger log_autoGoThetaPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoGoThetaPos");
+	private final DoubleLogger log_autoGoYDesiredPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoGoYDesiredPos");
+	private final DoubleLogger log_autoGoThetaDesiredPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoGoThetaDesiredPos");
 
 	private final LinearFilter m_pitchRateFilter = LinearFilter.movingAverage(16);
 
@@ -122,13 +129,14 @@ public class SwerveSubsystem extends SubsystemBase {
 		resetToAbsolute();
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
+		autoGoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		// autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		// thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 
 		m_state.update(getPose(), getModuleStates(), m_field);
 		// m_apriltagHelper.updateField2d(m_field);
-		// DashboardManager.addTabSendable(this, "Field2d", m_field);
+		SmartDashboard.putData("Field2d", m_field);
 
 		autoBuilder = new SwerveAutoBuilder(
 				this::getPose, // Pose2d supplier
@@ -209,6 +217,21 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		setChassisSpeeds(targetChassisSpeeds, openLoop, false);
 		return thetaController.atGoal();
+	}
+
+	public void noTagDrive(double vxMeters, double vyMeters, Rotation2d noTagTargetRot) {
+		// rotation speed
+		double rotationRadians = Math.toRadians(getGyroYaw());
+		double pidOutput = autoGoThetaController.calculate(rotationRadians, noTagTargetRot.getRadians());
+
+		// + translation speed
+		ChassisSpeeds targetChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+				vxMeters,
+				vyMeters,
+				pidOutput,
+				getHeading());
+
+		setChassisSpeeds(targetChassisSpeeds, false, false);
 	}
 
 	/**
@@ -399,24 +422,29 @@ public class SwerveSubsystem extends SubsystemBase {
 		return new NewBalance(this);
 	}
 
-	public CommandBase autoScore(Pose2d endPose) {
-		return new SwerveAutoGo(ReferencePoints.notBumper2, endPose, this);
-	}
+	// public CommandBase autoScore(Pose2d endPose) {
+	// 	return new SwerveAutoGo(ReferencePoints.notBumper2, endPose, this);
+	// }
 
 	/**
 	 * @return Cmd to drive to chosen, pre-specified pathpoint
 	 * 
 	 * @endPt The last pathpoint to end up at
 	 */
-	public CommandBase goToChosenPoint(PathPoint endPose) {
-		return run(() -> {
-			var botPose = getPose();
-			double xRate = xController.calculate(botPose.getX(),
-					PathPointAccessor.poseFromPathPointHolo(endPose).getX());
-			double yRate = yController.calculate(botPose.getY(),
-					PathPointAccessor.poseFromPathPointHolo(endPose).getY());
-			drive(xRate, yRate, new Rotation2d(0), true);
-		}).until(() -> xController.atSetpoint() && yController.atSetpoint());
+	public CommandBase goToChosenPoint(DoubleSupplier translation, Pose2d endPose) {
+		var follow = run(() -> {
+			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
+			log_autoGoYPos.accept(getPose().getY());
+			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
+			Pose2d currentPose = Flipper.flipIfShould(getPose());
+			Pose2d actualEndPose = Flipper.flipIfShould(endPose);
+			double yRate = autoGoYController.calculate(currentPose.getY(),
+				actualEndPose.getY());
+			
+			noTagDrive(translationVal, yRate, new Rotation2d(0));
+		});
+
+		return follow;
 	}
 
 	protected CommandBase ppFollowerCmd(PathPlannerTrajectory traj) {

@@ -21,7 +21,7 @@ public class AprilTagCamera {
 
     private final Transform3d rightLowRobotToCamera = new Transform3d(
         new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(-9.279), Units.inchesToMeters(8.845)),
-        new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(39.6)));
+        new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(45.7)));
 
     private final Transform3d leftLowRobotToCamera = new Transform3d(
         new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),

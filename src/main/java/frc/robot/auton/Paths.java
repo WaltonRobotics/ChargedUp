@@ -66,7 +66,7 @@ public class Paths {
 				kMaxAccelerationMetersPerSecondSquared);
 
 		public static final List<PathPlannerTrajectory> cubeOneHalf = PathPlanner.loadPathGroup("cubeOneHalf",
-		new PathConstraints(2, 2), 
+		new PathConstraints(1.0, 1), 
 		kPPConstraints, 
 		kPPConstraints);
 
@@ -101,8 +101,8 @@ public class Paths {
 			kMaxAccelerationMetersPerSecondSquared);
 
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
-				1.2,
-				1.75);
+				1.0,
+				1.5);
 	}
 
 	public static final class PPAutoscoreClass {
@@ -190,7 +190,7 @@ public class Paths {
 			public static final Pose2d cube8 = 
 				new Pose2d(new Translation2d(1.8, 4.42), rot2dDeg(180));
 			public static final Pose2d cone9 =
-				new Pose2d(new Translation2d(1.8, 4.98), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.85, 5), rot2dDeg(180));
 
 			public static final Pose2d substationPose = new Pose2d(new Translation2d(15.9, 6.68), rot2dDeg(0));
 			public static final Pose2d portalPose = new Pose2d(new Translation2d(13.63, 7.62), rot2dDeg(90));
