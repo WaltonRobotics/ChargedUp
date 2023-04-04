@@ -90,6 +90,8 @@ public class Paths {
 
 		public static final PathPlannerTrajectory twoEleAlt2 = PathPlanner.loadPath("twoEleAlt2", kPPConstraints);
 
+		public static final PathPlannerTrajectory twoPointFive = PathPlanner.loadPath("twoPointFive", kPPConstraints);
+
 		public static final List<PathPlannerTrajectory> coneOneHalf = PathPlanner.loadPathGroup("coneOneHalf", 
 			kPPConstraints, new PathConstraints(1.35, 1.5), kPPConstraints);
 
