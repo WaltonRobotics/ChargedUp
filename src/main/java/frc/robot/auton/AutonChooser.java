@@ -16,11 +16,13 @@ public class AutonChooser {
         CONE_BACK_PARK("1 - cone w/ balance"),
         CUBE_BACK_PARK("1 - cube w/ balance"),
         CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),
-        CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),     
-        TWO_ELEMENT("2 - cone, cube w/o balance)"),
+        CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),
+        CONE_ONE_HALF_BUMP("1.5 - cone w/ balance over bump"),     
+        TWO_ELEMENT("2 - cone, cube w/o balance"),
         // TWO_ELEMENT_BUMPY("2 - cone, cube w/o balance over bump"),
         TWO_ELEMENT_PARK("2 - cone, cube w/ balance"),
         TWO_ELEMENT_PARK_ALT("2 - cube, cone w/ balance"),
+        TWO_POINT_FIVE("2.5 - cone, cube w/o balance"),
         THREE_ELEMENT("3 - cone, cube, cone");
         
 

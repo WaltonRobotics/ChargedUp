@@ -4,6 +4,8 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.VideoMode.PixelFormat;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,7 +41,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_modResetTimer.restart();
-    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320, 240, 120);
+    // CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320, 240, 120);
   }
 
   @Override
@@ -95,6 +97,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.wrist.setCoast(false);
     m_robotContainer.elevator.setCoast(false);
     m_robotContainer.tilt.setCoast(false);
+    m_robotContainer.swerve.resetPose(new Pose2d(m_robotContainer.swerve.getPose().getTranslation(), 
+      Rotation2d.fromDegrees(180)));
 
     m_robotContainer.superstructure.initState();
     if(!DriverStation.isFMSAttached()){

@@ -82,6 +82,9 @@ public class Paths {
 
 		public static final List<PathPlannerTrajectory> twoEleBumpy = PathPlanner.loadPathGroup("twoEleBumpy",
 		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
+		
+		public static final List<PathPlannerTrajectory> coneOneHalfBumpy = PathPlanner.loadPathGroup("coneOneHalfBump",
+		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> three = PathPlanner.loadPathGroup("three",
 		kPPConstraints, kPPConstraints);
@@ -185,7 +188,8 @@ public class Paths {
 				new Pose2d(new Translation2d(1.8, 1.62), rot2dDeg(0));
 			public static final Pose2d coopCone4 = 
 				new Pose2d(new Translation2d(1.8, 2.18), rot2dDeg(0));
-			public static final Pose2d coopCube5 = new Pose2d(new Translation2d(1.77, 2.74), rot2dDeg(0));
+			public static final Pose2d coopCube5 = 
+				new Pose2d(new Translation2d(1.77, 2.74), rot2dDeg(0));
 			public static final Pose2d coopCone6 = 
 				new Pose2d(new Translation2d(1.8, 3.29), rot2dDeg(0));
 			public static final Pose2d cone7 = 
@@ -208,10 +212,11 @@ public class Paths {
 			public static final Pose2d cube2 = 
 				new Pose2d(new Translation2d(1.8, 0.98), rot2dDeg(0));
 			public static final Pose2d cone3 = 
-				new Pose2d(new Translation2d(1.8, 1.58), rot2dDeg(0));
+				new Pose2d(new Translation2d(1.8, 1.55), rot2dDeg(0));
 			public static final Pose2d coopCone4 = 
-				new Pose2d(new Translation2d(1.8, 2.15), rot2dDeg(0));
-			public static final Pose2d coopCube5 = new Pose2d(new Translation2d(1.77, 2.715), rot2dDeg(0));
+				new Pose2d(new Translation2d(1.8, 2.12), rot2dDeg(0));
+			public static final Pose2d coopCube5 = 
+				new Pose2d(new Translation2d(1.77, 2.715), rot2dDeg(0));
 			public static final Pose2d coopCone6 = 
 				new Pose2d(new Translation2d(1.8, 3.24), rot2dDeg(0));
 			public static final Pose2d cone7 = 

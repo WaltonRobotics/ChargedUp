@@ -67,6 +67,30 @@ public final class AutonFactory {
                 swerve.nowItsTimeToGetFunky().asProxy());
     }
 
+    public static CommandBase coneOneHalfBumpy(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+        ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.coneOneHalfBumpy);
+        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+        var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
+
+        return Commands.sequence(
+                // auto home
+                tilt.autoHome().asProxy().alongWith(elev.autoHome().asProxy()).withTimeout(1.5),
+                // move to drop gamepiece (inaccurate due to vision overruns, hence timeout)
+                placeCmd.asProxy().withTimeout(2.5),
+                // actually drop, and wait 0.6sec to let it fall
+                claw.release().asProxy(), Commands.waitSeconds(.4),
+                // move to safe state and prepare to move + autoGrab
+                ssResetCmd.asProxy(),
+                Commands.deadline(
+                        pathCmd.asProxy(),
+                        Commands.waitSeconds(1).andThen(groundPickUp.asProxy())
+                                .andThen(Commands.waitSeconds(1.4).andThen(ssResetCmd2.asProxy()))),
+                swerve.nowItsTimeToGetFunky().asProxy());
+    }
+
     public static CommandBase cubeOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
         ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
@@ -401,7 +425,7 @@ public final class AutonFactory {
             ),
 
             Commands.sequence(
-                Commands.waitSeconds(3), // prob will change later ;-;
+                Commands.waitSeconds(2.5), // prob will change later ;-;
                 groundPickUp2.asProxy(),
                 // Commands.waitSeconds(.25),  //time before SAFE
                 ssResetCmd4.asProxy() //SAFE

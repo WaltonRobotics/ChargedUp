@@ -114,7 +114,7 @@ public class Superstructure {
 
 	protected void updateState(SuperState newState) {
 		System.out.println(
-			"[SS] upateState - WAS " + m_prevState +
+			"[SS] updateState - WAS " + m_prevState +
 			", FROM " + m_curState +
 			" TO " + newState);
 		m_prevState = m_curState;
