@@ -2,19 +2,15 @@ package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.VideoMode.PixelFormat;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.lib.FMSCacher;
 import frc.lib.util.Flipper;
+import frc.robot.subsystems.superstructure.SuperState;
 
 public class Robot extends TimedRobot {
 
@@ -77,7 +73,12 @@ public class Robot extends TimedRobot {
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
     if (initPoseOpt.isPresent()) {
       m_robotContainer.swerve.resetPose(initPoseOpt.get());
-      m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
+      if(DriverStation.getAlliance() == Alliance.Blue){
+          m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees() + 180);
+      }
+      else{
+        m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
+      }
     }
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -102,14 +103,18 @@ public class Robot extends TimedRobot {
     m_robotContainer.tilt.setCoast(false);
     m_robotContainer.tilt.autoHome();
     m_robotContainer.elevator.autoHome();
+    m_robotContainer.superstructure.toStateTeleop(SuperState.GROUND_PICK_UP);
+    m_robotContainer.superstructure.toStateTeleop(SuperState.SAFE);
 
     m_robotContainer.superstructure.initState();
+
     if(!DriverStation.isFMSAttached()){
       m_robotContainer.superstructure.smartReset();
     }
     
-    m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
+   
     m_robotContainer.swerve.resetToAbsolute();
+    m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
     // m_robotContainer.tilt.resetEncoder();
 
 
