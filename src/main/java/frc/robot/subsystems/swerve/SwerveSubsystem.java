@@ -437,7 +437,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
-			Pose2d currentPose = Flipper.flipIfShould(getPose());
+			Pose2d currentPose = getPose();
 			Pose2d actualEndPose = Flipper.flipIfShould(endPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
 				actualEndPose.getY());
@@ -652,6 +652,8 @@ public class SwerveSubsystem extends SubsystemBase {
 		log_autoYDesiredPos.accept(yController.getSetpoint());
 		log_autoTheta.accept(autoThetaController.getSetpoint());
 		log_autoThetaPosError.accept(autoThetaController.getPositionError());
+		log_autoGoThetaDesiredPos.accept(autoGoThetaController.getSetpoint());
+		log_autoGoYDesiredPos.accept(autoGoYController.getSetpoint());
 	}
 
 

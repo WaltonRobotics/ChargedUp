@@ -208,8 +208,8 @@ public final class Constants {
 
         public static double kPXController = 3; // 8
         public static double kPYController = 3; // 26  30+ jitters
-        public static double kPAutoGoYController = 5;
-        public static double kPAutoGoThetaController = 8;
+        public static double kPAutoGoYController = 1.0;
+        public static double kPAutoGoThetaController = 7;
         public static double kPThetaController = 7.0; // 1
         public static final double kDThetaController = 0.5;
         public static final double kFThetaControllerAuto = 0;   

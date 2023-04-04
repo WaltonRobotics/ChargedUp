@@ -3,6 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,7 +39,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_modResetTimer.restart();
-    CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320, 240, 120);
   }
 
   @Override
@@ -102,8 +103,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.tilt.autoHome();
     m_robotContainer.elevator.autoHome();
     m_robotContainer.swerve.resetToAbsolute();
-   
-    m_robotContainer.swerve.setYaw(0); // Why?
+    m_robotContainer.tilt.resetEncoder();
+
   }
 
   @Override

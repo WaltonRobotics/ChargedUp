@@ -19,6 +19,7 @@ import frc.robot.vision.VisionManager;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPPaths;
 import frc.robot.auton.Paths.ReferencePoints.ScoringPoints;
+import frc.robot.auton.Paths.ReferencePoints.ShiftedScoringPoints;
 
 import static frc.robot.auton.AutonFactory.autonEventMap;
 
@@ -98,30 +99,27 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
-		driver.povUp().whileTrue(swerve.goToConeOrCube(() -> driver.getLeftY(), true));
-		driver.povDown().whileTrue(swerve.goToConeOrCube(() -> driver.getLeftY(), false));
-
-		driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone1));
-		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cube2));
-		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone3));
+		driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cone1));
+		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cube2));
+		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cone3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.coopCone4));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.coopCone4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.coopCube5));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.coopCube5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.coopCone6));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.coopCone6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone7));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cone7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cube8));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cube8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone9));
+			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPoints.cone9));
 		
 
 		manipulator.start().toggleOnTrue(Commands.startEnd(leds::setCone, leds::setCube, leds));
