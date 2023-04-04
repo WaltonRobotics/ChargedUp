@@ -98,6 +98,9 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
+		driver.povUp().whileTrue(swerve.goToConeOrCube(() -> driver.getLeftY(), true));
+		driver.povDown().whileTrue(swerve.goToConeOrCube(() -> driver.getLeftY(), false));
+
 		driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone1));
 		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cube2));
 		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ScoringPoints.cone3));

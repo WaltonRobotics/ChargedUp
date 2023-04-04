@@ -194,6 +194,9 @@ public class Paths {
 
 			public static final Pose2d substationPose = new Pose2d(new Translation2d(15.9, 6.68), rot2dDeg(0));
 			public static final Pose2d portalPose = new Pose2d(new Translation2d(13.63, 7.62), rot2dDeg(90));
+
+			public static final Pose2d[] conesPoses = {cone1, cone3, coopCone4, coopCone6, cone7, cone9};
+			public static final Pose2d[] cubesPoses = {cube2, coopCube5, cube8};
 		}
 	}
 }

@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
+import static frc.robot.auton.Paths.ReferencePoints.ScoringPoints.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -445,6 +446,35 @@ public class SwerveSubsystem extends SubsystemBase {
 		});
 
 		return follow;
+	}
+
+	public CommandBase goToConeOrCube(DoubleSupplier translation, boolean isCone) {
+		Pose2d closestPose = isCone ? conesPoses[0] : cubesPoses[0];
+		double lastPoseDiff = isCone ? Math.abs(getPose().getY() - conesPoses[0].getY()) 
+			: Math.abs(getPose().getY() - cubesPoses[0].getY());
+		if(isCone) {
+			for (int i = 1; i < conesPoses.length; i++) {
+				double currentPoseDiff = Math.abs(getPose().getY() - conesPoses[i].getY());
+				if (currentPoseDiff > lastPoseDiff) {
+					break;
+				}
+				closestPose = conesPoses[i];
+				lastPoseDiff = currentPoseDiff;
+			}
+			final Pose2d closestCone = closestPose;
+			return goToChosenPoint(translation, closestCone);
+		} else {
+			for (int i = 1; i < cubesPoses.length; i++) {
+				double currentPoseDiff = Math.abs(getPose().getY() - cubesPoses[i].getY());
+				if (currentPoseDiff > lastPoseDiff) {
+					break;
+				}
+				closestPose = cubesPoses[i];
+				lastPoseDiff = currentPoseDiff;
+			}
+			final Pose2d closestCube = closestPose;
+			return goToChosenPoint(translation, closestCube);
+		}
 	}
 
 	protected CommandBase ppFollowerCmd(PathPlannerTrajectory traj) {
