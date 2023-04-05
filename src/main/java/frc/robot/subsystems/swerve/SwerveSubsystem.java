@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
@@ -450,6 +451,8 @@ public class SwerveSubsystem extends SubsystemBase {
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
 			Pose2d currentPose = getPose();
 			Pose2d actualEndPose = Flipper.flipIfShould(endPose);
+			FieldObject2d field2dEndPose = m_field.getObject("EndPose");
+			field2dEndPose.setPose(actualEndPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
 				actualEndPose.getY());
 			System.out.println("going to " + endPose.toString());
