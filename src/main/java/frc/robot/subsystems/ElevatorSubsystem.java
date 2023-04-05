@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,7 +53,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
-	// private boolean m_isCoast = false;
+	private boolean m_isCoast = false;
 
 	private final DoubleLogger
 		log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight, 
@@ -60,7 +61,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_holdPdEffort, log_holdFfEffort;
 	private final BooleanLogger log_atLowerLimit;
 
-	// private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
+	// private final boolean nte_coast = SmartDashboard.getBoolean("isCoast", false);
 	// private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
 
 	public ElevatorSubsystem() {
@@ -94,6 +95,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_holdPdEffort = WaltLogger.logDouble(DB_TAB_NAME, "HoldPEffort");
 		log_holdFfEffort = WaltLogger.logDouble(DB_TAB_NAME, "HoldFFEffort");
 		log_atLowerLimit = WaltLogger.logBoolean(DB_TAB_NAME, "AtLowerLimit");
+
 
 		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
 			m_right.setSelectedSensorPosition(0);
@@ -329,6 +331,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_targetHeight.accept(getTargetHeightMeters());
 		log_atLowerLimit.accept(isFullyRetracted());
 		log_actualVelo.accept(getActualVelocityMps());
+		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
+		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
 		// 		.onTrue(setCoast(true))

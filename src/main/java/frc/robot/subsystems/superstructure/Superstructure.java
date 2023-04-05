@@ -45,28 +45,6 @@ public class Superstructure {
 		log_stateQuirk.accept("UNK");
 	}
 
-	/*
-	 * Dynamically change the max (downwards) angle of the wrist
-	 * in degrees based on height and tilt of the elevator
-	 */
-	public void limitWristDynamic() {
-		double dynamicLimit = 0;
-		if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
-			dynamicLimit = kMaxDeg;
-		}
-		m_wrist.setMaxDegrees(dynamicLimit);
-	}
-
-	/*
-	 * As soon as elevator is tilted,
-	 * change lower limit of elevator
-	 */
-	public void limitElevatorDynamic() {
-		if (!m_tilt.atReverseLimit()) {
-			m_elevator.setDynamicLimit(kMinHeightMeters + Units.inchesToMeters(2));
-		}
-	}
-
 	public CommandBase toStateTeleop(SuperState state) {
 		return new SuperstructureToState(this, state, true);
 	}

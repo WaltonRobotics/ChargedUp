@@ -301,7 +301,6 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         // max height 130580
         public static final int kLeftCANID = 11;
         public static final int kRightCANID = 12;
-        public static final int kLowerLimitSwitch = 5;
 
         public static final int kLowerLimitSwitchPort = 5;
 
@@ -311,15 +310,13 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final int kPeakCurrentLimit = 20;
         public static final double kPeakCurrentDuration = 0.1;
         public static final boolean kEnableCurrentLimit = true;
-        public static final int kForwardLimit = 130000;
-        public static final int kReverseLimit = 0;
-        public static final double kMaxTiltMinTicks = 12259.0; // raw height when fully tilted
+        public static final int kForwardLimit = 130000; //raw ticks
+        public static final int kReverseLimit = 9;
         public static final double kMaxTiltMinHeight = 0; // TODO: Convert above to height
         public static final boolean kEnableForwardLimit = true;
         public static final boolean kEnableReverseLimit = true;
 
         public static final double kGearRatio = 12.0 / 1.0;
-        public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kP = 22; //sysid 9.2597E-05
         public static final double kD = 0;
         public static final double kS = 0.16114;
@@ -333,7 +330,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
-        public static final double kElevatorHeightOffset = 0.0; // offset in meters
+        public static final double kElevatorHeightOffset = 0.000049; // offset in meters
         public static final double kCarriageMassKg = Units.lbsToKilograms(40);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
