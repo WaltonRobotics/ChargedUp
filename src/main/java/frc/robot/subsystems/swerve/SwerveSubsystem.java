@@ -221,10 +221,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		return thetaController.atGoal();
 	}
 
-	public void noTagDrive(double vxMeters, double vyMeters, Rotation2d noTagTargetRot) {
+	public void gyroBasedDrive(double vxMeters, double vyMeters, Rotation2d targetRot) {
 		// rotation speed
 		double rotationRadians = Math.toRadians(getGyroYaw());
-		double pidOutput = autoGoThetaController.calculate(rotationRadians, noTagTargetRot.getRadians());
+		double pidOutput = autoGoThetaController.calculate(rotationRadians, targetRot.getRadians());
 
 		// + translation speed
 		ChassisSpeeds targetChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -233,7 +233,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				pidOutput,
 				getHeading());
 
-		setChassisSpeeds(targetChassisSpeeds, false, false);
+		setChassisSpeeds(targetChassisSpeeds, false, true);
 	}
 
 	/**
@@ -457,7 +457,12 @@ public class SwerveSubsystem extends SubsystemBase {
 				actualEndPose.getY());
 			System.out.println("going to " + endPose.toString());
 			
-			noTagDrive(translationVal, yRate, new Rotation2d(0));
+			if(Flipper.shouldFlip()){
+				gyroBasedDrive(translationVal, yRate, new Rotation2d(0));
+			}
+			else{
+				gyroBasedDrive(translationVal, -yRate, new Rotation2d(0));
+			}
 		});
 
 		return follow;

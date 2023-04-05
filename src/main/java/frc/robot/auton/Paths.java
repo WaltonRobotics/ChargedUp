@@ -275,25 +275,5 @@ public class Paths {
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 0.387), rot2dDeg(0)));
 		}
 		//TODO: verify blue side & then fms correct points
-		public static class ShiftedScoringPointsRed {
-			public static final Pose2d cone1 =  
-				new Pose2d(new Translation2d(1.8, 4.93), rot2dDeg(180));
-			public static final Pose2d cube2 = 
-				new Pose2d(new Translation2d(1.8, 4.36), rot2dDeg(180));
-			public static final Pose2d cone3 = 
-				new Pose2d(new Translation2d(1.8, 3.775), rot2dDeg(180));
-			public static final Pose2d coopCone4 = 
-				new Pose2d(new Translation2d(1.8, 3.24), rot2dDeg(180));
-			public static final Pose2d coopCube5 = 
-				new Pose2d(new Translation2d(1.8, 2.715), rot2dDeg(180));
-			public static final Pose2d coopCone6 = 
-				new Pose2d(new Translation2d(1.8, 2.14), rot2dDeg(180));
-			public static final Pose2d cone7 = 
-				new Pose2d(new Translation2d(1.8, 1.55), rot2dDeg(180));
-			public static final Pose2d cube8 = 
-				new Pose2d(new Translation2d(1.8, 0.98), rot2dDeg(180));
-			public static final Pose2d cone9 =
-				new Pose2d(new Translation2d(1.8, 0.387), rot2dDeg(180));
-		}
 	}
 }

@@ -36,7 +36,6 @@ public class TheClaw extends SubsystemBase {
 	private boolean m_grabOk = false;
 	
 	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
-	// public final Trigger timeOfFlightTrig = new Trigger(this::withinRange);
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	private final Trigger stateAutoGrabTrig;
@@ -46,8 +45,6 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger wristAngleTrig;
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
-		// timeOfFlight.setRangingMode(RangingMode.Short, 24);
-		// timeOfFlight.setRangeOfInterest(8, 8, 12, 12);
 		m_autoStateSupplier = autoStateSupplier;
 		// DashboardManager.addTab(this);
 		m_lastActuationTimer.restart();

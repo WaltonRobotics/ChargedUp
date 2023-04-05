@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -35,8 +36,8 @@ public class TiltSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
 	private final PIDController m_holdController = new PIDController(kPHold, 0, kDHold);
 	private double m_targetAngle = 0;
-	private double m_ffEffort = 0;
-	private double m_pdEffort = 0;
+	private static double m_ffEffort = 0;
+	private static double m_pdEffort = 0;
 	private double m_totalEffort = 0;
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
@@ -54,9 +55,12 @@ public class TiltSubsystem extends SubsystemBase {
 	private final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
 	// private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
 
+	// public static double nte_ffEfort = SmartDashboard.putNumber("FFEffort", );
+	public static double nte_pdEffort = m_pdEffort;
+
 	
 	public TiltSubsystem() {
-		m_diskBrake.set(true);
+
 		m_absoluteEncoder.reset();
 		m_motor.setIdleMode(IdleMode.kBrake);
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
