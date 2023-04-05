@@ -252,8 +252,9 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kAfterBrakeTime = .25;
         public static final double kTeleopBrakeTime = 1.5;
 
+        public static final double kAbsRawZero = 0.2586;
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
-        public static final double kAbsMaxDegree = 30; // max possible from offset
+        public static final double kAbsMaxDegree = 35; // max possible from offset
 
         
         public static final double kTopAngleDegrees = 15;

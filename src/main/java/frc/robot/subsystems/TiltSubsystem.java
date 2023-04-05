@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
+
 // import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TiltK.*;
 import static frc.robot.Constants.TiltK.kMotorCANID;
@@ -46,6 +49,10 @@ public class TiltSubsystem extends SubsystemBase {
 	// private final GenericEntry nte_motorTotalEffort = DashboardManager.addTabDial(this, "TotalEffort", -1, 1);
 	// private final GenericEntry nte_targetAngle = DashboardManager.addTabNumberBar(this, "TargetAngle",
 	// 		kMinAngleDegrees, 35);
+
+
+	private final DoubleLogger log_actualAngle = WaltLogger.logDouble("TiltSubsys", "ActualAngle");
+	private final DoubleLogger log_rawAbsVal = WaltLogger.logDouble("TiltSubsys", "RawAbs");
 	// private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 35);
 	// private final GenericEntry nte_rawAbsVal = DashboardManager.addTabNumberBar(this, "RawAbs", 0, 1);
 	// private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
@@ -144,8 +151,8 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	public double getDegrees() {
-		var rawDeg = (m_absoluteEncoder.get() * 360);
-		return MathUtil.clamp(rawDeg, 0, kMaxAngleDegrees); // get returns rotations, so rotations * (360 degrees / 1
+		var rawDeg = ((m_absoluteEncoder.get()) * 360);
+		return MathUtil.clamp(rawDeg, 0, kAbsMaxDegree); // get returns rotations, so rotations * (360 degrees / 1
 															// rotation)
 	}
 
@@ -259,6 +266,8 @@ public class TiltSubsystem extends SubsystemBase {
 
 	public void updateShuffleBoard() {
 		// Push telemetry
+		log_actualAngle.accept(getDegrees());
+		log_rawAbsVal.accept(m_absoluteEncoder.get());
 		// nte_actualAngle.setDouble(getDegrees());
 		// nte_rawAbsVal.setDouble(m_absoluteEncoder.get());
 		// nte_motorFFEffort.setDouble(m_ffEffort);
