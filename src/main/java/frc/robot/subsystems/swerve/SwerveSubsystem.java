@@ -15,7 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.SwerveK.*;
-import static frc.robot.auton.Paths.ReferencePoints.ScoringPoints.*;
+import static frc.robot.auton.Paths.ReferencePoints.ScoringPointsBlue.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
