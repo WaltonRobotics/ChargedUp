@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
       }
       else{
           if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK))) {
-            m_robotContainer.swerve.setTeleOpGyroZero(180 - (initPoseOpt.get()).getRotation().getDegrees());
+            m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees() + 180);
           } else {
             m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
           }

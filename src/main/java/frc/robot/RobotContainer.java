@@ -248,9 +248,9 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BACK_PARK, 
 			AutonFactory.cubeBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.backPark.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, 
-			AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
+		// AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, 
+		// 	AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
+		// 	PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK, 
 			AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.cubeOneHalf.get(0).getInitialHolonomicPose());
@@ -272,9 +272,9 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_POINT_FIVE, 
 			AutonFactory.twoPointFive(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.get(0).getInitialHolonomicPose());
-		// AutonChooser.AssignAutonCommand(AutonOption.THREE_ELEMENT, 
-		// 	AutonFactory.threeElement(swerve, superstructure, claw, elevator, tilt, wrist),
-		// 	PPPaths.twoEle.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.THREE_ELEMENT, 
+			AutonFactory.threeElement(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoEle.get(0).getInitialHolonomicPose());
 }
 
 	public void mapAutonEvents() {

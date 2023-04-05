@@ -194,8 +194,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 3.1;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3.1;  
+        public static final double kMaxSpeedMetersPerSecond = 3.15;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.5;  
         public static final double kMaxAngularSpeedRadiansPerSecond = 9.6;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 24;
 
@@ -340,7 +340,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kTopCubeHeightM = 0.485;
         public static final double kTopConeHeightM = 0.68;
         public static final double kMidConeHeightM = 0.42;
-        public static final double kMidCubeHeightM = 0.30;
+        public static final double kMidCubeHeightM = 0.2815;
         public static final double kBotHeightMeters = 0;
         public static final double kSubstationHeightM = 0.4349;
         public static final double kExtendedSubstationHeightM = .485;

@@ -23,7 +23,7 @@ public class AutonChooser {
         TWO_ELEMENT_PARK("2 - cone, cube w/ balance"),
         // TWO_ELEMENT_PARK_ALT("2 - cube, cone w/ balance"),
         TWO_POINT_FIVE("2.5 - cone, cube w/o balance"),
-        THREE_ELEMENT("3 - cone, cube, cone");
+        THREE_ELEMENT("3 - cone, cube, cube w/o balance");
         
 
         public final String description;
