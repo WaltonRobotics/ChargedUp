@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -110,7 +111,7 @@ public class TiltSubsystem extends SubsystemBase {
 	 * Return true if at zero
 	 */
 	public boolean atReverseLimit() {
-		return !m_homeSwitch.get();
+		return m_homeSwitchTrigger.getAsBoolean();
 	}
 
 	private void i_setTarget(double degrees) {
@@ -202,14 +203,20 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoHome() {
-		return Commands.sequence(
-			startEnd(() -> {
-				setVoltage(-2);
-			}, () -> {
-				setVoltage(0);
-			}).until(m_homeSwitchTrigger)
-			.andThen(m_homeSwitch.get() ? new InstantCommand(() -> m_absoluteEncoder.reset()) : Commands.none())
-		);
+		return new DeferredCommand(() -> {
+			if (atReverseLimit()) {
+				return Commands.runOnce(() -> m_absoluteEncoder.reset());
+			} else {
+				return Commands.sequence(
+					startEnd(() -> {
+						setVoltage(-2);
+					}, () -> {
+						setVoltage(0);
+					}).until(m_homeSwitchTrigger)
+					.andThen(atReverseLimit() ? new InstantCommand(() -> m_absoluteEncoder.reset()) : Commands.none())
+				);
+			}
+		}, this);
 	}
 
 	/**
