@@ -103,7 +103,7 @@ public final class AutonFactory {
             Commands.parallel(
                 tilt.autoHome().asProxy(),
                 elev.autoHome().asProxy()
-            ).withTimeout(1.0),
+            ).withTimeout(1.5),
 
             cubePlaceCmd.asProxy().withTimeout(1.55),
             ssResetCmd.asProxy().withTimeout(1.35),
@@ -130,39 +130,37 @@ public final class AutonFactory {
         var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
 
         return Commands.sequence(
-            //reset
-            Commands.parallel(
-                tilt.autoHome().asProxy(),
-                elev.autoHome().asProxy()
-            ).withTimeout(1.0),
+        //reset
+        Commands.parallel(
+            tilt.autoHome().asProxy(),
+            elev.autoHome().asProxy()
+        ).withTimeout(1.5),
 
-            placeCmd.asProxy().withTimeout(1.75),    //to top cone
-            releaseCmd.asProxy(),   //release claw
-            Commands.waitSeconds(.05),   //give claw time to release
-            //SAFE
+        placeCmd.asProxy().withTimeout(1.65),    //to top cone
+        releaseCmd.asProxy(),   //release claw
+        
+        //SAFE
+        Commands.parallel(
+            ssResetCmd.asProxy().withTimeout(1.8),
+            claw.grab().asProxy(),
+            // path after place timeout
             Commands.parallel(
-                ssResetCmd.asProxy().withTimeout(1.75),
-                claw.grab().asProxy(),
+                //path while going to SAFE
+                Commands.sequence(
+                    Commands.waitSeconds(.10), 
+                    pathCmd.asProxy()
+                ),
 
-                // path after place timeout
-                Commands.parallel(
-                    //path while going to SAFE
-                    Commands.sequence(
-                        Commands.waitSeconds(.15), 
-                        pathCmd.asProxy()
-                    ),
-                    // autograb during path 
-                    Commands.sequence(
-                        Commands.waitSeconds(1.40),  //Time before pickup
-                        groundPickUp.asProxy(), //PICKUP
-                        Commands.waitSeconds(.5),  //time before SAFE
-                        ssResetCmd2.asProxy(), //SAFE
-                        Commands.waitSeconds(.225),  //time before cube throw
-                        cubePlaceCmd.asProxy().withTimeout(1.675)    //cube throw
-                    )
+                Commands.sequence(
+                    Commands.waitSeconds(1.40),  //Time before pickup
+                    groundPickUp.asProxy(), //PICKUP
+                    Commands.waitSeconds(0.5),  //time before SAFE
+                    ssResetCmd2.asProxy(), //SAFE
+                    Commands.waitSeconds(.05),  //time before cube throw
+                    cubePlaceCmd.asProxy().withTimeout(1.7)    //cube throw
                 )
-            ),
-
+            )
+        ),
             //SAFE
             Commands.parallel(
                 ssResetCmd3.asProxy().withTimeout(1.5),
@@ -184,39 +182,37 @@ public final class AutonFactory {
         var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
 
         return Commands.sequence(
-            //reset
-            Commands.parallel(
-                tilt.autoHome().asProxy(),
-                elev.autoHome().asProxy()
-            ).withTimeout(1.0),
+        //reset
+        Commands.parallel(
+            tilt.autoHome().asProxy(),
+            elev.autoHome().asProxy()
+        ).withTimeout(1.5),
 
-            placeCmd.asProxy().withTimeout(1.75),    //to top cone
-            releaseCmd.asProxy(),   //release claw
-            Commands.waitSeconds(.05),   //give claw time to release
-            //SAFE
+        placeCmd.asProxy().withTimeout(1.65),    //to top cone
+        releaseCmd.asProxy(),   //release claw
+        
+        //SAFE
+        Commands.parallel(
+            ssResetCmd.asProxy().withTimeout(1.8),
+            claw.grab().asProxy(),
+            // path after place timeout
             Commands.parallel(
-                ssResetCmd.asProxy().withTimeout(1.75),
-                claw.grab().asProxy(),
+                //path while going to SAFE
+                Commands.sequence(
+                    Commands.waitSeconds(.10), 
+                    pathCmd.asProxy()
+                ),
 
-                // path after place timeout
-                Commands.parallel(
-                    //path while going to SAFE
-                    Commands.sequence(
-                        Commands.waitSeconds(.15), 
-                        pathCmd.asProxy()
-                    ),
-                    // autograb during path 
-                    Commands.sequence(
-                        Commands.waitSeconds(1.45),  //Time before pickup
-                        groundPickUp.asProxy(), //PICKUP
-                        Commands.waitSeconds(.4),  //time before SAFE
-                        ssResetCmd2.asProxy(), //SAFE
-                        Commands.waitSeconds(.15),  //time before cube throw
-                        cubePlaceCmd.asProxy().withTimeout(1.675)    //cube throw
-                    )
+                Commands.sequence(
+                    Commands.waitSeconds(1.40),  //Time before pickup
+                    groundPickUp.asProxy(), //PICKUP
+                    Commands.waitSeconds(0.5),  //time before SAFE
+                    ssResetCmd2.asProxy(), //SAFE
+                    Commands.waitSeconds(.05),  //time before cube throw
+                    cubePlaceCmd.asProxy().withTimeout(1.7)    //cube throw
                 )
-            ),
-
+            )
+        ),
             //SAFE
             Commands.parallel(
                 ssResetCmd3.asProxy().withTimeout(1.5),
@@ -241,7 +237,7 @@ public final class AutonFactory {
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
         var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.three);
-        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.3));
+        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.25));
         var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
         var groundPickUp2 = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
@@ -255,7 +251,7 @@ public final class AutonFactory {
         Commands.parallel(
             tilt.autoHome().asProxy(),
             elev.autoHome().asProxy()
-        ).withTimeout(1.0),
+        ).withTimeout(1.5),
 
         placeCmd.asProxy().withTimeout(1.65),    //to top cone
         releaseCmd.asProxy(),   //release claw
@@ -294,11 +290,11 @@ public final class AutonFactory {
             ),
 
             Commands.sequence(
-                    Commands.waitSeconds(1.05),  //Time before pickup
+                    Commands.waitSeconds(2.0),  //Time before pickup
                     groundPickUp.asProxy(), //PICKUP
-                    Commands.waitSeconds(.7),  //time before SAFE
+                    Commands.waitSeconds(.6),  //time before SAFE
                     ssResetCmd2.asProxy(), //SAFE
-                    // Commands.waitSeconds(.35),  //time before cube throw
+                    Commands.waitSeconds(.35),  //time before cube throw
                     lowCubePlaceCmd.asProxy().withTimeout(1.7)    //cube throw
                 )
         ),

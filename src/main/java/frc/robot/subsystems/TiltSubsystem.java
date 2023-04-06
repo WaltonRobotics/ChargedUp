@@ -204,7 +204,7 @@ public class TiltSubsystem extends SubsystemBase {
 	public CommandBase autoHome() {
 		return Commands.sequence(
 			startEnd(() -> {
-				setVoltage(-1);
+				setVoltage(-2);
 			}, () -> {
 				setVoltage(0);
 			}).until(m_homeSwitchTrigger)
