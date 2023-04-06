@@ -199,7 +199,7 @@ public final class AutonFactory {
             Commands.parallel(
                 //path while going to SAFE
                 Commands.sequence(
-                    Commands.waitSeconds(.10), 
+                    // Commands.waitSeconds(.10), 
                     pathCmd.asProxy()
                 ),
 
