@@ -18,6 +18,8 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.VisionK;
 
 public class VisionManager {
@@ -36,15 +38,17 @@ public class VisionManager {
 
     public static record VisionMeasurement(EstimatedRobotPose estimation, Matrix<N3, N1> confidence) {}
 
-    private static boolean ignoreFrame(PhotonPipelineResult frame) {
+    private static boolean ignoreFrame(PhotonPipelineResult frame, Set<Integer> allowedIds) {
         if (!frame.hasTargets() || frame.getTargets().size() > VisionK.MAX_FRAME_FIDS)
           return true;
-    
+
         boolean possibleCombination = false;
+        boolean allowedCombination = false;
         List<Integer> ids = frame.targets.stream().map(t -> t.getFiducialId()).toList();
         for (Set<Integer> possibleFIDCombo : VisionK.POSSIBLE_FRAME_FID_COMBOS) {
           possibleCombination = possibleFIDCombo.containsAll(ids);
-          if (possibleCombination) break;
+          allowedCombination = allowedIds.containsAll(ids);
+          if (possibleCombination && allowedCombination) break;
         }
         if (!possibleCombination) System.out.println("Ignoring frame with FIDs: " + ids);
         return !possibleCombination;
@@ -97,11 +101,19 @@ public class VisionManager {
     }
 
     private void findVisionMeasurements() {
+        boolean allianceBlue = DriverStation.getAlliance() == Alliance.Blue;
+        boolean auton = DriverStation.isAutonomous();
+        Set<Integer> allowedIds = auton ? 
+            (allianceBlue ? VisionK.BLUE_TAG_FIDS : VisionK.RED_TAG_FIDS ) :
+            VisionK.ALL_TAG_FIDS;
+
         for (CameraEstimator cameraEstimator : cameraEstimators) {
           PhotonPipelineResult frame = cameraEstimator.camera().getLatestResult();
     
+
           // determine if result should be ignored
-          if (cameraEstimator.dupeTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;
+          if (cameraEstimator.dupeTracker().isDuplicate(frame) || ignoreFrame(frame, allowedIds)) continue;
+        
     
           var optEstimation = cameraEstimator.estimator().update(frame);
           if (optEstimation.isEmpty()) continue;

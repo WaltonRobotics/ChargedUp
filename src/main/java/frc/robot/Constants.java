@@ -438,8 +438,12 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
                 1 * Math.PI // theta
                 );
 
+        public static final Set<Integer> RED_TAG_FIDS = Set.of(1, 2, 3, 4);
+        public static final Set<Integer> BLUE_TAG_FIDS = Set.of(5, 6, 7, 8);
+        public static final Set<Integer> ALL_TAG_FIDS = Set.of(1, 2, 3, 4, 5, 6, 7, 8);
+
         public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS = List.of(
-            Set.of(1, 2, 3, 4), Set.of(5, 6, 7, 8));
+            RED_TAG_FIDS, BLUE_TAG_FIDS);
 
         public static final int MAX_FRAME_FIDS = 4;
 
