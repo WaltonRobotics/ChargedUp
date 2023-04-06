@@ -29,7 +29,7 @@ import frc.lib.util.LedUtils;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-    public static boolean kDebugLoggingEnabled = true;
+    public static boolean kDebugLoggingEnabled = false;
     public static final double stickDeadband = 0.1;
     public static final String canbus = "Canivore";
     
@@ -124,7 +124,7 @@ public final class Constants {
         public static final double kDriveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double kDriveKS = 0.32 / 12; // TODO: This must be tuned to specific robot
+        public static final double kDriveKS = 0.32 / 12;
         public static final double kDriveKV = 1.51 / 12;
         public static final double kDriveKA = 0.27 / 12;
 
@@ -142,9 +142,9 @@ public final class Constants {
         );
 
         /* Swerve Profiling Values */
-        public static final double kMaxVelocityMps = 4.5; // TODO: This must be tuned to specific robot //4.5
+        public static final double kMaxVelocityMps = 5.0; //4.5
         /* Radians per Second */
-        public static final double kMaxAngularVelocityRadps = 10.0; // TODO: This must be tuned to specific robot    //11.5
+        public static final double kMaxAngularVelocityRadps = 11.5; // 10
 
         /* Neutral Modes */
         public static final NeutralMode kAngleNeutralMode = NeutralMode.Coast;
@@ -312,8 +312,8 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kPeakCurrentDuration = 0.1;
         public static final boolean kEnableCurrentLimit = true;
         public static final int kForwardLimit = 130000; //raw ticks
-        public static final int kReverseLimit = 9;
-        public static final double kMaxTiltMinHeight = 0; // TODO: Convert above to height
+        public static final int kReverseLimit = 9;  //raw ticks
+        public static final double kMaxTiltMinHeight = 0;
         public static final boolean kEnableForwardLimit = true;
         public static final boolean kEnableReverseLimit = true;
 

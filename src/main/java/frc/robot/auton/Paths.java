@@ -181,19 +181,19 @@ public class Paths {
 
 		public static class ScoringPointsBlue {
 			public static final Pose2d cone1 =  
-				new Pose2d(new Translation2d(1.8, 5), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 4.98), rot2dDeg(180));
 			public static final Pose2d cube2 = 
 				new Pose2d(new Translation2d(1.8, 4.42), rot2dDeg(180));
 			public static final Pose2d cone3 = 
 				new Pose2d(new Translation2d(1.8, 3.86), rot2dDeg(180));
 			public static final Pose2d coopCone4 = 
-				new Pose2d(new Translation2d(1.8, 3.29), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 3.3), rot2dDeg(180));
 			public static final Pose2d coopCube5 = 
 				new Pose2d(new Translation2d(1.8, 2.74), rot2dDeg(180));
 			public static final Pose2d coopCone6 = 
 				new Pose2d(new Translation2d(1.8, 2.18), rot2dDeg(180));
 			public static final Pose2d cone7 = 
-				new Pose2d(new Translation2d(1.8, 1.62	), rot2dDeg(180));
+				new Pose2d(new Translation2d(1.8, 1.62), rot2dDeg(180));
 			public static final Pose2d cube8 = 
 				new Pose2d(new Translation2d(1.8, 1.06), rot2dDeg(180));
 			public static final Pose2d cone9 =
@@ -208,19 +208,19 @@ public class Paths {
 
 		public static class ScoringPointsRed {
 			public static final Pose2d cone9 =  
-				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 5), rot2dDeg(0)));
+				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 4.98), rot2dDeg(0)));
 			public static final Pose2d cube8 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 4.42), rot2dDeg(0)));
 			public static final Pose2d cone7 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 3.86), rot2dDeg(0)));
 			public static final Pose2d coopCone6 = 
-				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 3.29), rot2dDeg(0)));
+				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 3.3), rot2dDeg(0)));
 			public static final Pose2d coopCube5 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 2.74), rot2dDeg(0)));
 			public static final Pose2d coopCone4 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 2.18), rot2dDeg(0)));
 			public static final Pose2d cone3 = 
-				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 1.62	), rot2dDeg(0)));
+				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 1.62), rot2dDeg(0)));
 			public static final Pose2d cube2 = 
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 1.06), rot2dDeg(0)));
 			public static final Pose2d cone1 =
@@ -274,6 +274,5 @@ public class Paths {
 			public static final Pose2d cone1 =
 				Flipper.flipIfShould(new Pose2d(new Translation2d(1.8, 0.387), rot2dDeg(0)));
 		}
-		//TODO: verify blue side & then fms correct points
 	}
 }

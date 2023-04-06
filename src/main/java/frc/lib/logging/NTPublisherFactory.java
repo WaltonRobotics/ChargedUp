@@ -1,14 +1,7 @@
 package frc.lib.logging;
 
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.util.datalog.*;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.Constants;
 
 public final class NTPublisherFactory {
     private static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
