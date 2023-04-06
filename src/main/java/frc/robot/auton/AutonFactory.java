@@ -237,7 +237,7 @@ public final class AutonFactory {
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
         var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.three);
-        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.25));
+        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.275));
         var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
         var groundPickUp2 = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
@@ -311,7 +311,7 @@ public final class AutonFactory {
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.twoEle);
         var path2Cmd = swerve.getPPSwerveAutonCmd(PPPaths.three);
-        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.25));
+        var releaseCmd = claw.release().andThen(Commands.waitSeconds(.275));
         var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
         var groundPickUp2 = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
