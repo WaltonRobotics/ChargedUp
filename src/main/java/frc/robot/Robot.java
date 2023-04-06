@@ -42,11 +42,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    double initBegin = Timer.getFPGATimestamp();
+    System.out.println("[INIT] Robot Init Begin");
     m_modResetTimer.restart();
     // CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320, 240, 120);
     if (DriverStation.isFMSAttached()) {
       Constants.kDebugLoggingEnabled = false;
     }
+
+    double initElapsed = Timer.getFPGATimestamp() - initBegin;
+		System.out.println("[INIT] Robot Init End: " + initElapsed + "s");
   }
 
   @Override

@@ -45,6 +45,8 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger wristAngleTrig;
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
+		double subsysInitBegin = Timer.getFPGATimestamp();
+		System.out.println("[INIT] ClawSubsystem Init Begin");
 		m_autoStateSupplier = autoStateSupplier;
 		// DashboardManager.addTab(this);
 		m_lastActuationTimer.restart();
@@ -90,6 +92,8 @@ public class TheClaw extends SubsystemBase {
 		
 
 		// setDefaultCommand(autoGrab());
+		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
+		System.out.println("[INIT] ClawSubsystem Init End: " + subsysInitElapsed + "s");
 	}
 
 	private void setClosed(boolean closed) {

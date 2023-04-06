@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.VisionK;
 
@@ -61,6 +62,8 @@ public class VisionManager {
     private double lastDetection = 0;
 
     public VisionManager() {
+        double classInitBegin = Timer.getFPGATimestamp();
+        System.out.println("[INIT] VisionManager Init Begin");
         try {
             fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
         } catch (IOException e) {
@@ -94,6 +97,9 @@ public class VisionManager {
         });
         thread.setDaemon(true);
         thread.start();
+
+        double classInitElapsed = Timer.getFPGATimestamp() - classInitBegin;
+		System.out.println("[INIT] VisionManager Init End: " + classInitElapsed + "s");
     }
 
     private void logMeasurement(int tags, double avgDistance, double ambiguity, Pose3d est) {

@@ -121,6 +121,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	private double[] m_pigeonGyroRateDPS = new double[3];
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, VisionManager visionManager) {
+		double subsysInitBegin = Timer.getFPGATimestamp();
+		System.out.println("[INIT] SwerveSubsystem Init Begin");
 		m_visionManager = visionManager;
 		// DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
@@ -158,6 +160,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		m_cancoderReseedTimer.restart();
 		m_lastMotionStoppedTimer.restart();
+		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
+		System.out.println("[INIT] SwerveSubsystem Init End: " + subsysInitElapsed + "s");
 	}
 
 	private void updatePigeonGyroRate() {

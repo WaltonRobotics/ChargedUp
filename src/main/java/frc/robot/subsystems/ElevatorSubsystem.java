@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -65,6 +66,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	// private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
 
 	public ElevatorSubsystem() {
+		double subsysInitBegin = Timer.getFPGATimestamp();
+		System.out.println("[INIT] ElevatorSubsystem Init Begin");
 		// DashboardManager.addTab(this);
 		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
@@ -100,6 +103,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
 			m_right.setSelectedSensorPosition(0);
 		}));
+
+		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
+		System.out.println("[INIT] ElevatorSubsystem Init End: " + subsysInitElapsed + "s");
 	}
 
 	/*

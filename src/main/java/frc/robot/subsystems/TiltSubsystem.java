@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -68,7 +69,8 @@ public class TiltSubsystem extends SubsystemBase {
 
 	
 	public TiltSubsystem() {
-
+		double subsysInitBegin = Timer.getFPGATimestamp();
+		System.out.println("[INIT] TiltSubsystem Init Begin");
 		m_absoluteEncoder.reset();
 		m_motor.setIdleMode(IdleMode.kBrake);
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
@@ -87,6 +89,8 @@ public class TiltSubsystem extends SubsystemBase {
 		// 		.onTrue(setIdle(true))
 		// 		.onFalse(setIdle(false));
 		// }
+		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
+		System.out.println("[INIT] TiltSubsystem Init End: " + subsysInitElapsed + "s");
 	}
 
 	private CommandBase setIdle(boolean coast) {

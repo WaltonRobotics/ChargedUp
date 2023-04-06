@@ -20,6 +20,8 @@ public class LEDSubsystem extends SubsystemBase {
     public boolean isCone = false;
 
     public LEDSubsystem() {
+        double subsysInitBegin = Timer.getFPGATimestamp();
+        System.out.println("[INIT] LEDSubsystem Init Begin");
         m_leds.setLength(m_ledBuffer.getLength());
         m_leds.setData(m_ledBuffer);
         m_leds.start();
@@ -27,6 +29,8 @@ public class LEDSubsystem extends SubsystemBase {
         m_ledStateTimer.reset();
 
         setDefaultCommand(idle());
+        double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
+		System.out.println("[INIT] LEDSubsystem Init End: " + subsysInitElapsed + "s");
     }
 
     private void setIdle() {
