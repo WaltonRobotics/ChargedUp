@@ -102,7 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
 			m_right.setSelectedSensorPosition(0);
-		}));
+		}).ignoringDisable(true));
 
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] ElevatorSubsystem Init End: " + subsysInitElapsed + "s");

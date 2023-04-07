@@ -80,9 +80,8 @@ public class TiltSubsystem extends SubsystemBase {
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
 		// DashboardManager.addTab(this);
 
-		m_homeSwitchTrigger.onTrue(Commands.runOnce(() -> {
-			m_absoluteEncoder.reset();
-		}));
+		var resetCmd = Commands.runOnce(() -> m_absoluteEncoder.reset()).ignoringDisable(true);
+		m_homeSwitchTrigger.onTrue(resetCmd);
 
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
