@@ -273,8 +273,8 @@ public final class AutonFactory {
                     groundPickUp.asProxy(), //PICKUP
                     Commands.waitSeconds(0.5),  //time before SAFE
                     ssResetCmd2.asProxy(), //SAFE
-                    Commands.waitSeconds(.05),  //time before cube throw
-                    cubePlaceCmd.asProxy().withTimeout(1.7)    //cube throw
+                    // Commands.waitSeconds(.05),  //time before cube throw
+                    cubePlaceCmd.asProxy().withTimeout(1.625)    //cube throw
                 )
             )
         ),
@@ -290,11 +290,11 @@ public final class AutonFactory {
             ),
 
             Commands.sequence(
-                    Commands.waitSeconds(2.0),  //Time before pickup
+                    Commands.waitSeconds(1.75),  //Time before pickup
                     groundPickUp.asProxy(), //PICKUP
-                    Commands.waitSeconds(.6),  //time before SAFE
+                    Commands.waitSeconds(1),  //time before SAFE
                     ssResetCmd2.asProxy(), //SAFE
-                    // Commands.waitSeconds(.35),  //time before cube throw
+                    Commands.waitSeconds(.05),  //time before cube throw
                     lowCubePlaceCmd.asProxy().withTimeout(1.7)    //cube throw
                 )
         ),
