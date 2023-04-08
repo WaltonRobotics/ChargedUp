@@ -391,17 +391,16 @@ public final class AutonFactory {
         ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(2.5);
         var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE)
-                .withTimeout(2)
-                .withName("SS-Auto-Safe");
-        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.backPark);
+                .withTimeout(2);
+        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.coneBackPark);
 
         return Commands.sequence(
-                tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
-                placeCmd,
+                tilt.autoHome().asProxy().alongWith(elev.autoHome().asProxy()).withTimeout(1.5),
+                placeCmd.asProxy(),
                 claw.release(), Commands.waitSeconds(.45),
-                ssResetCmd,
-                pathCmd,
-                swerve.nowItsTimeToGetFunky()).withName("OneConeBack");
+                ssResetCmd.asProxy(),
+                pathCmd.asProxy(),
+                swerve.nowItsTimeToGetFunky().asProxy());
     }
 
     public static CommandBase coneBackOut(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,

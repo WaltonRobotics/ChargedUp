@@ -109,6 +109,9 @@ public class Paths {
 		public static final PathPlannerTrajectory backPark = PathPlanner.loadPath("backPark",
 				1.0,
 				1.5);
+		public static final PathPlannerTrajectory coneBackPark = PathPlanner.loadPath("coneBackPark",
+				1.0,
+				1.5);
 	}
 
 	public static final class PPAutoscoreClass {

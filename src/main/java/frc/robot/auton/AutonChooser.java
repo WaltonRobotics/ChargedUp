@@ -13,7 +13,7 @@ public class AutonChooser {
     public enum AutonOption {
         DO_NOTHING("do nothing"),
         ONE_CONE_OUT("1 - cone w/o balance"),
-        // CONE_BACK_PARK("1 - cone w/ balance"),
+        CONE_BACK_PARK("1 - cone w/ balance"),
         CUBE_BACK_PARK("1 - cube w/ balance"),
         CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),
         CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),
