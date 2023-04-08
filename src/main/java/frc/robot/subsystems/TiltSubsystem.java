@@ -61,7 +61,7 @@ public class TiltSubsystem extends SubsystemBase {
 	// private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 	// private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
-	private final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
+	public final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
 	// private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
 
 	// public static double nte_ffEfort = SmartDashboard.putNumber("FFEffort", );
@@ -79,9 +79,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// m_quadratureEncoder.setIndexSource(m_homeSwitch);
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
 		// DashboardManager.addTab(this);
-
-		var resetCmd = Commands.runOnce(() -> m_absoluteEncoder.reset()).ignoringDisable(true);
-		m_homeSwitchTrigger.onTrue(resetCmd);
+		m_homeSwitchTrigger.onTrue(resetEncoder());
 
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
@@ -110,6 +108,10 @@ public class TiltSubsystem extends SubsystemBase {
 		return false;
 	}
 
+	public boolean getHomeSwitch(){
+		return m_homeSwitchTrigger.getAsBoolean();
+	}
+
 	/*
 	 * Return true if at zero
 	 */
@@ -118,7 +120,7 @@ public class TiltSubsystem extends SubsystemBase {
 	}
 
 	private void i_setTarget(double degrees) {
-		m_targetAngle = MathUtil.clamp(degrees, 0, 30);
+		m_targetAngle = MathUtil.clamp(degrees, 0, kAbsMaxDegree);
 	}
 
 	public double getEffortForTarget(double angleDegrees) {
@@ -160,8 +162,8 @@ public class TiltSubsystem extends SubsystemBase {
 															// rotation)
 	}
 
-	public void resetEncoder(){
-		m_absoluteEncoder.reset();
+	public CommandBase resetEncoder(){
+		return Commands.runOnce(() -> m_absoluteEncoder.reset()).ignoringDisable(true);
 	}
 
 	public CommandBase teleopCmd(DoubleSupplier power) {

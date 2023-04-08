@@ -49,7 +49,9 @@ public class Robot extends TimedRobot {
     if (DriverStation.isFMSAttached()) {
       Constants.kDebugLoggingEnabled = false;
     }
-
+    if(m_robotContainer.tilt.getHomeSwitch()){
+      m_robotContainer.tilt.resetEncoder().schedule();
+    }
     double initElapsed = Timer.getFPGATimestamp() - initBegin;
 		System.out.println("[INIT] Robot Init End: " + initElapsed + "s");
   }

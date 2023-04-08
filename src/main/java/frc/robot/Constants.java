@@ -258,9 +258,9 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 29.1;
+        public static final double kTopConeAngleDegrees = 33.5;
         public static final double kTopCubeAngleDegrees = 28.0;
-        public static final double kMidConeAngleDegrees = 22.118;
+        public static final double kMidConeAngleDegrees = 23.5;
         public static final double kMidCubeAngleDegrees = 22.041;
         public static final double kMidAngleDegrees = 29.1;
         public static final double kBotAngleDegrees = 0;
