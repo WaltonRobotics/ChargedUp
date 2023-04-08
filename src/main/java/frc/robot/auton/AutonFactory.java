@@ -294,7 +294,7 @@ public final class AutonFactory {
                     groundPickUp.asProxy(), //PICKUP
                     Commands.waitSeconds(1),  //time before SAFE
                     ssResetCmd2.asProxy(), //SAFE
-                    Commands.waitSeconds(.05),  //time before cube throw
+                    Commands.waitSeconds(.20),  //time before cube throw
                     lowCubePlaceCmd.asProxy().withTimeout(1.7)    //cube throw
                 )
         ),
