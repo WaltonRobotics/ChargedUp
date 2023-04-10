@@ -41,22 +41,22 @@ public final class AutonFactory {
         );
         }
 
-    public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
-            ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-        var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
-        var clawCmd = claw.release().withName("ClawRelease");
-        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
-        var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConePark);
+    // public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+    //         ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+    //     var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
+    //     var clawCmd = claw.release().withName("ClawRelease");
+    //     var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+    //     var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.oneConePark);
 
-        return Commands.sequence(
-                tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
-                placeCmd.asProxy(),
-                clawCmd.asProxy(),
-                Commands.waitSeconds(.5),
-                ssResetCmd.asProxy(),
-                pathCmd.asProxy(),
-                new AutoBalance(swerve, true).withName("autobalance"));
-    }
+    //     return Commands.sequence(
+    //             tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
+    //             placeCmd.asProxy(),
+    //             clawCmd.asProxy(),
+    //             Commands.waitSeconds(.5),
+    //             ssResetCmd.asProxy(),
+    //             pathCmd.asProxy(),
+    //             new AutoBalance(swerve, true).withName("autobalance"));
+    // }
 
     public static CommandBase coneOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
             ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
