@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class AutonChooser {
     public enum AutonOption {
         DO_NOTHING("do nothing"),
+        DROP_ONLY("drop only"),
         ONE_CONE_OUT("1 - cone w/o balance"),
         CONE_BACK_PARK("1 - cone w/ balance"),
         CUBE_BACK_PARK("1 - cube w/ balance"),

@@ -26,6 +26,21 @@ public final class AutonFactory {
         return driveCmd;
     }
 
+    public static CommandBase coneDrop(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw, 
+            ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+        var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
+        var clawCmd = claw.release().withName("ClawRelease");
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+
+        return Commands.sequence(
+            tilt.autoHome().alongWith(elev.autoHome()).withTimeout(1.5),
+            placeCmd.asProxy(),
+            clawCmd.asProxy(),
+            Commands.waitSeconds(.5),
+            ssResetCmd.asProxy()
+        );
+        }
+
     public static CommandBase oneConePark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
             ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withName("SS-Auto-TopCone");
