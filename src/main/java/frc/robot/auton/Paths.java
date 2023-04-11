@@ -80,14 +80,17 @@ public class Paths {
 		public static final List<PathPlannerTrajectory> twoEleAlt = PathPlanner.loadPathGroup("twoEleAlt",
 		kPPConstraints, new PathConstraints(2.5, 2.5));
 
-		public static final List<PathPlannerTrajectory> twoEleBumpy = PathPlanner.loadPathGroup("twoEleBumpy",
+		public static final List<PathPlannerTrajectory> twoEleBump = PathPlanner.loadPathGroup("twoEleBump",
 		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
 		
 		public static final List<PathPlannerTrajectory> coneOneHalfBumpy = PathPlanner.loadPathGroup("coneOneHalfBump",
-		kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
+			kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
+		
+		public static final List<PathPlannerTrajectory> cubeOneHalfBump = PathPlanner.loadPathGroup("cubeOneHalfBump",
+			kPPConstraints, new PathConstraints(1.0, 1.0), kPPConstraints);
 
 		public static final PathPlannerTrajectory three = PathPlanner.loadPath("three",
-		kPPConstraints);
+			kPPConstraints);
 
 		public static final PathPlannerTrajectory twoEle2 = PathPlanner.loadPath("twoEle2", kPPConstraints);
 
@@ -112,6 +115,7 @@ public class Paths {
 		public static final PathPlannerTrajectory coneBackPark = PathPlanner.loadPath("coneBackPark",
 				1.0,
 				1.5);
+		public static final PathPlannerTrajectory oneConeBump = PathPlanner.loadPath("oneConeBump", kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> twoPointFiveBumpy = PathPlanner.loadPathGroup("twoPointFiveBumpy", new PathConstraints(2, 1.5), kPPConstraints);
 	}
