@@ -237,6 +237,7 @@ public class RobotContainer {
 	public void mapAutonCommands() {
 		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
 		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_METER, AutonFactory.oneMeter(swerve));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_OUT, 
 			AutonFactory.coneBackOut(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.backPark.getInitialHolonomicPose());

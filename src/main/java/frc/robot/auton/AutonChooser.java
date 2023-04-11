@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class AutonChooser {
     public enum AutonOption {
         DO_NOTHING("do nothing"),
-        DROP_ONLY("drop only"),
+        ONE_METER("0 - one meter"),
+        DROP_ONLY("1 - cone w/o movement"),
         ONE_CONE_OUT("1 - cone w/o balance"),
         ONE_CONE_BUMP("1 - cone w/o balance over bump"),
         CONE_BACK_PARK("1 - cone w/ balance"),
