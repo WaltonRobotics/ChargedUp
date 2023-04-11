@@ -275,6 +275,8 @@ public class RobotContainer {
 			PPPaths.twoEle.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_ONLY, 
 			AutonFactory.coneDrop(swerve, superstructure, claw, elevator, tilt, wrist));
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_POINT_FIVE_BUMPY, 
+			AutonFactory.coneDrop(swerve, superstructure, claw, elevator, tilt, wrist));
 		
 }
 

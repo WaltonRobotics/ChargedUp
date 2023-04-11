@@ -112,6 +112,8 @@ public class Paths {
 		public static final PathPlannerTrajectory coneBackPark = PathPlanner.loadPath("coneBackPark",
 				1.0,
 				1.5);
+
+		public static final PathPlannerTrajectory twoPointFiveBumpy = PathPlanner.loadPath("twoPointFiveBumpy", kPPConstraints);
 	}
 
 	public static final class PPAutoscoreClass {
