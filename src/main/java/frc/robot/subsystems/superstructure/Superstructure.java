@@ -54,7 +54,7 @@ public class Superstructure {
 	}
 
 	private CommandBase cubeToss(SuperState state, TheClaw claw, boolean auton) {
-		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height *.4);
+		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height *.55);
 		var toStateCmd = auton ? toStateAuton(state) : toStateTeleop(state);
 
 		return Commands.parallel(

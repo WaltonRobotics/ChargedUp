@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,7 +31,7 @@ public class TheClaw extends SubsystemBase {
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
 
-	private static final double kSensorCheckDelay = .275;
+	private static final double kSensorCheckDelay = .4;
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
@@ -168,5 +169,6 @@ public class TheClaw extends SubsystemBase {
 		// nte_superstate.setString(m_autoStateSupplier.get().toString());
 		// nte_withinRange.setBoolean(withinRange());
 		// nte_range.setDouble(timeOfFlight.getRange());
+		SmartDashboard.putBoolean("CLAW EYE", sensorTrig.getAsBoolean());
 	}
 }
