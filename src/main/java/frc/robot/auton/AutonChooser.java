@@ -12,12 +12,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class AutonChooser {
     public enum AutonOption {
         DO_NOTHING("do nothing"),
-        DROP_ONLY("drop only"),
+        ONE_METER("0 - one meter"),
+        DROP_ONLY("1 - cone w/o movement"),
         ONE_CONE_OUT("1 - cone w/o balance"),
+        ONE_CONE_BUMP("1 - cone w/o balance over bump"),
         CONE_BACK_PARK("1 - cone w/ balance"),
         CUBE_BACK_PARK("1 - cube w/ balance"),
         CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),
         CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),
+        CUBE_ONE_HALF_BUMP("1.5 - cube w/o balance over bump"),
         // CONE_ONE_HALF_BUMP("1.5 - cone w/ balance over bump"),     
         TWO_ELEMENT("2 - cone, cube w/o balance"),
         // TWO_ELEMENT_BUMPY("2 - cone, cube w/o balance over bump"),

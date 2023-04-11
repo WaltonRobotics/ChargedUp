@@ -237,9 +237,13 @@ public class RobotContainer {
 	public void mapAutonCommands() {
 		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
 		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_METER, AutonFactory.oneMeter(swerve));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_OUT, 
 			AutonFactory.coneBackOut(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.backPark.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_BUMP, 
+			AutonFactory.oneConeBump(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.oneConeBump.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_BACK_PARK, 
 			AutonFactory.coneBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.coneBackPark.getInitialHolonomicPose());
@@ -252,6 +256,9 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK, 
 			AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.cubeOneHalf.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_BUMP, 
+			AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.cubeOneHalfBump.get(0).getInitialHolonomicPose());
 		// AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_BUMP, 
 		// 	AutonFactory.coneOneHalfBumpy(swerve, superstructure, claw, elevator, tilt, wrist),
 		// 	PPPaths.coneOneHalfBumpy.get(0).getInitialHolonomicPose());
