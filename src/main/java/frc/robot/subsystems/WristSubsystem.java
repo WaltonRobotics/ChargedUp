@@ -70,8 +70,8 @@ public class WristSubsystem extends SubsystemBase {
 
     m_controller.setTolerance(1.5);
     
-    nte_coast = Shuffleboard.getTab("WristSubsys")
-                .add("coast", m_isCoast)
+    nte_coast = Shuffleboard.getTab(DB_TAB_NAME)
+                .add("wrist coast", false)
                 .withWidget(BuiltInWidgets.kToggleSwitch)
                 .getEntry();
 

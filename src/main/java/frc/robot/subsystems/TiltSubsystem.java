@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -14,6 +15,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -53,11 +56,11 @@ public class TiltSubsystem extends SubsystemBase {
 	// 		kMinAngleDegrees, 35);
 
 
-	private final DoubleLogger log_actualAngle = WaltLogger.logDouble("TiltSubsys", "ActualAngle");
-	private final DoubleLogger log_rawAbsVal = WaltLogger.logDouble("TiltSubsys", "RawAbs");
+	private final DoubleLogger log_actualAngle = WaltLogger.logDouble(DB_TAB_NAME, "ActualAngle");
+	private final DoubleLogger log_rawAbsVal = WaltLogger.logDouble(DB_TAB_NAME, "RawAbs");
 	// private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "ActualAngle", 0, 35);
 	// private final GenericEntry nte_rawAbsVal = DashboardManager.addTabNumberBar(this, "RawAbs", 0, 1);
-	// private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "coast");
+	private final GenericEntry nte_coast;
 	// private final GenericEntry nte_homeSwitch = DashboardManager.addTabBooleanBox(this, "HomeSwitch");
 	// private final GenericEntry nte_forwardLimit = DashboardManager.addTabBooleanBox(this, "forward limit");
 
@@ -80,6 +83,11 @@ public class TiltSubsystem extends SubsystemBase {
 		// m_absoluteEncoder.setPositionOffset(kAbsZeroDegreeOffset/360.0);
 		// DashboardManager.addTab(this);
 		m_homeSwitchTrigger.onTrue(resetEncoder());
+
+		nte_coast = Shuffleboard.getTab(DB_TAB_NAME)
+					.add("tilt coast", false)
+					.withWidget(BuiltInWidgets.kToggleSwitch)
+					.getEntry();
 
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
@@ -289,7 +297,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// nte_targetAngle.setDouble(m_targetAngle);
 		// nte_homeSwitch.setBoolean(atReverseLimit());
 		// nte_forwardLimit.setBoolean(atForwardLimit());
-		m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
+		m_isCoast = nte_coast.getBoolean(false);
 	}
 
 	public CommandBase toState(TiltState state) {

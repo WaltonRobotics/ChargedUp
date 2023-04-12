@@ -20,13 +20,14 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.math.Conversions;
-import frc.lib.util.DashboardManager;
 import frc.robot.CTREConfigs;
 import java.util.function.DoubleSupplier;
 
@@ -62,6 +63,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_holdPdEffort, log_holdFfEffort;
 	private final BooleanLogger log_atLowerLimit;
 
+	private final GenericEntry nte_coast;
+
 	public ElevatorSubsystem() {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] ElevatorSubsystem Init Begin");
@@ -96,6 +99,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_holdFfEffort = WaltLogger.logDouble(DB_TAB_NAME, "HoldFFEffort");
 		log_atLowerLimit = WaltLogger.logBoolean(DB_TAB_NAME, "AtLowerLimit");
 
+		nte_coast = Shuffleboard.getTab(DB_TAB_NAME)
+					.add("elevator coast", false)
+					.withWidget(BuiltInWidgets.kToggleSwitch)
+					.getEntry();
 
 		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
 			m_right.setSelectedSensorPosition(0);
@@ -337,7 +344,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_actualVelo.accept(getActualVelocityMps());
 		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
 		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
-		m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
+		m_isCoast = nte_coast.getBoolean(false);
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
 		// 		.onTrue(setCoast(true))
