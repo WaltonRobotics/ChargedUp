@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -81,8 +82,7 @@ public class WristSubsystem extends SubsystemBase {
    * true for coast, false for brake
    */
   public void setCoast(boolean coast) {
-    m_isCoast = coast;
-    m_motor.setIdleMode(m_isCoast ? IdleMode.kCoast : IdleMode.kBrake);
+    m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
   }
 
   /*
@@ -247,6 +247,7 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateShuffleBoard();
+    setCoast(m_isCoast);
   }
 
   /*
@@ -267,6 +268,7 @@ public class WristSubsystem extends SubsystemBase {
 		// 		.onTrue(setIdle(true))
 		// 		.onFalse(setIdle(false));
 		// }
+    m_isCoast = SmartDashboard.setDefaultBoolean("is coast", false);
   }
 
   public static enum WristState {
