@@ -501,9 +501,6 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final Color kBlue = LedUtils.fixColor(Color.kBlue);
         public static final Color kYellow = LedUtils.fixColor(Color.kYellow);
         public static final Color kPurple = LedUtils.fixColor(Color.kPurple);
-        public static final Color kOrange = LedUtils.fixColor(Color.kOrange);
-        public static final Color kIndigo = LedUtils.fixColor(Color.kIndigo);
-        public static final Color kViolet = LedUtils.fixColor(Color.kViolet);
 
         // Specific colors
         public static final Color kCubeColor = kPurple;
