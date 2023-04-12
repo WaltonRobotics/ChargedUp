@@ -24,11 +24,11 @@ public class AutonChooser {
         CUBE_ONE_HALF_BUMP("1.5 - cube w/o balance over bump"),
         // CONE_ONE_HALF_BUMP("1.5 - cone w/ balance over bump"),     
         TWO_ELEMENT("2 - cone, cube w/o balance"),
-        // TWO_ELEMENT_BUMPY("2 - cone, cube w/o balance over bump"),
+        TWO_ELEMENT_BUMP("2 - cone, cube w/o balance over bump"),
         TWO_ELEMENT_PARK("2 - cone, cube w/ balance"),
         // TWO_ELEMENT_PARK_ALT("2 - cube, cone w/ balance"),
         TWO_POINT_FIVE("2.5 - cone, cube w/o balance"),
-        TWO_POINT_FIVE_BUMPY("2.5 - cone, cube, w/o balance on bumpy side"),
+        TWO_POINT_FIVE_BUMP("2.5 - cone, cube, w/o balance over bump"),
         THREE_ELEMENT("3 - cone, cube, cube w/o balance");
         
 

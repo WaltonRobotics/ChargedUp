@@ -90,14 +90,16 @@ public class Robot extends TimedRobot {
     if (initPoseOpt.isPresent()) {
       m_robotContainer.swerve.resetPose(initPoseOpt.get());
       if(DriverStation.getAlliance() == Alliance.Blue){
-          if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK))) {
+          if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) || 
+          AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.ONE_CONE_BUMP))) {
             m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees());
           } else {
             m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees() + 180);
           }
       }
       else{
-          if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK))) {
+          if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) || 
+          AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.ONE_CONE_BUMP))) {
             m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees() + 180);
           } else {
             m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
