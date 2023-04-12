@@ -337,7 +337,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_actualVelo.accept(getActualVelocityMps());
 		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
 		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
-		m_isCoast = SmartDashboard.setDefaultBoolean("elevator coast", false);
+		m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
 		// 		.onTrue(setCoast(true))

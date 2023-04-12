@@ -11,6 +11,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -50,7 +52,7 @@ public class WristSubsystem extends SubsystemBase {
   // private final GenericEntry nte_rawAbsEncoder = DashboardManager.addTabDial(this, "Raw Abs Encoder", 0, 1);
   // private final GenericEntry nte_actualAngle = DashboardManager.addTabNumberBar(this, "Actual Angle",
   //     WristK.kMinDeg, WristK.kMaxDeg);
-  // private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
+  private final GenericEntry nte_coast;
   // private final GenericEntry nte_motorTemp = DashboardManager.addTabNumberBar(this, "Motor Temp", 0, 100);
   // private final GenericEntry nte_minLimit = DashboardManager.addTabBooleanBox(this, "At Bot Limit");
   // private final GenericEntry nte_maxLimit = DashboardManager.addTabBooleanBox(this, "At Top Limit");
@@ -67,6 +69,11 @@ public class WristSubsystem extends SubsystemBase {
     m_motor.burnFlash();
 
     m_controller.setTolerance(1.5);
+    
+    nte_coast = Shuffleboard.getTab("WristSubsys")
+                .add("coast", m_isCoast)
+                .withWidget(BuiltInWidgets.kToggleSwitch)
+                .getEntry();
 
     // m_dashboardCoastTrigger
 		// 	.onTrue(setIdle(true))
@@ -268,7 +275,7 @@ public class WristSubsystem extends SubsystemBase {
 		// 		.onTrue(setIdle(true))
 		// 		.onFalse(setIdle(false));
 		// }
-    m_isCoast = SmartDashboard.setDefaultBoolean("wrist coast", false);
+    m_isCoast = nte_coast.getBoolean(false);
   }
 
   public static enum WristState {
