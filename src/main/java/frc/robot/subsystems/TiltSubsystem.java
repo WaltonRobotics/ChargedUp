@@ -289,7 +289,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// nte_targetAngle.setDouble(m_targetAngle);
 		// nte_homeSwitch.setBoolean(atReverseLimit());
 		// nte_forwardLimit.setBoolean(atForwardLimit());
-		m_isCoast = SmartDashboard.setDefaultBoolean("is coast", false);
+		m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
 	}
 
 	public CommandBase toState(TiltState state) {

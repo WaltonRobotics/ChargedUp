@@ -472,6 +472,29 @@ public class SwerveSubsystem extends SubsystemBase {
 		return follow;
 	}
 
+	public CommandBase autoAlign(DoubleSupplier translation, Pose2d endPose) {
+		var follow = run(() -> {
+			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
+			log_autoGoYPos.accept(getPose().getY());
+			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
+			Pose2d currentPose = getPose();
+			Pose2d actualEndPose = Flipper.flipIfShould(endPose);
+			FieldObject2d field2dEndPose = m_field.getObject("EndPose");
+			field2dEndPose.setPose(actualEndPose);
+			double yRate = autoGoYController.calculate(currentPose.getY(),
+				actualEndPose.getY());
+			System.out.println("going to " + endPose.toString());
+			
+			if (Flipper.shouldFlip()) {
+				drive(translationVal, yRate, new Rotation2d(0), false);
+			} else {
+				drive(translationVal, -yRate, new Rotation2d(0), false);
+			}
+		});
+
+		return follow;
+	}
+
 
 	public CommandBase goToConeOrCube(DoubleSupplier translation, boolean isCone) {
 		Pose2d closestPose = isCone ? conesPoses[0] : cubesPoses[0];

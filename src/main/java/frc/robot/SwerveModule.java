@@ -56,7 +56,7 @@ public class SwerveModule {
     private final DoubleLogger 
         log_driveTemp, log_steerTemp, log_cancoderAngle, log_modVelocity,
         log_steerInternalAngle, log_desiredStateVelocity, log_desiredStateRotation,
-        log_actualStateVelocity, log_actualStateRotation, log_driveMotorVeloCmd;
+        log_actualStateVelocity, log_actualStateRotation, log_driveMotorVeloCmd, log_driveMotorPosition;
 
     public SwerveModule(String name, int moduleNumber, SwerveModuleConstants moduleConstants) {
         moduleName = name;
@@ -74,6 +74,7 @@ public class SwerveModule {
         log_actualStateVelocity = WaltLogger.logDouble(topicPrefix, "ActState/Velocity");
         log_actualStateRotation = WaltLogger.logDouble(topicPrefix, "ActState/Rotation");
         log_driveMotorVeloCmd = WaltLogger.logDouble(topicPrefix, "DriveVeloCmd");
+        log_driveMotorPosition = WaltLogger.logDouble(topicPrefix, "DriveTicks");
 
         /* Angle Encoder Config */
         m_angleEncoder = new CANCoder(moduleConstants.cancoderID, "Canivore");
@@ -106,6 +107,7 @@ public class SwerveModule {
         log_desiredStateRotation.accept(m_latestDesiredState.angle.getDegrees());
 
         log_driveMotorVeloCmd.accept(m_latestCmdedDriveVelo);
+        log_driveMotorPosition.accept(m_driveMotor.getSelectedSensorPosition());
     }
 
     public double makePositiveDegrees(double angle) {
