@@ -102,7 +102,7 @@ public class RobotContainer {
 		driver.leftBumper().whileTrue(leds.setBalanced()); 
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
-			if(DriverStation.getAlliance().equals(Alliance.Blue)) {
+			if (DriverStation.getAlliance().equals(Alliance.Blue)) {
 				driver.x().whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsBlue.cone1));
 				driver.y().whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsBlue.cube2));
 				driver.b().whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsBlue.cone3));
@@ -124,8 +124,8 @@ public class RobotContainer {
 				driver.b()
 					.and(driver.rightTrigger())
 					.whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsBlue.cone9));
-					} else {
-						driver.x().whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsRed.cone1));
+			} else {
+				driver.x().whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsRed.cone1));
 				driver.y().whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsRed.cube2));
 				driver.b().whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsRed.cone3));
 				driver.x()
