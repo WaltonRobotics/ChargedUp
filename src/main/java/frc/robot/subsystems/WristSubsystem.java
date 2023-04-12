@@ -268,7 +268,7 @@ public class WristSubsystem extends SubsystemBase {
 		// 		.onTrue(setIdle(true))
 		// 		.onFalse(setIdle(false));
 		// }
-    m_isCoast = SmartDashboard.setDefaultBoolean("is coast", false);
+    m_isCoast = SmartDashboard.setDefaultBoolean("wrist coast", false);
   }
 
   public static enum WristState {
