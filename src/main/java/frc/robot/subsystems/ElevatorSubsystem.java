@@ -317,23 +317,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 		}
 	}
 
-	private void setCoast() {
-		if (m_isCoast) {
-			m_left.setNeutralMode(NeutralMode.Coast);
-			m_right.setNeutralMode(NeutralMode.Coast);
-		} else {
-			m_left.setNeutralMode(NeutralMode.Brake);
-			m_right.setNeutralMode(NeutralMode.Brake);
-		}
-	}
-
 	@Override
 	public void periodic() {
 		updateShuffleBoard();
 		// setCoast(nte_coast.getBoolean(false));
 		log_holdPdEffort.accept(m_holdPdEffort);
 		log_holdFfEffort.accept(m_holdFfEffort);
-		setCoast();
+		setCoast(m_isCoast);
 	}
 
 	/*
