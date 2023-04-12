@@ -62,9 +62,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_holdPdEffort, log_holdFfEffort;
 	private final BooleanLogger log_atLowerLimit;
 
-	// private final boolean nte_coast = SmartDashboard.getBoolean("isCoast", false);
-	// private final Trigger m_dashboardCoastTrigger = new Trigger(() -> nte_coast.getBoolean(false));
-
 	public ElevatorSubsystem() {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] ElevatorSubsystem Init Begin");
@@ -326,6 +323,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		// setCoast(nte_coast.getBoolean(false));
 		log_holdPdEffort.accept(m_holdPdEffort);
 		log_holdFfEffort.accept(m_holdFfEffort);
+		setCoast(m_isCoast);
 	}
 
 	/*
@@ -339,6 +337,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_actualVelo.accept(getActualVelocityMps());
 		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
 		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
+		m_isCoast = SmartDashboard.setDefaultBoolean("is coast", false);
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
 		// 		.onTrue(setCoast(true))
