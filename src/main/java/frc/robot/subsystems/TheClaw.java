@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -13,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TheClawK.*;
 
+import java.sql.Driver;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 
@@ -59,18 +63,35 @@ public class TheClaw extends SubsystemBase {
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
 		substationStateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.SUBSTATIONAUTO);
 
+    	var sensorAutonDebounceTrig = new Trigger(
+			new BooleanSupplier() {
+				final Debouncer m_debouncer = new Debouncer(0.1);
+
+				@Override
+				public boolean getAsBoolean() {
+					if (DriverStation.isAutonomous()) {
+						return m_debouncer.calculate(sensorTrig.getAsBoolean());
+					} else {
+						return sensorTrig.getAsBoolean();
+					}
+				}
+       		}
+		);
+
 		stateAutoGrabTrig.onTrue(
 			release()
 			.andThen(runOnce(() -> m_grabOk = false)));
 			
 		stateAutoGrabTrig
-		.and(sensorTrig)
+		.and(sensorAutonDebounceTrig)
 		// .and(timeOfFlightTrig)
 		.and(sensorCheckValidTrig)
 			.onTrue(
 				Commands.runOnce(() -> m_grabOk = true)
 				.andThen(grab()).withName("internalAutoGrab")
 		);
+
+		
 
 		substationStateAutoGrabTrig.onTrue(
 			Commands.sequence(
@@ -82,7 +103,7 @@ public class TheClaw extends SubsystemBase {
 			)
 		);
 		substationStateAutoGrabTrig
-		.and(sensorTrig)
+		.and(sensorAutonDebounceTrig)
 		// .and(timeOfFlightTrig)
 		.and(substationDelayTrig)
 		.and(closedTrig.negate())

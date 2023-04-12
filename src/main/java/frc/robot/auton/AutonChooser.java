@@ -16,6 +16,7 @@ public class AutonChooser {
         DROP_ONLY("1 - cone w/o movement"),
         ONE_CONE_OUT("1 - cone w/o balance"),
         ONE_CONE_BUMP("1 - cone w/o balance over bump"),
+        CONE_ONE_HALF_BUMP("1.5 - cone w/o balance over bump"),
         CONE_BACK_PARK("1 - cone w/ balance"),
         CUBE_BACK_PARK("1 - cube w/ balance"),
         CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),

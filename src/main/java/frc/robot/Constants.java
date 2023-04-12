@@ -194,8 +194,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 4.8;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 4;  
+        public static final double kMaxSpeedMetersPerSecond = 4.4;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.5;  
         public static final double kMaxAngularSpeedRadiansPerSecond = 9.6;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 24;
 
@@ -348,7 +348,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kMaxVelocity = 2.75; // Meters Per Second
         public static final double kMaxAcceleration = 2.75; // Meters Per Second Squared
-        public static final double kMaxAccelerationDown = 2.40;
+        public static final double kMaxAccelerationDown = 2.6;
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,

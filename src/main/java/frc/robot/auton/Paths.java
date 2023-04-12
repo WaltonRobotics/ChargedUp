@@ -118,6 +118,8 @@ public class Paths {
 		public static final PathPlannerTrajectory oneConeBump = PathPlanner.loadPath("oneConeBump", kPPConstraints);
 
 		public static final PathPlannerTrajectory twoPointFiveBumpy = PathPlanner.loadPath("twoPointFiveBumpy", kPPConstraints);
+
+		public static final PathPlannerTrajectory twoPointFiveBumpy2 = PathPlanner.loadPath("twoPointFiveBumpy2", kPPConstraints);
 	}
 
 	public static final class PPAutoscoreClass {
