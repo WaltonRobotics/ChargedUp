@@ -93,6 +93,8 @@ public class Robot extends TimedRobot {
           if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) || 
           AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.ONE_CONE_BUMP))) {
             m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees());
+          } else if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_POINT_FIVE_BUMP))) {
+            m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees()+180);
           } else {
             m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees() + 180);
           }
@@ -101,6 +103,8 @@ public class Robot extends TimedRobot {
           if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) || 
           AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.ONE_CONE_BUMP))) {
             m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees() + 180);
+          } else if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_POINT_FIVE_BUMP))) {
+            m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees() - 90);
           } else {
             m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
           }

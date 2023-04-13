@@ -88,9 +88,15 @@ public class SuperstructureToState extends SequentialCommandGroup {
         var elevator = m_superstructure.m_elevator;
         var wrist = m_superstructure.m_wrist;
 
-        if (m_targetState == SuperState.TOPCONE || m_targetState == SuperState.TOPCUBE) {
+        if (m_targetState == SuperState.TOPCONE ) {
             m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*(.05)));
             m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.20));
+            m_movementQuirks += "-TG_TOPCONECUBE";
+        }
+
+        if (m_targetState == SuperState.TOPCUBE) {
+            m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*(.3)));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.3));
             m_movementQuirks += "-TG_TOPCONECUBE";
         }
 

@@ -66,7 +66,7 @@ public class TiltSubsystem extends SubsystemBase {
 
 	// public static double nte_ffEfort = SmartDashboard.putNumber("FFEffort", );
 	public static double nte_pdEffort = m_pdEffort;
-	private boolean m_isCoast = false;
+	// private boolean m_isCoast = false;
 	
 	public TiltSubsystem() {
 		double subsysInitBegin = Timer.getFPGATimestamp();
@@ -274,7 +274,7 @@ public class TiltSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateShuffleBoard();
-		setCoast(m_isCoast);
+		// setCoast(m_isCoast);
 	}
 
 	public void updateShuffleBoard() {
@@ -289,7 +289,7 @@ public class TiltSubsystem extends SubsystemBase {
 		// nte_targetAngle.setDouble(m_targetAngle);
 		// nte_homeSwitch.setBoolean(atReverseLimit());
 		// nte_forwardLimit.setBoolean(atForwardLimit());
-		m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
+		// m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
 	}
 
 	public CommandBase toState(TiltState state) {

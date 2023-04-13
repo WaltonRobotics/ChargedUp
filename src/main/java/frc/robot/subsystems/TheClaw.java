@@ -65,7 +65,7 @@ public class TheClaw extends SubsystemBase {
 
     	var sensorAutonDebounceTrig = new Trigger(
 			new BooleanSupplier() {
-				final Debouncer m_debouncer = new Debouncer(0.1);
+				final Debouncer m_debouncer = new Debouncer(0.025);
 
 				@Override
 				public boolean getAsBoolean() {

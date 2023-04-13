@@ -54,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
-	private boolean m_isCoast = false;
+	// private boolean m_isCoast = false;
 
 	private final DoubleLogger
 		log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight, 
@@ -323,7 +323,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		// setCoast(nte_coast.getBoolean(false));
 		log_holdPdEffort.accept(m_holdPdEffort);
 		log_holdFfEffort.accept(m_holdFfEffort);
-		setCoast(m_isCoast);
+		// setCoast(m_isCoast);
 	}
 
 	/*
@@ -337,7 +337,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_actualVelo.accept(getActualVelocityMps());
 		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
 		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
-		m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
+		// m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
 		// if (kDebugLoggingEnabled) {
 		// 	m_dashboardCoastTrigger
 		// 		.onTrue(setCoast(true))

@@ -625,7 +625,7 @@ public final class AutonFactory {
         var groundCmd = superstructure.toStateAuton(SuperState.GROUND_PICK_UP).withTimeout(2.5);
         // var grabCmd = claw.grab().andThen(Commands.waitSeconds(.29));
         var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
-        var tossCmd = superstructure.cubeTossTop(claw, true);
+        var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
         var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
         var pathCmd2 = swerve.getPPSwerveAutonCmd(PPPaths.twoPointFiveBumpy2);
         var groundCmd2 = superstructure.toStateAuton(SuperState.GROUND_PICK_UP).withTimeout(2.5);
@@ -642,18 +642,18 @@ public final class AutonFactory {
                     pathCmd.asProxy()
                 ),
                 Commands.sequence(
-                    Commands.waitSeconds(2.35),
+                    Commands.waitSeconds(2.6),
                     groundCmd.asProxy(),
                     // Commands.waitSeconds(1),
-                    Commands.waitSeconds(6),
-                    tossCmd.asProxy().withTimeout(1.75)
+                    Commands.waitSeconds(3.6),
+                    cubePlaceCmd.asProxy().withTimeout(1.75)
                 )
             ),
             Commands.parallel(
                 ssResetCmd2.asProxy(),
                 Commands.waitSeconds(.2).andThen(pathCmd2.asProxy()),
                 Commands.sequence(
-                    Commands.waitSeconds(2.35),
+                    Commands.waitSeconds(2.5),
                     groundCmd2.asProxy()
                 )
             ),
