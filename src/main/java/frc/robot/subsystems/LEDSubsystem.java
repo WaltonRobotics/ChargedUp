@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.LedUtils;
-
 import static frc.robot.Constants.LedK.*;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -20,7 +18,6 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean m_blinkState = false;
     private int m_blinkCount = 0;
     public boolean isCone = false;
-    private double m_rainbowHue = 0.0;
 
     public LEDSubsystem() {
         double subsysInitBegin = Timer.getFPGATimestamp();
@@ -34,13 +31,6 @@ public class LEDSubsystem extends SubsystemBase {
         setDefaultCommand(idle());
         double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] LEDSubsystem Init End: " + subsysInitElapsed + "s");
-    }
-
-    private void setAllColor(Color color) {
-        var fixedColor = LedUtils.fixColor(color);
-        for (int i = 0; i < kNumLeds; i++) {
-            m_ledBuffer.setLED(i, fixedColor);
-        }
     }
 
     private void setIdle() {
@@ -59,24 +49,13 @@ public class LEDSubsystem extends SubsystemBase {
         m_leds.setData(m_ledBuffer);
     }
 
-    public CommandBase setBalanced(){
-        return runOnce(()->{
-            m_rainbowHue += 0.05;
-            if (m_rainbowHue >= 1) m_rainbowHue = 0;
-
-            Color rainbow = Color.fromHSV((int)(m_rainbowHue * 360), 100, 100);
-            setAllColor(rainbow);
-        })
-        .ignoringDisable(true)
-        .andThen(Commands.waitSeconds(0.125))
-        .repeatedly();
-    }
-
     public CommandBase setCube() {
         return run(() ->  { 
             isCone = false;
             Color col = Color.kPurple;
-            setAllColor(col);
+            for (int i = 0; i < kNumLeds; i++) {
+                m_ledBuffer.setLED(i, col);
+            }
             m_leds.setData(m_ledBuffer);
         });
     }
