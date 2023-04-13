@@ -41,7 +41,7 @@ public class RobotContainer {
 	private final CommandXboxController driver = new CommandXboxController(0);
 	private final CommandXboxController manipulator = new CommandXboxController(1);
 
-	public final LEDSubsystem leds = new LEDSubsystem();
+	public static final LEDSubsystem leds = new LEDSubsystem();
 	public final VisionManager vision = new VisionManager();
 	public final SwerveSubsystem swerve = new SwerveSubsystem(autonEventMap, vision);
 	public final TiltSubsystem tilt = new TiltSubsystem();
