@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import frc.robot.SwerveModule;
 import frc.robot.Constants.VisionK;
 import frc.robot.auton.Paths;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.vision.VisionManager;
 import frc.robot.vision.VisionManager.VisionMeasurement;
 import frc.lib.logging.WaltLogger;
@@ -74,6 +75,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
 	protected final SwerveAutoBuilder autoBuilder;
 	private double teleOpGyroZero = 0;
+	private LEDSubsystem leds;
 	
 
 	private final Timer m_cancoderReseedTimer = new Timer();
@@ -436,7 +438,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 	public Command nowItsTimeToGetFunky() {
-		return new NewBalance(this);
+		return new NewBalance(this,leds);
 	}
 
 	// public CommandBase autoScore(Pose2d endPose) {
