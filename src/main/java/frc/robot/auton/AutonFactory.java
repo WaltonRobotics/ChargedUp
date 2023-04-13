@@ -300,7 +300,7 @@ public final class AutonFactory {
         
         //SAFE
         Commands.parallel(
-            ssResetCmd.asProxy().withTimeout(1.8),
+            ssResetCmd.asProxy().withTimeout(2.0),
             claw.grab().asProxy(),
             // path after place timeout
             Commands.parallel(
@@ -313,7 +313,7 @@ public final class AutonFactory {
                 Commands.sequence(
                     Commands.waitSeconds(1.5),  //Time before pickup
                     groundPickUp.asProxy(), //PICKUP
-                    Commands.waitSeconds(2.25),  //time before SAFE
+                    Commands.waitSeconds(2.5),  //time before SAFE
                     // ssResetCmd2.asProxy(), //SAFE
                     // Commands.waitSeconds(1.0),  //time before cube throw
                     cubePlaceCmd.asProxy().withTimeout(1.50)    //cube throw
@@ -342,7 +342,7 @@ public final class AutonFactory {
         ),
         Commands.parallel(
             ssResetCmd5.asProxy().withTimeout(1.8),
-            claw.grab().asProxy()
+            Commands.waitSeconds(.5).andThen(claw.grab().asProxy())
         ));
     }
 
@@ -642,26 +642,22 @@ public final class AutonFactory {
                     pathCmd.asProxy()
                 ),
                 Commands.sequence(
-                    Commands.waitSeconds(2.0),
-                    groundCmd.asProxy()
+                    Commands.waitSeconds(2.35),
+                    groundCmd.asProxy(),
                     // Commands.waitSeconds(1),
-                    // grabCmd.asProxy(),
-                    // ssResetCmd2.asProxy()
+                    Commands.waitSeconds(6),
+                    tossCmd.asProxy().withTimeout(1.75)
                 )
-            ),
-            Commands.sequence(
-                tossCmd.asProxy().withTimeout(1.5),
-                ssResetCmd3.asProxy().withTimeout(2.0),
-                claw.grab().asProxy()
             ),
             Commands.parallel(
-                pathCmd2.asProxy(),
+                ssResetCmd2.asProxy(),
+                Commands.waitSeconds(.2).andThen(pathCmd2.asProxy()),
                 Commands.sequence(
-                    Commands.waitSeconds(2.5),
+                    Commands.waitSeconds(2.35),
                     groundCmd2.asProxy()
                 )
-            )
-            // ssResetCmd4.asProxy()
+            ),
+            ssResetCmd4.asProxy()
         );
     }
 

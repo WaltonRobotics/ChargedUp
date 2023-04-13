@@ -15,7 +15,6 @@ import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureToState;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
-import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.VisionManager;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPPaths;

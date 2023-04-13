@@ -119,7 +119,12 @@ public class VisionManager {
 
           // determine if result should be ignored
           if (cameraEstimator.dupeTracker().isDuplicate(frame) || ignoreFrame(frame, allowedIds)) continue;
-        
+
+          // remove targets more than 6m away
+          frame.targets.removeIf(tag -> {
+            var t3d = tag.getBestCameraToTarget();
+            return (t3d.getX() > 6.0 || t3d.getY() > 6.0);
+          });
     
           var optEstimation = cameraEstimator.estimator().update(frame);
           if (optEstimation.isEmpty()) continue;
@@ -132,6 +137,7 @@ public class VisionManager {
           double sumDistance = 0;
           for (var target : estimation.targetsUsed) {
             var t3d = target.getBestCameraToTarget();
+
             sumDistance +=
                 Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
           }

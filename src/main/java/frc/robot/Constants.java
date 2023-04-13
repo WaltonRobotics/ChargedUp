@@ -67,8 +67,8 @@ public final class Constants {
                 .SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
         /* Drivetrain Constants in meters */
-        public static final double kTrackWidth = Units.inchesToMeters(27);
-        public static final double kWheelBase = Units.inchesToMeters(27);
+        public static final double kTrackWidth = Units.inchesToMeters(33);  //with
+        public static final double kWheelBase = Units.inchesToMeters(33);
         public static final double kWheelCircumference = kSwerveModule.wheelCircumference;
 
         /* Swerve Kinematics */
@@ -202,15 +202,15 @@ public final class Constants {
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
         public static final Matrix<N3, N1> kOdoStdDevs_DefaultTrust = VecBuilder.fill(0.1, 0.1, 0.025);
-        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 10000000);
+        public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 10);
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 3; // 8
-        public static double kPYController = 3; // 26  30+ jitters
+        public static double kPXController = 4; // 8
+        public static double kPYController = 4.0; 
         public static double kPAutoGoYController = .75;
         public static double kPAutoGoThetaController = 7;
-        public static double kPThetaController = 7.0; // 1
+        public static double kPThetaController = 1.5; // 1
         public static final double kDThetaController = 0.5;
         public static final double kFThetaControllerAuto = 0;   
         public static final double kFThetaController = 1;
@@ -409,12 +409,12 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static record VisionSource(String name, Transform3d robotToCamera) {}
 
         private static final Transform3d leftCornerLow_RobotToCamera = new Transform3d(
-            new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(9.279), Units.inchesToMeters(8.845)),
-            new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(-50.5)));
+            new Translation3d(Units.inchesToMeters(-2.201), Units.inchesToMeters(6.23), Units.inchesToMeters(11.670)),
+            new Rotation3d(0, Units.degreesToRadians(-10), 0));
 
         private static final Transform3d rightCornerLow_RobotToCamera = new Transform3d(
-            new Translation3d(Units.inchesToMeters(9.52), Units.inchesToMeters(-9.279), Units.inchesToMeters(8.845)),
-            new Rotation3d(0, Units.degreesToRadians(-14), Units.degreesToRadians(39.6)));
+            new Translation3d(Units.inchesToMeters(-2.201), Units.inchesToMeters(-6.23), Units.inchesToMeters(11.670)),
+            new Rotation3d(0, Units.degreesToRadians(-10), 0));
     
         public static final List<VisionSource> VISION_SOURCES = List.of(
             new VisionSource("LeftCornerLow", leftCornerLow_RobotToCamera),
