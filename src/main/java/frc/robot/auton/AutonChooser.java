@@ -25,6 +25,7 @@ public class AutonChooser {
         TWO_ELEMENT("2 - cone, cube w/o balance"),
         TWO_ELEMENT_BUMP("2 - cone, cube w/o balance over bump"),
         TWO_ELEMENT_PARK("2 - cone, cube w/ balance"),
+        TWO_ELEMENT_OVER_CHARGE("2 - cone, cube w/o balance over charge"),
         TWO_POINT_FIVE("2.5 - cone, cube w/o balance"),
         TWO_POINT_FIVE_BUMP("2.5 - cone, cube, w/o balance over bump"),
         THREE_ELEMENT("3 - cone, cube, cube w/o balance");

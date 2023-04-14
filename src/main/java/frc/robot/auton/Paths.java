@@ -120,6 +120,11 @@ public class Paths {
 		public static final PathPlannerTrajectory twoPointFiveBumpy = PathPlanner.loadPath("twoPointFiveBumpy", kPPConstraints);
 
 		public static final PathPlannerTrajectory twoPointFiveBumpy2 = PathPlanner.loadPath("twoPointFiveBumpy2", kPPConstraints);
+
+		public static final List<PathPlannerTrajectory> chargeTwo = PathPlanner.loadPathGroup("chargeTwo",
+		kPPConstraints, new PathConstraints(1.0, 1.5));
+		public static final List<PathPlannerTrajectory> chargeTwo2 = PathPlanner.loadPathGroup("chargeTwo2",
+		kPPConstraints, new PathConstraints(1.0, 1.5));
 	}
 
 	public static final class PPAutoscoreClass {

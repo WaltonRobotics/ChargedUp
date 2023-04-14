@@ -237,6 +237,8 @@ public class RobotContainer {
 		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
 		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_METER, AutonFactory.oneMeter(swerve));
+		AutonChooser.AssignAutonCommand(AutonOption.DROP_ONLY, 
+			AutonFactory.coneDrop(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_OUT, 
 			AutonFactory.coneBackOut(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.backPark.getInitialHolonomicPose());
@@ -261,12 +263,18 @@ public class RobotContainer {
 		// AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_BUMP, 
 		// 	AutonFactory.coneOneHalfBumpy(swerve, superstructure, claw, elevator, tilt, wrist),
 		// 	PPPaths.coneOneHalfBumpy.get(0).getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_BUMP, 
+			AutonFactory.onePointFiveBump(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, 
 			AutonFactory.twoElement(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BUMP, 
 			AutonFactory.twoBump(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_OVER_CHARGE, 
+			AutonFactory.chargeTwoElement(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.chargeTwo.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, 
 			AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());
@@ -276,17 +284,12 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_POINT_FIVE, 
 			AutonFactory.twoPointFive(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.THREE_ELEMENT, 
-			AutonFactory.threeElement(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.twoEle.getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.DROP_ONLY, 
-			AutonFactory.coneDrop(swerve, superstructure, claw, elevator, tilt, wrist));
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_BUMP, 
-			AutonFactory.onePointFiveBump(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_POINT_FIVE_BUMP, 
 			AutonFactory.twoPointFiveBump(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.THREE_ELEMENT, 
+			AutonFactory.threeElement(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoEle.getInitialHolonomicPose());
 		
 }
 
