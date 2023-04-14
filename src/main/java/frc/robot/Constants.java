@@ -511,7 +511,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final Color kCubeColor = kPurple;
         public static final Color kConeColor = kYellow;
         public static final Color kBlinkOnColor = kGreen;
-        public static final Color kBlinkOffColor = Color.kPink;
+        public static final Color kBlinkOffColor = Color.kBlack;
 
         // Behaviors
         public static final double kBlinkPeriod = 0.020;
