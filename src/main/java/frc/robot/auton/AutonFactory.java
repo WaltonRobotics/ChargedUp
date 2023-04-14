@@ -648,13 +648,14 @@ public final class AutonFactory {
             Commands.sequence(
                 Commands.waitSeconds(2.6),
                 groundCmd.asProxy(),
-                // Commands.waitSeconds(1),
-                Commands.waitSeconds(3.6),
+                Commands.waitSeconds(1.5),
+                ssResetCmd2.asProxy(),
+                Commands.waitSeconds(.5),
                 cubePlaceCmd.asProxy().withTimeout(1.75)
             )
         ),
         Commands.parallel(
-            ssResetCmd2.asProxy(),
+            ssResetCmd3.asProxy(),
             Commands.waitSeconds(.2).andThen(pathCmd2.asProxy()),
             Commands.sequence(
                 Commands.waitSeconds(2.5),
@@ -677,7 +678,6 @@ public final class AutonFactory {
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
         var groundPickUp2 = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
         var ssResetCmd3 = superstructure.toStateAuton(SuperState.SAFE);
-        var placeCmd2 = superstructure.toStateAuton(SuperState.TOPCONE);
         var ssResetCmd4 = superstructure.toStateAuton(SuperState.SAFE);
         var ssResetCmd5 = superstructure.toStateAuton(SuperState.SAFE);
 
@@ -688,27 +688,27 @@ public final class AutonFactory {
             elev.autoHome().asProxy()
         ).withTimeout(1.5),
 
-        placeCmd.asProxy().withTimeout(1.75),    //to top cone
+        placeCmd.asProxy().withTimeout(1.55),    //to top cone
         releaseCmd.asProxy(),   //release claw
         
         //SAFE
         Commands.parallel(
-            ssResetCmd.asProxy().withTimeout(2.0),
+            ssResetCmd.asProxy().withTimeout(3.0),
             claw.grab().asProxy(),
             // path after place timeout
             Commands.parallel(
                 //path while going to SAFE
                 Commands.sequence(
-                    Commands.waitSeconds(.20), 
+                    Commands.waitSeconds(.1), 
                     pathCmd.asProxy()
                 ),
 
                 Commands.sequence(
                     Commands.waitSeconds(1.5),  //Time before pickup
                     groundPickUp.asProxy(), //PICKUP
-                    Commands.waitSeconds(2.5),  //time before SAFE
-                    // ssResetCmd2.asProxy(), //SAFE
-                    // Commands.waitSeconds(1.0),  //time before cube throw
+                    Commands.waitSeconds(1.5),  //time before SAFE
+                    ssResetCmd2.asProxy(), //SAFE
+                    Commands.waitSeconds(.05),  //time before cube throw
                     cubePlaceCmd.asProxy().withTimeout(1.50)    //cube throw
                 )
             )
@@ -726,10 +726,10 @@ public final class AutonFactory {
 
             Commands.sequence(
                     Commands.waitSeconds(1.5),  //Time before pickup
-                    groundPickUp.asProxy(), //PICKUP
-                    Commands.waitSeconds(2.5),  //time before SAFE
-                    // ssResetCmd2.asProxy(), //SAFE
-                    // Commands.waitSeconds(1),  //time before cube throw
+                    groundPickUp2.asProxy(), //PICKUP
+                    Commands.waitSeconds(1.4),  //time before SAFE
+                    ssResetCmd4.asProxy(), //SAFE
+                    Commands.waitSeconds(.25),  //time before cube throw
                     lowCubePlaceCmd.asProxy().withTimeout(1.5)    //cube throw
                 )
         ),
