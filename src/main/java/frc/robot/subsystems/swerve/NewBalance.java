@@ -69,8 +69,7 @@ public class NewBalance extends SequentialCommandGroup {
             logBalanceState(3),
             Commands.runOnce(swerve::stopWithX),
             logBalanceState(4),
-            led.setBalanced(),
-            logBalanceState(5)
+            led.setBalanced()
         );
     }
 }
