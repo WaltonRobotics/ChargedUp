@@ -212,7 +212,7 @@ public final class Constants {
         public static double kPAutoGoThetaController = 2.75;
         public static double kAutoGoThetaControllerTolerance = .5;
         public static double kAutoGoYControllerTolerance = .01;
-        public static double kPThetaController = 3.05; // 1
+        public static double kPThetaController = 3.15; // 1
         public static final double kDThetaController = 0.5;
         public static final double kFThetaControllerAuto = 0;
         public static final double kFThetaController = 1;
@@ -260,7 +260,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 33.0;
+        public static final double kTopConeAngleDegrees = 34.1;
         public static final double kTopCubeAngleDegrees = 28.0;
         public static final double kMidConeAngleDegrees = 23.5;
         public static final double kMidCubeAngleDegrees = 25.041;
@@ -340,12 +340,12 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSafeHeight = kElevatorHeightOffset; // where wrist is free to move
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41);
-        public static final double kTopCubeHeightM = 0.53;
-        public static final double kTopConeHeightM = 0.68;
+        public static final double kTopCubeHeightM = 0.5;
+        public static final double kTopConeHeightM = 0.6725;
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.30;
         public static final double kBotHeightMeters = 0;
-        public static final double kSubstationHeightM = 0.4349;
+        public static final double kSubstationHeightM = 0.413;
         public static final double kExtendedSubstationHeightM = .485;
 
         public static final double kMaxVelocity = 3.25; // Meters Per Second
