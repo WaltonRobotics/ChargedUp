@@ -70,7 +70,10 @@ public class LEDSubsystem extends SubsystemBase {
         .ignoringDisable(true);
         var cycle = run(() -> {
             if (m_ledStateTimer.advanceIfElapsed(kBlinkPeriod)) {
+                m_rainbowHue += 0.05;
+                if (m_rainbowHue >= 1) m_rainbowHue = 0;
                 Color rainbow = Color.fromHSV((int)(m_rainbowHue * 360), 100, 100);
+                setAllColor(rainbow);
                 for (int i = 0; i < kNumLeds; i++) {
                     m_ledBuffer.setLED(i, rainbow);
                 }
