@@ -514,7 +514,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final Color kBlinkOffColor = Color.kPink;
 
         // Behaviors
-        public static final double kBlinkPeriod = 0.080;
+        public static final double kBlinkPeriod = 0.020;
         public static final double kBlinkCount = 10;
     }
 }
