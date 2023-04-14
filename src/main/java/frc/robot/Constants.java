@@ -206,13 +206,15 @@ public final class Constants {
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 3.5; // 8
-        public static double kPYController = 3.5; 
-        public static double kPAutoGoYController = .75;
-        public static double kPAutoGoThetaController = 7;
-        public static double kPThetaController = 1.665  ; // 1
+        public static double kPXController = 3.0; // 8
+        public static double kPYController = 3.0; 
+        public static double kPAutoGoYController = 3;
+        public static double kPAutoGoThetaController = 1;
+        public static double kAutoGoThetaControllerTolerance = 1;
+        public static double kAutoGoYControllerTolerance = .05;
+        public static double kPThetaController = 1.3; // 1
         public static final double kDThetaController = 0.5;
-        public static final double kFThetaControllerAuto = 0;   
+        public static final double kFThetaControllerAuto = 0;
         public static final double kFThetaController = 1;
 
         public static final double kOffBalanceAngleThresholdDegrees = Math.toRadians(10);
@@ -258,10 +260,10 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 33.5;
+        public static final double kTopConeAngleDegrees = 33.0;
         public static final double kTopCubeAngleDegrees = 28.0;
         public static final double kMidConeAngleDegrees = 23.5;
-        public static final double kMidCubeAngleDegrees = 28.041;
+        public static final double kMidCubeAngleDegrees = 25.041;
         public static final double kMidAngleDegrees = 29.1;
         public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
@@ -341,7 +343,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kTopCubeHeightM = 0.53;
         public static final double kTopConeHeightM = 0.68;
         public static final double kMidConeHeightM = 0.42;
-        public static final double kMidCubeHeightM = 0.35;
+        public static final double kMidCubeHeightM = 0.30;
         public static final double kBotHeightMeters = 0;
         public static final double kSubstationHeightM = 0.4349;
         public static final double kExtendedSubstationHeightM = .485;

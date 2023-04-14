@@ -145,6 +145,7 @@ public class Robot extends TimedRobot {
    
     m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
+    m_robotContainer.swerve.testModules();
     // m_robotContainer.tilt.resetEncoder();
 
 

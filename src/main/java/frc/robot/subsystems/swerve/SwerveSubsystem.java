@@ -136,7 +136,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		autoGoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		// autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
+		autoGoThetaController.setTolerance(kAutoGoThetaControllerTolerance);
 		// thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
+		autoGoYController.setTolerance(kAutoGoYControllerTolerance);
 
 		m_state.update(getPose(), getModuleStates(), m_field);
 		// m_apriltagHelper.updateField2d(m_field);
@@ -223,6 +225,21 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		setChassisSpeeds(targetChassisSpeeds, openLoop, false);
 		return thetaController.atGoal();
+	}
+
+	public void autoAlignDrive(double vxMeters, double vyMeters, Rotation2d targetRotation, boolean openLoop) {
+		// rotation speed
+		double rotationRadians = getPose().getRotation().getRadians();
+		double pidOutput = autoGoThetaController.calculate(rotationRadians, targetRotation.getRadians());
+
+		// + translation speed
+		ChassisSpeeds targetChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+				vxMeters,
+				vyMeters,
+				pidOutput,
+				getHeading());
+
+		setChassisSpeeds(targetChassisSpeeds, openLoop, false);
 	}
 
 	public void gyroBasedDrive(double vxMeters, double vyMeters, Rotation2d targetRot) {
@@ -367,10 +384,9 @@ public class SwerveSubsystem extends SubsystemBase {
 	 */
 	public void testModules() {
 		for (var module : m_modules) {
-			module.setOdoTestMode(true);
+			module.setOdoTestMode(false);
 		}
 	}
-
 	/*
 	 * Set relative drive encoders to 0
 	 */
