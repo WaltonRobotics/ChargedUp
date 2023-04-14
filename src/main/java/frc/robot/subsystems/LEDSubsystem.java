@@ -61,19 +61,30 @@ public class LEDSubsystem extends SubsystemBase {
         m_leds.setData(m_ledBuffer);
     }
 
-    public CommandBase setBalanced(){
-        return runOnce(()->{
-            m_rainbowHue += 0.05;
-            if (m_rainbowHue >= 1) m_rainbowHue = 0;
-
-            Color rainbow = Color.fromHSV((int)(m_rainbowHue * 360), 100, 100);
-            setAllColor(rainbow);
+    public CommandBase setBalanced() {
+        var init = runOnce(() -> {
+            m_ledStateTimer.restart();
+            m_blinkState = true;
+            m_blinkCount = 0;
+        })
+        .ignoringDisable(true);
+        var cycle = run(() -> {
+            if (m_ledStateTimer.advanceIfElapsed(kBlinkPeriod)) {
+                Color rainbow = Color.fromHSV((int)(m_rainbowHue * 360), 100, 100);
+                for (int i = 0; i < kNumLeds; i++) {
+                    m_ledBuffer.setLED(i, rainbow);
+                }
+                m_leds.setData(m_ledBuffer);
+                m_blinkCount++;
+                m_blinkState = !m_blinkState;
+            }
         })
         .ignoringDisable(true)
-        .andThen(Commands.waitSeconds(0.125))
-        .repeatedly();
-    }
+        .until(() -> m_blinkCount >= kBlinkCount * 2);
 
+        return init.andThen(cycle)
+        .ignoringDisable(true);
+    }
 
     public CommandBase setCube() {
         return run(() ->  { 
