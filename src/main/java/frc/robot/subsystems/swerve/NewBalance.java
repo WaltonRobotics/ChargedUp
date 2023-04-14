@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
 
+import frc.robot.subsystems.LEDSubsystem;
+
 public class NewBalance extends SequentialCommandGroup {
 
     private CommandBase logBalanceState(double state) {
@@ -24,7 +26,7 @@ public class NewBalance extends SequentialCommandGroup {
     private final DoubleLogger log_balState = WaltLogger.logDouble("Command", "BalanceState");
 
 
-    public NewBalance(SwerveSubsystem swerve) {
+    public NewBalance(SwerveSubsystem swerve, LEDSubsystem led) {
         // DoubleSupplier thetaSupplier = () -> swerve.autoThetaController.calculate(swerve.getGyroYaw(), 0);
         CommandBase oneHopThisTime =
             Commands.run(
@@ -66,8 +68,9 @@ public class NewBalance extends SequentialCommandGroup {
 			slideToTheFront,
             logBalanceState(3),
             Commands.runOnce(swerve::stopWithX),
-            logBalanceState(4)
-            //TODO: LEDS
+            logBalanceState(4),
+            led.setBalanced(),
+            logBalanceState(5)
         );
     }
 }

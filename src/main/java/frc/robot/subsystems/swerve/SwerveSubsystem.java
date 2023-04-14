@@ -10,6 +10,8 @@ import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.util.Flipper;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.LEDSubsystem;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -63,7 +65,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
-
+	
 	protected final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController autoGoYController = new PIDController(kPAutoGoThetaController, 0, 0);
@@ -452,7 +454,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 	public Command nowItsTimeToGetFunky() {
-		return new NewBalance(this);
+		return new NewBalance(this, RobotContainer.leds);
 	}
 
 	// public CommandBase autoScore(Pose2d endPose) {
