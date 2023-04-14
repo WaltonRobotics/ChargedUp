@@ -26,7 +26,7 @@ public class NewBalance extends SequentialCommandGroup {
     private final DoubleLogger log_balState = WaltLogger.logDouble("Command", "BalanceState");
 
 
-    public NewBalance(SwerveSubsystem swerve, LEDSubsystem led) {
+    public NewBalance(SwerveSubsystem swerve) {
         // DoubleSupplier thetaSupplier = () -> swerve.autoThetaController.calculate(swerve.getGyroYaw(), 0);
         CommandBase oneHopThisTime =
             Commands.run(
@@ -67,7 +67,8 @@ public class NewBalance extends SequentialCommandGroup {
             logBalanceState(2),
 			slideToTheFront,
             logBalanceState(3),
-            Commands.runOnce(swerve::stopWithX)
+            Commands.runOnce(swerve::stopWithX),
+            logBalanceState(4)
         );
     }
 }

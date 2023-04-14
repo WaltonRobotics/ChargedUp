@@ -455,7 +455,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 	public Command nowItsTimeToGetFunky() {
-		return new NewBalance(this, RobotContainer.leds);
+		return new NewBalance(this);
 	}
 
 	// public CommandBase autoScore(Pose2d endPose) {

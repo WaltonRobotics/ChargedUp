@@ -194,7 +194,8 @@ public final class AutonFactory {
     public static CommandBase cubeOneHalfPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
         ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
         var cubePlaceCmd = superstructure.cubeTossTop(claw, true);
-        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+        var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE);
+        var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
         var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.cubeOneHalf);
         var groundPickUp = superstructure.toStateAuton(SuperState.GROUND_PICK_UP);
 
@@ -206,11 +207,13 @@ public final class AutonFactory {
 
             cubePlaceCmd.asProxy().withTimeout(1.55),
             ssResetCmd.asProxy().withTimeout(1.35),
-            Commands.deadline(
+            Commands.parallel(
                 pathCmd.asProxy(),
                 Commands.sequence(
                     Commands.waitSeconds(4.00),
-                    groundPickUp.asProxy()
+                    groundPickUp.asProxy(),
+                    Commands.waitSeconds(1.1),
+                    ssResetCmd2.asProxy()
                 )
             ),
             swerve.nowItsTimeToGetFunky().asProxy()
@@ -648,10 +651,10 @@ public final class AutonFactory {
             Commands.sequence(
                 Commands.waitSeconds(2.6),
                 groundCmd.asProxy(),
-                Commands.waitSeconds(1.5),
+                Commands.waitSeconds(1.4),
                 ssResetCmd2.asProxy(),
-                Commands.waitSeconds(.5),
-                cubePlaceCmd.asProxy().withTimeout(1.75)
+                Commands.waitSeconds(.25),
+                cubePlaceCmd.asProxy().withTimeout(1.55)
             )
         ),
         Commands.parallel(
@@ -729,7 +732,7 @@ public final class AutonFactory {
                     groundPickUp2.asProxy(), //PICKUP
                     Commands.waitSeconds(1.4),  //time before SAFE
                     ssResetCmd4.asProxy(), //SAFE
-                    Commands.waitSeconds(.25),  //time before cube throw
+                    Commands.waitSeconds(.5),  //time before cube throw
                     lowCubePlaceCmd.asProxy().withTimeout(1.5)    //cube throw
                 )
         ),
