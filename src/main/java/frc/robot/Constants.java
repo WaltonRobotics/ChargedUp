@@ -98,8 +98,8 @@ public final class Constants {
         public static final double kAnglePeakCurrentDuration = 0.1;
         public static final boolean kAngleEnableCurrentLimit = true;
 
-        public static final int kDriveContinuousCurrentLimit = 35;
-        public static final int kDrivePeakCurrentLimit = 60;
+        public static final int kDriveContinuousCurrentLimit = 40;
+        public static final int kDrivePeakCurrentLimit = 70;
         public static final double kDrivePeakCurrentDuration = 0.1;
         public static final boolean kDriveEnableCurrentLimit = true;
 
@@ -206,13 +206,13 @@ public final class Constants {
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 3.0; // 8
-        public static double kPYController = 3.0; 
-        public static double kPAutoGoYController = 3;
-        public static double kPAutoGoThetaController = 1;
-        public static double kAutoGoThetaControllerTolerance = 1;
-        public static double kAutoGoYControllerTolerance = .05;
-        public static double kPThetaController = 1.3; // 1
+        public static double kPXController = 3.25; // 8
+        public static double kPYController = 3.25; 
+        public static double kPAutoGoYController = 3.25;
+        public static double kPAutoGoThetaController = 2.75;
+        public static double kAutoGoThetaControllerTolerance = .5;
+        public static double kAutoGoYControllerTolerance = .01;
+        public static double kPThetaController = 3.05; // 1
         public static final double kDThetaController = 0.5;
         public static final double kFThetaControllerAuto = 0;
         public static final double kFThetaController = 1;
@@ -348,7 +348,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kSubstationHeightM = 0.4349;
         public static final double kExtendedSubstationHeightM = .485;
 
-        public static final double kMaxVelocity = 2.75; // Meters Per Second
+        public static final double kMaxVelocity = 3.25; // Meters Per Second
         public static final double kMaxAcceleration = 2.75; // Meters Per Second Squared
         public static final double kMaxAccelerationDown = 2.6;
 

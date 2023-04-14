@@ -76,6 +76,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
 	protected final SwerveAutoBuilder autoBuilder;
 	private double teleOpGyroZero = 0;
+	public boolean addVision = true;
 	
 
 	private final Timer m_cancoderReseedTimer = new Timer();
@@ -492,6 +493,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public CommandBase autoAlign(DoubleSupplier translation, Pose2d endPose) {
 		var follow = run(() -> {
+			addVision = false;
 			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
@@ -504,10 +506,14 @@ public class SwerveSubsystem extends SubsystemBase {
 			System.out.println("going to " + endPose.toString());
 			
 			if (Flipper.shouldFlip()) {
-				drive(translationVal, yRate, new Rotation2d(0), false);
+				drive(translationVal, yRate, actualEndPose.getRotation(), false);
 			} else {
-				drive(translationVal, -yRate, new Rotation2d(0), false);
+				drive(translationVal, -yRate, actualEndPose.getRotation(), false);
 			}
+		})
+		.until(()-> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint())
+		.finallyDo((intr)->{
+			addVision = true;
 		});
 
 		return follow;
@@ -681,7 +687,9 @@ public class SwerveSubsystem extends SubsystemBase {
 		for (var module : m_modules) {
 			module.periodic();
 		}
-		updateVision();
+		if(addVision){
+			updateVision();
+		}
 		updateOdo();
 
 
