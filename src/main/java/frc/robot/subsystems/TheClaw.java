@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.networktables.GenericEntry;
+// import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -130,7 +130,6 @@ public class TheClaw extends SubsystemBase {
 		);
 		substationStateAutoGrabTrig
 		.and(sensorAutonDebounceTrig)
-		// .and(timeOfFlightTrig)
 		.and(substationDelayTrig)
 		.and(closedTrig.negate())
 		.onTrue(
@@ -139,7 +138,6 @@ public class TheClaw extends SubsystemBase {
 		);
 		
 
-		// setDefaultCommand(autoGrab());
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] ClawSubsystem Init End: " + subsysInitElapsed + "s");
 	}
@@ -202,23 +200,23 @@ public class TheClaw extends SubsystemBase {
 	}
 
 	public CommandBase retractExtra() {
-		var rightRetract = new InstantCommand(() -> m_rightExtend.setPosition(kRetractIn));
-		var leftRetract = new InstantCommand(() -> m_leftExtend.setPosition(kRetractIn));
+		var rightRetract = new InstantCommand(() -> m_rightExtend.setSpeed(-1));
+		var leftRetract = new InstantCommand(() -> m_leftExtend.setSpeed(1));
 
 		return Commands.parallel(
 			rightRetract,
 			leftRetract
-		);
+		).withTimeout(1.0);
 	}
 
 	public CommandBase extendExtra() {
-		var rightExtend = new InstantCommand(() -> m_rightExtend.setPosition(kExtendOut));
-		var leftExtend = new InstantCommand(() -> m_leftExtend.setPosition(kExtendOut));
+		var rightExtend = new InstantCommand(() -> m_rightExtend.setSpeed(1));
+		var leftExtend = new InstantCommand(() -> m_leftExtend.setSpeed(-1));
 
 		return Commands.parallel(
 			rightExtend,
 			leftExtend
-		);
+		).withTimeout(1.0);
 	}
 
 	public enum ClawState{
