@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
-
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.LEDSubsystem;
 
 public class NewBalance extends SequentialCommandGroup {
@@ -68,7 +68,8 @@ public class NewBalance extends SequentialCommandGroup {
 			slideToTheFront,
             logBalanceState(3),
             Commands.runOnce(swerve::stopWithX),
-            logBalanceState(4)
+            logBalanceState(4),
+            RobotContainer.leds.setBalanced()
         );
     }
 }

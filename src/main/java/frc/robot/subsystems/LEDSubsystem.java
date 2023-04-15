@@ -21,7 +21,7 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean m_blinkState = false;
     private int m_blinkCount = 0;
     public boolean isCone = false;
-    private double m_rainbowHue = 0.0;
+    private int m_rainbowHue = 0;
 
     public LEDSubsystem() {
         double subsysInitBegin = Timer.getFPGATimestamp();
@@ -62,31 +62,20 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public CommandBase setBalanced() {
-        var init = runOnce(() -> {
-            m_ledStateTimer.restart();
-            m_blinkState = true;
-            m_blinkCount = 0;
-        })
-        .ignoringDisable(true);
-        var cycle = run(() -> {
-            if (m_ledStateTimer.advanceIfElapsed(kBlinkPeriod)) {
-                m_rainbowHue += 0.05;
-                if (m_rainbowHue >= 1) m_rainbowHue = 0;
-                Color rainbow = Color.fromHSV((int)(m_rainbowHue * 360), 100, 100);
-                setAllColor(rainbow);
-                for (int i = 0; i < kNumLeds; i++) {
-                    m_ledBuffer.setLED(i, rainbow);
-                }
-                m_leds.setData(m_ledBuffer);
-                m_blinkCount++;
-                m_blinkState = !m_blinkState;
+        return runOnce( () -> {
+            for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+            // Calculate the hue - hue is easier for rainbows because the color
+            // shape is a circle so only one value needs to precess
+            final var hue = (m_rainbowHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+            // Set the value
+            m_ledBuffer.setHSV(i, hue, 255, 128);
             }
-        })
-        .ignoringDisable(true)
-        .until(() -> m_blinkCount >= kBlinkCount * 2);
-
-        return init.andThen(cycle)
-        .ignoringDisable(true);
+            // Increase by to make the rainbow "move"
+            m_rainbowHue += 3;
+            // Check bounds
+            m_rainbowHue %= 180;
+        }
+    );
     }
 
     public CommandBase setCube() {
