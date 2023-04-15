@@ -211,6 +211,12 @@ public class RobotContainer {
 		
 		manipulator.b().onTrue(
 			superstructure.toStateTeleop(SuperState.EXTENDED_GROUND_PICK_UP));
+		
+		// manipulator.b().onTrue(
+		// 	claw.extendFlaps(false));
+
+		// manipulator.a().onTrue(
+		// 	claw.extendFlaps(true));
 
 		manipulator.povDown().onTrue(
 			superstructure.toStateTeleop(SuperState.GROUND_SCORE));
@@ -220,7 +226,6 @@ public class RobotContainer {
 
 		manipulator.leftBumper().onTrue(
 			superstructure.toStateTeleop(SuperState.SAFE).alongWith(claw.grab()));
-		manipulator.rightBumper().toggleOnTrue(Commands.startEnd(claw::extendExtra, claw::retractExtra, claw));
 
 	}
 

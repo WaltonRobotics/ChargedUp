@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.filter.Debouncer;
-// import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -11,11 +10,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.logging.WaltLogger;
-import frc.lib.logging.WaltLogger.DoubleLogger;
 import static frc.robot.Constants.TheClawK.*;
 
 import java.util.function.BooleanSupplier;
@@ -38,8 +34,8 @@ public class TheClaw extends SubsystemBase {
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
 
-	private final Servo m_leftExtend = new Servo(kLeftServo);
-	private final Servo m_rightExtend = new Servo(kRightServo);
+	private final Servo m_leftFlap = new Servo(kLeftServo);
+	private final Servo m_rightFlap = new Servo(kRightServo);
 	
 	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
@@ -51,9 +47,6 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger wristAngleTrig;
 
-	private final DoubleLogger log_leftExAngle = WaltLogger.logDouble(DB_TAB_NAME, "left extension angle");
-	private final DoubleLogger log_rightExAngle = WaltLogger.logDouble(DB_TAB_NAME, "right extension angle");
-
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] ClawSubsystem Init Begin");
@@ -63,6 +56,9 @@ public class TheClaw extends SubsystemBase {
 		m_substationDelayTimer.restart();
 		wristAngleTrig = new Trigger(() -> m_wristDegSupplier.get().doubleValue() <= 50);
 
+
+		// m_rightFlap.setBounds(2.5, 1.5, 1.5, 1.5, 0.5);
+		// m_leftFlap.setBounds(2.5, 1.5, 1.5, 1.5, 0.5);
 
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
 		extendedStateAutoGrabTrig = new Trigger(()-> m_autoStateSupplier.get() == ClawState.EXTENDEDAUTO);
@@ -97,7 +93,7 @@ public class TheClaw extends SubsystemBase {
 
 		extendedStateAutoGrabTrig.onTrue(
 			release()
-			.alongWith(extendExtra())
+			.alongWith(extendFlaps(true).withTimeout(1))
 			.andThen(runOnce(() -> m_grabOk = false)));
 			
 		stateAutoGrabTrig
@@ -105,7 +101,7 @@ public class TheClaw extends SubsystemBase {
 		.and(sensorCheckValidTrig)
 			.onTrue(
 				Commands.runOnce(() -> m_grabOk = true)
-				.andThen(grab().alongWith(retractExtra())).withName("internalExtendedAutoGrab")
+				.andThen(grab().alongWith(extendFlaps(false))).withName("internalExtendedAutoGrab")
 		);
 
 		
@@ -164,25 +160,16 @@ public class TheClaw extends SubsystemBase {
 		return m_grabOk;
 	}
 
-	public CommandBase retractExtra() {
-		var rightRetract = new InstantCommand(() -> m_rightExtend.setSpeed(-1));
-		var leftRetract = new InstantCommand(() -> m_leftExtend.setSpeed(1));
-
-		return Commands.parallel(
-			rightRetract,
-			leftRetract
-		).withTimeout(1.0);
+	public CommandBase extendFlaps(boolean extend) {
+		return Commands.startEnd(() -> {
+			m_rightFlap.setPosition(extend ? 1 : 0);
+			m_leftFlap.setPosition(extend ? 0 : 1);
+		}, () -> {
+			m_rightFlap.setPosition(0.5);
+			m_leftFlap.setPosition(0.5);
+		}).withTimeout(.8);
 	}
 
-	public CommandBase extendExtra() {
-		var rightExtend = new InstantCommand(() -> m_rightExtend.setSpeed(1));
-		var leftExtend = new InstantCommand(() -> m_leftExtend.setSpeed(-1));
-
-		return Commands.parallel(
-			rightExtend,
-			leftExtend
-		).withTimeout(1.0);
-	}
 
 	public enum ClawState{
 		IGNORE, 
@@ -196,7 +183,5 @@ public class TheClaw extends SubsystemBase {
 	@Override
 	public void periodic() {
 		SmartDashboard.putBoolean("CLAW EYE", sensorTrig.getAsBoolean());
-		log_leftExAngle.accept(m_leftExtend.getPosition());
-		log_rightExAngle.accept(m_rightExtend.getPosition());
 	}
 }
