@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TheClawK.*;
 
@@ -56,6 +58,9 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger wristAngleTrig;
+
+	private final DoubleLogger log_leftExAngle = WaltLogger.logDouble(DB_TAB_NAME, "left extension angle");
+	private final DoubleLogger log_rightExAngle = WaltLogger.logDouble(DB_TAB_NAME, "right extension angle");
 
 	public TheClaw(Supplier<ClawState> autoStateSupplier, Supplier<Double> wristDegSupplier) {
 		double subsysInitBegin = Timer.getFPGATimestamp();
@@ -233,5 +238,7 @@ public class TheClaw extends SubsystemBase {
 		// nte_withinRange.setBoolean(withinRange());
 		// nte_range.setDouble(timeOfFlight.getRange());
 		SmartDashboard.putBoolean("CLAW EYE", sensorTrig.getAsBoolean());
+		log_leftExAngle.accept(m_leftExtend.getPosition());
+		log_rightExAngle.accept(m_rightExtend.getPosition());
 	}
 }
