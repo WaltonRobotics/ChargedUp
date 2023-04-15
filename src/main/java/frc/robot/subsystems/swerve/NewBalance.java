@@ -1,6 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -8,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.LEDSubsystem;
 
 public class NewBalance extends SequentialCommandGroup {
 
@@ -27,7 +25,6 @@ public class NewBalance extends SequentialCommandGroup {
 
 
     public NewBalance(SwerveSubsystem swerve) {
-        // DoubleSupplier thetaSupplier = () -> swerve.autoThetaController.calculate(swerve.getGyroYaw(), 0);
         CommandBase oneHopThisTime =
             Commands.run(
                 ()-> swerve.drive(3.25, 0, 0, false, false), swerve)
@@ -36,7 +33,7 @@ public class NewBalance extends SequentialCommandGroup {
             m_climbingSign = Math.signum(swerve.getGyroPitch());
         });
 		
-		CommandBase slideToTheFront = Commands.run(()-> { // or slide to the back?
+		CommandBase slideToTheFront = Commands.run(()-> {
                 swerve.drive(0.5, 0,0, false, false);
         }, swerve)
         .until(() -> {
@@ -54,9 +51,6 @@ public class NewBalance extends SequentialCommandGroup {
 
             return false;
         });
-		
-		// var takeItBackNowYall = Commands.run(()-> swerve.drive(-0.6, 0, 0, false, false), swerve)
-		// .withTimeout(1.175);
 
         addCommands(
             logBalanceState(1),

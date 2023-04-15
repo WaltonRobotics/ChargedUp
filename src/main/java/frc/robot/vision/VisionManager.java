@@ -59,7 +59,6 @@ public class VisionManager {
 
     private AprilTagFieldLayout fieldLayout;
     private ConcurrentLinkedQueue<VisionMeasurement> visionMeasurements = new ConcurrentLinkedQueue<>();
-    private double lastDetection = 0;
 
     public VisionManager() {
         double classInitBegin = Timer.getFPGATimestamp();
@@ -152,15 +151,6 @@ public class VisionManager {
                           VisionK.TAG_COUNT_DEVIATION_PARAMS.size() - 1))
                   .computeDeviation(avgDistance);
     
-          // System.out.println(
-          //     String.format(
-          //         "with %d tags at smallest distance %f and pose ambiguity factor %f, confidence
-          // multiplier %f",
-          //         estimation.targetsUsed.size(),
-          //         smallestDistance,
-          //         poseAmbiguityFactor,
-          //         confidenceMultiplier));
-          lastDetection = estimation.timestampSeconds;
           logMeasurement(
               estimation.targetsUsed.size(),
               avgDistance,

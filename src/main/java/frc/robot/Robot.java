@@ -7,15 +7,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.util.Flipper;
 import frc.robot.auton.AutonChooser;
 import frc.robot.auton.AutonChooser.AutonOption;
-import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
-import frc.robot.subsystems.superstructure.Superstructure;
 
 public class Robot extends TimedRobot {
 
@@ -45,7 +42,6 @@ public class Robot extends TimedRobot {
     double initBegin = Timer.getFPGATimestamp();
     System.out.println("[INIT] Robot Init Begin");
     m_modResetTimer.restart();
-    // CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320, 240, 120);
     if (DriverStation.isFMSAttached()) {
       Constants.kDebugLoggingEnabled = false;
     }
@@ -59,12 +55,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
-    // SmartDashboard.putNumber("Tilt FFEffort", )
-
-    // if(FMSCacher.getCachedFMSAttached()) {
-    //   NetworkTableInstance.getDefault().flush();
-    // }
   }
 
   @Override
@@ -73,9 +63,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if (m_modResetTimer.advanceIfElapsed(1)) {
-      // m_robotContainer.swerve.resetToAbsolute();
-    }
   }
 
   @Override
@@ -142,7 +129,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
     m_robotContainer.swerve.testModules();
-    // m_robotContainer.tilt.resetEncoder();
 
 
   }

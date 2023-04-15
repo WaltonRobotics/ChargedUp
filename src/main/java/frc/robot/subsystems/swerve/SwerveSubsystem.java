@@ -2,7 +2,6 @@ package frc.robot.subsystems.swerve;
 
 import frc.robot.SwerveModule;
 import frc.robot.Constants.VisionK;
-import frc.robot.auton.Paths;
 import frc.robot.vision.VisionManager;
 import frc.robot.vision.VisionManager.VisionMeasurement;
 import frc.lib.logging.WaltLogger;
@@ -10,8 +9,6 @@ import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.lib.swerve.SwerveDriveState;
 import frc.lib.util.Flipper;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.LEDSubsystem;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -24,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.*;
@@ -42,9 +38,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -104,8 +98,6 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final DoubleLogger log_autoYVelo = WaltLogger.logDouble(DB_TAB_NAME, "AutoYVelo");
 	private final DoubleLogger log_autoXPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoXPos");
 	private final DoubleLogger log_autoYPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoYPos");
-	private final DoubleLogger log_autoXDesiredVelo = WaltLogger.logDouble(DB_TAB_NAME, "AutoXDesiredVelo");
-	private final DoubleLogger log_autoYDesiredVelo = WaltLogger.logDouble(DB_TAB_NAME, "AutoYDesiredVelo");
 	private final DoubleLogger log_autoXDesiredPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoXDesiredPos");
 	private final DoubleLogger log_autoYDesiredPos = WaltLogger.logDouble(DB_TAB_NAME, "AutoYDesiredPos");
 	private final DoubleLogger log_autoTheta = WaltLogger.logDouble(DB_TAB_NAME, "AutoThetaDesired");
@@ -127,24 +119,18 @@ public class SwerveSubsystem extends SubsystemBase {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] SwerveSubsystem Init Begin");
 		m_visionManager = visionManager;
-		// DashboardManager.addTab(this);
 		m_pigeon.configFactoryDefault();
 		m_pigeon.zeroGyroBiasNow();
-		// zeroGyro();
-
 		Timer.delay(.250);
 		resetToAbsolute();
 
 		autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 		autoGoThetaController.enableContinuousInput(-Math.PI, Math.PI);
-		// autoThetaController.setTolerance(Rotation2d.fromDegrees(0.75).getRadians());
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		autoGoThetaController.setTolerance(kAutoGoThetaControllerTolerance);
-		// thetaController.setTolerance(Rotation2d.fromDegrees(1).getRadians());
 		autoGoYController.setTolerance(kAutoGoYControllerTolerance);
 
 		m_state.update(getPose(), getModuleStates(), m_field);
-		// m_apriltagHelper.updateField2d(m_field);
 		SmartDashboard.putData("Field2d", m_field);
 
 		autoBuilder = new SwerveAutoBuilder(
@@ -158,11 +144,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				autoEventMap,
 				false,
 				this);
-
-		// DashboardManager.addTabSendable(this, "XCtrl", xController);
-		// DashboardManager.addTabSendable(this, "YCtrl", yController);
-		// DashboardManager.addTabSendable(this, "AutoThetaCtrl", autoThetaController);
-
+		
 		m_cancoderReseedTimer.restart();
 		m_lastMotionStoppedTimer.restart();
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
@@ -441,19 +423,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		return runOnce(this::zeroGyro);
 	}
 
-	public CommandBase chasePoseCmd(Supplier<Pose2d> targetSupplier) {
-        return new PPChasePoseCommand(
-            targetSupplier,
-            this::getPose,
-            xController,
-			yController,
-			autoThetaController,
-            (chassisSpeeds) -> setChassisSpeeds(chassisSpeeds, false, false),
-            (PathPlannerTrajectory traj) -> {},
-            (startPose, endPose) -> Paths.generateTrajectoryToPose(startPose, endPose, getFieldRelativeLinearSpeedsMPS()),
-            this);
-    }
-
 	public Command nowItsTimeToGetFunky() {
 		return new NewBalance(this);
 	}
@@ -709,8 +678,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		var chassisSpeeds = getChassisSpeeds();
 		log_autoXVelo.accept(chassisSpeeds.vxMetersPerSecond);
 		log_autoYVelo.accept(chassisSpeeds.vyMetersPerSecond);
-		// log_autoXDesiredVelo.accept();
-		// log_autoYDesiredVelo.accept(yController);
 		var pose = getPose();
 		log_autoXPos.accept(pose.getX());
 		log_autoYPos.accept(pose.getY());

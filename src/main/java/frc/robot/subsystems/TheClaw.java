@@ -12,15 +12,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
-import frc.lib.util.DashboardManager;
 import static frc.robot.Constants.TheClawK.*;
 
-import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -28,11 +25,6 @@ import java.util.function.Supplier;
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
 	private final DigitalInput clawSensor = new DigitalInput(kClawSensor);
-	// private final GenericEntry nte_isClosed = DashboardManager.addTabBooleanBox(this, "Is Closed");
-	// private final GenericEntry nte_clawSensor = DashboardManager.addTabBooleanBox(this, "Claw Sensor");
-	// private final GenericEntry nte_superstate = DashboardManager.addTabItem(this, "ClawSuperState", "UNK");
-	// private final GenericEntry nte_withinRange = DashboardManager.addTabBooleanBox(this, "within range");
-	// private final GenericEntry nte_range = DashboardManager.addTabNumberBar(this, "time of flight range", 0, 1300);
 
 	private final Supplier<ClawState> m_autoStateSupplier;
 	private final Supplier<Double> m_wristDegSupplier;
@@ -66,7 +58,6 @@ public class TheClaw extends SubsystemBase {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] ClawSubsystem Init Begin");
 		m_autoStateSupplier = autoStateSupplier;
-		// DashboardManager.addTab(this);
 		m_lastActuationTimer.restart();
 		m_wristDegSupplier = wristDegSupplier;
 		m_substationDelayTimer.restart();
@@ -149,32 +140,6 @@ public class TheClaw extends SubsystemBase {
 		m_isClosed = closed;
 	}
 
-	// private boolean withinRange() {
-	// 	return timeOfFlight.getRange() <= 177.8;
-	// }
-
-	public CommandBase autoGrab() {
-		return Commands.none();
-		// return run(()-> {
-		// 	if(m_autoStateSupplier.get() == ClawState.AUTO){
-		// 		setClosed(false);
-		// 	}
-
-		// 	m_grabOk = false;
-		// 	if (!m_isClosed && m_lastCloseTimer.hasElapsed(0.5)) {
-		// 		if (sensorTrig.getAsBoolean()){
-		// 			setClosed(true);
-		// 		}
-		// 	}
-		// })
-		// .until(() -> m_isClosed)
-		// .andThen(() -> {
-		// 	m_grabOk = true;
-		// })
-		// .repeatedly()
-		// .withName("DefaultAutoGrab");
-	}
-
 	/*
 	 * @return Cmd to release claw
 	 */
@@ -230,11 +195,6 @@ public class TheClaw extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// nte_isClosed.setBoolean(m_isClosed);
-		// nte_clawSensor.setBoolean(sensorTrig.getAsBoolean());
-		// nte_superstate.setString(m_autoStateSupplier.get().toString());
-		// nte_withinRange.setBoolean(withinRange());
-		// nte_range.setDouble(timeOfFlight.getRange());
 		SmartDashboard.putBoolean("CLAW EYE", sensorTrig.getAsBoolean());
 		log_leftExAngle.accept(m_leftExtend.getPosition());
 		log_rightExAngle.accept(m_rightExtend.getPosition());

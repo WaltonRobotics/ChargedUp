@@ -1,5 +1,4 @@
 package frc.robot.subsystems.superstructure;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.logging.WaltLogger;
@@ -13,10 +12,8 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import static frc.robot.Constants.WristK.*;
 
 import java.util.function.BooleanSupplier;
-import static frc.robot.Constants.ElevatorK.*;
 
 public class Superstructure {
 	protected final TiltSubsystem m_tilt;
@@ -36,7 +33,6 @@ public class Superstructure {
 		m_tilt = tilt;
 		m_elevator = elevator;
 		m_wrist = wrist;
-		// m_claw = claw;
 		m_leds = leds;
 
 		log_autoState.accept(-1.0);

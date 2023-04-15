@@ -55,7 +55,6 @@ public class LEDSubsystem extends SubsystemBase {
                 col = (m_chaseUp) ? kRed : kBlue; // "chase" effect
             }
             m_ledBuffer.setLED(i, col);
-            // LedUtils.setPixel(m_ledBuffer, ledIdx, col);
         }
         m_chaseUp = !m_chaseUp;
         m_leds.setData(m_ledBuffer);

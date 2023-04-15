@@ -17,11 +17,8 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -51,11 +48,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private double m_dynamicLowLimit = kMinHeightMeters;
 	private double m_pdEffort = 0;
 	private double m_ffEffort = 0;
-	private double m_totalEffort = 0;
 
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
-	// private boolean m_isCoast = false;
 
 	private final DoubleLogger
 		log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight, 
@@ -63,25 +58,20 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_holdPdEffort, log_holdFfEffort;
 	private final BooleanLogger log_atLowerLimit;
 
-	private final GenericEntry nte_coast;
-
 	public ElevatorSubsystem() {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] ElevatorSubsystem Init Begin");
-		// DashboardManager.addTab(this);
 		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
-		//m_right.enableVoltageCompensation(true);
 
 		m_right.setNeutralMode(NeutralMode.Brake);
 		m_left.setNeutralMode(NeutralMode.Brake);
 
 		m_left.follow(m_right);
 		m_left.setInverted(TalonFXInvertType.OpposeMaster);
-		// m_controller.setTolerance(.05);
 
 		m_right.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
 		m_right.configVelocityMeasurementWindow(16);
@@ -98,11 +88,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_holdPdEffort = WaltLogger.logDouble(DB_TAB_NAME, "HoldPEffort");
 		log_holdFfEffort = WaltLogger.logDouble(DB_TAB_NAME, "HoldFFEffort");
 		log_atLowerLimit = WaltLogger.logBoolean(DB_TAB_NAME, "AtLowerLimit");
-
-		nte_coast = Shuffleboard.getTab(DB_TAB_NAME)
-					.add("elevator coast", false)
-					.withWidget(BuiltInWidgets.kToggleSwitch)
-					.getEntry();
 
 		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
 			m_right.setSelectedSensorPosition(0);
@@ -327,10 +312,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateShuffleBoard();
-		// setCoast(nte_coast.getBoolean(false));
 		log_holdPdEffort.accept(m_holdPdEffort);
 		log_holdFfEffort.accept(m_holdFfEffort);
-		// setCoast(m_isCoast);
 	}
 
 	/*
@@ -344,11 +327,5 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_actualVelo.accept(getActualVelocityMps());
 		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
 		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
-		// m_isCoast = SmartDashboard.setDefaultBoolean("coast", false);
-		// if (kDebugLoggingEnabled) {
-		// 	m_dashboardCoastTrigger
-		// 		.onTrue(setCoast(true))
-		// 		.onFalse(setCoast(false));
-		// }
 	}
 }

@@ -18,8 +18,8 @@ import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.VisionManager;
 import frc.robot.auton.AutonChooser.AutonOption;
 import frc.robot.auton.Paths.PPPaths;
-import frc.robot.auton.Paths.ReferencePoints.ScoringPointsBlue;
-import frc.robot.auton.Paths.ReferencePoints.ScoringPointsRed;
+// import frc.robot.auton.Paths.ReferencePoints.ScoringPointsBlue;
+// import frc.robot.auton.Paths.ReferencePoints.ScoringPointsRed;
 import frc.robot.auton.Paths.ReferencePoints.ShiftedScoringPointsBlue;
 import frc.robot.auton.Paths.ReferencePoints.ShiftedScoringPointsRed;
 
@@ -58,8 +58,6 @@ public class RobotContainer {
 	public RobotContainer() {
 		mapAutonCommands();
 		mapAutonEvents();
-		// addPathChoices();
-		// addAprilTagChoices();
 		swerve.setDefaultCommand(
 			swerve.teleopDriveCmd(
 				() -> driver.getLeftY(),
@@ -73,7 +71,6 @@ public class RobotContainer {
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));
 
-		// DashboardManager.addTab("TeleSwerve");
 		configureButtonBindings();
 
 		// LED triggering
@@ -225,13 +222,6 @@ public class RobotContainer {
 			superstructure.toStateTeleop(SuperState.SAFE).alongWith(claw.grab()));
 		manipulator.rightBumper().toggleOnTrue(Commands.startEnd(claw::extendExtra, claw::retractExtra, claw));
 
-		/* Tuning buttons */
-		// manipulator.b().whileTrue(wrist.toAngle(70));
-		// manipulator.x().whileTrue(wrist.toAngle(0));
-		// manipulator.b().whileTrue(elevator.toHeight(0.3));
-		// manipulator.a().whileTrue(tilt.toAngle(29));
-		// manipulator.y().whileTrue(tilt.toAngle(0));
-		// manipulator.rightBumper().whileTrue(wrist.toAngle(WristK.kMaxAngleDegrees));
 	}
 
 	public void mapAutonCommands() {
@@ -252,18 +242,12 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BACK_PARK, 
 			AutonFactory.cubeBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.backPark.getInitialHolonomicPose());
-		// AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_PARK, 
-		// 	AutonFactory.coneOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
-		// 	PPPaths.coneOneHalf.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK, 
 			AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.cubeOneHalf.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_BUMP, 
 			AutonFactory.cubeOneHalfBump(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.cubeOneHalfBump.get(0).getInitialHolonomicPose());
-		// AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_BUMP, 
-		// 	AutonFactory.coneOneHalfBumpy(swerve, superstructure, claw, elevator, tilt, wrist),
-		// 	PPPaths.coneOneHalfBumpy.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_BUMP, 
 			AutonFactory.onePointFiveBump(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
@@ -279,9 +263,6 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, 
 			AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());
-		// AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK_ALT, 
-		// 	AutonFactory.twoElementParkAlt(swerve, superstructure, claw, elevator, tilt, wrist),
-		// 	PPPaths.twoEleAlt.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_POINT_FIVE, 
 			AutonFactory.twoPointFive(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());
@@ -308,9 +289,5 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		return AutonChooser.GetChosenAutonCmd();
-	}
-
-	public enum GamePieceMode {
-		CONE, CUBE
 	}
 }
