@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.WristK.*;
@@ -18,6 +19,8 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.*;
 
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.robot.Constants.WristK;
 
 public class WristSubsystem extends SubsystemBase {
@@ -29,6 +32,8 @@ public class WristSubsystem extends SubsystemBase {
   private double m_totalEffort = 0;
   private double m_maxDegrees = kMaxDeg;
   private boolean m_isCoast = false;
+
+  private final DoubleLogger log_wristDegrees = WaltLogger.logDouble(DB_TAB_NAME, "degrees");
 
   private final PIDController m_holdController = new PIDController(
       kP, 0, kD);
@@ -209,6 +214,7 @@ public class WristSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    log_wristDegrees.accept(getDegrees());
     setCoast(m_isCoast);
   }
 
