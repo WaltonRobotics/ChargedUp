@@ -147,49 +147,49 @@ public class RobotContainer {
 			// 		.whileTrue(swerve.autoAlign(() -> driver.getLeftY(), ScoringPointsRed.cone9));
 			// }
 		if(DriverStation.getAlliance().equals(Alliance.Blue)) {
-			driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.cone1));
-		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.cube2));
-		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.cone3));
+			driver.x().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone1));
+		driver.y().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cube2));
+		driver.b().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.coopCone4));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCone4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.coopCube5));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCube5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.coopCone6));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCone6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.cone7));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.cube8));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cube8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsBlue.cone9));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone9));
 		} else {
-			driver.x().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.cone1));
-		driver.y().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.cube2));
-		driver.b().whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.cone3));
+			driver.x().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone1));
+		driver.y().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cube2));
+		driver.b().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone3));
 		driver.x()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.coopCone4));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCone4));
 		driver.y()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.coopCube5));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCube5));
 		driver.b()
 			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.coopCone6));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCone6));
 		driver.x()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.cone7));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone7));
 		driver.y()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.cube8));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cube8));
 		driver.b()
 			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(() -> driver.getLeftY(),ShiftedScoringPointsRed.cone9));
+			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone9));
 		}
 		
 

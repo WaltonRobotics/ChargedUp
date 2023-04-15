@@ -467,9 +467,9 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * 
 	 * @endPt The last pathpoint to end up at
 	 */
-	public CommandBase goToChosenPoint(DoubleSupplier translation, Pose2d endPose) {
+	public CommandBase goToChosenPoint(Pose2d endPose) {
 		var follow = run(() -> {
-			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
+			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
 			Pose2d currentPose = getPose();
@@ -478,23 +478,25 @@ public class SwerveSubsystem extends SubsystemBase {
 			field2dEndPose.setPose(actualEndPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
 				actualEndPose.getY());
+			double xRate = xController.calculate(currentPose.getY(),
+				actualEndPose.getY());
 			System.out.println("going to " + endPose.toString());
 			
 			if(Flipper.shouldFlip()){
-				gyroBasedDrive(translationVal, yRate, new Rotation2d(0));
+				gyroBasedDrive(xRate, yRate, new Rotation2d(0));
 			}
 			else{
-				gyroBasedDrive(translationVal, -yRate, new Rotation2d(0));
+				gyroBasedDrive(xRate, -yRate, new Rotation2d(0));
 			}
 		});
 
 		return follow;
 	}
 
-	public CommandBase autoAlign(DoubleSupplier translation, Pose2d endPose) {
+	public CommandBase autoAlign(Pose2d endPose) {
 		var follow = run(() -> {
 			addVision = false;
-			double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
+			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
 			Pose2d currentPose = getPose();
@@ -503,12 +505,14 @@ public class SwerveSubsystem extends SubsystemBase {
 			field2dEndPose.setPose(actualEndPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
 				actualEndPose.getY());
+			double xRate = xController.calculate(currentPose.getX(),
+				actualEndPose.getX());
 			System.out.println("going to " + endPose.toString());
 			
 			if (Flipper.shouldFlip()) {
-				drive(translationVal, yRate, actualEndPose.getRotation(), false);
+				drive(xRate, yRate, actualEndPose.getRotation(), false);
 			} else {
-				drive(translationVal, -yRate, actualEndPose.getRotation(), false);
+				drive(xRate, -yRate, actualEndPose.getRotation(), false);
 			}
 		})
 		.until(()-> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint())
@@ -533,7 +537,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				}
 			}
 			final Pose2d closestCone = closestPose;
-			return goToChosenPoint(translation, closestCone);
+			return goToChosenPoint(closestCone);
 		} else {
 			for (int i = 1; i < cubesPoses.length; i++) {
 				double currentPoseDiff = Math.abs(getPose().getY() - cubesPoses[i].getY());
@@ -543,7 +547,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				}
 			}
 			final Pose2d closestCube = closestPose;
-			return goToChosenPoint(translation, closestCube);
+			return goToChosenPoint(closestCube);
 		}
 	}
 
