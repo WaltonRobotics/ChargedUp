@@ -52,6 +52,7 @@ public class TheClaw extends SubsystemBase {
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
 	private final Trigger stateAutoGrabTrig;
 	private final Trigger substationStateAutoGrabTrig;
+	private final Trigger extendedStateAutoGrabTrig;
 	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger wristAngleTrig;
@@ -68,6 +69,7 @@ public class TheClaw extends SubsystemBase {
 
 
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
+		extendedStateAutoGrabTrig = new Trigger(()-> m_autoStateSupplier.get() == ClawState.EXTENDEDAUTO);
 		substationStateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.SUBSTATIONAUTO);
 
     	var sensorAutonDebounceTrig = new Trigger(
@@ -91,11 +93,23 @@ public class TheClaw extends SubsystemBase {
 			
 		stateAutoGrabTrig
 		.and(sensorAutonDebounceTrig)
-		// .and(timeOfFlightTrig)
 		.and(sensorCheckValidTrig)
 			.onTrue(
 				Commands.runOnce(() -> m_grabOk = true)
 				.andThen(grab()).withName("internalAutoGrab")
+		);
+
+		extendedStateAutoGrabTrig.onTrue(
+			release()
+			.alongWith(extendExtra())
+			.andThen(runOnce(() -> m_grabOk = false)));
+			
+		stateAutoGrabTrig
+		.and(sensorAutonDebounceTrig)
+		.and(sensorCheckValidTrig)
+			.onTrue(
+				Commands.runOnce(() -> m_grabOk = true)
+				.andThen(grab().alongWith(retractExtra())).withName("internalExtendedAutoGrab")
 		);
 
 		
@@ -207,7 +221,8 @@ public class TheClaw extends SubsystemBase {
 		OPEN,
 		CLOSE,
 		AUTO,
-		SUBSTATIONAUTO
+		SUBSTATIONAUTO,
+		EXTENDEDAUTO
 	}
 
 	@Override

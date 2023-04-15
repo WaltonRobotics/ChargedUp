@@ -213,7 +213,7 @@ public class RobotContainer {
 			superstructure.toStateTeleop(SuperState.GROUND_PICK_UP));
 		
 		manipulator.b().onTrue(
-			superstructure.toStateTeleop(SuperState.EXTENDED_SUBSTATION));
+			superstructure.toStateTeleop(SuperState.EXTENDED_GROUND_PICK_UP));
 
 		manipulator.povDown().onTrue(
 			superstructure.toStateTeleop(SuperState.GROUND_SCORE));
