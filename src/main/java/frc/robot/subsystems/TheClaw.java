@@ -5,11 +5,14 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.DashboardManager;
@@ -31,6 +34,7 @@ public class TheClaw extends SubsystemBase {
 
 	private final Supplier<ClawState> m_autoStateSupplier;
 	private final Supplier<Double> m_wristDegSupplier;
+	
 
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
@@ -39,6 +43,9 @@ public class TheClaw extends SubsystemBase {
 	
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
+
+	private final Servo m_leftExtend = new Servo(kLeftServo);
+	private final Servo m_rightExtend = new Servo(kRightServo);
 	
 	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
@@ -173,6 +180,26 @@ public class TheClaw extends SubsystemBase {
 
 	public boolean getIsOkToGrab(){
 		return m_grabOk;
+	}
+
+	public CommandBase retractExtra() {
+		var rightRetract = new InstantCommand(() -> m_rightExtend.setPosition(kRetractIn));
+		var leftRetract = new InstantCommand(() -> m_leftExtend.setPosition(kRetractIn));
+
+		return Commands.parallel(
+			rightRetract,
+			leftRetract
+		);
+	}
+
+	public CommandBase extendExtra() {
+		var rightExtend = new InstantCommand(() -> m_rightExtend.setPosition(kExtendOut));
+		var leftExtend = new InstantCommand(() -> m_leftExtend.setPosition(kExtendOut));
+
+		return Commands.parallel(
+			rightExtend,
+			leftExtend
+		);
 	}
 
 	public enum ClawState{

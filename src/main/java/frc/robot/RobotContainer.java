@@ -223,6 +223,7 @@ public class RobotContainer {
 
 		manipulator.leftBumper().onTrue(
 			superstructure.toStateTeleop(SuperState.SAFE).alongWith(claw.grab()));
+		manipulator.rightBumper().toggleOnTrue(Commands.startEnd(claw::extendExtra, claw::retractExtra, claw));
 
 		/* Tuning buttons */
 		// manipulator.b().whileTrue(wrist.toAngle(70));
