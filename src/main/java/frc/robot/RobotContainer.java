@@ -13,6 +13,8 @@ import frc.robot.auton.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureToState;
+import frc.robot.subsystems.swerve.NewBalance;
+import frc.robot.subsystems.swerve.ReverseBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.VisionManager;
@@ -81,6 +83,9 @@ public class RobotContainer {
 		if(DriverStation.isAutonomous()){
 			claw.grabOkTrig.onTrue(Commands.waitSeconds(.1).andThen(new SuperstructureToState(superstructure, SuperState.SAFE).asProxy()));
 		}
+
+		NewBalance.m_balanceTrig.onTrue(leds.setBalanced());
+		ReverseBalance.m_reverseBalanceTrig.onTrue(leds.setBalanced());
 	}
 
 	/**

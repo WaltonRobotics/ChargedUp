@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
 import frc.robot.RobotContainer;
@@ -22,6 +23,8 @@ public class NewBalance extends SequentialCommandGroup {
     private double m_climbingSign = 0.0;
     private final Timer m_climbTimer = new Timer();
     private final DoubleLogger log_balState = WaltLogger.logDouble("Command", "BalanceState");
+
+    public static Trigger m_balanceTrig;
 
 
     public NewBalance(SwerveSubsystem swerve) {
@@ -52,6 +55,8 @@ public class NewBalance extends SequentialCommandGroup {
             return false;
         });
 
+        m_balanceTrig = new Trigger(() -> slideToTheFront.isFinished());
+
         addCommands(
             logBalanceState(1),
             oneHopThisTime,
@@ -62,8 +67,7 @@ public class NewBalance extends SequentialCommandGroup {
 			slideToTheFront,
             logBalanceState(3),
             Commands.runOnce(swerve::stopWithX),
-            logBalanceState(4),
-            RobotContainer.leds.setBalanced()
+            logBalanceState(4)
         );
     }
 }
