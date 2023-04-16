@@ -51,7 +51,7 @@ public class VisionManager {
           allowedCombination = allowedIds.containsAll(ids);
           if (possibleCombination && allowedCombination) break;
         }
-        if (!possibleCombination) System.out.println("Ignoring frame with FIDs: " + ids);
+        // if (!possibleCombination) System.out.println("Ignoring frame with FIDs: " + ids);
         return !possibleCombination;
       }
 

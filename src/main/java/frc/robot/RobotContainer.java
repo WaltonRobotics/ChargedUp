@@ -95,7 +95,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(swerve.teleOpReset());
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(leds.setBalanced()); // TODO: change reverse condition
+		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
 			// if (DriverStation.getAlliance().equals(Alliance.Blue)) {
@@ -145,48 +145,48 @@ public class RobotContainer {
 			// }
 		if(DriverStation.getAlliance().equals(Alliance.Blue)) {
 			driver.x().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone1));
-		driver.y().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cube2));
-		driver.b().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone3));
-		driver.x()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCone4));
-		driver.y()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCube5));
-		driver.b()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCone6));
-		driver.x()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone7));
-		driver.y()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cube8));
-		driver.b()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone9));
+			driver.y().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cube2));
+			driver.b().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone3));
+			driver.x()
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCone4));
+			driver.y()
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCube5));
+			driver.b()
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.coopCone6));
+			driver.x()
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone7));
+			driver.y()
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cube8));
+			driver.b()
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsBlue.cone9));
 		} else {
 			driver.x().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone1));
-		driver.y().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cube2));
-		driver.b().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone3));
-		driver.x()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCone4));
-		driver.y()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCube5));
-		driver.b()
-			.and(driver.leftTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCone6));
-		driver.x()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone7));
-		driver.y()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cube8));
-		driver.b()
-			.and(driver.rightTrigger())
-			.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone9));
+			driver.y().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cube2));
+			driver.b().whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone3));
+			driver.x()
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCone4));
+			driver.y()
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCube5));
+			driver.b()
+				.and(driver.leftTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.coopCone6));
+			driver.x()
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone7));
+			driver.y()
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cube8));
+			driver.b()
+				.and(driver.rightTrigger())
+				.whileTrue(swerve.goToChosenPoint(ShiftedScoringPointsRed.cone9));
 		}
 		
 
@@ -235,7 +235,6 @@ public class RobotContainer {
 	public void mapAutonCommands() {
 		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
 		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
-		AutonChooser.AssignAutonCommand(AutonOption.ONE_METER, AutonFactory.oneMeter(swerve));
 
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_ONLY, 
 			AutonFactory.coneDrop(swerve, superstructure, claw, elevator, tilt, wrist));
@@ -254,21 +253,18 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK, 
 			AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.cubeOneHalf.get(0).getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_BUMP, 
-			AutonFactory.cubeOneHalfBump(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.cubeOneHalfBump.get(0).getInitialHolonomicPose());
-		AutonChooser.AssignAutonCommand(AutonOption.CONE_ONE_HALF_BUMP, 
-			AutonFactory.onePointFiveBump(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT, 
 			AutonFactory.twoElement(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BUMP, 
 			AutonFactory.twoBump(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BUMP_PARK, 
+			AutonFactory.twoBumpPark(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_OVER_CHARGE, 
 			AutonFactory.chargeTwoElement(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.chargeTwo.get(0).getInitialHolonomicPose());
+			PPPaths.chargeTwo.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, 
 			AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());

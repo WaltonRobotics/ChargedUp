@@ -158,7 +158,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public CommandBase autoHome() {
 		return Commands.sequence(
 			startEnd(() -> {
-				m_right.setVoltage(-1);
+				m_right.setVoltage(-2);
 			}, () -> {
 				m_right.setVoltage(0);
 			}).until(m_lowerLimitTrigger)
