@@ -17,8 +17,11 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -52,11 +55,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
 
+	private boolean m_isCoast = false;
+
 	private final DoubleLogger
 		log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight, 
 		log_actualHeight, log_actualHeightRaw, log_profileVelo, log_actualVelo, 
 		log_holdPdEffort, log_holdFfEffort;
 	private final BooleanLogger log_atLowerLimit;
+
+	private final GenericEntry nte_isCoast;
 
 	public ElevatorSubsystem() {
 		double subsysInitBegin = Timer.getFPGATimestamp();
@@ -95,6 +102,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] ElevatorSubsystem Init End: " + subsysInitElapsed + "s");
+
+		nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
+                  .add("elev coast", false)
+                  .withWidget(BuiltInWidgets.kToggleSwitch)
+                  .getEntry();
 	}
 
 	/*
@@ -314,6 +326,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		updateShuffleBoard();
 		log_holdPdEffort.accept(m_holdPdEffort);
 		log_holdFfEffort.accept(m_holdFfEffort);
+		setCoast(m_isCoast);
 	}
 
 	/*
@@ -327,5 +340,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_actualVelo.accept(getActualVelocityMps());
 		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
 		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
+		m_isCoast = nte_isCoast.getBoolean(false);
 	}
 }
