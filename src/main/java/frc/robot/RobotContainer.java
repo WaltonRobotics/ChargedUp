@@ -84,8 +84,8 @@ public class RobotContainer {
 			claw.grabOkTrig.onTrue(Commands.waitSeconds(.1).andThen(new SuperstructureToState(superstructure, SuperState.SAFE).asProxy()));
 		}
 
-		NewBalance.m_balanceTrig.onTrue(leds.setBalanced());
-		ReverseBalance.m_reverseBalanceTrig.onTrue(leds.setBalanced());
+		NewBalance.m_balanceTrig.onTrue(leds.setBalanced().withTimeout(2));
+		ReverseBalance.m_reverseBalanceTrig.onTrue(leds.setBalanced().withTimeout(2));
 	}
 
 	/**
@@ -269,10 +269,10 @@ public class RobotContainer {
 			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_OVER_CHARGE, 
 			AutonFactory.chargeTwoElement(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.chargeTwo.getInitialHolonomicPose());
+			PPPaths.chargeTwo.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BAL_CHARGE, 
 			AutonFactory.chargeTwoElementBal(swerve, superstructure, claw, elevator, tilt, wrist),
-			PPPaths.chargeTwo.getInitialHolonomicPose());
+			PPPaths.chargeTwo.get(0).getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, 
 			AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());

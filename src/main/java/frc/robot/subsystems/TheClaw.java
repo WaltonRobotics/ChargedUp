@@ -85,6 +85,7 @@ public class TheClaw extends SubsystemBase {
 
 		stateAutoGrabTrig.onTrue(
 			release()
+			.alongWith(extendFlaps(false))
 			.andThen(runOnce(() -> m_grabOk = false)));
 			
 		stateAutoGrabTrig

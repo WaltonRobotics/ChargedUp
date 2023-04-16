@@ -126,10 +126,8 @@ public class Paths {
 		public static final PathPlannerTrajectory twoPointFiveBumpy2 = PathPlanner.loadPath("twoPointFiveBumpy2",
 				kPPConstraints);
 
-		public static final PathPlannerTrajectory chargeTwo = PathPlanner.loadPath("chargeTwo",
-				kPPConstraints);
-		public static final PathPlannerTrajectory chargeTwo2 = PathPlanner.loadPath("chargeTwo2",
-				kPPConstraints);
+		public static final List<PathPlannerTrajectory> chargeTwo = PathPlanner.loadPathGroup("chargeTwo",
+				kPPConstraints,kPPConstraints);
 	}
 
 	public static final class ReferencePoints {

@@ -364,17 +364,17 @@ public final class AutonFactory {
                                 ),
 
                                 Commands.sequence(
-                                        Commands.waitSeconds(2.75), // Time before pickup ~ need to change
+                                        Commands.waitSeconds(2.85), // Time before pickup ~ need to change
                                         groundPickUp.asProxy(), // PICKUP
                                         Commands.waitSeconds(.5),
                                         ssResetCmd2.asProxy()
                                 ),
                                 Commands.sequence(
-                                    Commands.waitSeconds(7.5), // time before cube throw ~ change timing
+                                    Commands.waitSeconds(8.05), // time before cube throw ~ change timing
                                     cubePlaceCmd.asProxy().withTimeout(1.55), // cube throw
                                     ssResetCmd3.asProxy()   
                                 ),
-                                Commands.waitSeconds(9.5).andThen(balanceCmd.asProxy())
+                                Commands.waitSeconds(10.15).andThen(balanceCmd.asProxy())
                         )
                 ));
     }
