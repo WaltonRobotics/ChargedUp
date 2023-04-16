@@ -152,7 +152,7 @@ public final class AutonFactory {
                                 Commands.sequence(
                                         Commands.waitSeconds(1.40), // Time before pickup
                                         groundPickUp.asProxy(), // PICKUP
-                                        Commands.waitSeconds(0.5), // time before SAFE
+                                        Commands.waitSeconds(2), // time before SAFE
                                         ssResetCmd2.asProxy(), // SAFE
                                         Commands.waitSeconds(.05), // time before cube throw
                                         cubePlaceCmd.asProxy().withTimeout(1.7) // cube throw
@@ -268,9 +268,9 @@ public final class AutonFactory {
                                 Commands.sequence(
                                         Commands.waitSeconds(1.40), // Time before pickup
                                         groundPickUp.asProxy(), // PICKUP
-                                        Commands.waitSeconds(0.5), // time before SAFE
+                                        Commands.waitSeconds(2), // time before SAFE
                                         ssResetCmd2.asProxy(), // SAFE
-                                        Commands.waitSeconds(.15), // time before cube throw
+                                        Commands.waitSeconds(.05), // time before cube throw
                                         cubePlaceCmd.asProxy().withTimeout(1.7), // cube throw
                                         retractCmd.asProxy()))),
                 // SAFE
@@ -358,23 +358,24 @@ public final class AutonFactory {
                         Commands.parallel(
                                 // path while going to SAFE
                                 Commands.sequence(
-                                        Commands.waitSeconds(.01),
-                                        pathCmd.asProxy()),
+                                        Commands.waitSeconds(.25),
+                                        pathCmd.asProxy()
+                                ),
 
                                 Commands.sequence(
-                                        Commands.waitSeconds(1.85), // Time before pickup ~ need to change
+                                        Commands.waitSeconds(2.75), // Time before pickup ~ need to change
                                         groundPickUp.asProxy(), // PICKUP
-                                        Commands.waitSeconds(.3),
+                                        Commands.waitSeconds(.5),
                                         ssResetCmd2.asProxy()
-                                ))),
-                Commands.parallel(
-                        Commands.sequence(      
-                                Commands.waitSeconds(.01), // time before cube throw ~ change timing
-                                cubePlaceCmd.asProxy().withTimeout(1.55), // cube throw
-                                ssResetCmd3.asProxy()
-                        ),
-                        Commands.waitSeconds(2.5).andThen(balanceCmd.asProxy()))
-                );
+                                ),
+                                Commands.sequence(
+                                    Commands.waitSeconds(7.5), // time before cube throw ~ change timing
+                                    cubePlaceCmd.asProxy().withTimeout(1.55), // cube throw
+                                    ssResetCmd3.asProxy()   
+                                ),
+                                Commands.waitSeconds(9.5).andThen(balanceCmd.asProxy())
+                        )
+                ));
     }
 
     public static CommandBase twoPointFive(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
@@ -427,12 +428,12 @@ public final class AutonFactory {
                         claw.grab().asProxy(),
 
                         Commands.sequence(
-                                Commands.waitSeconds(.10), // time before path
+                                Commands.waitSeconds(.025), // time before path
                                 path2Cmd.asProxy() // path to pick up :D
                         ),
 
                         Commands.sequence(
-                                Commands.waitSeconds(2.0), // prob will change later ;-;
+                                Commands.waitSeconds(1.5),
                                 groundPickUp2.asProxy(),
                                 Commands.waitSeconds(.6), // time before SAFE
                                 ssResetCmd4.asProxy(), // SAFE
@@ -541,7 +542,7 @@ public final class AutonFactory {
                                 groundPickUp2.asProxy(), // PICKUP
                                 Commands.waitSeconds(1.3), // time before SAFE
                                 ssResetCmd4.asProxy(), // SAFE
-                                Commands.waitSeconds(.05), // time before cube throw
+                                Commands.waitSeconds(.85), // time before cube throw
                                 lowCubePlaceCmd.asProxy().withTimeout(1.5) // cube throw
                         )),
                 Commands.parallel(
