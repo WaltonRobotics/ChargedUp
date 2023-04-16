@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.DoubleLogger;
-import frc.robot.RobotContainer;
 
 public class NewBalance extends SequentialCommandGroup {
 
