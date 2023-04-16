@@ -7,12 +7,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -33,6 +36,8 @@ public class TiltSubsystem extends SubsystemBase {
 	private final DigitalInput m_homeSwitch = new DigitalInput(kHomeSwitchPort);
 	private final Solenoid m_diskBrake = new Solenoid(PneumaticsModuleType.REVPH, kDiskBrakePort);
 
+	private boolean m_isCoast = false;
+
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
 	private final PIDController m_holdController = new PIDController(kPHold, 0, kDHold);
 	private double m_targetAngle = 0;
@@ -44,6 +49,7 @@ public class TiltSubsystem extends SubsystemBase {
 	private final DoubleLogger log_rawAbsVal = WaltLogger.logDouble(DB_TAB_NAME, "RawAbs");
 
 	public final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
+	private final GenericEntry nte_isCoast;
 
 	public static double nte_pdEffort = m_pdEffort;
 	
@@ -58,6 +64,11 @@ public class TiltSubsystem extends SubsystemBase {
 
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] TiltSubsystem Init End: " + subsysInitElapsed + "s");
+
+		nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
+                  .add("tilt coast", false)
+                  .withWidget(BuiltInWidgets.kToggleSwitch)
+                  .getEntry();
 	}
 
 
@@ -234,13 +245,14 @@ public class TiltSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateShuffleBoard();
-		// setCoast(m_isCoast);
+		setCoast(m_isCoast);
 	}
 
 	public void updateShuffleBoard() {
 		// Push telemetry
 		log_actualAngle.accept(getDegrees());
 		log_rawAbsVal.accept(m_absoluteEncoder.get());
+		m_isCoast = nte_isCoast.getBoolean(false);
 	}
 
 	public CommandBase toState(TiltState state) {

@@ -10,6 +10,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.WristK.*;
@@ -40,6 +43,8 @@ public class WristSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_controller = new ProfiledPIDController(
       WristK.kP, 0, WristK.kD, WristK.kConstraints);
 
+  private final GenericEntry nte_isCoast;
+
   public WristSubsystem() {
     m_motor.setIdleMode(IdleMode.kBrake); // ANTI-DROOPY
     m_motor.setInverted(true);
@@ -49,7 +54,10 @@ public class WristSubsystem extends SubsystemBase {
     m_motor.burnFlash();
 
     m_controller.setTolerance(1.5);
-    
+    nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
+                  .add("wrist coast", false)
+                  .withWidget(BuiltInWidgets.kToggleSwitch)
+                  .getEntry();
   }
 
   /*
@@ -214,6 +222,7 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     log_wristDegrees.accept(getDegrees());
+    m_isCoast = nte_isCoast.getBoolean(false);
     setCoast(m_isCoast);
   }
 
