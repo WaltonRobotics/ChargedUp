@@ -427,6 +427,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		return new NewBalance(this);
 	}
 
+	public Command reverseReverse(){
+		return new ReverseBalance(this);
+	}
+
 	// public CommandBase autoScore(Pose2d endPose) {
 	// 	return new SwerveAutoGo(ReferencePoints.notBumper2, endPose, this);
 	// }

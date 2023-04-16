@@ -13,6 +13,7 @@ import frc.robot.auton.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureToState;
+import frc.robot.subsystems.swerve.ReverseBalance;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.SuperState;
 import frc.robot.vision.VisionManager;
@@ -95,7 +96,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(swerve.teleOpReset());
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
+		driver.leftBumper().whileTrue(swerve.reverseReverse()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
 			// if (DriverStation.getAlliance().equals(Alliance.Blue)) {
@@ -264,6 +265,9 @@ public class RobotContainer {
 			PPPaths.twoPointFiveBumpy.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_OVER_CHARGE, 
 			AutonFactory.chargeTwoElement(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.chargeTwo.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_BAL_CHARGE, 
+			AutonFactory.chargeTwoElementBal(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.chargeTwo.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.TWO_ELEMENT_PARK, 
 			AutonFactory.twoElementPark(swerve, superstructure, claw, elevator, tilt, wrist),

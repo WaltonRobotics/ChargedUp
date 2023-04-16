@@ -34,7 +34,7 @@ public class ReverseBalance extends SequentialCommandGroup {
         });
 		
 		CommandBase takeItBackNowYall = Commands.run(()-> {
-                swerve.drive(-0.5, 0,0, false, false);
+                swerve.drive(-0.65, 0,0, false, false);
         }, swerve)
         .until(() -> {
             var curPitchRate = swerve.getFilteredGyroPitchRate();
