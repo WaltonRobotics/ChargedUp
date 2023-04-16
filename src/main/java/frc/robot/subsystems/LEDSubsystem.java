@@ -61,7 +61,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public CommandBase setBalanced() {
-        return runOnce( () -> {
+        return run( () -> {
             for (var i = 0; i < m_ledBuffer.getLength(); i++) {
             // Calculate the hue - hue is easier for rainbows because the color
             // shape is a circle so only one value needs to precess
@@ -69,6 +69,7 @@ public class LEDSubsystem extends SubsystemBase {
             // Set the value
             m_ledBuffer.setHSV(i, hue, 255, 128);
             }
+            m_leds.setData(m_ledBuffer);
             // Increase by to make the rainbow "move"
             m_rainbowHue += 3;
             // Check bounds
