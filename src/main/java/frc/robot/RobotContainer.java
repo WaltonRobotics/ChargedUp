@@ -100,7 +100,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(swerve.teleOpReset());
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(swerve.reverseReverse()); // TODO: change reverse condition
+		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
 			// if (DriverStation.getAlliance().equals(Alliance.Blue)) {

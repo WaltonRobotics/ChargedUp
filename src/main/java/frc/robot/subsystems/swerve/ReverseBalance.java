@@ -17,7 +17,7 @@ public class ReverseBalance extends SequentialCommandGroup {
 		});
 	}
 
-    private final double m_rateThreshold = 6.5;
+    private final double m_rateThreshold = 6.5;//6.5
     private final double m_climbRateTimeout = 1.5;
 
     private double m_climbingSign = 0.0;
