@@ -210,10 +210,13 @@ public class RobotContainer {
 			superstructure.toStateTeleop(SuperState.GROUND_PICK_UP));
 		
 		manipulator.b().onTrue(
+			superstructure.toStateTeleop(SuperState.EXTENDED_SUBSTATION));
+
+		manipulator.rightBumper().onTrue(
 			superstructure.toStateTeleop(SuperState.EXTENDED_GROUND_PICK_UP));
 		
-		// manipulator.b().onTrue(
-		// 	claw.extendFlaps(false));
+		manipulator.start().onTrue(
+			claw.extendFlaps(false));
 
 		// manipulator.a().onTrue(
 		// 	claw.extendFlaps(true));
@@ -233,6 +236,7 @@ public class RobotContainer {
 		AutonChooser.SetDefaultAuton(AutonOption.DO_NOTHING);
 		AutonChooser.AssignAutonCommand(AutonOption.DO_NOTHING, Commands.none());
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_METER, AutonFactory.oneMeter(swerve));
+
 		AutonChooser.AssignAutonCommand(AutonOption.DROP_ONLY, 
 			AutonFactory.coneDrop(swerve, superstructure, claw, elevator, tilt, wrist));
 		AutonChooser.AssignAutonCommand(AutonOption.ONE_CONE_OUT, 

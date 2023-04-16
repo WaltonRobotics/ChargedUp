@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.util.Flipper;
 import frc.robot.auton.AutonChooser;
 import frc.robot.auton.AutonChooser.AutonOption;
@@ -118,6 +119,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.elevator.autoHome();
     m_robotContainer.superstructure.toStateTeleop(SuperState.GROUND_PICK_UP);
     m_robotContainer.superstructure.toStateTeleop(SuperState.SAFE);
+    m_robotContainer.claw.extendFlaps(false).schedule();
 
     m_robotContainer.superstructure.initState();
 

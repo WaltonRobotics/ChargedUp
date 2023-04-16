@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,6 +29,7 @@ public class TheClaw extends SubsystemBase {
 
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
+	private boolean isFlapExtended = false;
 
 	private static final double kSensorCheckDelay = .4;
 	
@@ -43,6 +45,7 @@ public class TheClaw extends SubsystemBase {
 	private final Trigger stateAutoGrabTrig;
 	private final Trigger substationStateAutoGrabTrig;
 	private final Trigger extendedStateAutoGrabTrig;
+	private final Trigger safeTrig;
 	private final Trigger sensorCheckValidTrig = new Trigger(() -> m_lastActuationTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger substationDelayTrig = new Trigger(() -> m_substationDelayTimer.hasElapsed(kSensorCheckDelay));
 	private final Trigger wristAngleTrig;
@@ -63,6 +66,8 @@ public class TheClaw extends SubsystemBase {
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
 		extendedStateAutoGrabTrig = new Trigger(()-> m_autoStateSupplier.get() == ClawState.EXTENDEDAUTO);
 		substationStateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.SUBSTATIONAUTO);
+		safeTrig = new Trigger(()-> m_autoStateSupplier.get() == ClawState.CLOSE);
+
 
     	var sensorAutonDebounceTrig = new Trigger(
 			new BooleanSupplier() {
@@ -93,18 +98,20 @@ public class TheClaw extends SubsystemBase {
 
 		extendedStateAutoGrabTrig.onTrue(
 			release()
-			.alongWith(extendFlaps(true).withTimeout(1))
+			.alongWith(extendFlaps(true))
 			.andThen(runOnce(() -> m_grabOk = false)));
 			
-		stateAutoGrabTrig
+		extendedStateAutoGrabTrig
 		.and(sensorAutonDebounceTrig)
 		.and(sensorCheckValidTrig)
 			.onTrue(
 				Commands.runOnce(() -> m_grabOk = true)
 				.andThen(grab().alongWith(extendFlaps(false))).withName("internalExtendedAutoGrab")
 		);
-
 		
+		safeTrig.onTrue(
+			extendFlaps(false)
+		);
 
 		substationStateAutoGrabTrig.onTrue(
 			Commands.sequence(
@@ -152,21 +159,27 @@ public class TheClaw extends SubsystemBase {
 		});
 	}
 
-	public boolean getClosed() {
-		return m_isClosed;
-	}
-
-	public boolean getIsOkToGrab(){
-		return m_grabOk;
-	}
-
 	public CommandBase extendFlaps(boolean extend) {
+		return extendFlaps(extend, false);
+	}
+
+	public CommandBase extendFlaps(boolean extend, boolean ignoreState) {
 		return Commands.startEnd(() -> {
-			m_rightFlap.setPosition(extend ? 1 : 0);
-			m_leftFlap.setPosition(extend ? 0 : 1);
+			boolean shouldMove = ignoreState ? true : extend ? isFlapExtended : !isFlapExtended;
+			if(extend && shouldMove) {
+				m_rightFlap.setPosition(0.5);
+				m_leftFlap.setPosition(0.5);
+			} else if(!extend && shouldMove) {
+				m_rightFlap.setPosition(0.5);
+				m_leftFlap.setPosition(0.5);
+			} else {
+				m_rightFlap.setPosition(extend ? 1 : 0);
+				m_leftFlap.setPosition(extend ? 0: 1);
+			}
 		}, () -> {
 			m_rightFlap.setPosition(0.5);
 			m_leftFlap.setPosition(0.5);
+			isFlapExtended = extend;
 		}).withTimeout(.8);
 	}
 
