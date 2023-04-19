@@ -61,6 +61,7 @@ public class TiltSubsystem extends SubsystemBase {
 		m_motor.setSmartCurrentLimit(kMotorCurrLimit);
 
 		m_homeSwitchTrigger.onTrue(resetEncoder());
+		m_holdController.setTolerance(.75);
 
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] TiltSubsystem Init End: " + subsysInitElapsed + "s");

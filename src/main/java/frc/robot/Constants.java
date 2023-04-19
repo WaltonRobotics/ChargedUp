@@ -260,7 +260,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 34.1;
+        public static final double kTopConeAngleDegrees = 32.3;
         public static final double kTopCubeAngleDegrees = 28.0;
         public static final double kMidConeAngleDegrees = 23.5;
         public static final double kMidCubeAngleDegrees = 25.041;
@@ -341,7 +341,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41);
         public static final double kTopCubeHeightM = 0.5;
-        public static final double kTopConeHeightM = 0.6995;
+        public static final double kTopConeHeightM = 0.696;
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.30;
         public static final double kBotHeightMeters = 0;
@@ -376,7 +376,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMinDeg = -35;
         public static final double kMaxDeg = 76.5;
 
-        public static final double kTopConeDeg = 40.5;
+        public static final double kTopConeDeg = 36.74;
         public static final double kTopCubeDeg = 25;
         public static final double kMidConeDeg = 36.0;
         public static final double kMidCubeDeg = 30.316;
