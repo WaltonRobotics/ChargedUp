@@ -417,11 +417,11 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static record VisionSource(String name, Transform3d robotToCamera) {}
 
         private static final Transform3d leftCornerLow_RobotToCamera = new Transform3d(
-            new Translation3d(Units.inchesToMeters(-2.201), Units.inchesToMeters(6.23), Units.inchesToMeters(11.670)),
+            new Translation3d(Units.inchesToMeters(-0.933), Units.inchesToMeters(11.623), Units.inchesToMeters(13.395)),
             new Rotation3d(0, Units.degreesToRadians(-10), 0));
 
         private static final Transform3d rightCornerLow_RobotToCamera = new Transform3d(
-            new Translation3d(Units.inchesToMeters(-2.201), Units.inchesToMeters(-6.23), Units.inchesToMeters(11.670)),
+            new Translation3d(Units.inchesToMeters(-0.933), Units.inchesToMeters(-11.623), Units.inchesToMeters(13.395)),
             new Rotation3d(0, Units.degreesToRadians(-10), 0));
     
         public static final List<VisionSource> VISION_SOURCES = List.of(

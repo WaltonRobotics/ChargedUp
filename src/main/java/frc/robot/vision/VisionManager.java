@@ -21,6 +21,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.util.AdvantageScopeUtils;
 import frc.robot.Constants.VisionK;
 
 public class VisionManager {
@@ -81,6 +83,8 @@ public class VisionManager {
                     visionSource.robotToCamera());
             estimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
             cameraEstimators.add(new CameraEstimator(camera, estimator, new DuplicateTracker()));
+
+            SmartDashboard.putNumberArray(visionSource.name(), AdvantageScopeUtils.toDoubleArr(visionSource.robotToCamera()));
         }
 
         var thread = new Thread(() -> {
