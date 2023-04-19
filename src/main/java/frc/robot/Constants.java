@@ -210,8 +210,10 @@ public final class Constants {
         public static double kPYController = 3.25; 
         public static double kPAutoGoYController = 3.25;
         public static double kPAutoGoThetaController = 2.75;
+        public static double kPAutoGoXController = 3.25;
         public static double kAutoGoThetaControllerTolerance = .5;
         public static double kAutoGoYControllerTolerance = .01;
+        public static double kAutoGoXControllerTolerance = .01;
         public static double kPThetaController = 3.15; // 1
         public static final double kDThetaController = 0.5;
         public static final double kFThetaControllerAuto = 0;

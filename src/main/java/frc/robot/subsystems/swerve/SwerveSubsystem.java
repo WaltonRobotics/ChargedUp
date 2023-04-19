@@ -64,6 +64,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController autoGoYController = new PIDController(kPAutoGoThetaController, 0, 0);
 	private final PIDController autoGoThetaController = new PIDController(kPAutoGoThetaController, 0, 0);
+	private final PIDController autoGoXController = new PIDController(kPAutoGoXController, 0, 0);
 	private final PIDController yController = new PIDController(kPYController, 0, 0);
 
 	private final Field2d m_field = new Field2d();
@@ -242,6 +243,16 @@ public class SwerveSubsystem extends SubsystemBase {
 		setChassisSpeeds(targetChassisSpeeds, false, true);
 	}
 
+	public void noRotDrive(double vxMeters, double vyMeters) {
+		// + translation speed
+		ChassisSpeeds targetChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+				vxMeters,
+				vyMeters,
+				0,
+				getHeading());
+
+		setChassisSpeeds(targetChassisSpeeds, false, true);
+	}
 	/**
 	 * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
 	 * return to their normal orientations the next time a nonzero velocity is requested.
@@ -467,8 +478,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase autoAlign(Pose2d endPose) {
-		var follow = run(() -> {
-			addVision = false;
+		var alignCmd = run(() -> {
 			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
@@ -478,22 +488,25 @@ public class SwerveSubsystem extends SubsystemBase {
 			field2dEndPose.setPose(actualEndPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
 				actualEndPose.getY());
-			double xRate = xController.calculate(currentPose.getX(),
-				actualEndPose.getX());
+			
 			System.out.println("going to " + endPose.toString());
 			
 			if (Flipper.shouldFlip()) {
-				drive(xRate, yRate, actualEndPose.getRotation(), false);
+				drive(0, yRate, actualEndPose.getRotation(), false);
 			} else {
-				drive(xRate, -yRate, actualEndPose.getRotation(), false);
+				drive(0, -yRate, actualEndPose.getRotation(), false);
 			}
-		})
-		.until(()-> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint())
-		.finallyDo((intr)->{
-			addVision = true;
-		});
+		}).until(()-> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint());
 
-		return follow;
+		var enterCmd = run(()->{
+			Pose2d currentPose = getPose();
+			Pose2d actualEndPose = Flipper.flipIfShould(endPose);
+			double xRate = xController.calculate(currentPose.getX(),
+				actualEndPose.getX());
+			noRotDrive(xRate, 0);
+		}).until(() -> autoGoXController.atSetpoint());
+
+		return alignCmd.andThen(enterCmd);
 	}
 
 
