@@ -479,7 +479,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public CommandBase autoAlign(Pose2d endPose) {
 		var alignCmd = run(() -> {
-			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
 			Pose2d currentPose = getPose();
@@ -488,9 +487,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			field2dEndPose.setPose(actualEndPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
 				actualEndPose.getY());
-			
 			System.out.println("going to " + endPose.toString());
-			
 			if (Flipper.shouldFlip()) {
 				drive(0, yRate, actualEndPose.getRotation(), false);
 			} else {
