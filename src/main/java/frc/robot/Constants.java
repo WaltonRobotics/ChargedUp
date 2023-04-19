@@ -341,7 +341,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kTopHeightMeters = Units.inchesToMeters(41);
         public static final double kTopCubeHeightM = 0.5;
-        public static final double kTopConeHeightM = 0.6725;
+        public static final double kTopConeHeightM = 0.6995;
         public static final double kMidConeHeightM = 0.42;
         public static final double kMidCubeHeightM = 0.30;
         public static final double kBotHeightMeters = 0;

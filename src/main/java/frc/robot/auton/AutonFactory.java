@@ -369,11 +369,11 @@ public final class AutonFactory {
                                         ssResetCmd2.asProxy()
                                 ),
                                 Commands.sequence(
-                                    Commands.waitSeconds(8.05), // time before cube throw ~ change timing
+                                    Commands.waitSeconds(7.875), // time before cube throw ~ change timing
                                     cubePlaceCmd.asProxy().withTimeout(1.55), // cube throw
                                     ssResetCmd3.asProxy()   
                                 ),
-                                Commands.waitSeconds(10.15).andThen(balanceCmd.asProxy())
+                                Commands.waitSeconds(9.95).andThen(balanceCmd.asProxy())
                         )
                 ));
     }
