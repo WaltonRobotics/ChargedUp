@@ -73,6 +73,7 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// LED triggering
+		swerve.autoAlignedTrig.onTrue(leds.grabOk());
 		claw.grabOkTrig.onTrue(leds.grabOk());
 		if(DriverStation.isTeleop()){
 			claw.grabOkTrig.onTrue(Commands.waitSeconds(.1).andThen(new SuperstructureToState(superstructure, SuperState.SAFE)));

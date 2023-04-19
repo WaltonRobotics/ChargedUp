@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule flModule = new SwerveModule("FrontLeft", 0, Mod0.constants);
@@ -71,6 +72,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveState m_state = new SwerveDriveState(kModuleTranslations);
 	protected final SwerveAutoBuilder autoBuilder;
 	private double teleOpGyroZero = 0;
+	private boolean isAligned = false;
+	public final Trigger autoAlignedTrig = new Trigger(()-> isAligned);
 	public boolean addVision = true;
 	
 
@@ -479,6 +482,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public CommandBase autoAlign(Pose2d endPose) {
 		var alignCmd = run(() -> {
+			isAligned = false;
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
 			Pose2d currentPose = getPose();
@@ -493,7 +497,11 @@ public class SwerveSubsystem extends SubsystemBase {
 			} else {
 				drive(0, -yRate, actualEndPose.getRotation(), false);
 			}
-		}).until(()-> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint());
+		})
+		.until(()-> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint())
+		.finallyDo((intr)->{
+			noRotDrive(0,0);
+		});
 
 		var enterCmd = run(()->{
 			Pose2d currentPose = getPose();
@@ -501,7 +509,12 @@ public class SwerveSubsystem extends SubsystemBase {
 			double xRate = xController.calculate(currentPose.getX(),
 				actualEndPose.getX());
 			noRotDrive(xRate, 0);
-		}).until(() -> autoGoXController.atSetpoint());
+		})
+		.until(() -> autoGoXController.atSetpoint())
+		.finallyDo((intr) ->{
+			noRotDrive(0,0);
+			isAligned = true;
+		});
 
 		return alignCmd.andThen(enterCmd);
 	}
