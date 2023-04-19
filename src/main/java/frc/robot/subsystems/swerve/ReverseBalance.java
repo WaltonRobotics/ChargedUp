@@ -65,7 +65,7 @@ public class ReverseBalance extends SequentialCommandGroup {
             logBalanceState(2),
 			takeItBackNowYall,
             logBalanceState(3),
-            Commands.runOnce(swerve::stopWithX),
+            Commands.runOnce(swerve::xLock),
             logBalanceState(4)
         );
     }

@@ -246,12 +246,12 @@ public class SwerveSubsystem extends SubsystemBase {
 	 * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
 	 * return to their normal orientations the next time a nonzero velocity is requested.
 	 */
-	protected void stopWithX() {
+	protected void xLock() {
 		stop();
-		for (int i = 0; i < 4; i++) {
-			getModuleStates()[i] = new SwerveModuleState(
-				getModuleStates()[i].speedMetersPerSecond, kModuleTranslations[i].getAngle());
+		for (SwerveModule mod : m_modules) {
+			mod.setDesiredState(new SwerveModuleState(0,new Rotation2d(45)), true, true);
 		}
+
 	}
 
 	private void stop() {
@@ -416,7 +416,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase stopWithXCmd() {
-		return runOnce(this::stopWithX);
+		return runOnce(this::xLock);
 	}
 
 	public CommandBase teleOpReset(){
