@@ -133,6 +133,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		autoGoThetaController.setTolerance(kAutoGoThetaControllerTolerance);
 		autoGoYController.setTolerance(kAutoGoYControllerTolerance);
+		autoGoXController.setTolerance(kAutoGoXControllerTolerance);
 
 		m_state.update(getPose(), getModuleStates(), m_field);
 		SmartDashboard.putData("Field2d", m_field);
