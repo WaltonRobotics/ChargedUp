@@ -323,7 +323,7 @@ public final class AutonFactory {
                                 ))),
                 Commands.parallel(
                         Commands.sequence(      
-                                Commands.waitSeconds(.01), // time before cube throw ~ change timing
+                                Commands.waitSeconds(.05), // time before cube throw ~ change timing
                                 cubePlaceCmd.asProxy().withTimeout(1.7) // cube throw
                         )),
                 ssResetCmd3.asProxy());
@@ -369,7 +369,7 @@ public final class AutonFactory {
                                         ssResetCmd2.asProxy()
                                 ),
                                 Commands.sequence(
-                                    Commands.waitSeconds(7.875), // time before cube throw ~ change timing
+                                    Commands.waitSeconds(7.88), // time before cube throw 
                                     cubePlaceCmd.asProxy().withTimeout(1.55), // cube throw
                                     ssResetCmd3.asProxy()   
                                 ),
@@ -542,7 +542,7 @@ public final class AutonFactory {
                                 groundPickUp2.asProxy(), // PICKUP
                                 Commands.waitSeconds(1.3), // time before SAFE
                                 ssResetCmd4.asProxy(), // SAFE
-                                Commands.waitSeconds(.80), // time before cube throw
+                                Commands.waitSeconds(.55), // time before cube throw
                                 lowCubePlaceCmd.asProxy().withTimeout(1.5) // cube throw
                         )),
                 Commands.parallel(
@@ -613,7 +613,7 @@ public static CommandBase blueThreeElement(SwerveSubsystem swerve, Superstructur
                                 groundPickUp2.asProxy(), // PICKUP
                                 Commands.waitSeconds(1.3), // time before SAFE
                                 ssResetCmd4.asProxy(), // SAFE
-                                Commands.waitSeconds(.80), // time before cube throw
+                                Commands.waitSeconds(.55), // time before cube throw
                                 lowCubePlaceCmd.asProxy().withTimeout(1.5) // cube throw
                         )),
                 Commands.parallel(
