@@ -30,7 +30,8 @@ public class AutonChooser {
         TWO_ELEMENT_BAL_CHARGE("2 - cone, cube w/ balance over charge"),
         TWO_POINT_FIVE("2.5 - cone, cube w/o balance"),
         TWO_POINT_FIVE_BUMP("2.5 - cone, cube, w/o balance over bump"),
-        THREE_ELEMENT("3 - cone, cube, cube w/o balance");
+        THREE_ELEMENT("3 - cone, cube, cube w/o balance"),
+        BLUE_THREE_ELEMENT("3- BLUE");
         
 
         public final String description;

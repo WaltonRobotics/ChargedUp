@@ -285,6 +285,9 @@ public class RobotContainer {
 		AutonChooser.AssignAutonCommand(AutonOption.THREE_ELEMENT, 
 			AutonFactory.threeElement(swerve, superstructure, claw, elevator, tilt, wrist),
 			PPPaths.twoEle.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.BLUE_THREE_ELEMENT, 
+			AutonFactory.blueThreeElement(swerve, superstructure, claw, elevator, tilt, wrist),
+			PPPaths.twoEle.getInitialHolonomicPose());
 		
 }
 

@@ -91,6 +91,9 @@ public class Paths {
 		public static final PathPlannerTrajectory three = PathPlanner.loadPath("three",
 				kPPConstraints);
 
+		public static final PathPlannerTrajectory blueThree = PathPlanner.loadPath("blueThree",
+				kPPConstraints);
+
 		public static final PathPlannerTrajectory twoEle2 = PathPlanner.loadPath("twoEle2", kPPConstraints);
 
 		public static final PathPlannerTrajectory twoEleAlt2 = PathPlanner.loadPath("twoEleAlt2", kPPConstraints);
