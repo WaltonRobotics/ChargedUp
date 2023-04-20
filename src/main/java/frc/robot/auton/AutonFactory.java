@@ -504,7 +504,7 @@ public final class AutonFactory {
                         tilt.autoHome().asProxy(),
                         elev.autoHome().asProxy()).withTimeout(1.5),
 
-                placeCmd.asProxy().withTimeout(1.55), // to top cone
+                placeCmd.asProxy().withTimeout(1.65), // to top cone
                 releaseCmd.asProxy(), // release claw
 
                 // SAFE
@@ -542,7 +542,7 @@ public final class AutonFactory {
                                 groundPickUp2.asProxy(), // PICKUP
                                 Commands.waitSeconds(1.3), // time before SAFE
                                 ssResetCmd4.asProxy(), // SAFE
-                                Commands.waitSeconds(.75), // time before cube throw
+                                Commands.waitSeconds(.80), // time before cube throw
                                 lowCubePlaceCmd.asProxy().withTimeout(1.5) // cube throw
                         )),
                 Commands.parallel(
