@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -112,9 +113,12 @@ public class TiltSubsystem extends SubsystemBase {
 		m_holdFfEffort = 0;
 		var pdSetpoint = m_holdController.getSetpoint();
 		if (pdSetpoint != 0) {
-			m_holdFfEffort = kHoldKs;
+			m_holdFfEffort = kHoldKs * Math.signum(m_holdController.getPositionError());
 		}
 		double totalEffort = m_holdFfEffort + m_holdPdEffort;
+		SmartDashboard.putNumber("tiltHoldPEff", m_holdPdEffort);
+		SmartDashboard.putNumber("tiltHoldFFEff", m_holdFfEffort);
+		SmartDashboard.putNumber("totalHoldEffort", totalEffort);
 		return totalEffort;
 	}
 
@@ -254,6 +258,9 @@ public class TiltSubsystem extends SubsystemBase {
 		log_actualAngle.accept(getDegrees());
 		log_rawAbsVal.accept(m_absoluteEncoder.get());
 		m_isCoast = nte_isCoast.getBoolean(false);
+		SmartDashboard.putNumber("tiltHoldPEff", m_holdPdEffort);
+		SmartDashboard.putNumber("tiltHoldFFEff", m_holdFfEffort);
+		SmartDashboard.putNumber("targetTiltAngle", m_targetAngle);
 	}
 
 	public CommandBase toState(TiltState state) {
