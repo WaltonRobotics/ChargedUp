@@ -69,6 +69,10 @@ public class SuperstructureToState extends SequentialCommandGroup {
             m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.25));
         }
 
+        if (m_targetState == SuperState.FASTTOPCONE ) {
+            m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*(.05)));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.20));
+        }
         if (m_targetState == SuperState.TOPCUBE) {
             m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle*(.3)));
             m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height*.3));

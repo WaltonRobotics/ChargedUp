@@ -16,6 +16,8 @@ public enum SuperState {
         ElevatorState.SUBSTATION, TiltState.SUBSTATION, WristState.SUBSTATION, ClawState.SUBSTATIONAUTO),
     TOPCONE(3, 
         ElevatorState.TOPCONE, TiltState.TOPCONE, WristState.TOPCONE, ClawState.IGNORE),
+    FASTTOPCONE(3, 
+        ElevatorState.TOPCONE, TiltState.TOPCONE, WristState.TOPCONE, ClawState.IGNORE),
     TOPCUBE(4, 
         ElevatorState.TOPCUBE, TiltState.TOPCUBE, WristState.TOPCUBE, ClawState.OPEN),
     MIDCONE(5, 
