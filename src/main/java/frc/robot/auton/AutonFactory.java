@@ -197,7 +197,7 @@ public final class AutonFactory {
 
 	public static CommandBase twoBumpPark(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
 			ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
-		var placeCmd = superstructure.toStateAuton(SuperState.TOPCONE).withTimeout(1.7);
+		var placeCmd = superstructure.toStateAuton(SuperState.FASTTOPCONE).withTimeout(1.7);
 		var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE)
 				.withTimeout(2.0);
 		var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE);
