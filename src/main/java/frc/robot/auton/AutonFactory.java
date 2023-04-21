@@ -542,7 +542,7 @@ public final class AutonFactory {
                                 groundPickUp2.asProxy(), // PICKUP
                                 Commands.waitSeconds(1.3), // time before SAFE
                                 ssResetCmd4.asProxy(), // SAFE
-                                Commands.waitSeconds(.55), // time before cube throw
+                                Commands.waitSeconds(.75), // time before cube throw
                                 lowCubePlaceCmd.asProxy().withTimeout(1.5) // cube throw
                         )),
                 Commands.parallel(
@@ -594,7 +594,7 @@ public static CommandBase blueThreeElement(SwerveSubsystem swerve, Superstructur
                                         groundPickUp.asProxy(), // PICKUP
                                         Commands.waitSeconds(2.0), // time before SAFE
                                         ssResetCmd2.asProxy(), // SAFE
-                                        Commands.waitSeconds(.05), // time before cube throw
+                                        Commands.waitSeconds(.2), // time before cube throw
                                         cubePlaceCmd.asProxy().withTimeout(1.50) // cube throw
                                 ))),
 
