@@ -222,6 +222,8 @@ public class RobotContainer {
 		
 		manipulator.start().onTrue(
 			claw.extendFlaps(false));
+		manipulator.back().onTrue(
+			claw.extendFlaps(true));
 
 		// manipulator.a().onTrue(
 		// 	claw.extendFlaps(true));
