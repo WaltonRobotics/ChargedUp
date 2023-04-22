@@ -113,8 +113,8 @@ public class VisionManager {
         boolean allianceBlue = DriverStation.getAlliance() == Alliance.Blue;
         boolean auton = DriverStation.isAutonomous();
         Set<Integer> allowedIds = auton ? 
-            (allianceBlue ? VisionK.BLUE_TAG_FIDS : VisionK.RED_TAG_FIDS ) :
-            VisionK.ALL_TAG_FIDS;
+            (allianceBlue ? VisionK.BLUE_NOSUB_TAG_FIDS : VisionK.RED_NOSUB_TAG_FIDS ) :
+            VisionK.ALL_NOSUB_TAG_FIDS;
 
         for (CameraEstimator cameraEstimator : cameraEstimators) {
           PhotonPipelineResult frame = cameraEstimator.camera().getLatestResult();
