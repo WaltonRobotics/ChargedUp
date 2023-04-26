@@ -12,17 +12,26 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class AutonChooser {
     public enum AutonOption {
         DO_NOTHING("do nothing"),
-        CONE_ONE_HALF_PARK("cone, pickup, balance"),
-        CONE_BACK_PARK("cone, leave, balance"),
-        CUBE_BACK_PARK("cube, leave, balance"),
-        
-        
-        //NOT IN USE
-        TWO_ELEMENT("cone-cube-nopark"),
-        ONE_CONE_PARK("drop cone then park"),
-        CONE_BACK("drop cone back"),
-        ONE_CUBE_AROUND("drop cube then go around and park"),
-        THREE_PIECE("three piece scoring");
+        ONE_METER("0 - one meter"),
+        DROP_ONLY("1 - cone w/o movement"),
+        ONE_CONE_OUT("1 - cone w/o balance"),
+        ONE_CONE_BUMP("1 - cone w/o balance over bump"),
+        CONE_BACK_PARK("1 - cone w/ balance"),
+        CUBE_BACK_PARK("1 - cube w/ balance"),
+        CONE_ONE_HALF_BUMP("1.5 - cone w/o balance over bump"),
+        CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),
+        CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),
+        CUBE_ONE_HALF_BUMP("1.5 - cube w/o balance over bump"),  
+        TWO_ELEMENT_BUMP_PARK("2.0 - cone, cube w/ balance over bump"),
+        TWO_ELEMENT("2 - cone, cube w/o balance"),
+        TWO_ELEMENT_BUMP("2 - cone, cube w/o balance over bump"),
+        TWO_ELEMENT_PARK("2 - cone, cube w/ balance"),
+        TWO_ELEMENT_OVER_CHARGE("2 - cone, cube w/o balance over charge"),
+        TWO_ELEMENT_BAL_CHARGE("2 - cone, cube w/ balance over charge"),
+        TWO_POINT_FIVE("2.5 - cone, cube w/o balance"),
+        TWO_POINT_FIVE_BUMP("2.5 - cone, cube, w/o balance over bump"),
+        THREE_ELEMENT("3 - cone, cube, cube w/o balance"),
+        BLUE_THREE_ELEMENT("3- BLUE");
         
 
         public final String description;

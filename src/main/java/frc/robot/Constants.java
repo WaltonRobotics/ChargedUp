@@ -1,16 +1,23 @@
 package frc.robot;
 
+import java.util.List;
+import java.util.Set;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -22,6 +29,7 @@ import frc.lib.util.LedUtils;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
+    public static boolean kDebugLoggingEnabled = true;
     public static final double stickDeadband = 0.1;
     public static final String canbus = "Canivore";
     
@@ -54,14 +62,13 @@ public final class Constants {
         public static final boolean kUseInternalEncoder = false;
 
         public static final int kPigeonCANID = 1;
-        public static final boolean kInvertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         public static final COTSFalconSwerveConstants kSwerveModule = COTSFalconSwerveConstants
                 .SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
         /* Drivetrain Constants in meters */
-        public static final double kTrackWidth = Units.inchesToMeters(27);
-        public static final double kWheelBase = Units.inchesToMeters(27);
+        public static final double kTrackWidth = Units.inchesToMeters(33);  //with
+        public static final double kWheelBase = Units.inchesToMeters(33);
         public static final double kWheelCircumference = kSwerveModule.wheelCircumference;
 
         /* Swerve Kinematics */
@@ -91,8 +98,8 @@ public final class Constants {
         public static final double kAnglePeakCurrentDuration = 0.1;
         public static final boolean kAngleEnableCurrentLimit = true;
 
-        public static final int kDriveContinuousCurrentLimit = 35;
-        public static final int kDrivePeakCurrentLimit = 60;
+        public static final int kDriveContinuousCurrentLimit = 40;
+        public static final int kDrivePeakCurrentLimit = 70;
         public static final double kDrivePeakCurrentDuration = 0.1;
         public static final boolean kDriveEnableCurrentLimit = true;
 
@@ -117,7 +124,7 @@ public final class Constants {
         public static final double kDriveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double kDriveKS = 0.32 / 12; // TODO: This must be tuned to specific robot
+        public static final double kDriveKS = 0.32 / 12;
         public static final double kDriveKV = 1.51 / 12;
         public static final double kDriveKA = 0.27 / 12;
 
@@ -135,9 +142,9 @@ public final class Constants {
         );
 
         /* Swerve Profiling Values */
-        public static final double kMaxVelocityMps = 4.5; // TODO: This must be tuned to specific robot //4.5
+        public static final double kMaxVelocityMps = 5.0; //4.5
         /* Radians per Second */
-        public static final double kMaxAngularVelocityRadps = 10.0; // TODO: This must be tuned to specific robot    //11.5
+        public static final double kMaxAngularVelocityRadps = 11.5; // 10
 
         /* Neutral Modes */
         public static final NeutralMode kAngleNeutralMode = NeutralMode.Coast;
@@ -187,10 +194,10 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 4;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 7;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 3*Math.PI;
+        public static final double kMaxSpeedMetersPerSecond = 4.4;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.5;  
+        public static final double kMaxAngularSpeedRadiansPerSecond = 9.6;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 24;
 
         // weight for trusting vision over odometry (higher value = less trust)
         // currently unused
@@ -199,10 +206,14 @@ public final class Constants {
         
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
-        public static double kPXController = 8; // 8
-        public static double kPYController = 8; // 8
-        public static double kPThetaController = 5.8; // 1
-        public static final double kDThetaController = 0.1;
+        public static double kPXController = 3.25; // 8
+        public static double kPYController = 3.25; 
+        public static double kPAutoGoYController = 3.25;
+        public static double kPAutoGoThetaController = 2.75;
+        public static double kAutoGoThetaControllerTolerance = .5;
+        public static double kAutoGoYControllerTolerance = .01;
+        public static double kPThetaController = 3.15; // 1
+        public static final double kDThetaController = 0.5;
         public static final double kFThetaControllerAuto = 0;
         public static final double kFThetaController = 1;
 
@@ -243,15 +254,16 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kAfterBrakeTime = .25;
         public static final double kTeleopBrakeTime = 1.5;
 
+        public static final double kAbsRawZero = 0.2586;
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
-        public static final double kAbsMaxDegree = 30; // max possible from offset
+        public static final double kAbsMaxDegree = 35; // max possible from offset
 
         
         public static final double kTopAngleDegrees = 15;
-        public static final double kTopConeAngleDegrees = 29.1;
-        public static final double kTopCubeAngleDegrees = 29.1;
-        public static final double kMidConeAngleDegrees = 22.118;
-        public static final double kMidCubeAngleDegrees = 22.041;
+        public static final double kTopConeAngleDegrees = 32.3;
+        public static final double kTopCubeAngleDegrees = 28.0;
+        public static final double kMidConeAngleDegrees = 23.5;
+        public static final double kMidCubeAngleDegrees = 25.041;
         public static final double kMidAngleDegrees = 29.1;
         public static final double kBotAngleDegrees = 0;
         public static final double kSubstationAngleDegrees = 0;
@@ -267,6 +279,13 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kP = .75;
         public static final double kD = 0.0;
         public static final double kS = 1.5;
+
+        public static final double kPHold = .7;
+        public static final double kDHold = 0;
+        public static final double kHoldKs = .705;
+
+        public static final double kVoltageCompSaturationVolts = 12.0;
+
         public static final double kGearRatio = ((49.0 / 1.0) * (37.0 / 21.0));
         public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kV = kMotor.KvRadPerSecPerVolt / kGearRatio;
@@ -285,7 +304,6 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         // max height 130580
         public static final int kLeftCANID = 11;
         public static final int kRightCANID = 12;
-        public static final int kLowerLimitSwitch = 5;
 
         public static final int kLowerLimitSwitchPort = 5;
 
@@ -295,20 +313,18 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final int kPeakCurrentLimit = 20;
         public static final double kPeakCurrentDuration = 0.1;
         public static final boolean kEnableCurrentLimit = true;
-        public static final int kForwardLimit = 130000;
-        public static final int kReverseLimit = 0;
-        public static final double kMaxTiltMinTicks = 12259.0; // raw height when fully tilted
-        public static final double kMaxTiltMinHeight = 0; // TODO: Convert above to height
+        public static final int kForwardLimit = 130000; //raw ticks
+        public static final int kReverseLimit = 9;  //raw ticks
+        public static final double kMaxTiltMinHeight = 0;
         public static final boolean kEnableForwardLimit = true;
         public static final boolean kEnableReverseLimit = true;
 
         public static final double kGearRatio = 12.0 / 1.0;
-        public static final DCMotor kMotor = DCMotor.getFalcon500(1);
         public static final double kP = 22; //sysid 9.2597E-05
         public static final double kD = 0;
         public static final double kS = 0.16114;
         public static final double kV = 9.7833;
-        public static final double kA = 0.4375; // 0.41885 from Tyler
+        public static final double kA = 0.4375; 
         public static final double kG = 0.1744;
         
         public static final double kPHold = .7;
@@ -317,26 +333,24 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
-        public static final double kElevatorHeightOffset = 0.015; // offset in meters
+        public static final double kElevatorHeightOffset = 0.000049; // offset in meters
         public static final double kCarriageMassKg = Units.lbsToKilograms(40);
         public static final double kMinHeightMeters = Units.inchesToMeters(0);
         public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
         public static final double kSafeHeight = kElevatorHeightOffset; // where wrist is free to move
 
-        public static final double kTopHeightMeters = Units.inchesToMeters(41); // TODO: change later :DDD
-        public static final double kTopCubeHeightM = 0.615;
-        public static final double kTopConeHeightM = 0.68;
+        public static final double kTopHeightMeters = Units.inchesToMeters(41);
+        public static final double kTopCubeHeightM = 0.5;
+        public static final double kTopConeHeightM = 0.696;
         public static final double kMidConeHeightM = 0.42;
-        public static final double kMidCubeHeightM = 0.36;
-        public static final double kMidHeightMeters = Units.inchesToMeters(30); // TODO: change later :DDD
-        public static final double kBotHeightMeters = 0; //TODO: change later :DDD
-        public static final double kSubstationHeightM = 0.4095;
-        public static final double kExtendedSubstationHeightM = .46;
-        public static final double kSubstationConeHeightM = 0;
+        public static final double kMidCubeHeightM = 0.30;
+        public static final double kBotHeightMeters = 0;
+        public static final double kSubstationHeightM = 0.413;
+        public static final double kExtendedSubstationHeightM = .485;
 
-        public static final double kMaxVelocity = 2.75; // Meters Per Second
-        public static final double kMaxAcceleration = 2.60; // Meters Per Second Squared
-        public static final double kMaxAccelerationDown = 1.85;
+        public static final double kMaxVelocity = 3.25; // Meters Per Second
+        public static final double kMaxAcceleration = 2.75; // Meters Per Second Squared
+        public static final double kMaxAccelerationDown = 2.6;
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
@@ -362,10 +376,10 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kMinDeg = -35;
         public static final double kMaxDeg = 76.5;
 
-        public static final double kTopConeDeg = 40.5;
-        public static final double kTopCubeDeg = 29.888;
+        public static final double kTopConeDeg = 36.74;
+        public static final double kTopCubeDeg = 25;
         public static final double kMidConeDeg = 36.0;
-        public static final double kMidCubeDeg = 25.316;
+        public static final double kMidCubeDeg = 30.316;
         public static final double kPickupDeg = -8.5;
         public static final double kSubstationDeg = 0;
         public static final double kExtendedSubstationDeg = 15;
@@ -389,15 +403,100 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final int kTheID = 0;
         public static final int kClawSensor = 0;
+
+        public static final int kLeftServo = 1;
+        public static final int kRightServo = 2;
+
+        public static final double kExtendOut = 1.0;
+        public static final double kRetractIn = 0.0;
+
+        public static final int kTimeOfFlightID = 0;
     }
 
-       // in meters
-       public static final class VisionConstants {
-        //TODO: update these values once we get them
-        public static final double kCameraHeight = 0.88265;
-        public static final double kCameraX = 0;
-        public static final double kCameraY = 0.1524;
-        public static final double kTargetHeight = 1; // TODO: update value
+    public static final class VisionK {
+        public static record VisionSource(String name, Transform3d robotToCamera) {}
+
+        private static final Transform3d leftCornerLow_RobotToCamera = new Transform3d(
+            new Translation3d(Units.inchesToMeters(-0.933), Units.inchesToMeters(11.623), Units.inchesToMeters(13.395)),
+            new Rotation3d(0, Units.degreesToRadians(-10), 0));
+
+        private static final Transform3d rightCornerLow_RobotToCamera = new Transform3d(
+            new Translation3d(Units.inchesToMeters(-0.933), Units.inchesToMeters(-11.623), Units.inchesToMeters(13.395)),
+            new Rotation3d(0, Units.degreesToRadians(-10), 0));
+    
+        public static final List<VisionSource> VISION_SOURCES = List.of(
+            new VisionSource("LeftCornerLow", leftCornerLow_RobotToCamera),
+            new VisionSource("RightCornerLow", rightCornerLow_RobotToCamera)
+        );
+
+        /**
+         * Standard deviations of the vision measurements. Increase these numbers to trust global
+         * measurements from vision less. This matrix is in the form [x, y, theta]ᵀ, with units in
+         * meters and radians.
+         *
+         * <p>These are not actually used anymore, but the constructor for the pose estimator wants
+         * them. This value is calculated dynamically using the below list.
+         */
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
+        Matrix.mat(Nat.N3(), Nat.N1())
+            .fill(
+                // if these numbers are less than one, multiplying will do bad things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+                );
+
+        public static final Set<Integer> RED_TAG_FIDS = Set.of(1, 2, 3, 4);
+        public static final Set<Integer> RED_NOSUB_TAG_FIDS = Set.of(1, 2, 3);
+        public static final Set<Integer> BLUE_TAG_FIDS = Set.of(5, 6, 7, 8);
+        public static final Set<Integer> BLUE_NOSUB_TAG_FIDS = Set.of(6, 7, 8);
+        public static final Set<Integer> ALL_TAG_FIDS = Set.of(1, 2, 3, 4, 5, 6, 7, 8);
+        public static final Set<Integer> ALL_NOSUB_TAG_FIDS = Set.of(1, 2, 3, 6, 7, 8);
+
+        public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS = List.of(
+            RED_TAG_FIDS, BLUE_TAG_FIDS);
+
+        public static final int MAX_FRAME_FIDS = 4;
+
+        public static final double POSE_AMBIGUITY_CUTOFF = .05;
+
+        public static record UnitDeviationParams(double distanceMultiplier, double eulerMultiplier, double minimum) {
+            private double computeUnitDeviation(double averageDistance) {
+                return Math.max(minimum, eulerMultiplier * Math.exp(averageDistance * distanceMultiplier));
+            }
+        }
+
+        public static record TagCountDeviation(UnitDeviationParams xParams, UnitDeviationParams yParams, UnitDeviationParams thetaParams) {
+            public Matrix<N3, N1> computeDeviation(double averageDistance) {
+                return Matrix.mat(Nat.N3(), Nat.N1())
+                    .fill(
+                        xParams.computeUnitDeviation(averageDistance),
+                        yParams.computeUnitDeviation(averageDistance),
+                        thetaParams.computeUnitDeviation(averageDistance));
+            }
+    
+            public TagCountDeviation(UnitDeviationParams xyParams, UnitDeviationParams thetaParams) {
+                this(xyParams, xyParams, thetaParams);
+            }
+      }
+
+        public static final List<TagCountDeviation> TAG_COUNT_DEVIATION_PARAMS =
+        List.of(
+            // 1 tag
+            new TagCountDeviation(
+                new UnitDeviationParams(.25, .4, .9),
+                new UnitDeviationParams(.35, .5, 1.2),
+                new UnitDeviationParams(.5, .7, 1.5)),
+
+            // 2 tags
+            new TagCountDeviation(
+                new UnitDeviationParams(.35, .1, .4), new UnitDeviationParams(.5, .7, 1.5)),
+
+            // 3+ tags
+            new TagCountDeviation(
+                new UnitDeviationParams(.25, .07, .25), new UnitDeviationParams(.15, 1, 1.5)));
+
+        public static final int THREAD_SLEEP_DURATION_MS = 5;
         public static final Pose2d kWayOutTherePose = new Pose2d(-1000, -1000, Rotation2d.fromDegrees(0));
     }
 
@@ -413,6 +512,9 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final Color kBlue = LedUtils.fixColor(Color.kBlue);
         public static final Color kYellow = LedUtils.fixColor(Color.kYellow);
         public static final Color kPurple = LedUtils.fixColor(Color.kPurple);
+        public static final Color kOrange = LedUtils.fixColor(Color.kOrange);
+        public static final Color kIndigo = LedUtils.fixColor(Color.kIndigo);
+        public static final Color kViolet = LedUtils.fixColor(Color.kViolet);
 
         // Specific colors
         public static final Color kCubeColor = kPurple;
@@ -422,6 +524,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         // Behaviors
         public static final double kBlinkPeriod = 0.080;
+        public static final double kBalanceBlinkPeriod = 0.020;
         public static final double kBlinkCount = 10;
     }
 }

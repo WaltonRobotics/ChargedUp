@@ -12,17 +12,17 @@ public class AdvantageScopeUtils {
         var t = pose.getTranslation();
         var q = pose.getRotation().getQuaternion();
         return new double[] {
-          t.getX(), t.getY(), t.getZ(),
-          q.getW(), q.getX(), q.getY(), q.getZ()
+                t.getX(), t.getY(), t.getZ(),
+                q.getW(), q.getX(), q.getY(), q.getZ()
         };
     }
 
     public static double[] toDoubleArr(Transform3d transform) {
-      var t = transform.getTranslation();
-      var q = transform.getRotation().getQuaternion();
-      return new double[] {
-        t.getX(), t.getY(), t.getZ(),
-        q.getW(), q.getX(), q.getY(), q.getZ()
-      };
-  }
+        var t = transform.getTranslation();
+        var q = transform.getRotation().getQuaternion();
+        return new double[] {
+                t.getX(), t.getY(), t.getZ(),
+                q.getW(), q.getX(), q.getY(), q.getZ()
+        };
+    }
 }

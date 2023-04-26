@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.LedK.*;
 
+import frc.lib.util.LedUtils;
+
+
 public class LEDSubsystem extends SubsystemBase {
     private final AddressableLED m_leds = new AddressableLED(kPort);
     private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(kNumLeds);
@@ -18,8 +21,11 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean m_blinkState = false;
     private int m_blinkCount = 0;
     public boolean isCone = false;
+    private int m_rainbowHue = 0;
 
     public LEDSubsystem() {
+        double subsysInitBegin = Timer.getFPGATimestamp();
+        System.out.println("[INIT] LEDSubsystem Init Begin");
         m_leds.setLength(m_ledBuffer.getLength());
         m_leds.setData(m_ledBuffer);
         m_leds.start();
@@ -27,7 +33,17 @@ public class LEDSubsystem extends SubsystemBase {
         m_ledStateTimer.reset();
 
         setDefaultCommand(idle());
+        double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
+		System.out.println("[INIT] LEDSubsystem Init End: " + subsysInitElapsed + "s");
     }
+
+    private void setAllColor(Color color) {
+        var fixedColor = LedUtils.fixColor(color);
+        for (int i = 0; i < kNumLeds; i++) {
+            m_ledBuffer.setLED(i, fixedColor);
+        }
+    }
+
 
     private void setIdle() {
         for (int i = 0; i < kNumLeds; i++) {
@@ -39,16 +55,34 @@ public class LEDSubsystem extends SubsystemBase {
                 col = (m_chaseUp) ? kRed : kBlue; // "chase" effect
             }
             m_ledBuffer.setLED(i, col);
-            // LedUtils.setPixel(m_ledBuffer, ledIdx, col);
         }
         m_chaseUp = !m_chaseUp;
         m_leds.setData(m_ledBuffer);
+    }
+
+    public CommandBase setBalanced() {
+        return run( () -> {
+            for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+            // Calculate the hue - hue is easier for rainbows because the color
+            // shape is a circle so only one value needs to precess
+            final var hue = (m_rainbowHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+            // Set the value
+            m_ledBuffer.setHSV(i, hue, 255, 128);
+            }
+            m_leds.setData(m_ledBuffer);
+            // Increase by to make the rainbow "move"
+            m_rainbowHue += 3;
+            // Check bounds
+            m_rainbowHue %= 180;
+        }
+    );
     }
 
     public CommandBase setCube() {
         return run(() ->  { 
             isCone = false;
             Color col = Color.kPurple;
+            setAllColor(col);
             for (int i = 0; i < kNumLeds; i++) {
                 m_ledBuffer.setLED(i, col);
             }

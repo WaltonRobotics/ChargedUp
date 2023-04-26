@@ -1,37 +1,42 @@
 package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
 
 public class NewBalance extends SequentialCommandGroup {
 
-    private CommandBase logBalanceState(int state) {
+    private CommandBase logBalanceState(double state) {
 		return Commands.runOnce(() -> {
-			SmartDashboard.putNumber("BalanceState", state);
+			log_balState.accept(state);
 		});
 	}
 
-    private final double m_rateThreshold = 5;
+    private final double m_rateThreshold = 6.5;
     private final double m_climbRateTimeout = 1.5;
 
     private double m_climbingSign = 0.0;
     private final Timer m_climbTimer = new Timer();
+    private final DoubleLogger log_balState = WaltLogger.logDouble("Command", "BalanceState");
+
+    public static Trigger m_balanceTrig;
 
 
     public NewBalance(SwerveSubsystem swerve) {
-
-        CommandBase oneHopThisTime = Commands.run(
-            ()-> swerve.drive(2.3, 0, 0, false, false), swerve)
-        .until(()-> Math.abs(swerve.getGyroPitch()) > 14 )
-        .finallyDo((intr) -> {
+        CommandBase oneHopThisTime =
+            Commands.run(
+                ()-> swerve.drive(3.25, 0, 0, false, false), swerve)
+        .until(()-> Math.abs(swerve.getGyroPitch()) > 14)
+        .finallyDo((intr) -> {      
             m_climbingSign = Math.signum(swerve.getGyroPitch());
         });
 		
 		CommandBase slideToTheFront = Commands.run(()-> {
-            swerve.drive(0.5, 0, 0, false, false);
+                swerve.drive(0.50, 0,0, false, false);
         }, swerve)
         .until(() -> {
             var curPitchRate = swerve.getFilteredGyroPitchRate();
@@ -48,9 +53,8 @@ public class NewBalance extends SequentialCommandGroup {
 
             return false;
         });
-		
-		// var takeItBackNowYall = Commands.run(()-> swerve.drive(-0.6, 0, 0, false, false), swerve)
-		// .withTimeout(1.175);
+
+        m_balanceTrig = new Trigger(() -> slideToTheFront.isFinished());
 
         addCommands(
             logBalanceState(1),
@@ -61,9 +65,8 @@ public class NewBalance extends SequentialCommandGroup {
             logBalanceState(2),
 			slideToTheFront,
             logBalanceState(3),
-            Commands.runOnce(swerve::stopWithX),
+            Commands.runOnce(swerve::xLock),
             logBalanceState(4)
-            //TODO: LEDS
         );
     }
 }

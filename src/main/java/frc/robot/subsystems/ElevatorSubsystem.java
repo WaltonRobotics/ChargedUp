@@ -19,15 +19,20 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.math.Conversions;
-import frc.lib.util.DashboardManager;
 import frc.robot.CTREConfigs;
 import java.util.function.DoubleSupplier;
+
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.*;
 
 import static frc.robot.Constants.*;
 public class ElevatorSubsystem extends SubsystemBase {
@@ -46,47 +51,62 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private double m_dynamicLowLimit = kMinHeightMeters;
 	private double m_pdEffort = 0;
 	private double m_ffEffort = 0;
-	private double m_totalEffort = 0;
 
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
-	// private boolean m_isCoast = false;
 
-	private final GenericEntry nte_ffEffort = DashboardManager.addTabDial(this, "FF Effort", -1, 1);
-	private final GenericEntry nte_pdEffort = DashboardManager.addTabDial(this, "PD Effort", -1, 1);
-	private final GenericEntry nte_totalEffort = DashboardManager.addTabDial(this, "Total Effort", -1, 1);
-	private final GenericEntry nte_targetHeight = DashboardManager.addTabNumberBar(this, "Target Height Meters",
-			kMinHeightMeters, kMaxHeightMeters);
-	private final GenericEntry nte_profileTargetHeight = DashboardManager.addTabNumberBar(this, "Prfoile Target Height Meters",
-	kMinHeightMeters, kMaxHeightMeters);
-	private final GenericEntry nte_actualHeight = DashboardManager.addTabNumberBar(this, "Actual Height Meters",
-			kMinHeightMeters, kMaxHeightMeters);
-	private final GenericEntry nte_actualHeightRaw = DashboardManager.addTabNumberBar(this, "Actual Height Raw", 0,
-			10000);
-	private final GenericEntry nte_coast = DashboardManager.addTabBooleanToggle(this, "Is Coast");
-	private final GenericEntry nte_atLowerLimit = DashboardManager.addTabBooleanBox(this, "At Lower Limit");
-	private final GenericEntry nte_profileVelo = DashboardManager.addTabDial(this, "PD Velo", -100, 100);
-	private final GenericEntry nte_actualVelo = DashboardManager.addTabNumberBar(this, "ActualVelo Mps",
-			-10, 10);
+	private boolean m_isCoast = false;
+
+	private final DoubleLogger
+		log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight, 
+		log_actualHeight, log_actualHeightRaw, log_profileVelo, log_actualVelo, 
+		log_holdPdEffort, log_holdFfEffort;
+	private final BooleanLogger log_atLowerLimit;
+
+	private final GenericEntry nte_isCoast;
 
 	public ElevatorSubsystem() {
-		DashboardManager.addTab(this);
+		double subsysInitBegin = Timer.getFPGATimestamp();
+		System.out.println("[INIT] ElevatorSubsystem Init Begin");
 		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
 		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
 
 		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
-		//m_right.enableVoltageCompensation(true);
 
 		m_right.setNeutralMode(NeutralMode.Brake);
 		m_left.setNeutralMode(NeutralMode.Brake);
 
 		m_left.follow(m_right);
 		m_left.setInverted(TalonFXInvertType.OpposeMaster);
-		// m_controller.setTolerance(.05);
 
 		m_right.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
 		m_right.configVelocityMeasurementWindow(16);
+
+		log_ffEffort = WaltLogger.logDouble(DB_TAB_NAME, "FFEffort");
+		log_pdEffort = WaltLogger.logDouble(DB_TAB_NAME, "PDEffort");
+		log_totalEffort = WaltLogger.logDouble(DB_TAB_NAME, "TotalEffort");
+		log_targetHeight = WaltLogger.logDouble(DB_TAB_NAME, "TargetHeightMeters");
+		log_profileTargetHeight = WaltLogger.logDouble(DB_TAB_NAME, "ProfileTargetHeightMeters");
+		log_actualHeight = WaltLogger.logDouble(DB_TAB_NAME, "ActualHeightMeters");
+		log_actualHeightRaw = WaltLogger.logDouble(DB_TAB_NAME, "ActualHeightRaw");
+		log_profileVelo = WaltLogger.logDouble(DB_TAB_NAME, "PDVelo");
+		log_actualVelo = WaltLogger.logDouble(DB_TAB_NAME, "ActualVeloMPS");
+		log_holdPdEffort = WaltLogger.logDouble(DB_TAB_NAME, "HoldPEffort");
+		log_holdFfEffort = WaltLogger.logDouble(DB_TAB_NAME, "HoldFFEffort");
+		log_atLowerLimit = WaltLogger.logBoolean(DB_TAB_NAME, "AtLowerLimit");
+
+		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
+			m_right.setSelectedSensorPosition(0);
+		}).ignoringDisable(true));
+
+		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
+		System.out.println("[INIT] ElevatorSubsystem Init End: " + subsysInitElapsed + "s");
+
+		nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
+                  .add("elev coast", false)
+                  .withWidget(BuiltInWidgets.kToggleSwitch)
+                  .getEntry();
 	}
 
 	/*
@@ -138,7 +158,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public CommandBase autoHome() {
 		return Commands.sequence(
 			startEnd(() -> {
-				m_right.setVoltage(-1);
+				m_right.setVoltage(-2);
 			}, () -> {
 				m_right.setVoltage(0);
 			}).until(m_lowerLimitTrigger)
@@ -185,9 +205,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 	/*
 	 * Sets both elevator motors to coast/brake
 	 */
-	public void setCoast(boolean coast) {
-		m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
-		m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+	public CommandBase setCoast(boolean coast) {
+		return runOnce(()-> { 
+			m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+			m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+		});
 	}
 
 	/*
@@ -221,12 +243,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 		double totalEffort = m_ffEffort + m_pdEffort;
 		
 		// logging
-		nte_ffEffort.setDouble(m_ffEffort);
-		nte_pdEffort.setDouble(m_pdEffort);
-		nte_totalEffort.setDouble(totalEffort);
-		nte_profileVelo.setDouble(pdSetpoint.velocity);
-		nte_profileTargetHeight.setDouble(pdSetpoint.position);
-		nte_actualVelo.setDouble(getActualVelocityMps());
+		log_ffEffort.accept(m_ffEffort);
+		log_pdEffort.accept(m_pdEffort);
+		log_totalEffort.accept(totalEffort);
+		log_profileVelo.accept(pdSetpoint.velocity);
+		log_profileTargetHeight.accept(pdSetpoint.position);
 
 		return totalEffort;
 	}
@@ -302,30 +323,23 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		if (!m_lowerLimit.get()) {
-			m_right.setSelectedSensorPosition(0);
-			// if(m_resetTimer.hasElapsed(2.5)){
-			// 	m_controller.reset(0);
-			// 	m_resetTimer.reset();
-			// }
-		}
-
 		updateShuffleBoard();
-		setCoast(nte_coast.getBoolean(false));
-		SmartDashboard.putNumber("HOLD P Effort", m_holdPdEffort);
-		SmartDashboard.putNumber("HOLD FF Effort", m_holdFfEffort);
+		log_holdPdEffort.accept(m_holdPdEffort);
+		log_holdFfEffort.accept(m_holdFfEffort);
+		setCoast(m_isCoast);
 	}
 
 	/*
 	 * Updates nte values
 	 */
 	public void updateShuffleBoard() {
-		nte_actualHeightRaw.setDouble(getActualHeightRaw());
-		nte_actualHeight.setDouble(getActualHeightMeters());
-		nte_ffEffort.setDouble(m_ffEffort);
-		nte_pdEffort.setDouble(m_pdEffort);
-		nte_totalEffort.setDouble(m_totalEffort);
-		nte_targetHeight.setDouble(getTargetHeightMeters());
-		nte_atLowerLimit.setBoolean(isFullyRetracted());
+		log_actualHeightRaw.accept(getActualHeightRaw());
+		log_actualHeight.accept(getActualHeightMeters());
+		log_targetHeight.accept(getTargetHeightMeters());
+		log_atLowerLimit.accept(isFullyRetracted());
+		log_actualVelo.accept(getActualVelocityMps());
+		SmartDashboard.putNumber("TICKS", getActualHeightRaw());
+		SmartDashboard.putNumber("ACTUAL HEIGHT", getActualHeightMeters());
+		m_isCoast = nte_isCoast.getBoolean(false);
 	}
 }

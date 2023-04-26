@@ -1,12 +1,9 @@
 package frc.robot.subsystems.superstructure;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.DashboardManager;
+import frc.lib.logging.WaltLogger;
+import frc.lib.logging.WaltLogger.DoubleLogger;
+import frc.lib.logging.WaltLogger.StringLogger;
 import frc.robot.Constants.ElevatorK;
 import frc.robot.Constants.TiltK;
 import frc.robot.Constants.WristK;
@@ -15,58 +12,33 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TheClaw;
 import frc.robot.subsystems.TiltSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import static frc.robot.Constants.WristK.*;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
-import static frc.robot.Constants.ElevatorK.*;
-
-public class Superstructure extends SubsystemBase {
+public class Superstructure {
 	protected final TiltSubsystem m_tilt;
 	protected final ElevatorSubsystem m_elevator;
 	protected final WristSubsystem m_wrist;
-	// protected final TheClaw m_claw;
 	protected final LEDSubsystem m_leds;
 
 	// State management
 	SuperState m_prevState = SuperState.SAFE;
 	private SuperState m_curState = SuperState.SAFE;
-	private final GenericEntry nte_currState = DashboardManager.addTabItem(this, "CurrState", "UNK");
-	private final GenericEntry nte_prevState = DashboardManager.addTabItem(this, "PrevState", "UNK");
-	protected final GenericEntry nte_stateQuirk = DashboardManager.addTabItem(this, "StateQuirk", "UNK");
+	private final DoubleLogger log_autoState = WaltLogger.logDouble("Superstructure", "AutonState");
+	protected final StringLogger log_currState = WaltLogger.logString("Superstructure", "CurrState");
+	protected final StringLogger log_prevState = WaltLogger.logString("Superstructure", "PrevState");
+	protected final StringLogger log_stateQuirk = WaltLogger.logString("Superstructure", "StateQuirk");
 	
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
 		m_elevator = elevator;
 		m_wrist = wrist;
-		// m_claw = claw;
 		m_leds = leds;
 
-		DashboardManager.addTab(this);
-		SmartDashboard.putNumber("SSAutoState", -1);
-	}
-
-	/*
-	 * Dynamically change the max (downwards) angle of the wrist
-	 * in degrees based on height and tilt of the elevator
-	 */
-	public void limitWristDynamic() {
-		double dynamicLimit = 0;
-		if (m_elevator.getActualHeightRaw() >= kSafeHeight) {
-			dynamicLimit = kMaxDeg;
-		}
-		m_wrist.setMaxDegrees(dynamicLimit);
-	}
-
-	/*
-	 * As soon as elevator is tilted,
-	 * change lower limit of elevator
-	 */
-	public void limitElevatorDynamic() {
-		if (!m_tilt.atReverseLimit()) {
-			m_elevator.setDynamicLimit(kMinHeightMeters + Units.inchesToMeters(2));
-		}
+		log_autoState.accept(-1.0);
+		log_currState.accept("UNK");
+		log_prevState.accept("UNK");
+		log_stateQuirk.accept("UNK");
 	}
 
 	public CommandBase toStateTeleop(SuperState state) {
@@ -78,7 +50,7 @@ public class Superstructure extends SubsystemBase {
 	}
 
 	private CommandBase cubeToss(SuperState state, TheClaw claw, boolean auton) {
-		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height *.25);
+		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height *.2);
 		var toStateCmd = auton ? toStateAuton(state) : toStateTeleop(state);
 
 		return Commands.parallel(
@@ -93,17 +65,6 @@ public class Superstructure extends SubsystemBase {
 
 	public CommandBase cubeTossTop(TheClaw claw, boolean auton) {
 		return cubeToss(SuperState.TOPCUBE, claw, auton);
-	}
-
-	public CommandBase overrideStates(DoubleSupplier elevPow, DoubleSupplier tiltPow, DoubleSupplier wristPow) {
-		return runOnce(() -> {
-			CommandScheduler.getInstance().cancel(
-				m_elevator.getCurrentCommand(), m_tilt.getCurrentCommand(), m_wrist.getCurrentCommand());
-			
-			m_elevator.teleopCmd(elevPow);
-			m_tilt.teleopCmd(tiltPow);
-			m_wrist.teleopCmd(wristPow);
-		});
 	}
 
 	public void initState() {
@@ -125,22 +86,14 @@ public class Superstructure extends SubsystemBase {
         );
 	}
 
-	public CommandBase calculateControllers(SuperState targetState){
-		return runOnce(()->{
-			m_elevator.getEffortForTarget(targetState.elev.height);
-			m_tilt.getEffortForTarget(targetState.tilt.angle);
-			m_wrist.getEffortForTarget(targetState.wrist.angle);
-		});
-	}
-
 	protected void updateState(SuperState newState) {
 		System.out.println(
-			"[SS] upateState - WAS " + m_prevState +
+			"[SS] updateState - WAS " + m_prevState +
 			", FROM " + m_curState +
 			" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
-		SmartDashboard.putNumber("SSAutoState", m_curState.idx);
+		log_autoState.accept((double)m_curState.idx);
 	}
 
 	public SuperState getPrevState() {
@@ -150,27 +103,9 @@ public class Superstructure extends SubsystemBase {
 	public SuperState getCurState() {
 		return m_curState;
 	}
-	
-	// public CommandBase releaseClaw() {
-	// 	return m_claw.release();
-	// }
 
-	// public CommandBase autoSafe() {
-	// 	if (m_claw.getClosed()) {
-	// 		if (m_curState == SuperState.GROUND_PICK_UP || m_curState == SuperState.SUBSTATION_PICK_UP || m_curState == SuperState.EXTENDED_SUBSTATION) {
-	// 			return new SuperstructureToState(this, SuperState.SAFE);
-	// 		}
-	// 	}
-	// 	return Commands.none();
-	// }
-	
-	// public CommandBase score(){
-	// }
-
-	@Override
-	public void periodic() {
-		nte_currState.setString(m_curState.toString());
-		nte_prevState.setString(m_prevState.toString());
-
+	public void periodicTelemetry() {
+		log_currState.accept(m_curState.toString());
+		log_prevState.accept(m_prevState.toString());
 	}
 }
