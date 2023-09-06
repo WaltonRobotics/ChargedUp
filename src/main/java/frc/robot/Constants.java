@@ -32,7 +32,7 @@ public final class Constants {
     public static boolean kDebugLoggingEnabled = true;
     public static final double stickDeadband = 0.1;
     public static final String canbus = "Canivore";
-    
+
     public static final class AtHome {
         public static final boolean AreWe = false;
         public static final double chargeStationApproachPwr = 2.25;
@@ -42,12 +42,12 @@ public final class Constants {
         public static final double reversePwr = 2;
     }
 
-    public static final class AtComp{
+    public static final class AtComp {
         public static final double chargeStationApproachPwr = 3;
         public static final double forwardPitch = 4.5;
         public static final double reversePitch = 4.5;
         public static final double forwardPwr = 2.15;
-       public static final double reversePwr = 2.15;
+        public static final double reversePwr = 2.15;
     }
 
     public static final class SwerveK {
@@ -67,7 +67,7 @@ public final class Constants {
                 .SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
         /* Drivetrain Constants in meters */
-        public static final double kTrackWidth = Units.inchesToMeters(33);  //with
+        public static final double kTrackWidth = Units.inchesToMeters(33); // with
         public static final double kWheelBase = Units.inchesToMeters(33);
         public static final double kWheelCircumference = kSwerveModule.wheelCircumference;
 
@@ -142,7 +142,7 @@ public final class Constants {
         );
 
         /* Swerve Profiling Values */
-        public static final double kMaxVelocityMps = 5.0; //4.5
+        public static final double kMaxVelocityMps = 5.0; // 4.5
         /* Radians per Second */
         public static final double kMaxAngularVelocityRadps = 11.5; // 10
 
@@ -195,7 +195,7 @@ public final class Constants {
 
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 4.4;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3.5;  
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.5;
         public static final double kMaxAngularSpeedRadiansPerSecond = 9.6;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 24;
 
@@ -203,11 +203,11 @@ public final class Constants {
         // currently unused
         public static final Matrix<N3, N1> kOdoStdDevs_DefaultTrust = VecBuilder.fill(0.1, 0.1, 0.025);
         public static final Matrix<N3, N1> kVisionStdDevs_DefaultTrust = VecBuilder.fill(0.9, 0.9, 10);
-        
+
         public static final Matrix<N3, N1> kVisionStdDevs_NoTrust = VecBuilder.fill(100, 100, 100);
 
         public static double kPXController = 3.25; // 8
-        public static double kPYController = 3.25; 
+        public static double kPYController = 3.25;
         public static double kPAutoGoYController = 3.25;
         public static double kPAutoGoThetaController = 2.75;
         public static double kAutoGoThetaControllerTolerance = .5;
@@ -221,7 +221,7 @@ public final class Constants {
         public static final double kOnBalanceAngleThresholdDegrees = Math.toRadians(5);
         public static final double kMinimumBalanceDegrees = 2;
 
-public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
+        public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         // Constraint for the motion profiled robt angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -233,10 +233,12 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
     }
 
-//     public static final class FieldK {
-//         public static final Pose3d kRedAllianceOrigin = new Pose3d(Units.inchesToMeters(651.25), 0.0, 0.0, new Rotation3d(0, 0, Math.PI));
-//     }
-    
+    // public static final class FieldK {
+    // public static final Pose3d kRedAllianceOrigin = new
+    // Pose3d(Units.inchesToMeters(651.25), 0.0, 0.0, new Rotation3d(0, 0,
+    // Math.PI));
+    // }
+
     // Elevator tilting motor
     public static final class TiltK {
         public static final String DB_TAB_NAME = "TiltSubsys";
@@ -250,7 +252,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final int kHomeSwitchPort = 9;
         public static final int kDiskBrakePort = 15;
 
-        public static final double kBeforeBrakeTime = .25;     //sec
+        public static final double kBeforeBrakeTime = .25; // sec
         public static final double kAfterBrakeTime = .25;
         public static final double kTeleopBrakeTime = 1.5;
 
@@ -258,7 +260,6 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kAbsZeroDegreeOffset = 199.8; // where zero is at
         public static final double kAbsMaxDegree = 35; // max possible from offset
 
-        
         public static final double kTopAngleDegrees = 15;
         public static final double kTopConeAngleDegrees = 32.3;
         public static final double kTopCubeAngleDegrees = 28.0;
@@ -313,20 +314,20 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final int kPeakCurrentLimit = 20;
         public static final double kPeakCurrentDuration = 0.1;
         public static final boolean kEnableCurrentLimit = true;
-        public static final int kForwardLimit = 130000; //raw ticks
-        public static final int kReverseLimit = 9;  //raw ticks
+        public static final int kForwardLimit = 130000; // raw ticks
+        public static final int kReverseLimit = 9; // raw ticks
         public static final double kMaxTiltMinHeight = 0;
         public static final boolean kEnableForwardLimit = true;
         public static final boolean kEnableReverseLimit = true;
 
         public static final double kGearRatio = 12.0 / 1.0;
-        public static final double kP = 22; //sysid 9.2597E-05
+        public static final double kP = 22; // sysid 9.2597E-05
         public static final double kD = 0;
         public static final double kS = 0.16114;
         public static final double kV = 9.7833;
-        public static final double kA = 0.4375; 
+        public static final double kA = 0.4375;
         public static final double kG = 0.1744;
-        
+
         public static final double kPHold = .7;
         public static final double kDHold = 0;
         public static final double kHoldKs = .705;
@@ -354,9 +355,10 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
 
         public static final ElevatorFeedforward kFeedforward = new ElevatorFeedforward(kS, kG, kV, kA);
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(kMaxVelocity,
-                kMaxAcceleration);      
-                public static final TrapezoidProfile.Constraints kConstraintsDown = new TrapezoidProfile.Constraints(kMaxVelocity,
-                kMaxAccelerationDown);      
+                kMaxAcceleration);
+        public static final TrapezoidProfile.Constraints kConstraintsDown = new TrapezoidProfile.Constraints(
+                kMaxVelocity,
+                kMaxAccelerationDown);
     }
 
     public static final class WristK {
@@ -367,7 +369,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kAbsEncoderTicksPerRotation = 1024;
         public static final double kP = .11;
         public static final double kD = 0.00;
-        public static final double kS = 1.5; 
+        public static final double kS = 1.5;
         public static final double kHoldKs = .15;
         public static final double kMaxVelocity = 12000; // deg/sec
         public static final double kMaxAcceleration = 14000; // deg/sec^2
@@ -383,7 +385,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final double kPickupDeg = -8.5;
         public static final double kSubstationDeg = 0;
         public static final double kExtendedSubstationDeg = 15;
-        
+
         public static final double kGearRatio = (80.0 / 1) / (16.0 / 22.0);
         public static final double kDrumRadiusMeters = Units.inchesToMeters(2);
         public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
@@ -414,36 +416,42 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
     }
 
     public static final class VisionK {
-        public static record VisionSource(String name, Transform3d robotToCamera) {}
+        public static record VisionSource(String name, Transform3d robotToCamera) {
+        }
 
+        // TODO: check which camera is being used
         private static final Transform3d leftCornerLow_RobotToCamera = new Transform3d(
-            new Translation3d(Units.inchesToMeters(-0.933), Units.inchesToMeters(11.623), Units.inchesToMeters(13.395)),
-            new Rotation3d(0, Units.degreesToRadians(-10), 0));
+                new Translation3d(Units.inchesToMeters(-2.875), Units.inchesToMeters(11.03125),
+                        Units.inchesToMeters(17.4375)),
+                new Rotation3d(0, Units.degreesToRadians(-10), 0)); // TODO: check the rotation
 
         private static final Transform3d rightCornerLow_RobotToCamera = new Transform3d(
-            new Translation3d(Units.inchesToMeters(-0.933), Units.inchesToMeters(-11.623), Units.inchesToMeters(13.395)),
-            new Rotation3d(0, Units.degreesToRadians(-10), 0));
-    
+                new Translation3d(Units.inchesToMeters(-2.875),
+                        Units.inchesToMeters(-11.03125), Units.inchesToMeters(17.4375)),
+                new Rotation3d(0, Units.degreesToRadians(-10), 0));
+
         public static final List<VisionSource> VISION_SOURCES = List.of(
-            new VisionSource("LeftCornerLow", leftCornerLow_RobotToCamera),
-            new VisionSource("RightCornerLow", rightCornerLow_RobotToCamera)
-        );
+                new VisionSource("LeftCornerLow", leftCornerLow_RobotToCamera),
+                new VisionSource("RightCornerLow", rightCornerLow_RobotToCamera));
 
         /**
-         * Standard deviations of the vision measurements. Increase these numbers to trust global
-         * measurements from vision less. This matrix is in the form [x, y, theta]ᵀ, with units in
+         * Standard deviations of the vision measurements. Increase these numbers to
+         * trust global
+         * measurements from vision less. This matrix is in the form [x, y, theta]ᵀ,
+         * with units in
          * meters and radians.
          *
-         * <p>These are not actually used anymore, but the constructor for the pose estimator wants
+         * <p>
+         * These are not actually used anymore, but the constructor for the pose
+         * estimator wants
          * them. This value is calculated dynamically using the below list.
          */
-        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
-        Matrix.mat(Nat.N3(), Nat.N1())
-            .fill(
-                // if these numbers are less than one, multiplying will do bad things
-                1, // x
-                1, // y
-                1 * Math.PI // theta
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
+                .fill(
+                        // if these numbers are less than one, multiplying will do bad things
+                        1, // x
+                        1, // y
+                        1 * Math.PI // theta
                 );
 
         public static final Set<Integer> RED_TAG_FIDS = Set.of(1, 2, 3, 4);
@@ -454,7 +462,7 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
         public static final Set<Integer> ALL_NOSUB_TAG_FIDS = Set.of(1, 2, 3, 6, 7, 8);
 
         public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS = List.of(
-            RED_TAG_FIDS, BLUE_TAG_FIDS);
+                RED_TAG_FIDS, BLUE_TAG_FIDS);
 
         public static final int MAX_FRAME_FIDS = 4;
 
@@ -466,35 +474,35 @@ public static final double kAlignAngleThresholdRadians = Math.toRadians(2.5);
             }
         }
 
-        public static record TagCountDeviation(UnitDeviationParams xParams, UnitDeviationParams yParams, UnitDeviationParams thetaParams) {
+        public static record TagCountDeviation(UnitDeviationParams xParams, UnitDeviationParams yParams,
+                UnitDeviationParams thetaParams) {
             public Matrix<N3, N1> computeDeviation(double averageDistance) {
                 return Matrix.mat(Nat.N3(), Nat.N1())
-                    .fill(
-                        xParams.computeUnitDeviation(averageDistance),
-                        yParams.computeUnitDeviation(averageDistance),
-                        thetaParams.computeUnitDeviation(averageDistance));
+                        .fill(
+                                xParams.computeUnitDeviation(averageDistance),
+                                yParams.computeUnitDeviation(averageDistance),
+                                thetaParams.computeUnitDeviation(averageDistance));
             }
-    
+
             public TagCountDeviation(UnitDeviationParams xyParams, UnitDeviationParams thetaParams) {
                 this(xyParams, xyParams, thetaParams);
             }
-      }
+        }
 
-        public static final List<TagCountDeviation> TAG_COUNT_DEVIATION_PARAMS =
-        List.of(
-            // 1 tag
-            new TagCountDeviation(
-                new UnitDeviationParams(.25, .4, .9),
-                new UnitDeviationParams(.35, .5, 1.2),
-                new UnitDeviationParams(.5, .7, 1.5)),
+        public static final List<TagCountDeviation> TAG_COUNT_DEVIATION_PARAMS = List.of(
+                // 1 tag
+                new TagCountDeviation(
+                        new UnitDeviationParams(.25, .4, .9),
+                        new UnitDeviationParams(.35, .5, 1.2),
+                        new UnitDeviationParams(.5, .7, 1.5)),
 
-            // 2 tags
-            new TagCountDeviation(
-                new UnitDeviationParams(.35, .1, .4), new UnitDeviationParams(.5, .7, 1.5)),
+                // 2 tags
+                new TagCountDeviation(
+                        new UnitDeviationParams(.35, .1, .4), new UnitDeviationParams(.5, .7, 1.5)),
 
-            // 3+ tags
-            new TagCountDeviation(
-                new UnitDeviationParams(.25, .07, .25), new UnitDeviationParams(.15, 1, 1.5)));
+                // 3+ tags
+                new TagCountDeviation(
+                        new UnitDeviationParams(.25, .07, .25), new UnitDeviationParams(.15, 1, 1.5)));
 
         public static final int THREAD_SLEEP_DURATION_MS = 5;
         public static final Pose2d kWayOutTherePose = new Pose2d(-1000, -1000, Rotation2d.fromDegrees(0));
