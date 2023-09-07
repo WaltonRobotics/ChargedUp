@@ -419,16 +419,15 @@ public final class Constants {
         public static record VisionSource(String name, Transform3d robotToCamera) {
         }
 
-        // TODO: check which camera is being used
         private static final Transform3d leftCornerLow_RobotToCamera = new Transform3d(
                 new Translation3d(Units.inchesToMeters(-2.875), Units.inchesToMeters(11.03125),
                         Units.inchesToMeters(17.4375)),
-                new Rotation3d(0, Units.degreesToRadians(-10), 0)); // TODO: check the rotation
+                new Rotation3d(0, Units.degreesToRadians(0), 0));
 
         private static final Transform3d rightCornerLow_RobotToCamera = new Transform3d(
                 new Translation3d(Units.inchesToMeters(-2.875),
                         Units.inchesToMeters(-11.03125), Units.inchesToMeters(17.4375)),
-                new Rotation3d(0, Units.degreesToRadians(-10), 0));
+                new Rotation3d(0, Units.degreesToRadians(0), 0));
 
         public static final List<VisionSource> VISION_SOURCES = List.of(
                 new VisionSource("LeftCornerLow", leftCornerLow_RobotToCamera),
