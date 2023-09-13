@@ -66,16 +66,16 @@ public class SuperstructureToState extends SequentialCommandGroup {
 
         if (m_targetState == SuperState.FASTTOPCONE) {
             m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle * 0.05));
-            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .20));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * 0.2));
         }
         if (m_targetState == SuperState.TOPCUBE) {
             m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle * 0.08));
-            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .3));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * 0.3));
         }
 
         if (m_targetState == SuperState.MIDCONE || m_targetState == SuperState.MIDCUBE) {
             m_elevWait = () -> (tilt.getDegrees() >= (m_targetState.tilt.angle * 0.1));
-            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .20));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * 0.2));
         }
 
         if (m_targetState == SuperState.SAFE) {
@@ -94,7 +94,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
         }
 
         if (m_targetState == SuperState.SAFE
-                && (Math.abs(elevator.getActualHeightMeters() - SuperState.EXTENDED_SUBSTATION.elev.height) <= .2)
+                && (Math.abs(elevator.getActualHeightMeters() - SuperState.EXTENDED_SUBSTATION.elev.height) <= 0.2)
                 && (Math.abs(tilt.getDegrees() - SuperState.EXTENDED_SUBSTATION.tilt.angle) <= 2)
                 && (Math.abs(wrist.getDegrees() - SuperState.EXTENDED_SUBSTATION.wrist.angle) <= 2)) {
             m_elevWait = () -> (tilt.getDegrees() <= m_targetState.tilt.angle + 5);
@@ -102,7 +102,7 @@ public class SuperstructureToState extends SequentialCommandGroup {
         }
 
         if (m_targetState == SuperState.SUBSTATION_PICK_UP) {
-            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * .25));
+            m_wristWait = () -> (elevator.getActualHeightMeters() >= (m_targetState.elev.height * 0.25));
         }
     }
 }

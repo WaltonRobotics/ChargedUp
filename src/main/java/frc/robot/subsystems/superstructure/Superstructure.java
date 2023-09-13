@@ -1,4 +1,5 @@
 package frc.robot.subsystems.superstructure;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.logging.WaltLogger;
@@ -28,7 +29,7 @@ public class Superstructure {
 	protected final StringLogger log_currState = WaltLogger.logString("Superstructure", "CurrState");
 	protected final StringLogger log_prevState = WaltLogger.logString("Superstructure", "PrevState");
 	protected final StringLogger log_stateQuirk = WaltLogger.logString("Superstructure", "StateQuirk");
-	
+
 	public Superstructure(TiltSubsystem tilt, ElevatorSubsystem elevator, WristSubsystem wrist, LEDSubsystem leds) {
 		m_tilt = tilt;
 		m_elevator = elevator;
@@ -50,13 +51,12 @@ public class Superstructure {
 	}
 
 	private CommandBase cubeToss(SuperState state, TheClaw claw, boolean auton) {
-		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height *.2);
+		BooleanSupplier clawWait = () -> (m_elevator.getActualHeightMeters() >= m_curState.elev.height * 0.2);
 		var toStateCmd = auton ? toStateAuton(state) : toStateTeleop(state);
 
 		return Commands.parallel(
-			toStateCmd,
-			Commands.waitUntil(clawWait).andThen(claw.release())
-		);
+				toStateCmd,
+				Commands.waitUntil(clawWait).andThen(claw.release()));
 	}
 
 	public CommandBase cubeTossMid(TheClaw claw, boolean auton) {
@@ -80,20 +80,19 @@ public class Superstructure {
 		var elevCmd = m_elevator.toHeight(ElevatorK.kBotHeightMeters);
 		var wristCmd = m_wrist.toAngle(WristK.kMaxDeg);
 		return Commands.parallel(
-            tiltCmd,	
-            wristCmd,
-            elevCmd
-        );
+				tiltCmd,
+				wristCmd,
+				elevCmd);
 	}
 
 	protected void updateState(SuperState newState) {
 		System.out.println(
-			"[SS] updateState - WAS " + m_prevState +
-			", FROM " + m_curState +
-			" TO " + newState);
+				"[SS] updateState - WAS " + m_prevState +
+						", FROM " + m_curState +
+						" TO " + newState);
 		m_prevState = m_curState;
 		m_curState = newState;
-		log_autoState.accept((double)m_curState.idx);
+		log_autoState.accept((double) m_curState.idx);
 	}
 
 	public SuperState getPrevState() {
