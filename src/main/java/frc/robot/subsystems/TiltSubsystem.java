@@ -42,18 +42,21 @@ public class TiltSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(kP, 0, kD, kConstraints);
 	private final PIDController m_holdController = new PIDController(kPHold, 0, kDHold);
 	private double m_targetAngle = 0;
-	private static double m_pdEffort = 0;
+	private double m_pdEffort = 0;
 	private double m_holdPdEffort = 0;
 	private double m_holdFfEffort = 0;
 
-	private final DoubleLogger log_actualAngle = WaltLogger.logDouble(DB_TAB_NAME, "ActualAngle");
-	private final DoubleLogger log_rawAbsVal = WaltLogger.logDouble(DB_TAB_NAME, "RawAbs");
+	private final DoubleLogger log_actualAngle = WaltLogger.logDouble(kDbTabName, "ActualAngle");
+	private final DoubleLogger log_targetAngle = WaltLogger.logDouble(kDbTabName, "TargetAngle");
+	private final DoubleLogger log_rawAbsVal = WaltLogger.logDouble(kDbTabName, "RawAbs");
+	private final DoubleLogger log_movePIDEffort = WaltLogger.logDouble(kDbTabName, "MovePIDEffort");
+	private final DoubleLogger log_holdPIDEffort = WaltLogger.logDouble(kDbTabName, "HoldPIDEffort");
+	private final DoubleLogger log_holdFFEffort = WaltLogger.logDouble(kDbTabName, "HoldFFEffort");
+	private final DoubleLogger log_motorVelo = WaltLogger.logDouble(kDbTabName, "MotorRpm");
 
 	public final Trigger m_homeSwitchTrigger = new Trigger(m_homeSwitch::get).negate();
 	private final GenericEntry nte_isCoast;
 
-	public static double nte_pdEffort = m_pdEffort;
-	
 	public TiltSubsystem() {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] TiltSubsystem Init Begin");
@@ -67,12 +70,11 @@ public class TiltSubsystem extends SubsystemBase {
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] TiltSubsystem Init End: " + subsysInitElapsed + "s");
 
-		nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
-                  .add("tilt coast", false)
-                  .withWidget(BuiltInWidgets.kToggleSwitch)
-                  .getEntry();
+		nte_isCoast = Shuffleboard.getTab(kDbTabName)
+				.add("tilt coast", false)
+				.withWidget(BuiltInWidgets.kToggleSwitch)
+				.getEntry();
 	}
-
 
 	public CommandBase setTarget(double degrees) {
 		return runOnce(() -> i_setTarget(degrees));
@@ -88,7 +90,7 @@ public class TiltSubsystem extends SubsystemBase {
 		return false;
 	}
 
-	public boolean getHomeSwitch(){
+	public boolean getHomeSwitch() {
 		return m_homeSwitchTrigger.getAsBoolean();
 	}
 
@@ -116,20 +118,16 @@ public class TiltSubsystem extends SubsystemBase {
 			m_holdFfEffort = kHoldKs * Math.signum(m_holdController.getPositionError());
 		}
 		double totalEffort = m_holdFfEffort + m_holdPdEffort;
-		SmartDashboard.putNumber("tiltHoldPEff", m_holdPdEffort);
-		SmartDashboard.putNumber("tiltHoldFFEff", m_holdFfEffort);
-		SmartDashboard.putNumber("totalHoldEffort", totalEffort);
 		return totalEffort;
 	}
 
 	public CommandBase holdAngle() {
-		return run(()->{
-			var holdEffort = 
-					MathUtil.clamp(getEffortToHold(m_targetAngle), -kVoltageCompSaturationVolts,
-							kVoltageCompSaturationVolts);
+		return run(() -> {
+			var holdEffort = MathUtil.clamp(getEffortToHold(m_targetAngle), -kVoltageCompSaturationVolts,
+					kVoltageCompSaturationVolts);
 			setVoltage(holdEffort / kVoltageCompSaturationVolts);
 		})
-		.withName("Hold Angle");
+				.withName("Hold Angle");
 	}
 
 	public double getDegrees() {
@@ -138,7 +136,7 @@ public class TiltSubsystem extends SubsystemBase {
 															// rotation)
 	}
 
-	public CommandBase resetEncoder(){
+	public CommandBase resetEncoder() {
 		return Commands.runOnce(() -> m_absoluteEncoder.reset()).ignoringDisable(true);
 	}
 
@@ -148,8 +146,8 @@ public class TiltSubsystem extends SubsystemBase {
 			m_targetAngle += powerVal * 1.2;
 			double effort = getEffortForTarget(m_targetAngle);
 			double holdEffort = getEffortToHold(m_targetAngle);
-			
-			if(powerVal > 0){
+
+			if (powerVal > 0) {
 				setVoltage(effort);
 			} else {
 				powerVal = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
@@ -189,13 +187,13 @@ public class TiltSubsystem extends SubsystemBase {
 				return Commands.runOnce(() -> m_absoluteEncoder.reset());
 			} else {
 				return Commands.sequence(
-					startEnd(() -> {
-						setVoltage(-2);
-					}, () -> {
-						setVoltage(0);
-					}).until(m_homeSwitchTrigger)
-					.andThen(atReverseLimit() ? new InstantCommand(() -> m_absoluteEncoder.reset()) : Commands.none())
-				);
+						startEnd(() -> {
+							setVoltage(-2);
+						}, () -> {
+							setVoltage(0);
+						}).until(m_homeSwitchTrigger)
+								.andThen(atReverseLimit() ? new InstantCommand(() -> m_absoluteEncoder.reset())
+										: Commands.none()));
 			}
 		}, this);
 	}
@@ -209,14 +207,15 @@ public class TiltSubsystem extends SubsystemBase {
 	 */
 	public CommandBase toAngle(double angle) {
 		var setupCmd = runOnce(() -> {
-			if (angle > getDegrees()) {
-				double tempMaxVelocity = kMaxVelocityForward;
-				double tempMaxAcceleration = kMaxAccelerationForward;
-				
-				m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity, tempMaxAcceleration));
-			} else {
-				m_controller.setConstraints(kConstraints);
-			}
+			// if (angle > getDegrees()) {
+			// double tempMaxVelocity = kMaxVelocityForward;
+			// double tempMaxAcceleration = kMaxAccelerationForward;
+
+			// m_controller.setConstraints(new TrapezoidProfile.Constraints(tempMaxVelocity,
+			// tempMaxAcceleration));
+			// } else {
+			// m_controller.setConstraints(kConstraints);
+			// }
 			m_controller.reset(getDegrees());
 			i_setTarget(angle);
 		});
@@ -225,19 +224,18 @@ public class TiltSubsystem extends SubsystemBase {
 			var effort = MathUtil.clamp(getEffortForTarget(m_targetAngle), -12, 12);
 			setVoltage(effort);
 		})
-		.until(() -> {
-			return m_controller.atGoal();
-		})
-		.finallyDo((intr) -> {
-			m_motor.set(0);
-		})
-		.withTimeout(1.6)
-		.withName("ToAngle");
+				.until(() -> {
+					return m_controller.atGoal();
+				})
+				.finallyDo((intr) -> {
+					m_motor.set(0);
+				})
+				.withTimeout(1.6)
+				.withName("ToAngle");
 
 		return Commands.sequence(
-			setupCmd,
-			moveCmd
-		);
+				setupCmd,
+				moveCmd);
 	}
 
 	public void setCoast(boolean coast) {
@@ -256,11 +254,13 @@ public class TiltSubsystem extends SubsystemBase {
 	public void updateShuffleBoard() {
 		// Push telemetry
 		log_actualAngle.accept(getDegrees());
+		log_targetAngle.accept(m_targetAngle);
 		log_rawAbsVal.accept(m_absoluteEncoder.get());
 		m_isCoast = nte_isCoast.getBoolean(false);
-		SmartDashboard.putNumber("tiltHoldPEff", m_holdPdEffort);
-		SmartDashboard.putNumber("tiltHoldFFEff", m_holdFfEffort);
-		SmartDashboard.putNumber("targetTiltAngle", m_targetAngle);
+		log_movePIDEffort.accept(m_pdEffort);
+		log_holdFFEffort.accept(m_holdFfEffort);
+		log_holdPIDEffort.accept(m_holdPdEffort);
+		log_motorVelo.accept(m_motor.getEncoder().getVelocity() / 60);
 	}
 
 	public CommandBase toState(TiltState state) {
@@ -275,7 +275,7 @@ public class TiltSubsystem extends SubsystemBase {
 		MIDCONE(kMidConeAngleDegrees, 0),
 		MIDCUBE(kMidCubeAngleDegrees, 1),
 		BOTTOMMOST(kMinAngleDegrees, 0),
-		EXTENDED_SUBSTATION(kExtendedSubstationAngleDegrees,0);
+		EXTENDED_SUBSTATION(kExtendedSubstationAngleDegrees, 0);
 
 		public final double angle;
 		public final int isCube;
