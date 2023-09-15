@@ -35,6 +35,7 @@ import frc.lib.logging.WaltLogger;
 import frc.lib.logging.WaltLogger.*;
 
 import static frc.robot.Constants.*;
+
 public class ElevatorSubsystem extends SubsystemBase {
 	private final WPI_TalonFX m_left = new WPI_TalonFX(kLeftCANID, canbus);
 	private final WPI_TalonFX m_right = new WPI_TalonFX(kRightCANID, canbus);
@@ -45,7 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			kP, 0, kD, kConstraints);
 
 	private final PIDController m_holdController = new PIDController(
-		kPHold, 0, kDHold);
+			kPHold, 0, kDHold);
 
 	private double m_targetHeight = 0;
 	private double m_dynamicLowLimit = kMinHeightMeters;
@@ -57,10 +58,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	private boolean m_isCoast = false;
 
-	private final DoubleLogger
-		log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight, 
-		log_actualHeight, log_actualHeightRaw, log_profileVelo, log_actualVelo, 
-		log_holdPdEffort, log_holdFfEffort;
+	private final DoubleLogger log_ffEffort, log_pdEffort, log_totalEffort, log_targetHeight, log_profileTargetHeight,
+			log_actualHeight, log_actualHeightRaw, log_profileVelo, log_actualVelo,
+			log_holdPdEffort, log_holdFfEffort;
 	private final BooleanLogger log_atLowerLimit;
 
 	private final GenericEntry nte_isCoast;
@@ -104,9 +104,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		System.out.println("[INIT] ElevatorSubsystem Init End: " + subsysInitElapsed + "s");
 
 		nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
-                  .add("elev coast", false)
-                  .withWidget(BuiltInWidgets.kToggleSwitch)
-                  .getEntry();
+				.add("elev coast", false)
+				.withWidget(BuiltInWidgets.kToggleSwitch)
+				.getEntry();
 	}
 
 	/*
@@ -157,41 +157,40 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 	public CommandBase autoHome() {
 		return Commands.sequence(
-			startEnd(() -> {
-				m_right.setVoltage(-2);
-			}, () -> {
-				m_right.setVoltage(0);
-			}).until(m_lowerLimitTrigger)
-		);
+				startEnd(() -> {
+					m_right.setVoltage(-2);
+				}, () -> {
+					m_right.setVoltage(0);
+				}).until(m_lowerLimitTrigger));
 	}
 
 	/**
 	 * @return A cmd to move the elevator via stick
-	 * sets elevator to target height if no input
+	 *         sets elevator to target height if no input
 	 */
 	public CommandBase teleopCmd(DoubleSupplier power) {
 		return run(() -> {
 			double dir = Math.signum(power.getAsDouble());
 			double output = 0;
-			
+
 			if (isFullyRetracted() && dir == -1) {
 				output = 0;
 			} else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 			}
 
-			m_targetHeight += output * .02;
+			m_targetHeight += output * 0.02;
 			double effort = getEffortForTarget(m_targetHeight);
 			double holdEffort = getEffortToHold(m_targetHeight);
-			
-			if(output > 0){
+
+			if (output != 0) {
 				m_right.setVoltage(effort);
 			} else {
 				output = MathUtil.applyDeadband(power.getAsDouble(), stickDeadband);
 				m_right.setVoltage(holdEffort);
 			}
 		})
-		.withName("TeleManual");
+				.withName("TeleManual");
 	}
 
 	/*
@@ -206,7 +205,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * Sets both elevator motors to coast/brake
 	 */
 	public CommandBase setCoast(boolean coast) {
-		return runOnce(()-> { 
+		return runOnce(() -> {
 			m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 			m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
 		});
@@ -241,7 +240,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 			m_ffEffort = kFeedforward.calculate(pdSetpoint.velocity);
 		}
 		double totalEffort = m_ffEffort + m_pdEffort;
-		
+
 		// logging
 		log_ffEffort.accept(m_ffEffort);
 		log_pdEffort.accept(m_pdEffort);
@@ -271,18 +270,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return runOnce(() -> {
 			m_controller.reset(getActualHeightMeters());
 			i_setTarget(heightMeters);
-			if(heightMeters < getActualHeightMeters()){
+			if (heightMeters < getActualHeightMeters()) {
 				m_controller.setConstraints(kConstraintsDown);
-			}
-			else{
+			} else {
 				m_controller.setConstraints(kConstraints);
 			}
 		})
 				.andThen(run(() -> {
-					var effort = 
-					MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
+					var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
 							kVoltageCompSaturationVolts);
-					
+
 					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
 				}))
 				.until(() -> {
@@ -294,14 +291,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 				.withName("AutoToHeight");
 	}
 
-	public CommandBase holdHeight(){
-		return run(()->{
-			var holdEffort = 
-					MathUtil.clamp(getEffortToHold(m_targetHeight), -kVoltageCompSaturationVolts,
-							kVoltageCompSaturationVolts);
+	public CommandBase holdHeight() {
+		return run(() -> {
+			var holdEffort = MathUtil.clamp(getEffortToHold(m_targetHeight), -kVoltageCompSaturationVolts,
+					kVoltageCompSaturationVolts);
 			m_right.set(ControlMode.PercentOutput, holdEffort / kVoltageCompSaturationVolts);
 		})
-		.withName("Hold Height");
+				.withName("Hold Height");
 	}
 
 	public enum ElevatorState {

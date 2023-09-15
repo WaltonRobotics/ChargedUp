@@ -51,7 +51,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final SwerveModule rrModule = new SwerveModule("RearRight", 3, Mod3.constants);
 
 	private final SwerveModule[] m_modules = new SwerveModule[] {
-		flModule, frModule, rlModule, rrModule
+			flModule, frModule, rlModule, rrModule
 	};
 
 	private final Pigeon2 m_pigeon = new Pigeon2(Constants.SwerveK.kPigeonCANID, "Canivore");
@@ -59,7 +59,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
-	
+
 	protected final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController autoGoYController = new PIDController(kPAutoGoThetaController, 0, 0);
@@ -71,7 +71,6 @@ public class SwerveSubsystem extends SubsystemBase {
 	protected final SwerveAutoBuilder autoBuilder;
 	private double teleOpGyroZero = 0;
 	public boolean addVision = true;
-	
 
 	private final Timer m_cancoderReseedTimer = new Timer();
 	private final Timer m_lastMotionStoppedTimer = new Timer();
@@ -144,7 +143,7 @@ public class SwerveSubsystem extends SubsystemBase {
 				autoEventMap,
 				false,
 				this);
-		
+
 		m_cancoderReseedTimer.restart();
 		m_lastMotionStoppedTimer.restart();
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
@@ -243,13 +242,15 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
-	 * return to their normal orientations the next time a nonzero velocity is requested.
+	 * Stops the drive and turns the modules to an X arrangement to resist movement.
+	 * The modules will
+	 * return to their normal orientations the next time a nonzero velocity is
+	 * requested.
 	 */
 	protected void xLock() {
 		stop();
 		for (SwerveModule mod : m_modules) {
-			mod.setDesiredState(new SwerveModuleState(0,new Rotation2d(45)), true, true);
+			mod.setDesiredState(new SwerveModuleState(0, new Rotation2d(45)), true, true);
 		}
 
 	}
@@ -258,11 +259,11 @@ public class SwerveSubsystem extends SubsystemBase {
 		drive(0, 0, Rotation2d.fromDegrees(0), true);
 	}
 
-	public void setTeleOpGyroZero(double angle){
+	public void setTeleOpGyroZero(double angle) {
 		teleOpGyroZero = angle;
 	}
 
-	public double getTeleOpGyroZero(){
+	public double getTeleOpGyroZero() {
 		return teleOpGyroZero;
 	}
 
@@ -293,7 +294,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		return states;
 	}
-	
+
 	public SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] positions = new SwerveModulePosition[4];
 		for (SwerveModule mod : m_modules) {
@@ -301,8 +302,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 		return positions;
 	}
-
-	
 
 	public void zeroGyro() {
 		m_pigeon.setYaw(180);
@@ -320,12 +319,12 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	protected double getGyroYaw() {
-		return m_pigeon.getYaw() ;
+		return m_pigeon.getYaw();
 	}
 
 	protected double getGyroRoll() {
 		return m_pigeon.getPitch(); // CTRE is Dumb
-	}	
+	}
 
 	protected double getGyroPitch() {
 		return m_pigeon.getRoll(); // CTRE is Dumb
@@ -353,17 +352,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void resetPose(Pose2d pose) {
 		var poseDeg = pose.getRotation().getDegrees();
-		if(Flipper.shouldFlip() && poseDeg < 180) {
+		if (Flipper.shouldFlip() && poseDeg < 180) {
 			setYaw(poseDeg - 180);
-		} else if(Flipper.shouldFlip() && poseDeg >= 180) {
+		} else if (Flipper.shouldFlip() && poseDeg >= 180) {
 			setYaw(poseDeg);
-		} else if(!Flipper.shouldFlip() && poseDeg < 180) {
+		} else if (!Flipper.shouldFlip() && poseDeg < 180) {
 			setYaw(poseDeg - 180);
 		} else {
 			setYaw(poseDeg);
 		}
 		resetEstimatorPose(pose); // resets poseEstimator
 	}
+
 	/*
 	 * Set steer to brake and drive to coast for odometry testing
 	 */
@@ -372,6 +372,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.setOdoTestMode(false);
 		}
 	}
+
 	/*
 	 * Set relative drive encoders to 0
 	 */
@@ -382,19 +383,19 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public Translation2d getFieldRelativeLinearSpeedsMPS() {
-        ChassisSpeeds robotRelativeSpeeds = kKinematics.toChassisSpeeds(getModuleStates());
-        ChassisSpeeds fieldRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            robotRelativeSpeeds,
-            Rotation2d.fromRadians(robotRelativeSpeeds.omegaRadiansPerSecond)
-        );
-        Translation2d translation = new Translation2d(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond);
+		ChassisSpeeds robotRelativeSpeeds = kKinematics.toChassisSpeeds(getModuleStates());
+		ChassisSpeeds fieldRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+				robotRelativeSpeeds,
+				Rotation2d.fromRadians(robotRelativeSpeeds.omegaRadiansPerSecond));
+		Translation2d translation = new Translation2d(fieldRelativeSpeeds.vxMetersPerSecond,
+				fieldRelativeSpeeds.vyMetersPerSecond);
 
-        if (translation.getNorm() < 0.01) {
-            return new Translation2d();
-        } else {
-            return translation;
-        }
-    }
+		if (translation.getNorm() < 0.01) {
+			return new Translation2d();
+		} else {
+			return translation;
+		}
+	}
 
 	public CommandBase teleopDriveCmd(
 			DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation,
@@ -419,7 +420,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return runOnce(this::xLock);
 	}
 
-	public CommandBase teleOpReset(){
+	public CommandBase teleOpReset() {
 		return runOnce(this::zeroGyro);
 	}
 
@@ -427,12 +428,12 @@ public class SwerveSubsystem extends SubsystemBase {
 		return new NewBalance(this);
 	}
 
-	public Command reverseReverse(){
+	public Command reverseReverse() {
 		return new ReverseBalance(this);
 	}
 
 	// public CommandBase autoScore(Pose2d endPose) {
-	// 	return new SwerveAutoGo(ReferencePoints.notBumper2, endPose, this);
+	// return new SwerveAutoGo(ReferencePoints.notBumper2, endPose, this);
 	// }
 
 	/**
@@ -442,7 +443,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	 */
 	public CommandBase goToChosenPoint(Pose2d endPose) {
 		var follow = run(() -> {
-			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
+			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(),
+			// Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
 			Pose2d currentPose = getPose();
@@ -450,15 +452,14 @@ public class SwerveSubsystem extends SubsystemBase {
 			FieldObject2d field2dEndPose = m_field.getObject("EndPose");
 			field2dEndPose.setPose(actualEndPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
-				actualEndPose.getY());
+					actualEndPose.getY());
 			double xRate = xController.calculate(currentPose.getY(),
-				actualEndPose.getY());
+					actualEndPose.getY());
 			System.out.println("going to " + endPose.toString());
-			
-			if(Flipper.shouldFlip()){
+
+			if (Flipper.shouldFlip()) {
 				gyroBasedDrive(xRate, yRate, new Rotation2d(0));
-			}
-			else{
+			} else {
 				gyroBasedDrive(xRate, -yRate, new Rotation2d(0));
 			}
 		});
@@ -469,7 +470,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	public CommandBase autoAlign(Pose2d endPose) {
 		var follow = run(() -> {
 			addVision = false;
-			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
+			// double translationVal = MathUtil.applyDeadband(translation.getAsDouble(),
+			// Constants.stickDeadband);
 			log_autoGoYPos.accept(getPose().getY());
 			log_autoGoThetaPos.accept(getPose().getRotation().getDegrees());
 			Pose2d currentPose = getPose();
@@ -477,31 +479,30 @@ public class SwerveSubsystem extends SubsystemBase {
 			FieldObject2d field2dEndPose = m_field.getObject("EndPose");
 			field2dEndPose.setPose(actualEndPose);
 			double yRate = autoGoYController.calculate(currentPose.getY(),
-				actualEndPose.getY());
+					actualEndPose.getY());
 			double xRate = xController.calculate(currentPose.getX(),
-				actualEndPose.getX());
+					actualEndPose.getX());
 			System.out.println("going to " + endPose.toString());
-			
+
 			if (Flipper.shouldFlip()) {
 				drive(xRate, yRate, actualEndPose.getRotation(), false);
 			} else {
 				drive(xRate, -yRate, actualEndPose.getRotation(), false);
 			}
 		})
-		.until(()-> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint())
-		.finallyDo((intr)->{
-			addVision = true;
-		});
+				.until(() -> autoGoThetaController.atSetpoint() && autoGoYController.atSetpoint())
+				.finallyDo((intr) -> {
+					addVision = true;
+				});
 
 		return follow;
 	}
 
-
 	public CommandBase goToConeOrCube(DoubleSupplier translation, boolean isCone) {
 		Pose2d closestPose = isCone ? conesPoses[0] : cubesPoses[0];
-		double lastPoseDiff = isCone ? Math.abs(getPose().getY() - conesPoses[0].getY()) 
-			: Math.abs(getPose().getY() - cubesPoses[0].getY());
-		if(isCone) {
+		double lastPoseDiff = isCone ? Math.abs(getPose().getY() - conesPoses[0].getY())
+				: Math.abs(getPose().getY() - cubesPoses[0].getY());
+		if (isCone) {
 			for (int i = 1; i < conesPoses.length; i++) {
 				double currentPoseDiff = Math.abs(getPose().getY() - conesPoses[i].getY());
 				if (currentPoseDiff < lastPoseDiff) {
@@ -526,16 +527,16 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	protected CommandBase ppFollowerCmd(PathPlannerTrajectory traj) {
 		return new PPSwerveControllerCommand(
-			traj,
-			this::getPose, // Pose supplier
-			kKinematics, // SwerveDriveKinematics
-			xController,
-			yController,
-			autoThetaController,
-			(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
-			false, // Should the path be automatically mirrored depending on alliance color.
-					// Optional, defaults to true
-			this // Requires this drive subsystem
+				traj,
+				this::getPose, // Pose supplier
+				kKinematics, // SwerveDriveKinematics
+				xController,
+				yController,
+				autoThetaController,
+				(moduleStates) -> setModuleStates(moduleStates, false, false), // Module states consumer
+				false, // Should the path be automatically mirrored depending on alliance color.
+						// Optional, defaults to true
+				this // Requires this drive subsystem
 		);
 	}
 
@@ -547,7 +548,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		return new DeferredCommand(() -> {
 			var newTraj = trajectory;
 
-			if(Flipper.shouldFlip()){
+			if (Flipper.shouldFlip()) {
 				newTraj = Flipper.allianceFlip(trajectory);
 			}
 
@@ -556,8 +557,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			var resetCmd = runOnce(() -> {
 				resetPose(actualNewTraj.getInitialHolonomicPose());
 			});
-			
-			
+
 			return resetCmd.andThen(ppFollowerCmd(newTraj));
 		}).withName("PPPathFollower");
 	}
@@ -568,13 +568,13 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 
 		return new DeferredCommand(() -> {
-			if (trajList.size() == 0) return Commands.print("PPSwerve - Empty path group given!");
+			if (trajList.size() == 0)
+				return Commands.print("PPSwerve - Empty path group given!");
 
 			List<PathPlannerTrajectory> newTrajList = new ArrayList<PathPlannerTrajectory>();
 			newTrajList.addAll(trajList);
 
-
-			if(Flipper.shouldFlip()){
+			if (Flipper.shouldFlip()) {
 				newTrajList.clear();
 				for (var traj : trajList) {
 					newTrajList.add(Flipper.allianceFlip(traj));
@@ -623,14 +623,14 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void updateVision() {
 		VisionMeasurement measurement;
 		while ((measurement = m_visionManager.drainVisionMeasurement()) != null) {
-		m_poseEstimator.addVisionMeasurement(
-			measurement.estimation().estimatedPose.toPose2d(),
-			measurement.estimation().timestampSeconds,
-			measurement.confidence());
+			m_poseEstimator.addVisionMeasurement(
+					measurement.estimation().estimatedPose.toPose2d(),
+					measurement.estimation().timestampSeconds,
+					measurement.confidence());
 		}
 	}
 
-	public void updateOdo(){
+	public void updateOdo() {
 		var poseEstBegin = Timer.getFPGATimestamp();
 		m_poseEstimator.update(getHeading(), getModulePositions());
 		m_state.update(getPose(), getModuleStates(), m_field);
@@ -664,11 +664,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		for (var module : m_modules) {
 			module.periodic();
 		}
-		if(addVision){
+		if (addVision) {
 			updateVision();
 		}
 		updateOdo();
-
 
 		log_yaw.accept(getGyroYaw());
 		log_pitch.accept(getGyroPitch());
@@ -692,7 +691,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		log_autoGoThetaDesiredPos.accept(autoGoThetaController.getSetpoint());
 		log_autoGoYDesiredPos.accept(autoGoYController.getSetpoint());
 	}
-
 
 	@Override
 	public void simulationPeriodic() {
