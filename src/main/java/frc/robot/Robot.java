@@ -28,11 +28,10 @@ public class Robot extends TimedRobot {
       PathPlannerServer.startServer(5811);
     }
     DriverStation.silenceJoystickConnectionWarning(true);
-    
+
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-    
-    
+
     m_robotContainer = new RobotContainer();
     addPeriodic(m_robotContainer.superstructure::periodicTelemetry, kDefaultPeriod);
   }
@@ -45,11 +44,11 @@ public class Robot extends TimedRobot {
     if (DriverStation.isFMSAttached()) {
       Constants.kDebugLoggingEnabled = false;
     }
-    if(m_robotContainer.tilt.getHomeSwitch()){
+    if (m_robotContainer.tilt.getHomeSwitch()) {
       m_robotContainer.tilt.resetEncoder().schedule();
     }
     double initElapsed = Timer.getFPGATimestamp() - initBegin;
-		System.out.println("[INIT] Robot Init End: " + initElapsed + "s");
+    System.out.println("[INIT] Robot Init End: " + initElapsed + "s");
   }
 
   @Override
@@ -71,26 +70,25 @@ public class Robot extends TimedRobot {
     m_robotContainer.elevator.setCoast(false);
     m_robotContainer.tilt.setCoast(false);
     m_robotContainer.superstructure.initState();
-   
 
     var initPoseOpt = m_robotContainer.getAutonomousInitPose();
     if (initPoseOpt.isPresent()) {
       m_robotContainer.swerve.resetPose(initPoseOpt.get());
-      if(DriverStation.getAlliance() == Alliance.Blue){
-          if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) || 
-          AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_BUMP_PARK))) {
-            m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees());
-          } else {
-            m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees() + 180);
-          }
-      }
-      else{
-          if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) || 
-          AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_BUMP_PARK))) {
-            m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees() + 180);
-          } else {
-            m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
-          }
+      if (DriverStation.getAlliance() == Alliance.Blue) {
+        if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) ||
+            AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_BUMP_PARK))) {
+          m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees());
+        } else {
+          m_robotContainer.swerve.setTeleOpGyroZero((initPoseOpt.get()).getRotation().getDegrees() + 180);
+        }
+      } else {
+        if (AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_PARK)) ||
+            AutonChooser.GetChosenAutonCmd().equals(AutonChooser.GetAuton(AutonOption.TWO_ELEMENT_BUMP_PARK))) {
+          m_robotContainer.swerve
+              .setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees() + 180);
+        } else {
+          m_robotContainer.swerve.setTeleOpGyroZero(Flipper.flipIfShould(initPoseOpt.get()).getRotation().getDegrees());
+        }
       }
     }
 
@@ -122,15 +120,13 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.superstructure.initState();
 
-    if(!DriverStation.isFMSAttached()){
+    if (!DriverStation.isFMSAttached()) {
       m_robotContainer.superstructure.smartReset();
     }
-    
-   
+
     m_robotContainer.swerve.resetToAbsolute();
     m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
     m_robotContainer.swerve.testModules();
-
 
   }
 

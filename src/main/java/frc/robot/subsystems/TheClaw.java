@@ -17,27 +17,25 @@ import static frc.robot.Constants.TheClawK.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-
 public class TheClaw extends SubsystemBase {
 	private final Solenoid claw = new Solenoid(PneumaticsModuleType.REVPH, kTheID);
 	private final DigitalInput clawSensor = new DigitalInput(kClawSensor);
 
 	private final Supplier<ClawState> m_autoStateSupplier;
 	private final Supplier<Double> m_wristDegSupplier;
-	
 
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
 	private boolean isFlapExtended = false;
 
 	private static final double kSensorCheckDelay = .4;
-	
+
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
 
 	private final Servo m_leftFlap = new Servo(kLeftServo);
 	private final Servo m_rightFlap = new Servo(kRightServo);
-	
+
 	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
 	public final Trigger grabOkTrig = new Trigger(() -> m_grabOk);
@@ -58,79 +56,69 @@ public class TheClaw extends SubsystemBase {
 		m_substationDelayTimer.restart();
 		wristAngleTrig = new Trigger(() -> m_wristDegSupplier.get().doubleValue() <= 50);
 
-
 		// m_rightFlap.setBounds(2.5, 1.5, 1.5, 1.5, 0.5);
 		// m_leftFlap.setBounds(2.5, 1.5, 1.5, 1.5, 0.5);
 
 		stateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.AUTO);
-		extendedStateAutoGrabTrig = new Trigger(()-> m_autoStateSupplier.get() == ClawState.EXTENDEDAUTO);
+		extendedStateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.EXTENDEDAUTO);
 		substationStateAutoGrabTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.SUBSTATIONAUTO);
-		safeTrig = new Trigger(()-> m_autoStateSupplier.get() == ClawState.CLOSE);
+		safeTrig = new Trigger(() -> m_autoStateSupplier.get() == ClawState.CLOSE);
 
+		var sensorAutonDebounceTrig = new Trigger(
+				new BooleanSupplier() {
+					final Debouncer m_debouncer = new Debouncer(0.025);
 
-    	var sensorAutonDebounceTrig = new Trigger(
-			new BooleanSupplier() {
-				final Debouncer m_debouncer = new Debouncer(0.025);
-
-				@Override
-				public boolean getAsBoolean() {
-					if (DriverStation.isAutonomous()) {
-						return m_debouncer.calculate(sensorTrig.getAsBoolean());
-					} else {
-						return sensorTrig.getAsBoolean();
+					@Override
+					public boolean getAsBoolean() {
+						if (DriverStation.isAutonomous()) {
+							return m_debouncer.calculate(sensorTrig.getAsBoolean());
+						} else {
+							return sensorTrig.getAsBoolean();
+						}
 					}
-				}
-       		}
-		);
+				});
 
 		stateAutoGrabTrig.onTrue(
-			release()
-			.alongWith(extendFlaps(false))
-			.andThen(runOnce(() -> m_grabOk = false)));
-			
+				release()
+						.alongWith(extendFlaps(false))
+						.andThen(runOnce(() -> m_grabOk = false)));
+
 		stateAutoGrabTrig
-		.and(sensorAutonDebounceTrig)
-		.and(sensorCheckValidTrig)
-			.onTrue(
-				Commands.runOnce(() -> m_grabOk = true)
-				.andThen(grab()).withName("internalAutoGrab")
-		);
+				.and(sensorAutonDebounceTrig)
+				.and(sensorCheckValidTrig)
+				.onTrue(
+						Commands.runOnce(() -> m_grabOk = true)
+								.andThen(grab()).withName("internalAutoGrab"));
 
 		extendedStateAutoGrabTrig.onTrue(
-			release()
-			.alongWith(extendFlaps(true))
-			.andThen(runOnce(() -> m_grabOk = false)));
-			
+				release()
+						.alongWith(extendFlaps(true))
+						.andThen(runOnce(() -> m_grabOk = false)));
+
 		extendedStateAutoGrabTrig
-		.and(sensorAutonDebounceTrig)
-		.and(sensorCheckValidTrig)
-			.onTrue(
-				Commands.runOnce(() -> m_grabOk = true)
-				.andThen(grab().alongWith(extendFlaps(false))).withName("internalExtendedAutoGrab")
-		);
-		
+				.and(sensorAutonDebounceTrig)
+				.and(sensorCheckValidTrig)
+				.onTrue(
+						Commands.runOnce(() -> m_grabOk = true)
+								.andThen(grab().alongWith(extendFlaps(false))).withName("internalExtendedAutoGrab"));
+
 		safeTrig.onTrue(
-			extendFlaps(false)
-		);
+				extendFlaps(false));
 
 		substationStateAutoGrabTrig.onTrue(
-			Commands.sequence(
-				Commands.runOnce(()-> m_substationDelayTimer.restart()),
-				Commands.waitUntil(wristAngleTrig),
-				release(),
-				Commands.runOnce(()-> m_substationDelayTimer.restart()),
-				Commands.runOnce(() -> m_grabOk = false).withName("internalAutoGrabSSReset")
-			)
-		);
+				Commands.sequence(
+						Commands.runOnce(() -> m_substationDelayTimer.restart()),
+						Commands.waitUntil(wristAngleTrig),
+						release(),
+						Commands.runOnce(() -> m_substationDelayTimer.restart()),
+						Commands.runOnce(() -> m_grabOk = false).withName("internalAutoGrabSSReset")));
 		substationStateAutoGrabTrig
-		.and(sensorAutonDebounceTrig)
-		.and(substationDelayTrig)
-		.and(closedTrig.negate())
-		.onTrue(
-			Commands.runOnce(() -> m_grabOk = true)
-			.andThen(grab()).withName("internalAutoGrabSSAct")
-		);
-		
+				.and(sensorAutonDebounceTrig)
+				.and(substationDelayTrig)
+				.and(closedTrig.negate())
+				.onTrue(
+						Commands.runOnce(() -> m_grabOk = true)
+								.andThen(grab()).withName("internalAutoGrabSSAct"));
 
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
 		System.out.println("[INIT] ClawSubsystem Init End: " + subsysInitElapsed + "s");
@@ -149,9 +137,8 @@ public class TheClaw extends SubsystemBase {
 	public CommandBase release() {
 		return runOnce(() -> {
 			setClosed(false);
-		} );
+		});
 	}
-
 
 	public CommandBase grab() {
 		return runOnce(() -> {
@@ -166,26 +153,25 @@ public class TheClaw extends SubsystemBase {
 	public CommandBase extendFlaps(boolean extend, boolean ignoreState) {
 		return Commands.startEnd(() -> {
 			boolean shouldMove = ignoreState ? true : extend ? isFlapExtended : !isFlapExtended;
-			if(extend && shouldMove) {
-				m_rightFlap.setPosition(0.5);
-				m_leftFlap.setPosition(0.5);
-			} else if(!extend && shouldMove) {
-				m_rightFlap.setPosition(0.5);
-				m_leftFlap.setPosition(0.5);
+			if (extend && shouldMove) {
+				m_rightFlap.setPosition(0);
+				m_leftFlap.setPosition(0);
+			} else if (!extend && shouldMove) {
+				m_rightFlap.setPosition(1);
+				m_leftFlap.setPosition(1);
 			} else {
 				m_rightFlap.setPosition(extend ? 1 : 0);
-				m_leftFlap.setPosition(extend ? 0: 1);
+				m_leftFlap.setPosition(extend ? 0 : 1);
 			}
 		}, () -> {
-			m_rightFlap.setPosition(0.5);
-			m_leftFlap.setPosition(0.5);
+			// m_rightFlap.setPosition(0.5);
+			// m_leftFlap.setPosition(0.5);
 			isFlapExtended = extend;
-		}).withTimeout(.9);
+		}).withTimeout(0.9);
 	}
 
-
-	public enum ClawState{
-		IGNORE, 
+	public enum ClawState {
+		IGNORE,
 		OPEN,
 		CLOSE,
 		AUTO,
