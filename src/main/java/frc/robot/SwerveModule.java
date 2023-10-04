@@ -53,10 +53,9 @@ public class SwerveModule {
     private double m_driveMotorSimDistance;
     private double m_steerMotorSimDistance;
 
-    private final DoubleLogger 
-        log_driveTemp, log_steerTemp, log_cancoderAngle, log_modVelocity,
-        log_steerInternalAngle, log_desiredStateVelocity, log_desiredStateRotation,
-        log_actualStateVelocity, log_actualStateRotation, log_driveMotorVeloCmd, log_driveMotorPosition;
+    private final DoubleLogger log_driveTemp, log_steerTemp, log_cancoderAngle, log_modVelocity,
+            log_steerInternalAngle, log_desiredStateVelocity, log_desiredStateRotation,
+            log_actualStateVelocity, log_actualStateRotation, log_driveMotorVeloCmd, log_driveMotorPosition;
 
     public SwerveModule(String name, int moduleNumber, SwerveModuleConstants moduleConstants) {
         moduleName = name;
@@ -102,7 +101,7 @@ public class SwerveModule {
         var curState = getState();
         log_actualStateVelocity.accept(curState.speedMetersPerSecond);
         log_actualStateRotation.accept(curState.angle.getDegrees());
-        
+
         log_desiredStateVelocity.accept(m_latestDesiredState.speedMetersPerSecond);
         log_desiredStateRotation.accept(m_latestDesiredState.angle.getDegrees());
 
@@ -180,7 +179,7 @@ public class SwerveModule {
                     kDriveGearRatio);
             m_latestCmdedDriveVelo = velocity;
             m_driveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward,
-                kDriveFF.calculate(desiredState.speedMetersPerSecond));
+                    kDriveFF.calculate(desiredState.speedMetersPerSecond));
         }
     }
 
@@ -212,10 +211,8 @@ public class SwerveModule {
 
     public void resetToAbsolute() {
         double cancoderDeg = getCanCoder().getDegrees();
-        double absPosDeg = 
-            cancoderDeg < 0 ?
-            makePositiveDegrees(cancoderDeg) - m_angleOffset.getDegrees() - 360 :
-            makePositiveDegrees(cancoderDeg) - m_angleOffset.getDegrees();
+        double absPosDeg = cancoderDeg < 0 ? makePositiveDegrees(cancoderDeg) - m_angleOffset.getDegrees() - 360
+                : makePositiveDegrees(cancoderDeg) - m_angleOffset.getDegrees();
         double absolutePosition = Conversions.degreesToFalcon(
                 absPosDeg, kAngleGearRatio);
         m_steerMotor.setSelectedSensorPosition(absolutePosition);
@@ -278,8 +275,10 @@ public class SwerveModule {
         m_steerMotorSim.update(TimedRobot.kDefaultPeriod);
         m_driveMotorSim.update(TimedRobot.kDefaultPeriod);
 
-        double steerDegreesIncr = Units.radiansToDegrees(m_steerMotorSim.getAngularVelocityRadPerSec() * TimedRobot.kDefaultPeriod);
-        double driveDegreesIncr = Units.radiansToDegrees(m_driveMotorSim.getAngularVelocityRadPerSec() * TimedRobot.kDefaultPeriod);
+        double steerDegreesIncr = Units
+                .radiansToDegrees(m_steerMotorSim.getAngularVelocityRadPerSec() * TimedRobot.kDefaultPeriod);
+        double driveDegreesIncr = Units
+                .radiansToDegrees(m_driveMotorSim.getAngularVelocityRadPerSec() * TimedRobot.kDefaultPeriod);
 
         m_steerMotorSimDistance += steerDegreesIncr;
         m_driveMotorSimDistance += driveDegreesIncr;
