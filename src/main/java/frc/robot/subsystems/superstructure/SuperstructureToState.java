@@ -2,6 +2,7 @@ package frc.robot.subsystems.superstructure;
 
 import java.util.function.BooleanSupplier;
 
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -9,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class SuperstructureToState extends SequentialCommandGroup {
     private final Superstructure m_superstructure;
     private final SuperState m_targetState;
+
+    // private final Timer m_safeWait = new Timer();
 
     private BooleanSupplier m_wristWait = () -> true;
     private BooleanSupplier m_elevWait = () -> true;
