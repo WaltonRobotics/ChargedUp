@@ -67,13 +67,16 @@ public final class AutonFactory {
 		var placeCmd = superstructure.toStateAuton(SuperState.FASTTOPCONE).withTimeout(2.5);
 		var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE)
 				.withTimeout(2);
+		var closeCmd = Commands.waitSeconds(0.75).andThen(claw.grab());
 		var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.coneBackPark);
 
 		return Commands.sequence(
 				tilt.autoHome().asProxy().alongWith(elev.autoHome().asProxy()).withTimeout(1.5),
 				placeCmd.asProxy(),
 				claw.release(), Commands.waitSeconds(0.45),
-				ssResetCmd.asProxy(),
+				Commands.parallel(
+						ssResetCmd.asProxy(),
+						closeCmd),
 				pathCmd.asProxy(),
 				swerve.nowItsTimeToGetFunky().asProxy());
 	}
