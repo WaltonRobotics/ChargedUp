@@ -369,7 +369,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	 */
 	public void testModules() {
 		for (var module : m_modules) {
-			module.setOdoTestMode(false);
+			module.setOdoTestMode(true);
 		}
 	}
 
