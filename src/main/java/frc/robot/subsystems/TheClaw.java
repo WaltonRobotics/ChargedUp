@@ -4,7 +4,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-// import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,15 +26,15 @@ public class TheClaw extends SubsystemBase {
 
 	private final Timer m_lastActuationTimer = new Timer();
 	private final Timer m_substationDelayTimer = new Timer();
-	// private boolean isFlapExtended = false;
+	private boolean isFlapExtended = false;
 
 	private static final double kSensorCheckDelay = 0.2;
 
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
 
-	// private final Servo m_leftFlap = new Servo(kLeftServo);
-	// private final Servo m_rightFlap = new Servo(kRightServo);
+	private final Servo m_leftFlap = new Servo(kLeftServo);
+	private final Servo m_rightFlap = new Servo(kRightServo);
 
 	public final Trigger sensorTrig = new Trigger(clawSensor::get).negate();
 	public final Trigger closedTrig = new Trigger(() -> m_isClosed);
@@ -80,7 +80,6 @@ public class TheClaw extends SubsystemBase {
 
 		stateAutoGrabTrig.onTrue(
 				release()
-						.alongWith(extendFlaps(false))
 						.andThen(runOnce(() -> m_grabOk = false)));
 
 		stateAutoGrabTrig
@@ -156,25 +155,26 @@ public class TheClaw extends SubsystemBase {
 	// retracts them during ground pickup for some reason, when both of them should
 	// be in theory going in the same direction but
 	public CommandBase extendFlaps(boolean extend, boolean ignoreState) {
-		// return Commands.startEnd(() -> {
-		// boolean shouldMove = ignoreState ? true : extend ? isFlapExtended :
-		// !isFlapExtended;
-		// if (extend && shouldMove) {
-		// m_rightFlap.setPosition(0);
-		// m_leftFlap.setPosition(1);
-		// } else if (!extend && shouldMove) {
-		// m_rightFlap.setPosition(1);
-		// m_leftFlap.setPosition(0);
-		// } else {
-		// m_rightFlap.setPosition(extend ? 1 : 0);
-		// m_leftFlap.setPosition(extend ? 0 : 1);
-		// }
-		// }, () -> {
-		// m_rightFlap.setPosition(0.5);
-		// m_leftFlap.setPosition(0.5);
-		// isFlapExtended = extend;
-		// }).withTimeout(0.9);
-		return Commands.none();
+		return Commands.startEnd(() -> {
+			boolean shouldMove = ignoreState ? true : extend ? !isFlapExtended : isFlapExtended;
+			if (extend && shouldMove) {
+				m_rightFlap.setPosition(0);
+				m_leftFlap.setPosition(1);
+				isFlapExtended = true;
+			} else if (!extend && shouldMove) {
+				m_rightFlap.setPosition(1);
+				m_leftFlap.setPosition(0);
+				isFlapExtended = false;
+			} else {
+				// m_rightFlap.setPosition(extend ? 1 : 0);
+				// m_leftFlap.setPosition(extend ? 0 : 1);
+			}
+		}, () -> {
+			m_rightFlap.setPosition(0.5);
+			m_leftFlap.setPosition(0.5);
+			System.out.println(isFlapExtended);
+		}).withTimeout(0.9);
+		// return Commands.none();
 	}
 
 	public enum ClawState {

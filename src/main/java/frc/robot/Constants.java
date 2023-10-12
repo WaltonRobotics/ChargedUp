@@ -414,8 +414,8 @@ public final class Constants {
 		public static final int kTheID = 0;
 		public static final int kClawSensor = 0;
 
-		public static final int kLeftServo = 1;
-		public static final int kRightServo = 2;
+		public static final int kLeftServo = 2;
+		public static final int kRightServo = 1;
 
 		public static final double kExtendOut = 1.0;
 		public static final double kRetractIn = 0.0;
