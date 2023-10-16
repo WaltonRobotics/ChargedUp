@@ -67,8 +67,8 @@ public final class Constants {
 				.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
 		/* Drivetrain Constants in meters */
-		public static final double kTrackWidth = Units.inchesToMeters(33); // with
-		public static final double kWheelBase = Units.inchesToMeters(33);
+		public static final double kTrackWidth = Units.inchesToMeters(21.875); // with
+		public static final double kWheelBase = Units.inchesToMeters(21.875);
 		public static final double kWheelCircumference = kSwerveModule.wheelCircumference;
 
 		/* Swerve Kinematics */
