@@ -439,7 +439,7 @@ public final class Constants {
 
 		public static final List<VisionSource> VISION_SOURCES = List.of(
 				new VisionSource("LeftCam", leftCornerLow_RobotToCamera),
-				new VisionSource("RightCornerLow", rightCornerLow_RobotToCamera));
+				new VisionSource("RightCam", rightCornerLow_RobotToCamera));
 
 		/**
 		 * Standard deviations of the vision measurements. Increase these numbers to
