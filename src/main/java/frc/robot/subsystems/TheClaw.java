@@ -28,7 +28,7 @@ public class TheClaw extends SubsystemBase {
 	private final Timer m_substationDelayTimer = new Timer();
 	private boolean isFlapExtended = false;
 
-	private static final double kSensorCheckDelay = 0.2;
+	private static final double kSensorCheckDelay = 0.3;
 
 	private boolean m_isClosed = false;
 	private boolean m_grabOk = false;
