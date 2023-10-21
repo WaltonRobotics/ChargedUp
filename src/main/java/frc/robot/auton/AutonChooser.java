@@ -21,7 +21,7 @@ public class AutonChooser {
         CUBE_BACK_PARK("1 - cube w/ balance"),
         // CONE_ONE_HALF_BUMP("1.5 - cone w/o balance over bump"),
         // CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),
-        CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),
+        // CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),
         // CUBE_ONE_HALF_BUMP("1.5 - cube w/o balance over bump"),
         // TWO_ELEMENT_BUMP_PARK("2.0 - cone, cube w/ balance over bump"),
         TWO_ELEMENT("2 - cone, cube w/o balance"),

@@ -1,6 +1,9 @@
 {
   "download": {
-    "localDir": "C:\\Users\\oscar\\Robotics\\DataLogs\\Bubbles",
+    "localDir": "C:\\Users\\nikit\\Desktop\\robotics\\bubbles",
     "serverTeam": "2974"
+  },
+  "output": {
+    "outputFolder": "C:\\Users\\nikit\\Desktop\\robotics\\ChargedUp"
   }
 }
