@@ -352,7 +352,7 @@ public final class Constants {
 		public static final double kMidConeHeightM = 0.42;
 		public static final double kMidCubeHeightM = 0.30;
 		public static final double kBotHeightMeters = 0;
-		public static final double kSubstationHeightM = 0.425;
+		public static final double kSubstationHeightM = 0.4;
 		public static final double kExtendedSubstationHeightM = 0.485;
 
 		public static final double kMaxVelocity = 3.5; // Meters Per Second
