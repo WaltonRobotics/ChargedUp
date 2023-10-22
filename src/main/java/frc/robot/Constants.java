@@ -173,7 +173,7 @@ public final class Constants {
 					canCoderID, angleOffset);
 		}
 
-		/* Back left Module - Module 2 */
+		/* Back right Module - Module 2 */
 		public static final class Mod2 {
 			public static final int driveMotorID = 8;
 			public static final int angleMotorID = 7;
@@ -184,7 +184,7 @@ public final class Constants {
 					canCoderID, angleOffset);
 		}
 
-		/* Back right Module - Module 3 */
+		/* Back left Module - Module 3 */
 		public static final class Mod3 {
 
 			public static final int driveMotorID = 6;

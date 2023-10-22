@@ -149,11 +149,6 @@ public class TheClaw extends SubsystemBase {
 		return extendFlaps(extend, false);
 	}
 
-	// TODO: make it work good (i think it should be continuous)
-	// notes for me from drive:
-	// with the below code during teleop it extends the flaps during safe and
-	// retracts them during ground pickup for some reason, when both of them should
-	// be in theory going in the same direction but
 	public CommandBase extendFlaps(boolean extend, boolean ignoreState) {
 		return Commands.startEnd(() -> {
 			boolean shouldMove = ignoreState ? true : extend ? !isFlapExtended : isFlapExtended;
