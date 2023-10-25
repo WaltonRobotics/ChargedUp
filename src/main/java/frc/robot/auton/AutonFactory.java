@@ -365,7 +365,7 @@ public final class AutonFactory {
 										pathCmd.asProxy()),
 
 								Commands.sequence(
-										Commands.waitSeconds(2.85), // Time before pickup ~ need to change
+										Commands.waitSeconds(2.9), // Time before pickup ~ need to change
 										groundPickUp.asProxy(), // PICKUP
 										Commands.waitSeconds(0.5),
 										ssResetCmd2.asProxy()),
@@ -374,6 +374,45 @@ public final class AutonFactory {
 										cubePlaceCmd.asProxy().withTimeout(1.55), // cube throw
 										ssResetCmd3.asProxy()),
 								Commands.waitSeconds(9.95).andThen(balanceCmd.asProxy()))));
+	}
+
+	public static CommandBase chargeOnePointFiveBal(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,
+			ElevatorSubsystem elev, TiltSubsystem tilt, WristSubsystem wrist) {
+		var placeCmd = superstructure.toStateAuton(SuperState.FASTTOPCONE).withName("SS-Auto-FastTopCone");
+		var ssResetCmd = superstructure.toStateAuton(SuperState.SAFE).withName("SS-Auto-Safe");
+		var pathCmd = swerve.getPPSwerveAutonCmd(PPPaths.chargeOnePointFive);
+		var releaseCmd = claw.release().andThen(Commands.waitSeconds(0.29));
+		var groundPickUp = superstructure.toStateAuton(SuperState.EXTENDED_GROUND_PICK_UP);
+		var ssResetCmd2 = superstructure.toStateAuton(SuperState.SAFE).asProxy()
+				.alongWith(claw.extendFlaps(false).asProxy());
+		var balanceCmd = swerve.nowItsTimeToGetFunky();
+
+		return Commands.sequence(
+				// reset
+				Commands.parallel(
+						tilt.autoHome().asProxy(),
+						elev.autoHome().asProxy()).withTimeout(1.5),
+
+				placeCmd.asProxy().withTimeout(1.75), // to top cone
+				releaseCmd.asProxy(), // release claw
+
+				// SAFE
+				Commands.parallel(
+						ssResetCmd.asProxy().withTimeout(3.0),
+						claw.grab().asProxy(),
+						// path after place timeout
+						Commands.parallel(
+								// path while going to SAFE
+								Commands.sequence(
+										Commands.waitSeconds(0.25),
+										pathCmd.asProxy()),
+
+								Commands.sequence(
+										Commands.waitSeconds(2.9), // Time before pickup ~ need to change
+										groundPickUp.asProxy(), // PICKUP
+										Commands.waitSeconds(0.5),
+										ssResetCmd2.asProxy()),
+								Commands.waitSeconds(6.5).andThen(balanceCmd.asProxy()))));
 	}
 
 	public static CommandBase twoPointFive(SwerveSubsystem swerve, Superstructure superstructure, TheClaw claw,

@@ -130,7 +130,11 @@ public class Paths {
 				kPPConstraints);
 
 		public static final List<PathPlannerTrajectory> chargeTwo = PathPlanner.loadPathGroup("chargeTwo",
-				kPPConstraints,kPPConstraints);
+				kPPConstraints, kPPConstraints);
+
+		public static final List<PathPlannerTrajectory> chargeOnePointFive = PathPlanner.loadPathGroup(
+				"chargeOnePointFive",
+				kPPConstraints, kPPConstraints);
 	}
 
 	public static final class ReferencePoints {

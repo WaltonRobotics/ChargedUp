@@ -60,7 +60,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			kPThetaController, 0, 0,
 			kThetaControllerConstraints);
 
-	protected final PIDController autoThetaController = new PIDController(kPThetaController, 0, kDThetaController);
+	protected final PIDController autoThetaController = new PIDController(kPThetaController, 0, 0);
 	private final PIDController xController = new PIDController(kPXController, 0, 0);
 	private final PIDController autoGoYController = new PIDController(kPAutoGoThetaController, 0, 0);
 	private final PIDController autoGoThetaController = new PIDController(kPAutoGoThetaController, 0, 0);

@@ -19,11 +19,12 @@ public class AutonChooser {
         // ONE_CONE_BUMP("1 - cone w/o balance over bump"),
         CONE_BACK_PARK("1 - cone w/ balance"),
         CUBE_BACK_PARK("1 - cube w/ balance"),
+        ONE_POINT_FIVE_ELEMENT_BAL_CHARGE("1.5 - cone w/ balance over charge"),
         // CONE_ONE_HALF_BUMP("1.5 - cone w/o balance over bump"),
         // CONE_ONE_HALF_PARK("1.5 - cone w/ balance"),
         // CUBE_ONE_HALF_PARK("1.5 - cube w/ balance"),
         // CUBE_ONE_HALF_BUMP("1.5 - cube w/o balance over bump"),
-        // TWO_ELEMENT_BUMP_PARK("2.0 - cone, cube w/ balance over bump"),
+        // TWO_ELEMENT_BUMP_PARK("2 - cone, cube w/ balance over bump"),
         TWO_ELEMENT("2 - cone, cube w/o balance"),
         // TWO_ELEMENT_BUMP("2 - cone, cube w/o balance over bump"),
         // TWO_ELEMENT_PARK("2 - cone, cube w/ balance"),
@@ -32,7 +33,7 @@ public class AutonChooser {
         TWO_POINT_FIVE("2.5 - cone, cube w/o balance"),
         // TWO_POINT_FIVE_BUMP("2.5 - cone, cube, w/o balance over bump"),
         THREE_ELEMENT("3 - cone, cube, cube w/o balance");
-        // BLUE_THREE_ELEMENT("3- BLUE");
+        // BLUE_THREE_ELEMENT("3 - BLUE");
 
         public final String description;
 

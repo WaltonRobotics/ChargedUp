@@ -97,7 +97,7 @@ public class RobotContainer {
 		/* Driver Buttons */
 		driver.back().onTrue(swerve.teleOpReset());
 		driver.start().onTrue(new InstantCommand(() -> swerve.resetToAbsolute()));
-		driver.leftBumper().whileTrue(swerve.nowItsTimeToGetFunky()); // TODO: change reverse condition
+		driver.leftBumper().whileTrue(swerve.reverseReverse()); // TODO: change reverse condition
 		driver.rightBumper().onTrue(swerve.stopWithXCmd());
 
 		/* Manipulator Buttons */
@@ -161,6 +161,9 @@ public class RobotContainer {
 				PPPaths.coneBackPark.getInitialHolonomicPose());
 		AutonChooser.AssignAutonCommand(AutonOption.CUBE_BACK_PARK,
 				AutonFactory.cubeBackPark(swerve, superstructure, claw, elevator, tilt, wrist),
+				PPPaths.backPark.getInitialHolonomicPose());
+		AutonChooser.AssignAutonCommand(AutonOption.ONE_POINT_FIVE_ELEMENT_BAL_CHARGE,
+				AutonFactory.chargeOnePointFiveBal(swerve, superstructure, claw, elevator, tilt, wrist),
 				PPPaths.backPark.getInitialHolonomicPose());
 		// AutonChooser.AssignAutonCommand(AutonOption.CUBE_ONE_HALF_PARK,
 		// AutonFactory.cubeOneHalfPark(swerve, superstructure, claw, elevator, tilt,

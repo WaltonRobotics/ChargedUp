@@ -144,7 +144,7 @@ public final class Constants {
 		/* Swerve Profiling Values */
 		public static final double kMaxVelocityMps = 5.0; // 4.5
 		/* Radians per Second */
-		public static final double kMaxAngularVelocityRadps = 11.5; // 10
+		public static final double kMaxAngularVelocityRadps = 20; // 10
 
 		/* Neutral Modes */
 		public static final NeutralMode kAngleNeutralMode = NeutralMode.Coast;
@@ -216,7 +216,7 @@ public final class Constants {
 		public static double kPAutoGoThetaController = 2.75;
 		public static double kAutoGoThetaControllerTolerance = .5;
 		public static double kAutoGoYControllerTolerance = .01;
-		public static double kPThetaController = 3.15; // 1
+		public static double kPThetaController = 5.15; // 1
 		public static final double kDThetaController = 0.5;
 		public static final double kFThetaControllerAuto = 0;
 		public static final double kFThetaController = 1;

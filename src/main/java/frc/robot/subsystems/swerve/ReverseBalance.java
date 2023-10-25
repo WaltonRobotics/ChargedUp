@@ -27,7 +27,7 @@ public class ReverseBalance extends SequentialCommandGroup {
 
     public ReverseBalance(SwerveSubsystem swerve) {
         CommandBase oneHopThisTime = Commands.run(
-                () -> swerve.drive(-2.5, 0, 0, false, false), swerve)
+                () -> swerve.drive(-2.75, 0, 0, false, false), swerve)
                 .until(() -> Math.abs(swerve.getGyroPitch()) > 14)
                 .finallyDo((intr) -> {
                     m_climbingSign = Math.signum(swerve.getGyroPitch());
