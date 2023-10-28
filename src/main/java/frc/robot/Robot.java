@@ -4,6 +4,7 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -19,6 +20,7 @@ public class Robot extends TimedRobot {
 	private final Timer m_modResetTimer = new Timer();
 
 	private Command m_autonomousCommand;
+	private final PowerDistribution m_pd;
 
 	private final RobotContainer m_robotContainer;
 
@@ -33,6 +35,7 @@ public class Robot extends TimedRobot {
 		DriverStation.startDataLog(DataLogManager.getLog());
 
 		m_robotContainer = new RobotContainer();
+		m_pd = new PowerDistribution();
 		addPeriodic(m_robotContainer.superstructure::periodicTelemetry, kDefaultPeriod);
 	}
 
@@ -67,6 +70,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		if (DriverStation.isFMSAttached()) {
+			m_pd.clearStickyFaults();
+		}
+
 		m_robotContainer.wrist.setCoast(false);
 		m_robotContainer.elevator.setCoast(false);
 		m_robotContainer.tilt.setCoast(false);
