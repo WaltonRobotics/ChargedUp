@@ -40,7 +40,6 @@ public class SuperstructureToState extends SequentialCommandGroup {
         CommandBase elevCmd = Commands.waitUntil(m_elevWait).andThen(elevator.toHeight(m_targetState.elev.height));
         CommandBase tiltCmd = Commands.waitUntil(m_tiltWait).andThen(tilt.toAngle(m_targetState.tilt.angle));
 
-        // TODO: remove once auton uses all proxies
         if (proxyInternal) {
             wristCmd = wristCmd.asProxy();
             elevCmd = elevCmd.asProxy();

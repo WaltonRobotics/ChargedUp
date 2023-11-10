@@ -3,7 +3,8 @@ package frc.robot;
 import java.util.List;
 import java.util.Set;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.Matrix;
@@ -34,7 +35,7 @@ public final class Constants {
 	public static final String canbus = "Canivore";
 
 	public static final class AtHome {
-		public static final boolean AreWe = false;
+		public static final boolean areWe = false;
 		public static final double chargeStationApproachPwr = 2.25;
 		public static final double forwardPitch = 3;
 		public static final double reversePitch = 6;
@@ -90,7 +91,7 @@ public final class Constants {
 		public static final boolean kInvertDriveMotor = kSwerveModule.driveMotorInvert;
 
 		/* Angle Encoder Invert */
-		public static final boolean kInvertCanCoder = kSwerveModule.canCoderInvert;
+		public static final boolean kInvertCancoder = kSwerveModule.canCoderInvert;
 
 		/* Swerve Current Limiting */
 		public static final int kAngleContinuousCurrentLimit = 25;
@@ -147,8 +148,8 @@ public final class Constants {
 		public static final double kMaxAngularVelocityRadps = 20; // 10
 
 		/* Neutral Modes */
-		public static final NeutralMode kAngleNeutralMode = NeutralMode.Coast;
-		public static final NeutralMode kDriveNeutralMode = NeutralMode.Brake;
+		public static final NeutralModeValue kAngleNeutralMode = NeutralModeValue.Coast;
+		public static final NeutralModeValue kDriveNeutralMode = NeutralModeValue.Brake;
 
 		/* Module Specific Constants */
 		/* Front left module - Module 0 */

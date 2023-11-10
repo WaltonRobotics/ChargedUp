@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -37,7 +38,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -111,15 +111,15 @@ public class SwerveSubsystem extends SubsystemBase {
 	private int m_periodicCallCount = 0;
 	private int m_lastPigeonGyroReq = 0;
 
-	private double m_simYaw = 0;
 	private double[] m_pigeonGyroRateDPS = new double[3];
 
 	public SwerveSubsystem(HashMap<String, Command> autoEventMap, VisionManager visionManager) {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] SwerveSubsystem Init Begin");
 		m_visionManager = visionManager;
-		m_pigeon.configFactoryDefault();
-		m_pigeon.zeroGyroBiasNow();
+		m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
+		// TODO: figure out wtf this is
+		// m_pigeon.zeroGyroBiasNow();
 		Timer.delay(.250);
 		resetToAbsolute();
 
@@ -153,7 +153,9 @@ public class SwerveSubsystem extends SubsystemBase {
 	private void updatePigeonGyroRate() {
 		if (m_periodicCallCount > m_lastPigeonGyroReq) {
 			m_lastPigeonGyroReq++;
-			m_pigeon.getRawGyro(m_pigeonGyroRateDPS);
+			m_pigeonGyroRateDPS[0] = m_pigeon.getAccumGyroX().getValue();
+			m_pigeonGyroRateDPS[1] = m_pigeon.getAccumGyroY().getValue();
+			m_pigeonGyroRateDPS[2] = m_pigeon.getAccumGyroZ().getValue();
 		}
 	}
 
@@ -305,7 +307,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void zeroGyro() {
 		m_pigeon.setYaw(180);
-		m_pigeon.addYaw(0);
+		// what does this do
+		// m_pigeon.addYaw(0);
 	}
 
 	public void setYaw(double angle) {
@@ -319,15 +322,15 @@ public class SwerveSubsystem extends SubsystemBase {
 	}
 
 	protected double getGyroYaw() {
-		return m_pigeon.getYaw();
+		return m_pigeon.getYaw().getValue();
 	}
 
 	protected double getGyroRoll() {
-		return m_pigeon.getPitch(); // CTRE is Dumb
+		return m_pigeon.getRoll().getValue(); // TODO: check if ctre is still dumb
 	}
 
 	protected double getGyroPitch() {
-		return m_pigeon.getRoll(); // CTRE is Dumb
+		return m_pigeon.getPitch().getValue();
 	}
 
 	protected double getGyroYawRate() {
@@ -690,16 +693,5 @@ public class SwerveSubsystem extends SubsystemBase {
 		log_autoThetaPosError.accept(autoThetaController.getPositionError());
 		log_autoGoThetaDesiredPos.accept(autoGoThetaController.getSetpoint());
 		log_autoGoYDesiredPos.accept(autoGoYController.getSetpoint());
-	}
-
-	@Override
-	public void simulationPeriodic() {
-		ChassisSpeeds chassisSpeed = kKinematics.toChassisSpeeds(getModuleStates());
-		m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
-		m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
-
-		for (var module : m_modules) {
-			module.simulationPeriodic();
-		}
 	}
 }
