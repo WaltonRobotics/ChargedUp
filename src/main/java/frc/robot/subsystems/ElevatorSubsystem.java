@@ -87,7 +87,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_atLowerLimit = WaltLogger.logBoolean(DB_TAB_NAME, "AtLowerLimit");
 
 		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
-			m_right.setRotorPosition(0);
+			m_right.setPosition(0);
 		}).ignoringDisable(true));
 
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;

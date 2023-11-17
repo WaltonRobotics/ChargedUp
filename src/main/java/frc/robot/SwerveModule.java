@@ -171,7 +171,7 @@ public class SwerveModule {
             angle = m_lastAngle;
         }
 
-        m_steerMotor.setRotorPosition(Conversions.degreesToFalcon(angle.getDegrees(), kAngleGearRatio));
+        m_steerMotor.setRPosition(Conversions.degreesToFalcon(angle.getDegrees(), kAngleGearRatio));
         m_lastAngle = angle;
     }
 
@@ -194,11 +194,11 @@ public class SwerveModule {
                 : makePositiveDegrees(cancoderDeg) - m_angleOffset.getDegrees();
         double absolutePosition = Conversions.degreesToFalcon(
                 absPosDeg, kAngleGearRatio);
-        m_steerMotor.setRotorPosition(absolutePosition);
+        m_steerMotor.setPosition(absolutePosition);
     }
 
     public void resetDriveToZero() {
-        m_driveMotor.setRotorPosition(0);
+        m_driveMotor.setPosition(0);
     }
 
     private void configAngleEncoder() {
