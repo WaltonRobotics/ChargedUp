@@ -171,7 +171,7 @@ public class SwerveModule {
             angle = m_lastAngle;
         }
 
-        m_steerMotor.setRPosition(Conversions.degreesToFalcon(angle.getDegrees(), kAngleGearRatio));
+        m_steerMotor.setPosition(Conversions.degreesToFalcon(angle.getDegrees(), kAngleGearRatio));
         m_lastAngle = angle;
     }
 
