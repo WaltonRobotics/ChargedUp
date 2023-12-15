@@ -1,13 +1,9 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.ElevatorK.kConstraints;
-import static frc.robot.Constants.ElevatorK.kD;
-import static frc.robot.Constants.ElevatorK.kP;
-import static frc.robot.Constants.ElevatorK.kLeftCANID;
-import static frc.robot.Constants.ElevatorK.kRightCANID;
 import static frc.robot.Constants.ElevatorK.*;
 
 import com.ctre.phoenix6.controls.Follower;
+// import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -37,6 +33,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final TalonFX m_left = new TalonFX(kLeftCANID, canbus);
 	private final TalonFX m_right = new TalonFX(kRightCANID, canbus);
 	private final DigitalInput m_lowerLimit = new DigitalInput(kLowerLimitSwitchPort);
+	
+	private final Follower m_followerReq = new Follower(m_right.getDeviceID(), true);
+
 	private final Trigger m_lowerLimitTrigger = new Trigger(m_lowerLimit::get).negate();
 
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
@@ -71,7 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 		// i think it does this by default????
 		// m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		// m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
-		m_left.setControl(new Follower(m_right.getDeviceID(), true));
+		m_left.setControl(m_followerReq);
 
 		log_ffEffort = WaltLogger.logDouble(DB_TAB_NAME, "FFEffort");
 		log_pdEffort = WaltLogger.logDouble(DB_TAB_NAME, "PDEffort");
@@ -94,32 +93,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 		System.out.println("[INIT] ElevatorSubsystem Init End: " + subsysInitElapsed + "s");
 
 		nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
-				.add("elev coast", false)
-				.withWidget(BuiltInWidgets.kToggleSwitch)
-				.getEntry();
+			.add("elev coast", false)
+			.withWidget(BuiltInWidgets.kToggleSwitch)
+			.getEntry();
 	}
 
 	/*
 	 * Returns the actual height in raw encoder ticks
 	 */
 	public double getActualHeightRaw() {
-		return m_right.getRotorPosition().getValue();
-	}
-
-	/**
-	 * @return Whether or not elevator is at dynamic lower limit
-	 */
-	public boolean isAtDynamicLimit() {
-		return getActualHeightMeters() <= m_dynamicLowLimit;
-	}
-
-	/**
-	 * Set the new dynamic lower limit of elevator
-	 * 
-	 * @param heightLimit The new limit in meters
-	 */
-	public void setDynamicLimit(double heightLimit) {
-		m_dynamicLowLimit = heightLimit;
+		var rotPos = m_right.getRotorPosition();
+		return rotPos.getValue();
 	}
 
 	/**
@@ -133,16 +117,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @return The current height of elevator in meters
 	 */
 	public double getActualHeightMeters() {
-		var falconPos = m_right.getRotorPosition().getValue();
-		var meters = Conversions.falconToMeters(
+		var falconPos = getActualHeightRaw();
+		var meters = Conversions.falcon6ToMeters(
 				falconPos, kDrumCircumferenceMeters, kGearRatio);
-		return meters;// + kElevatorHeightOffset;
+		return meters; // + kElevatorHeightOffset;
 	}
 
 	private double getActualVelocityMps() {
-		var falconVelo = m_right.get();
+		var veloSignal = m_right.getRotorVelocity();
+		var falconVelo = veloSignal.getValue();
 		// getSelectedSensorVelocity();
-		var mps = Conversions.falconToMPS(falconVelo, kDrumCircumferenceMeters, kGearRatio);
+		var mps = Conversions.falcon6ToMPS(falconVelo, kDrumCircumferenceMeters, kGearRatio);
 		return mps;
 	}
 
@@ -172,7 +157,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 			m_targetHeight += output * 0.02;
 			double effort = getEffortForTarget(m_targetHeight);
-			double holdEffort = getEffortToHold(m_targetHeight);
+			// double holdEffort = getEffortToHold(m_targetHeight);
+			double holdEffort = 0;
 
 			if (output != 0) {
 				m_right.setVoltage(effort);
@@ -189,7 +175,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * Does not allow impossible heights
 	 */
 	private void i_setTarget(double meters) {
-		m_targetHeight = MathUtil.clamp(meters, m_dynamicLowLimit, kMaxHeightMeters);
+		m_targetHeight = MathUtil.clamp(meters, kMinHeightMeters, kMaxHeightMeters);
 	}
 
 	/*
@@ -199,18 +185,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return runOnce(() -> {
 			// TODO: make sure this like???? works????
 			CTREConfigs.Get().leftConfig.MotorOutput.NeutralMode = coast ? NeutralModeValue.Coast
-					: NeutralModeValue.Brake;
+				: NeutralModeValue.Brake;
 			CTREConfigs.Get().rightConfig.MotorOutput.NeutralMode = coast ? NeutralModeValue.Coast
-					: NeutralModeValue.Brake;
-		});
-	}
-
-	/*
-	 * Command to change target height
-	 */
-	public Command setTarget(double meters) {
-		return runOnce(() -> {
-			i_setTarget(meters);
+				: NeutralModeValue.Brake;
 		});
 	}
 
@@ -270,28 +247,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 				m_controller.setConstraints(kConstraints);
 			}
 		})
-				.andThen(run(() -> {
-					var effort = MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
-							kVoltageCompSaturationVolts);
+		.andThen(run(() -> {
+			var effort = MathUtil.clamp(
+				getEffortForTarget(m_targetHeight),
+				-kVoltageCompSaturationVolts,
+				kVoltageCompSaturationVolts);
 
-					m_right.set(effort / kVoltageCompSaturationVolts);
-				}))
-				.until(() -> {
-					return m_controller.atGoal();
-				})
-				.finallyDo((intr) -> {
-					m_right.set(0);
-				})
-				.withName("AutoToHeight");
-	}
-
-	public Command holdHeight() {
-		return run(() -> {
-			var holdEffort = MathUtil.clamp(getEffortToHold(m_targetHeight), -kVoltageCompSaturationVolts,
-					kVoltageCompSaturationVolts);
-			m_right.set(holdEffort / kVoltageCompSaturationVolts);
+			m_right.setVoltage(effort);
+		}))
+		.until(() -> {
+			return m_controller.atGoal();
 		})
-				.withName("Hold Height");
+		.finallyDo((intr) -> {
+			m_right.setVoltage(0);
+		})
+		.withName("AutoToHeight");
 	}
 
 	public enum ElevatorState {

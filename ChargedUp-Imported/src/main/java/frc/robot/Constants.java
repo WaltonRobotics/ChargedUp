@@ -23,6 +23,8 @@ import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+// import edu.wpi.first.units.Measure;
+// import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.LedUtils;
@@ -320,30 +322,30 @@ public final class Constants {
 		public static final int kPeakCurrentLimit = 20;
 		public static final double kPeakCurrentDuration = 0.1;
 		public static final boolean kEnableCurrentLimit = true;
-		public static final int kForwardLimit = 130000; // raw ticks
-		public static final int kReverseLimit = 9; // raw ticks
+		public static final double kForwardLimit = 63.5; // raw ticks
+		public static final int kReverseLimit = 0; // raw ticks
 		public static final double kMaxTiltMinHeight = 0;
 		public static final boolean kEnableForwardLimit = true;
 		public static final boolean kEnableReverseLimit = true;
 
 		public static final double kGearRatio = 12.0 / 1.0;
-		public static final double kP = 100; // sysid 9.2597E-05 // originally 22
+		public static final double kP = 66; // sysid 9.2597E-05 // originally 22
 		public static final double kD = 0;
 		public static final double kS = 0.16114;
 		public static final double kV = 9.7833; // originally 9.7833
 		public static final double kA = 0.4375;
-		public static final double kG = 0.1744;
+		public static final double kG = 0.1744; // 0.1744
 
-		public static final double kPHold = 1.401368; // originally 0.7
+		public static final double kPHold = 0.7; // originally 0.7
 		public static final double kDHold = 0;
 		public static final double kHoldKs = 0.705;
 
-		public static final double kDrumRadiusMeters = Units.inchesToMeters(0.8459);
-		public static final double kDrumCircumferenceMeters = kDrumRadiusMeters * 2 * Math.PI;
+		public static final double kDrumDiameterMeters = 0.04463;
+		public static final double kDrumCircumferenceMeters = kDrumDiameterMeters * Math.PI;
 		public static final double kElevatorHeightOffset = 0.000049; // offset in meters
 		public static final double kCarriageMassKg = Units.lbsToKilograms(40);
 		public static final double kMinHeightMeters = Units.inchesToMeters(0);
-		public static final double kMaxHeightMeters = Units.inchesToMeters(50); // assuming 0 @ lowest
+		public static final double kMaxHeightMeters = 0.8; // assuming 0 @ lowest
 		public static final double kSafeHeight = kElevatorHeightOffset; // where wrist is free to move
 
 		public static final double kTopHeightMeters = Units.inchesToMeters(41);

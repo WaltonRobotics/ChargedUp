@@ -56,14 +56,14 @@ public class RobotContainer {
 	public RobotContainer() {
 		mapAutonCommands();
 		mapAutonEvents();
-		swerve.setDefaultCommand(
-				swerve.teleopDriveCmd(
-						() -> driver.getLeftY(),
-						() -> driver.getLeftX(),
-						() -> -driver.getRightX(),
-						() -> false,
-						() -> true // openLoop
-				));
+		// swerve.setDefaultCommand(
+		// 		swerve.teleopDriveCmd(
+		// 				() -> driver.getLeftY(),
+		// 				() -> driver.getLeftX(),
+		// 				() -> -driver.getRightX(),
+		// 				() -> false,
+		// 				() -> true // openLoop
+		// 		));
 		elevator.setDefaultCommand(elevator.teleopCmd(() -> -manipulator.getLeftY()));
 		tilt.setDefaultCommand(tilt.teleopCmd(() -> manipulator.getRightY()));
 		wrist.setDefaultCommand(wrist.teleopCmd(() -> manipulator.getLeftX()));

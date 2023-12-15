@@ -240,7 +240,7 @@ public class TiltSubsystem extends SubsystemBase {
 		if (!DriverStation.isEnabled()) {
 			m_diskBrake.set(!coast);
 		}
-		m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
+		// m_motor.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
 	}
 
 	@Override

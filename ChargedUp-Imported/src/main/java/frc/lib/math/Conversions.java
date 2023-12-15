@@ -74,6 +74,12 @@ public class Conversions {
         return wheelMPS;
     }
 
+    public static double falcon6ToMPS(double rps, double circumference, double gearRatio) {
+        double wheelRPS = rps * gearRatio;
+        double wheelMPS = (wheelRPS * circumference);
+        return wheelMPS;
+    }
+
     public static double falconToMPS(double velocityCounts, double wheelCircumferenceMeters) {
         return falconToMPS(velocityCounts, wheelCircumferenceMeters, 1);
     }
@@ -99,6 +105,10 @@ public class Conversions {
      */
     public static double falconToMeters(double positionCounts, double circumference, double gearRatio) {
         return positionCounts * (circumference / (gearRatio * 2048.0));
+    }
+
+    public static double falcon6ToMeters(double rotations, double circumference, double gearRatio) {
+        return rotations * (circumference / gearRatio);
     }
 
     /**
