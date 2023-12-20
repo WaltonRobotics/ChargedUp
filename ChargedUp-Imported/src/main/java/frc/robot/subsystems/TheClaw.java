@@ -167,7 +167,6 @@ public class TheClaw extends SubsystemBase {
 		}, () -> {
 			m_rightFlap.setPosition(0.5);
 			m_leftFlap.setPosition(0.5);
-			System.out.println(isFlapExtended);
 		}).withTimeout(0.9);
 		// return Commands.none();
 	}

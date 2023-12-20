@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-		m_robotContainer.swerve.testModules();
+		// m_robotContainer.swerve.testModules();
 	}
 
 	@Override
@@ -140,9 +140,9 @@ public class Robot extends TimedRobot {
 			m_robotContainer.superstructure.smartReset();
 		}
 
-		m_robotContainer.swerve.resetToAbsolute();
-		m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
-		m_robotContainer.swerve.testModules();
+		// m_robotContainer.swerve.resetToAbsolute();
+		// m_robotContainer.swerve.setYaw(m_robotContainer.swerve.getTeleOpGyroZero());
+		// m_robotContainer.swerve.testModules();
 
 	}
 

@@ -8,7 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+// import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -33,7 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final TalonFX m_left = new TalonFX(kLeftCANID, canbus);
 	private final TalonFX m_right = new TalonFX(kRightCANID, canbus);
 	private final DigitalInput m_lowerLimit = new DigitalInput(kLowerLimitSwitchPort);
-	
+
 	private final Follower m_followerReq = new Follower(m_right.getDeviceID(), true);
 
 	private final Trigger m_lowerLimitTrigger = new Trigger(m_lowerLimit::get).negate();
@@ -41,11 +41,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
 
-	private final PIDController m_holdController = new PIDController(
-			kPHold, 0, kDHold);
+	// FIXME: hold
+	// private final PIDController m_holdController = new PIDController(
+	// kPHold, 0, kDHold);
 
 	private double m_targetHeight = 0;
-	private double m_dynamicLowLimit = kMinHeightMeters;
+	// private double m_dynamicLowLimit = kMinHeightMeters;
 	private double m_pdEffort = 0;
 	private double m_ffEffort = 0;
 
@@ -66,10 +67,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 		System.out.println("[INIT] ElevatorSubsystem Init Begin");
 		m_left.getConfigurator().apply(CTREConfigs.Get().leftConfig);
 		m_right.getConfigurator().apply(CTREConfigs.Get().rightConfig);
-
-		// i think it does this by default????
-		// m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-		// m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
 		m_left.setControl(m_followerReq);
 
 		log_ffEffort = WaltLogger.logDouble(DB_TAB_NAME, "FFEffort");
@@ -93,9 +90,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		System.out.println("[INIT] ElevatorSubsystem Init End: " + subsysInitElapsed + "s");
 
 		nte_isCoast = Shuffleboard.getTab(DB_TAB_NAME)
-			.add("elev coast", false)
-			.withWidget(BuiltInWidgets.kToggleSwitch)
-			.getEntry();
+				.add("elev coast", false)
+				.withWidget(BuiltInWidgets.kToggleSwitch)
+				.getEntry();
 	}
 
 	/*
@@ -185,9 +182,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return runOnce(() -> {
 			// TODO: make sure this like???? works????
 			CTREConfigs.Get().leftConfig.MotorOutput.NeutralMode = coast ? NeutralModeValue.Coast
-				: NeutralModeValue.Brake;
+					: NeutralModeValue.Brake;
 			CTREConfigs.Get().rightConfig.MotorOutput.NeutralMode = coast ? NeutralModeValue.Coast
-				: NeutralModeValue.Brake;
+					: NeutralModeValue.Brake;
 		});
 	}
 
@@ -222,16 +219,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 		return totalEffort;
 	}
 
-	private double getEffortToHold(double heightMeters) {
-		m_holdPdEffort = m_holdController.calculate(getActualHeightMeters(), heightMeters);
-		m_holdFfEffort = 0;
-		var pdSetpoint = m_holdController.getSetpoint();
-		if (pdSetpoint != 0) {
-			m_holdFfEffort = kHoldKs;
-		}
-		double totalEffort = m_holdFfEffort + m_holdPdEffort;
-		return totalEffort;
-	}
+	// private double getEffortToHold(double heightMeters) {
+	// m_holdPdEffort = m_holdController.calculate(getActualHeightMeters(),
+	// heightMeters);
+	// m_holdFfEffort = 0;
+	// var pdSetpoint = m_holdController.getSetpoint();
+	// if (pdSetpoint != 0) {
+	// m_holdFfEffort = kHoldKs;
+	// }
+	// double totalEffort = m_holdFfEffort + m_holdPdEffort;
+	// return totalEffort;
+	// }
 
 	/**
 	 * @return Cmd to move the elevator to specified height w/ pd & ff
@@ -247,21 +245,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 				m_controller.setConstraints(kConstraints);
 			}
 		})
-		.andThen(run(() -> {
-			var effort = MathUtil.clamp(
-				getEffortForTarget(m_targetHeight),
-				-kVoltageCompSaturationVolts,
-				kVoltageCompSaturationVolts);
+				.andThen(run(() -> {
+					var effort = MathUtil.clamp(
+							getEffortForTarget(m_targetHeight),
+							-kVoltageCompSaturationVolts,
+							kVoltageCompSaturationVolts);
 
-			m_right.setVoltage(effort);
-		}))
-		.until(() -> {
-			return m_controller.atGoal();
-		})
-		.finallyDo((intr) -> {
-			m_right.setVoltage(0);
-		})
-		.withName("AutoToHeight");
+					m_right.setVoltage(effort);
+				}))
+				.until(() -> {
+					return m_controller.atGoal();
+				})
+				.finallyDo((intr) -> {
+					m_right.setVoltage(0);
+				})
+				.withName("AutoToHeight");
 	}
 
 	public enum ElevatorState {
