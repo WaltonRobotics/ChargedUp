@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.ElevatorK.kConstraints;
-import static frc.robot.Constants.ElevatorK.kD;
-import static frc.robot.Constants.ElevatorK.kP;
-import static frc.robot.Constants.ElevatorK.kLeftCANID;
-import static frc.robot.Constants.ElevatorK.kRightCANID;
 import static frc.robot.Constants.ElevatorK.*;
+
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VoltageOut;
 
 // import com.ctre.phoenix.motorcontrol.ControlMode;
 // import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -15,6 +13,7 @@ import static frc.robot.Constants.ElevatorK.*;
 // import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -43,6 +42,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	private final DigitalInput m_lowerLimit = new DigitalInput(kLowerLimitSwitchPort);
 	private final Trigger m_lowerLimitTrigger = new Trigger(m_lowerLimit::get).negate();
 
+	final VoltageOut m_request = new VoltageOut(0); // is this right ?? o-0
+
 	private final ProfiledPIDController m_controller = new ProfiledPIDController(
 			kP, 0, kD, kConstraints);
 
@@ -70,20 +71,25 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public ElevatorSubsystem() {
 		double subsysInitBegin = Timer.getFPGATimestamp();
 		System.out.println("[INIT] ElevatorSubsystem Init Begin");
-		m_left.configAllSettings(CTREConfigs.Get().leftConfig);
-		m_right.configAllSettings(CTREConfigs.Get().rightConfig);
+		// m_left.configAllSettings(CTREConfigs.Get().leftConfig);
+		// m_right.configAllSettings(CTREConfigs.Get().rightConfig);
+		var m_leftConfigurator = m_left.getConfigurator();
+		var m_rightConfigurator = m_right.getConfigurator();
+		m_leftConfigurator.apply(CTREConfigs.Get().leftConfig);
+		m_rightConfigurator.apply(CTREConfigs.Get().rightConfig);
 
-		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts);
+		m_right.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor); // how do
+		m_right.configVoltageCompSaturation(kVoltageCompSaturationVolts); // send help
 
-		m_right.setNeutralMode(NeutralMode.Brake);
-		m_left.setNeutralMode(NeutralMode.Brake);
+		m_right.setNeutralMode(NeutralModeValue.Brake);
+		m_left.setNeutralMode(NeutralModeValue.Brake);
 
-		m_left.follow(m_right);
-		m_left.setInverted(TalonFXInvertType.OpposeMaster);
+		// m_left.follow(m_right);
+		// m_left.setInverted(TalonFXInvertType.OpposeMaster);
+		m_left.setControl(new Follower(m_right.getDeviceID(), true));
 
-		m_right.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
-		m_right.configVelocityMeasurementWindow(16);
+		m_right.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms); // whar
+		m_right.configVelocityMeasurementWindow(16); // haaaalp
 
 		log_ffEffort = WaltLogger.logDouble(DB_TAB_NAME, "FFEffort");
 		log_pdEffort = WaltLogger.logDouble(DB_TAB_NAME, "PDEffort");
@@ -99,7 +105,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 		log_atLowerLimit = WaltLogger.logBoolean(DB_TAB_NAME, "AtLowerLimit");
 
 		m_lowerLimitTrigger.onTrue(Commands.runOnce(() -> {
-			m_right.setSelectedSensorPosition(0);
+			// m_right.setSelectedSensorPosition(0);
+			m_right.setPosition(0);
 		}).ignoringDisable(true));
 
 		double subsysInitElapsed = Timer.getFPGATimestamp() - subsysInitBegin;
@@ -115,7 +122,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * Returns the actual height in raw encoder ticks
 	 */
 	public double getActualHeightRaw() {
-		return m_right.getSelectedSensorPosition(0);
+		return m_right.getPosition().getValueAsDouble();
+		// m_right.getSelectedSensorPosition(0);
 	}
 
 	/**
@@ -145,14 +153,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 * @return The current height of elevator in meters
 	 */
 	public double getActualHeightMeters() {
-		var falconPos = m_right.getSelectedSensorPosition();
+		var falconPos = m_right.getPosition().getValueAsDouble();
+			// m_right.getSelectedSensorPosition();
 		var meters = Conversions.falconToMeters(
 				falconPos, kDrumCircumferenceMeters, kGearRatio);
 		return meters;// + kElevatorHeightOffset;
 	}
 
 	private double getActualVelocityMps() {
-		var falconVelo = m_right.getSelectedSensorVelocity();
+		var falconVelo = m_right.getVelocity().getValueAsDouble();
+			// m_right.getSelectedSensorVelocity();
 		var mps = Conversions.falconToMPS(falconVelo, kDrumCircumferenceMeters, kGearRatio);
 		return mps;
 	}
@@ -209,8 +219,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 	 */
 	public Command setCoast(boolean coast) {
 		return runOnce(()-> { 
-			m_left.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
-			m_right.setNeutralMode(coast ? NeutralMode.Coast : NeutralMode.Brake);
+			m_left.setNeutralMode(coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+			m_right.setNeutralMode(coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 		});
 	}
 
@@ -285,13 +295,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 					MathUtil.clamp(getEffortForTarget(m_targetHeight), -kVoltageCompSaturationVolts,
 							kVoltageCompSaturationVolts);
 					
-					m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
+					// m_right.set(ControlMode.PercentOutput, effort / kVoltageCompSaturationVolts);
+					m_right.setControl(m_request.withOutput(effort / kVoltageCompSaturationVolts)); // <-- guys help.
 				}))
 				.until(() -> {
 					return m_controller.atGoal();
 				})
 				.finallyDo((intr) -> {
-					m_right.set(ControlMode.PercentOutput, 0);
+					// m_right.set(ControlMode.PercentOutput, 0);
+					m_right.setControl(m_request.withOutput(0)); // see line 299
 				})
 				.withName("AutoToHeight");
 	}
@@ -301,7 +313,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 			var holdEffort = 
 					MathUtil.clamp(getEffortToHold(m_targetHeight), -kVoltageCompSaturationVolts,
 							kVoltageCompSaturationVolts);
-			m_right.set(ControlMode.PercentOutput, holdEffort / kVoltageCompSaturationVolts);
+			// m_right.set(ControlMode.PercentOutput, holdEffort / kVoltageCompSaturationVolts);
+			m_right.setControl(m_request.withOutput(holdEffort / kVoltageCompSaturationVolts)); // schrodingers correct code over here
 		})
 		.withName("Hold Height");
 	}
